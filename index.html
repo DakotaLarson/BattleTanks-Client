@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tanks</title>
+    <link href="https://fonts.googleapis.com/css?family=Nova+Mono" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/main.css"/>
+</head>
+<body>
+<div class="menu main-menu no-select">
+    <span class="main-menu-title">Tanks</span><br/>
+    <div class="main-menu-sub" id="main-menu-top">
+        <span class="menu-selection" id="top-opt-sp">Create</span><br/>
+        <span class="menu-selection" id="top-opt-mp">Play</span><br/>
+        <span class="menu-selection" id="top-opt-opt">Options</span>
+    </div>
+    <div class="main-menu-sub" id="main-menu-sp">
+        <span class="menu-selection" id="sp-opt-create">Create New</span><br/>
+        <span class="menu-selection" id="sp-opt-load">Load Existing</span><br/>
+        <span class="menu-selection" id="sp-opt-cancel">Cancel</span>
+    </div>
+    <div class="main-menu-sub" id="main-menu-mp">
+        <span class="menu-selection" id="mp-opt-cancel">Cancel</span>
+    </div>
+    <div class="main-menu-sub" id="main-menu-opt">
+        <span class="menu-selection" id="opt-cancel">Cancel</span>
+    </div>
+</div>
+<div class="gui no-select">
+    <div class="debug-panel gui-element no-select">
+        <span class="debug-data no-select">FPS: <span id="debug-fps">...</span></span><br/>
+        <span class="debug-data no-select">Rendering: <span id="debug-rendering">...</span></span><br/>
+        <span class="debug-data no-select">Computation: <span id="debug-computation">...</span></span><br/>
+        <span class="debug-data no-select">Idle: <span id="debug-idle">...</span></span><br/>
+    </div>
+    <div class="create-world-mode-toggle gui-element no-select"></div>
+</div>
+<div class="menu game-menu no-select">
+    <span class="menu-selection" id="game-cancel">Cancel</span>
+</div>
+
+<canvas id="game-canvas"></canvas>
+</body>
+<script src="./build/bundle.js"></script>
+</html>
+<!--https://discord.gg/kGcw5M6-->

@@ -1,0 +1,95 @@
+html, body{
+    margin: 0;
+    background-color: black;
+    font-family: 'Inconsolata', monospace;
+}
+#game-canvas{
+    display: block;
+}
+/* Main Menu */
+.menu{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    color: #d0d0d0;
+    text-align: center;
+    text-transform: uppercase;
+    display: none;
+}
+.main-menu{
+    background: radial-gradient(#303030, #101010);
+}
+.main-menu-title{
+    font-size: 15vmin;
+    margin: 5vmin 0 10vmin 0;
+    display: inline-block;
+    color: #ffffff
+}
+.menu-selection{
+    font-size: 5vmin;
+    margin: 1vmin;
+    display: inline-block;
+    border: solid 1px;
+    padding: 0 1vmin;
+}
+.menu-selection:hover{
+    background-color: green;
+    border-color: green;
+    cursor: pointer;
+}
+.main-menu-sub{
+    display: none;
+}
+/*Game Menu*/
+.game-menu{
+    background-color: rgba(0, 0, 0, 0.25);
+}
+/* GUI */
+.gui{
+    display: none;
+    position: absolute;
+    height: 100%;
+    width: 100%; 
+}
+.crosshair{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 32px;
+    width: 32px;
+}
+.gui-element{
+    display: none;
+    position: absolute;
+}
+.no-select{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+/*Debug Panel*/
+.debug-panel{
+    width: 150px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.debug-data{
+    color: white;
+    font-size: 12px;
+}
+
+.create-world-mode-toggle{
+    top: 100px;
+    background-color: gold;
+
+    padding: 10px;
+}
+
+.toggle-to-camera {
+    background-color: slateblue;
+    color: white;
+}
+.create-world-mode-toggle:hover{
+    cursor: pointer;
+}

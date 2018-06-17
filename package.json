@@ -1,0 +1,30 @@
+{
+  "name": "tanks",
+  "version": "1.0.0",
+  "description": "ThreeJS Project",
+  "main": "main.js",
+  "scripts": {
+    "webpack": "webpack",
+    "build": "webpack",
+    "start": "webpack-dev-server --output-public-path=/build/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DakotaLarson/BuilderJS.git"
+  },
+  "author": "Dakota Larson",
+  "license": "ISC",
+  "dependencies": {
+    "three": "^0.93.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^2.1.5",
+    "webpack-dev-server": "^3.1.4"
+  }
+}
