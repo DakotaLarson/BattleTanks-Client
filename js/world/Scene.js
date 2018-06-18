@@ -30,6 +30,7 @@ export default class Scene extends Component{
         EventHandler.addEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
         EventHandler.addEventListener(EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.handleBCTPrimary);
         EventHandler.addEventListener(EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.handleBCTSecondary);
+        EventHandler.addEventListener(EventHandler.Event.GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
 
         for(let i = 0; i < this.lights.length; i ++){
             this.scene.add(this.lights[i]);
@@ -46,6 +47,7 @@ export default class Scene extends Component{
         EventHandler.removeEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
         EventHandler.removeEventListener(EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.handleBCTPrimary);
         EventHandler.removeEventListener(EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.handleBCTSecondary);
+        EventHandler.removeEventListener(EventHandler.Event.GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
 
         for(let i = 0; i < this.lights.length; i ++){
             this.scene.remove(this.lights[i]);
@@ -106,6 +108,26 @@ export default class Scene extends Component{
         this.state.bctEnabled = true;
     };
 
+    onSaveGameRequest = () => {
+        console.log('reached');
+        let saveObject = {
+            name: 'Test Name',
+            width: this.width,
+            height: this.height,
+            blockLocations: Object.keys(this.blockLocations)
+        };
+        console.log(saveObject);
+        let blob = new Blob([JSON.stringify(saveObject)]);
+        let objectURL = URL.createObjectURL(blob);
+        let anchor = document.createElement('a');
+        anchor.download = saveObject.name + '.json';
+        anchor.href = objectURL;
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+        URL.revokeObjectURL(objectURL);
+    };
+
     createWall = () => {
         let block = new Block(this.getCenter(), 0x0077ef, this.scene);
         this.attachChild(block);
@@ -113,17 +135,21 @@ export default class Scene extends Component{
         for(let i = 0; i < this.height; i ++){
             let block = new Block(new Vector3(this.width - 1, 0, i), 0x0077ef, this.scene);
             this.attachChild(block);
+            this.blockLocations[this.width - 1 + ' ' + 0 + ' ' + i] = block;
 
             block = new Block(new Vector3(0, 0, i), 0x0077ef, this.scene);
             this.attachChild(block);
+            this.blockLocations[0 + ' ' + 0 + ' ' + i] = block;
         }
 
         for(let i = 1; i < this.width - 1; i ++){
             let block = new Block(new Vector3(i, 0, this.height - 1), 0x0077ef, this.scene);
             this.attachChild(block);
+            this.blockLocations[i + ' ' + 0 + ' ' + this.height - 1] = block;
 
             block = new Block(new Vector3(i, 0, 0), 0x0077ef, this.scene);
             this.attachChild(block);
+            this.blockLocations[i + ' ' + 0 + ' ' + 0] = block;
         }
     };
     createLines = () => {

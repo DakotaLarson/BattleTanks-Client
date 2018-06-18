@@ -42,7 +42,13 @@ html, body{
 }
 /*Game Menu*/
 .game-menu{
-    background-color: rgba(0, 0, 0, 0.25);
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.game-menu-options{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 /* GUI */
 .gui{

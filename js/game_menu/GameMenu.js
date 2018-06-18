@@ -8,6 +8,7 @@ export default class GameMenu extends Component {
         super();
         this.element = DomHandler.getElement('.game-menu');
         this.cancelBtn = DomHandler.getElement('#game-cancel', this.element);
+        this.saveBtn = DomHandler.getElement('#world-save', this.element);
     }
 
     enable = () => {
@@ -27,6 +28,8 @@ export default class GameMenu extends Component {
     handleClick = (event) => {
         if(event.target === this.cancelBtn){
             EventHandler.callEvent(EventHandler.Event.GAMEMENU_CLOSE_REQUEST);
+        }else if(event.target === this.saveBtn){
+            EventHandler.callEvent(EventHandler.Event.GAMEMENU_SAVE_GAME_REQUEST);
         }
     };
 }

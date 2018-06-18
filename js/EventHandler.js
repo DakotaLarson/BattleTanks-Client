@@ -38,6 +38,7 @@ const Event = {
 
     //GAME MENU
     GAMEMENU_CLOSE_REQUEST: 19,
+    GAMEMENU_SAVE_GAME_REQUEST: 37,
     GAMEMENU_OPEN: 26,
 
     //RENDERER
@@ -60,7 +61,9 @@ const Event = {
     CREATE_WORLD_MODE_TOGGLE_CAMERA: 35,
     CREATE_WORLD_MODE_TOGGLE_BLOCK: 36
 
-};//Latest Event #: 36 (Update upon event addition!)
+
+
+};//Latest Event #: 37 (Update upon event addition!)
 
 export default class EventHandler{
 
