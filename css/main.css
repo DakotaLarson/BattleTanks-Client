@@ -37,6 +37,26 @@ html, body{
     border-color: green;
     cursor: pointer;
 }
+.menu-input{
+    outline: none;
+    background: none;
+    padding: 0.5vmin 1vmin;
+    font: 3vmin 'Inconsolata', monospace;
+    color: #ffffff;
+    border: solid 1px;
+    margin-bottom: 3vmin;
+}
+.menu-input:focus{
+    border-color: green;
+}
+.menu-number-input{
+    width: 9vmin;
+}
+.menu-error{
+    font-size: 3vmin;
+    color: red;
+    text-transform: none;
+}
 .main-menu-sub{
     display: none;
 }

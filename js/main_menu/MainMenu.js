@@ -6,16 +6,18 @@ import TopMenu from "TopMenu";
 import SingleplayerMenu from 'SingleplayerMenu';
 import MultiplayerMenu from 'MultiplayerMenu';
 import OptionsMenu from 'OptionsMenu';
+import CreateMenu from "./CreateMenu";
 
 
 export default class MainMenu extends Component{
     constructor(){
         super();
         this.element = DomHandler.getElement('.main-menu');
-        this.topMenu = new TopMenu();
-        this.spMenu = new SingleplayerMenu();
-        this.mpMenu = new MultiplayerMenu();
-        this.optMenu = new OptionsMenu();
+        this.topMenu = new TopMenu(this.element);
+        this.spMenu = new SingleplayerMenu(this.element);
+        this.mpMenu = new MultiplayerMenu(this.element);
+        this.optMenu = new OptionsMenu(this.element);
+        this.createMenu = new CreateMenu(this.element);
     }
     enable = () => {
         //TOP MENU
@@ -25,10 +27,13 @@ export default class MainMenu extends Component{
         //SP MENU
         EventHandler.addEventListener(EventHandler.Event.SPMENU_LOAD_OPT_CLICK, this.handleSpLoadOptClick);
         EventHandler.addEventListener(EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.handleSpCancelOptClick);
+        EventHandler.addEventListener(EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
         //MP MENU
         EventHandler.addEventListener(EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.handleMpCancelOptClick);
         //OPT MENU
         EventHandler.addEventListener(EventHandler.Event.OPTMENU_CANCEL_OPT_CLICK, this.handleOptCancelOptClick);
+        //SPCREATE MENU
+        EventHandler.addEventListener(EventHandler.Event.SPCREATEMENU_CANCEL_OPT_CLICK, this.handleSpCreateCancelOptClick);
 
         this.attachChild(this.topMenu);
 
@@ -47,6 +52,8 @@ export default class MainMenu extends Component{
         EventHandler.removeEventListener(EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.handleMpCancelOptClick);
         //OPT MENU
         EventHandler.removeEventListener(EventHandler.Event.OPTMENU_CANCEL_OPT_CLICK, this.handleOptCancelOptClick);
+        //SPCREATE MENU
+        EventHandler.removeEventListener(EventHandler.Event.SPCREATEMENU_CANCEL_OPT_CLICK, this.handleSpCreateCancelOptClick);
 
         this.element.style.display = '';
     };
@@ -76,6 +83,11 @@ export default class MainMenu extends Component{
         this.attachChild(this.topMenu);
     };
 
+    handleSpCreateOptClick = () => {
+        this.detachChild(this.spMenu);
+        this.attachChild(this.createMenu);
+    };
+
     //Multiplayer Option Handlers
     //TODO Add additional MP handlers here
 
@@ -91,4 +103,9 @@ export default class MainMenu extends Component{
         this.detachChild(this.optMenu);
         this.attachChild(this.topMenu);
     };
+
+    handleSpCreateCancelOptClick = () => {
+        this.detachChild(this.createMenu);
+        this.attachChild(this.spMenu);
+    }
 }

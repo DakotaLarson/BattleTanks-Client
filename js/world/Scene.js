@@ -9,10 +9,11 @@ import EventHandler from "../EventHandler";
 
 export default class Scene extends Component{
 
-    constructor(camera){
+    constructor(camera, worldData){
         super();
-        this.width = 50;
-        this.height = 30;
+        this.title = worldData.title;
+        this.width = worldData.width + 2;
+        this.height = worldData.height + 2;
         this.scene = new Three_Scene();
         this.scene.background = new Color(0x1e1e20);
         this.blockLocations = {};

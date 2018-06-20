@@ -4,12 +4,12 @@ import EventHandler from "../EventHandler";
 
 
 export default class MultiplayerMenu extends Component{
-    constructor(){
+    constructor(mainMenu){
         super();
-        this.element = DomHandler.getElement('#main-menu-mp');
+        this.element = DomHandler.getElement('#main-menu-mp', mainMenu);
 
         //Buttons
-        this.cancelBtn = DomHandler.getElement('#mp-opt-cancel');
+        this.cancelBtn = DomHandler.getElement('#mp-opt-cancel', mainMenu);
     }
 
     enable = () => {

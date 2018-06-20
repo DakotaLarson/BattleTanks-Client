@@ -3,14 +3,14 @@ import DomHandler from 'DomHandler';
 import EventHandler from 'EventHandler';
 
 export default class TopMenu extends Component{
-     constructor(){
+     constructor(mainMenu){
          super();
-         this.element = DomHandler.getElement('#main-menu-top');
+         this.element = DomHandler.getElement('#main-menu-top', mainMenu);
 
          //Buttons
-         this.spBtn = DomHandler.getElement('#top-opt-sp');
-         this.mpBtn = DomHandler.getElement('#top-opt-mp');
-         this.optBtn = DomHandler.getElement('#top-opt-opt');
+         this.spBtn = DomHandler.getElement('#top-opt-sp', mainMenu);
+         this.mpBtn = DomHandler.getElement('#top-opt-mp', mainMenu);
+         this.optBtn = DomHandler.getElement('#top-opt-opt', mainMenu);
      }
 
      enable = () => {

@@ -97,8 +97,8 @@ EventHandler.addEventListener(EventHandler.Event.DOM_MOUSEMOVE, (event) => {
 
 const stopDefaultActions = () => {
     document.oncontextmenu = () => { return false };
-    document.addEventListener('keydown', (event) => {
-        event.preventDefault();
-    });
+    // document.addEventListener('keydown', (event) => {
+    //     event.preventDefault();
+    // });
 };
 stopDefaultActions();

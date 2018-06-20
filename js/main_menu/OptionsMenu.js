@@ -4,12 +4,12 @@ import EventHandler from "../EventHandler";
 
 
 export default class OptionsMenu extends Component{
-    constructor(){
+    constructor(mainMenu){
         super();
-        this.element = DomHandler.getElement('#main-menu-opt');
+        this.element = DomHandler.getElement('#main-menu-opt', mainMenu);
 
         //Buttons
-        this.cancelBtn = DomHandler.getElement('#opt-cancel');
+        this.cancelBtn = DomHandler.getElement('#opt-cancel', mainMenu);
     }
 
     enable = () => {

@@ -10,10 +10,10 @@ import Camera from 'Camera';
 
 export default class CreateWorld extends Component{
 
-    constructor(){
+    constructor(worldData){
         super();
         let perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.scene = new Scene(perspectiveCamera);
+        this.scene = new Scene(perspectiveCamera, worldData);
         this.camera = new Camera(perspectiveCamera, this.scene);
         this.renderer = new Renderer(this.scene.getScene(), this.camera.getCamera());
         this.gui = new GUI();

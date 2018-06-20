@@ -4,14 +4,16 @@ import EventHandler from "../EventHandler";
 
 
 export default class SingleplayerMenu extends Component{
-    constructor(){
+    constructor(mainMenu){
         super();
-        this.element = DomHandler.getElement('#main-menu-sp');
+        this.element = DomHandler.getElement('#main-menu-sp', mainMenu);
 
         //Buttons
-        this.createBtn = DomHandler.getElement('#sp-opt-create');
-        this.loadBtn = DomHandler.getElement('#sp-opt-load');
-        this.cancelBtn = DomHandler.getElement('#sp-opt-cancel');
+        this.createBtn = DomHandler.getElement('#sp-opt-create', mainMenu);
+        this.loadBtn = DomHandler.getElement('#sp-opt-load', mainMenu);
+        this.cancelBtn = DomHandler.getElement('#sp-opt-cancel', mainMenu);
+
+        //Sub menus
     }
 
     enable = () => {

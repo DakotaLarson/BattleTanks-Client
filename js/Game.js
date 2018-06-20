@@ -2,28 +2,30 @@ import Component from 'Component';
 import EventHandler from 'EventHandler';
 
 import MainMenu from 'MainMenu';
-import SinglePlayerWorld from 'world/CreateWorld';
+import CreateWorld from 'CreateWorld';
 
 class Game extends Component{
     constructor(){
         super();
         this.mainMenu = new MainMenu();
-        this.singleplayerWorld = new SinglePlayerWorld();
+        this.world = null;
 
     }
     start = () => {
         EventHandler.callEvent(EventHandler.Event.GAME_START);
         this.attachChild(this.mainMenu);
 
-        EventHandler.addEventListener(EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
+        EventHandler.addEventListener(EventHandler.Event.SPCREATEMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
 
     };
     update = (delta) => {
         EventHandler.callEvent(EventHandler.Event.GAME_ANIMATION_UPDATE, delta);
     };
-    handleSpCreateOptClick = () => {
+    handleSpCreateOptClick = (worldData) => {
         this.detachChild(this.mainMenu);
-        this.attachChild(this.singleplayerWorld);
+
+        this.world = new CreateWorld(worldData);
+        this.attachChild(this.world);
     };
 }
 (() => {
