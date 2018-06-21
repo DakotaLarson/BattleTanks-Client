@@ -36,9 +36,13 @@ const Event = {
     //OPT MENU
     OPTMENU_CANCEL_OPT_CLICK: 18,
 
-    //SP CREATE MENU
-    SPCREATEMENU_CANCEL_OPT_CLICK: 38,
-    SPCREATEMENU_CREATE_OPT_CLICK: 39,
+    //CREATE WORLD MENU
+    CREATEWORLDMENU_CANCEL_OPT_CLICK: 38,
+    CREATEWORLDMENU_CREATE_OPT_CLICK: 39,
+
+    //LOAD WORLD MENU
+    LOADWORLDMENU_LOAD_OPT_CLICK: 40,
+    LOADWORLDMENU_CANCEL_OPT_CLICK: 41,
 
     //GAME MENU
     GAMEMENU_CLOSE_REQUEST: 19,
@@ -67,7 +71,7 @@ const Event = {
 
 
 
-};//Latest Event #: 39 (Update upon event addition!)
+};//Latest Event #: 41 (Update upon event addition!)
 
 export default class EventHandler{
 

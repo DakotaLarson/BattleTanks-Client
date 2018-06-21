@@ -15,7 +15,7 @@ class Game extends Component{
         EventHandler.callEvent(EventHandler.Event.GAME_START);
         this.attachChild(this.mainMenu);
 
-        EventHandler.addEventListener(EventHandler.Event.SPCREATEMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
+        EventHandler.addEventListener(EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
 
     };
     update = (delta) => {

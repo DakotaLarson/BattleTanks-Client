@@ -112,7 +112,7 @@ export default class Scene extends Component{
     onSaveGameRequest = () => {
         console.log('reached');
         let saveObject = {
-            name: 'Test Name',
+            title: this.title,
             width: this.width,
             height: this.height,
             blockLocations: Object.keys(this.blockLocations)
@@ -121,7 +121,7 @@ export default class Scene extends Component{
         let blob = new Blob([JSON.stringify(saveObject)]);
         let objectURL = URL.createObjectURL(blob);
         let anchor = document.createElement('a');
-        anchor.download = saveObject.name + '.json';
+        anchor.download = saveObject.title + '.json';
         anchor.href = objectURL;
         document.body.appendChild(anchor);
         anchor.click();
@@ -130,8 +130,6 @@ export default class Scene extends Component{
     };
 
     createWall = () => {
-        let block = new Block(this.getCenter(), 0x0077ef, this.scene);
-        this.attachChild(block);
 
         for(let i = 0; i < this.height; i ++){
             let block = new Block(new Vector3(this.width - 1, 0, i), 0x0077ef, this.scene);

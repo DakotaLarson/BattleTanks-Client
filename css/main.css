@@ -19,25 +19,25 @@ html, body{
 .main-menu{
     background: radial-gradient(#303030, #101010);
 }
-.main-menu-title{
+.main-menu .main-menu-title{
     font-size: 15vmin;
     margin: 5vmin 0 10vmin 0;
     display: inline-block;
     color: #ffffff
 }
-.menu-selection{
+.main-menu .menu-selection{
     font-size: 5vmin;
     margin: 1vmin;
     display: inline-block;
     border: solid 1px;
     padding: 0 1vmin;
 }
-.menu-selection:hover{
+.main-menu .menu-selection:hover{
     background-color: green;
     border-color: green;
     cursor: pointer;
 }
-.menu-input{
+.main-menu .menu-input{
     outline: none;
     background: none;
     padding: 0.5vmin 1vmin;
@@ -46,19 +46,33 @@ html, body{
     border: solid 1px;
     margin-bottom: 3vmin;
 }
-.menu-input:focus{
+.main-menu .menu-input:focus{
     border-color: green;
 }
-.menu-number-input{
+.main-menu .menu-number-input{
     width: 9vmin;
 }
-.menu-error{
+.main-menu .menu-error{
     font-size: 3vmin;
     color: red;
     text-transform: none;
 }
-.main-menu-sub{
+.main-menu .main-menu-sub{
     display: none;
+}
+.main-menu input[type='file']{
+    display: none;
+}
+.main-menu .menu-file-input{
+    font-size: 10vmin;
+    border: dashed 5px;
+    padding: 3vmin 5vmin;
+    display: inline-block;
+    margin-bottom: 5vmin;
+}
+.main-menu .menu-file-input:hover{
+    border-color: green;
+    cursor: pointer;
 }
 /*Game Menu*/
 .game-menu{

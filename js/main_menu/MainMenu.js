@@ -6,7 +6,8 @@ import TopMenu from "TopMenu";
 import SingleplayerMenu from 'SingleplayerMenu';
 import MultiplayerMenu from 'MultiplayerMenu';
 import OptionsMenu from 'OptionsMenu';
-import CreateMenu from "./CreateMenu";
+import CreateWorldMenu from 'CreateWorldMenu';
+import LoadWorldMenu from 'LoadWorldMenu';
 
 
 export default class MainMenu extends Component{
@@ -17,7 +18,8 @@ export default class MainMenu extends Component{
         this.spMenu = new SingleplayerMenu(this.element);
         this.mpMenu = new MultiplayerMenu(this.element);
         this.optMenu = new OptionsMenu(this.element);
-        this.createMenu = new CreateMenu(this.element);
+        this.createMenu = new CreateWorldMenu(this.element);
+        this.loadMenu = new LoadWorldMenu(this.element);
     }
     enable = () => {
         //TOP MENU
@@ -32,8 +34,10 @@ export default class MainMenu extends Component{
         EventHandler.addEventListener(EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.handleMpCancelOptClick);
         //OPT MENU
         EventHandler.addEventListener(EventHandler.Event.OPTMENU_CANCEL_OPT_CLICK, this.handleOptCancelOptClick);
-        //SPCREATE MENU
-        EventHandler.addEventListener(EventHandler.Event.SPCREATEMENU_CANCEL_OPT_CLICK, this.handleSpCreateCancelOptClick);
+        //CREATE WORLD MENU
+        EventHandler.addEventListener(EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.handleCreateWorldCancelClick);
+        //LOAD WORLD MENU
+        EventHandler.addEventListener(EventHandler.Event.LOADWORLDMENU_CANCEL_OPT_CLICK, this.handleLoadWorldCancelClick);
 
         this.attachChild(this.topMenu);
 
@@ -53,7 +57,7 @@ export default class MainMenu extends Component{
         //OPT MENU
         EventHandler.removeEventListener(EventHandler.Event.OPTMENU_CANCEL_OPT_CLICK, this.handleOptCancelOptClick);
         //SPCREATE MENU
-        EventHandler.removeEventListener(EventHandler.Event.SPCREATEMENU_CANCEL_OPT_CLICK, this.handleSpCreateCancelOptClick);
+        EventHandler.removeEventListener(EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.handleCreateWorldCancelClick);
 
         this.element.style.display = '';
     };
@@ -76,6 +80,7 @@ export default class MainMenu extends Component{
 
     handleSpLoadOptClick = () => {
         this.detachChild(this.spMenu);
+        this.attachChild(this.loadMenu);
     };
 
     handleSpCancelOptClick = () => {
@@ -104,8 +109,13 @@ export default class MainMenu extends Component{
         this.attachChild(this.topMenu);
     };
 
-    handleSpCreateCancelOptClick = () => {
+    handleCreateWorldCancelClick = () => {
         this.detachChild(this.createMenu);
         this.attachChild(this.spMenu);
-    }
+    };
+
+    handleLoadWorldCancelClick = () => {
+        this.detachChild(this.loadMenu);
+        this.attachChild(this.spMenu);
+    };
 }
