@@ -48,6 +48,7 @@ const Event = {
     GAMEMENU_CLOSE_REQUEST: 19,
     GAMEMENU_SAVE_GAME_REQUEST: 37,
     GAMEMENU_OPEN: 26,
+    GAMEMENU_RETURN_TO_MAIN_REQUEST: 42,
 
     //RENDERER
     RENDERER_RENDER_COMPLETE: 20,
@@ -71,7 +72,7 @@ const Event = {
 
 
 
-};//Latest Event #: 41 (Update upon event addition!)
+};//Latest Event #: 42 (Update upon event addition!)
 
 export default class EventHandler{
 

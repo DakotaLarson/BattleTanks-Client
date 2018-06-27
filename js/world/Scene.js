@@ -1,7 +1,6 @@
-import {Scene as Three_Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, HemisphereLightHelper, DirectionalLight, DirectionalLightHelper, CameraHelper, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial} from 'three';
+import {Scene as Three_Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, HemisphereLightHelper, DirectionalLight, DirectionalLightHelper, CameraHelper, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, BoxGeometry, Geometry} from 'three';
 
 import Component from 'Component';
-import Block from 'Block';
 import BlockCreationTool from 'BlockCreationTool';
 import EventHandler from "../EventHandler";
 
@@ -16,10 +15,12 @@ export default class Scene extends Component{
         this.height = worldData.height + 2;
         this.scene = new Three_Scene();
         this.scene.background = new Color(0x1e1e20);
-        this.blockLocations = {};
+        this.blockLocations = [];
         this.floor = this.createFloor();
         this.lines = this.createLines();
         this.lights = this.createLights();
+        this.blocks = null;
+        this.createBlocks(worldData.blockLocations, true);
         this.blockCreationTool = new BlockCreationTool(camera, this.floor);
         this.state.bctEnabled = false;
     }
@@ -38,7 +39,7 @@ export default class Scene extends Component{
         }
         this.scene.add(this.lines);
         this.scene.add(this.floor);
-        this.createWall();
+        this.scene.add(this.blocks);
     };
 
     disable = () => {
@@ -55,6 +56,7 @@ export default class Scene extends Component{
         }
         this.scene.remove(this.lines);
         this.scene.remove(this.floor);
+        this.scene.remove(this.blocks);
     };
 
     onGameMenuOpen = () => {
@@ -80,11 +82,10 @@ export default class Scene extends Component{
     handleBCTPrimary = (location) => {
         location.floor();
         let locationString = location.x + ' ' + location.y + ' ' + location.z;
-        if(!(locationString in this.blockLocations)){
-            let block = new Block(location, 0x0077ef, this.scene);
-            this.attachChild(block);
-            console.log(locationString);
-            this.blockLocations[locationString] = block;
+        if(this.blockLocations.indexOf(locationString) === -1){
+            //TODO add block to mesh
+            this.blockLocations.push(locationString);
+            this.createBlocks(this.blockLocations, false);
         }
 
     };
@@ -92,10 +93,10 @@ export default class Scene extends Component{
     handleBCTSecondary = (location) => {
         location.floor();
         let locationString = location.x + ' ' + location.y + ' ' + location.z;
-        if(locationString in this.blockLocations){
-            let block = this.blockLocations[locationString];
-            this.detachChild(block);
-            delete this.blockLocations[locationString];
+        let index = this.blockLocations.indexOf(locationString);
+        if(index > -1){
+            this.blockLocations.splice(index, 1);
+            this.createBlocks(this.blockLocations, false);
         }
     };
 
@@ -110,15 +111,13 @@ export default class Scene extends Component{
     };
 
     onSaveGameRequest = () => {
-        console.log('reached');
         let saveObject = {
             title: this.title,
-            width: this.width,
-            height: this.height,
-            blockLocations: Object.keys(this.blockLocations)
+            width: this.width - 2,
+            height: this.height - 2,
+            blockLocations: this.blockLocations
         };
-        console.log(saveObject);
-        let blob = new Blob([JSON.stringify(saveObject)]);
+        let blob = new Blob([JSON.stringify(saveObject)], {type : "application/json"});
         let objectURL = URL.createObjectURL(blob);
         let anchor = document.createElement('a');
         anchor.download = saveObject.title + '.json';
@@ -129,28 +128,6 @@ export default class Scene extends Component{
         URL.revokeObjectURL(objectURL);
     };
 
-    createWall = () => {
-
-        for(let i = 0; i < this.height; i ++){
-            let block = new Block(new Vector3(this.width - 1, 0, i), 0x0077ef, this.scene);
-            this.attachChild(block);
-            this.blockLocations[this.width - 1 + ' ' + 0 + ' ' + i] = block;
-
-            block = new Block(new Vector3(0, 0, i), 0x0077ef, this.scene);
-            this.attachChild(block);
-            this.blockLocations[0 + ' ' + 0 + ' ' + i] = block;
-        }
-
-        for(let i = 1; i < this.width - 1; i ++){
-            let block = new Block(new Vector3(i, 0, this.height - 1), 0x0077ef, this.scene);
-            this.attachChild(block);
-            this.blockLocations[i + ' ' + 0 + ' ' + this.height - 1] = block;
-
-            block = new Block(new Vector3(i, 0, 0), 0x0077ef, this.scene);
-            this.attachChild(block);
-            this.blockLocations[i + ' ' + 0 + ' ' + 0] = block;
-        }
-    };
     createLines = () => {
         let diff = 0.3125;
         let geo = new BufferGeometry();
@@ -213,5 +190,73 @@ export default class Scene extends Component{
         floor.position.copy(this.getCenter());
         floor.receiveShadow = true;
         return floor;
+    };
+
+    createBlocks = (locStrings, createMesh) => {
+        let blocks = [];
+        let masterGeo = new Geometry();
+        if(locStrings){
+            for(let i = 0; i < locStrings.length; i ++){
+                let args = locStrings[i].split(' ');
+                let pos = new Vector3(
+                    Number(args[0]),
+                    Number(args[1]),
+                    Number(args[2])
+                );
+                let geo = new BoxGeometry();
+                for(let i = 0; i < geo.vertices.length; i ++){
+                    geo.vertices[i].add(pos);
+                }
+                blocks.push(locStrings[i]);
+                masterGeo.merge(geo);
+            }
+        }else{
+            //New world; Create wall.
+            for(let i = 0; i < this.height; i ++){
+                let geo = new BoxGeometry();
+                let pos = new Vector3(this.width - 1, 0, i);
+                for(let i = 0; i < geo.vertices.length; i ++){
+                    geo.vertices[i].add(pos);
+                }
+                blocks.push(pos.x + ' ' + pos.y + ' ' + pos.z);
+                masterGeo.merge(geo);
+
+                geo = new BoxGeometry();
+                pos.set(0, 0, i);
+                for(let i = 0; i < geo.vertices.length; i ++){
+                    geo.vertices[i].add(pos);
+                }
+                blocks.push(pos.x + ' ' + pos.y + ' ' + pos.z);
+                masterGeo.merge(geo);
+            }
+
+            for(let i = 1; i < this.width - 1; i ++){
+                let geo = new BoxGeometry();
+                let pos = new Vector3(i, 0, this.height - 1);
+                for(let i = 0; i < geo.vertices.length; i ++){
+                    geo.vertices[i].add(pos);
+                }
+                blocks.push(pos.x + ' ' + pos.y + ' ' + pos.z);
+                masterGeo.merge(geo);
+
+                geo = new BoxGeometry();
+                pos.set(i, 0, 0);
+                for(let i = 0; i < geo.vertices.length; i ++){
+                    geo.vertices[i].add(pos);
+                }
+                blocks.push(pos.x + ' ' + pos.y + ' ' + pos.z);
+                masterGeo.merge(geo);
+            }
+        }
+        let material = new MeshLambertMaterial({color: 0x0077ef});
+        masterGeo.mergeVertices();
+        if(createMesh){
+            this.blocks = new Mesh(masterGeo, material);
+            this.blocks.position.addScalar(0.5);
+            this.blockLocations = blocks;
+        }else{
+            this.blocks.geometry = masterGeo;
+            this.blocks.needsUpdate = true;
+        }
     };
 }

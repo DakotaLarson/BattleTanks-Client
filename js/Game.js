@@ -14,19 +14,27 @@ class Game extends Component{
     start = () => {
         EventHandler.callEvent(EventHandler.Event.GAME_START);
         this.attachChild(this.mainMenu);
-
-        EventHandler.addEventListener(EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
+        EventHandler.addEventListener(EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.handleCreateWorldInit);
+        EventHandler.addEventListener(EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.handleCreateWorldInit);
+        EventHandler.addEventListener(EventHandler.Event.GAMEMENU_RETURN_TO_MAIN_REQUEST, this.handleReturnToMain);
 
     };
     update = (delta) => {
         EventHandler.callEvent(EventHandler.Event.GAME_ANIMATION_UPDATE, delta);
     };
-    handleSpCreateOptClick = (worldData) => {
+
+    handleCreateWorldInit = (worldData) => {
         this.detachChild(this.mainMenu);
 
         this.world = new CreateWorld(worldData);
         this.attachChild(this.world);
     };
+
+    handleReturnToMain = () => {
+        this.detachChild(this.world);
+        this.attachChild(this.mainMenu);
+        this.world = null;
+    }
 }
 (() => {
     let game = new Game();

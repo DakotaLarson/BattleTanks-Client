@@ -5,14 +5,14 @@
     <title>Tanks</title>
     <link href="https://fonts.googleapis.com/css?family=Nova+Mono" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/main.css"/>
 </head>
 <body>
 <div class="menu main-menu no-select">
     <span class="main-menu-title">Tanks</span><br/>
     <div class="main-menu-sub" id="main-menu-top">
-        <span class="menu-selection" id="top-opt-sp">Create</span><br/>
         <span class="menu-selection" id="top-opt-mp">Play</span><br/>
+        <span class="menu-selection" id="top-opt-sp">Create Arena</span><br/>
         <span class="menu-selection" id="top-opt-opt">Options</span>
     </div>
     <div class="main-menu-sub" id="main-menu-sp">
@@ -35,9 +35,14 @@
         <span class="menu-error" id="create-opt-error"></span>
     </div>
     <div class="main-menu-sub" id="sp-menu-load">
-        <input type="file" class="" id="load-opt-file">
-        <label for="load-opt-file" class="menu-file-input">File</label><br/>
-        <span class="menu-selection" id="load-opt-load">Create</span>
+        <input type="file" class="" id="load-opt-file" accept=".json"/>
+        <div class="menu-file-input">
+            <label for="load-opt-file" class="menu-selection menu-file-choose" id="menu-file-choose">Choose File</label><br/>
+            <span class="menu-or">OR</span><br/>
+            <span class="menu-drop">Drag &amp; Drop here</span>
+            <span class="menu-file-name"></span>
+        </div><br/>
+        <span class="menu-selection" id="load-opt-load">Load</span>
         <span class="menu-selection" id="load-opt-cancel">Cancel</span><br/>
         <span class="menu-error" id="load-opt-error"></span>
     </div>
@@ -53,6 +58,7 @@
 </div>
 <div class="menu game-menu no-select">
     <div class="game-menu-options">
+        <span class="menu-selection" id="return-to-main">Return to Main Menu</span><br/>
         <span class="menu-selection" id="world-save">Save World</span><br/>
         <span class="menu-selection" id="game-cancel">Cancel</span>
     </div>
