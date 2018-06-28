@@ -14,9 +14,9 @@ class Game extends Component{
     start = () => {
         EventHandler.callEvent(EventHandler.Event.GAME_START);
         this.attachChild(this.mainMenu);
-        EventHandler.addEventListener(EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.handleCreateWorldInit);
-        EventHandler.addEventListener(EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.handleCreateWorldInit);
-        EventHandler.addEventListener(EventHandler.Event.GAMEMENU_RETURN_TO_MAIN_REQUEST, this.handleReturnToMain);
+        EventHandler.addListener(EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.handleCreateWorldInit);
+        EventHandler.addListener(EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.handleCreateWorldInit);
+        EventHandler.addListener(EventHandler.Event.GAMEMENU_RETURN_TO_MAIN_REQUEST, this.handleReturnToMain);
 
     };
     update = (delta) => {
@@ -71,7 +71,7 @@ class Game extends Component{
 
     };
     update();
-    EventHandler.addEventListener(EventHandler.Event.RENDERER_RENDER_COMPLETE, (time) => {
+    EventHandler.addListener(EventHandler.Event.RENDERER_RENDER_COMPLETE, (time) => {
         latestRenderTime = time;
     });
 

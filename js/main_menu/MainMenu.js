@@ -23,21 +23,21 @@ export default class MainMenu extends Component{
     }
     enable = () => {
         //TOP MENU
-        EventHandler.addEventListener(EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.handleTopSpOptClick);
-        EventHandler.addEventListener(EventHandler.Event.TOPMENU_MP_OPT_CLICK, this.handleTopMpOptClick);
-        EventHandler.addEventListener(EventHandler.Event.TOPMENU_OPT_OPT_CLICK, this.handleTopOptOptClick);
+        EventHandler.addListener(EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.handleTopSpOptClick);
+        EventHandler.addListener(EventHandler.Event.TOPMENU_MP_OPT_CLICK, this.handleTopMpOptClick);
+        EventHandler.addListener(EventHandler.Event.TOPMENU_OPT_OPT_CLICK, this.handleTopOptOptClick);
         //SP MENU
-        EventHandler.addEventListener(EventHandler.Event.SPMENU_LOAD_OPT_CLICK, this.handleSpLoadOptClick);
-        EventHandler.addEventListener(EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.handleSpCancelOptClick);
-        EventHandler.addEventListener(EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
+        EventHandler.addListener(EventHandler.Event.SPMENU_LOAD_OPT_CLICK, this.handleSpLoadOptClick);
+        EventHandler.addListener(EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.handleSpCancelOptClick);
+        EventHandler.addListener(EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
         //MP MENU
-        EventHandler.addEventListener(EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.handleMpCancelOptClick);
+        EventHandler.addListener(EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.handleMpCancelOptClick);
         //OPT MENU
-        EventHandler.addEventListener(EventHandler.Event.OPTMENU_CANCEL_OPT_CLICK, this.handleOptCancelOptClick);
+        EventHandler.addListener(EventHandler.Event.OPTMENU_CANCEL_OPT_CLICK, this.handleOptCancelOptClick);
         //CREATE WORLD MENU
-        EventHandler.addEventListener(EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.handleCreateWorldCancelClick);
+        EventHandler.addListener(EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.handleCreateWorldCancelClick);
         //LOAD WORLD MENU
-        EventHandler.addEventListener(EventHandler.Event.LOADWORLDMENU_CANCEL_OPT_CLICK, this.handleLoadWorldCancelClick);
+        EventHandler.addListener(EventHandler.Event.LOADWORLDMENU_CANCEL_OPT_CLICK, this.handleLoadWorldCancelClick);
 
         this.attachChild(this.topMenu);
 
@@ -45,19 +45,19 @@ export default class MainMenu extends Component{
     };
     disable = () => {
         //TOP MENU
-        EventHandler.removeEventListener(EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.handleTopSpOptClick);
-        EventHandler.removeEventListener(EventHandler.Event.TOPMENU_MP_OPT_CLICK, this.handleTopMpOptClick);
-        EventHandler.removeEventListener(EventHandler.Event.TOPMENU_OPT_OPT_CLICK, this.handleTopOptOptClick);
+        EventHandler.removeListener(EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.handleTopSpOptClick);
+        EventHandler.removeListener(EventHandler.Event.TOPMENU_MP_OPT_CLICK, this.handleTopMpOptClick);
+        EventHandler.removeListener(EventHandler.Event.TOPMENU_OPT_OPT_CLICK, this.handleTopOptOptClick);
         //SP MENU
-        EventHandler.removeEventListener(EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
-        EventHandler.removeEventListener(EventHandler.Event.SPMENU_LOAD_OPT_CLICK, this.handleSpLoadOptClick);
-        EventHandler.removeEventListener(EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.handleSpCancelOptClick);
+        EventHandler.removeListener(EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
+        EventHandler.removeListener(EventHandler.Event.SPMENU_LOAD_OPT_CLICK, this.handleSpLoadOptClick);
+        EventHandler.removeListener(EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.handleSpCancelOptClick);
         //MP MENU
-        EventHandler.removeEventListener(EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.handleMpCancelOptClick);
+        EventHandler.removeListener(EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.handleMpCancelOptClick);
         //OPT MENU
-        EventHandler.removeEventListener(EventHandler.Event.OPTMENU_CANCEL_OPT_CLICK, this.handleOptCancelOptClick);
+        EventHandler.removeListener(EventHandler.Event.OPTMENU_CANCEL_OPT_CLICK, this.handleOptCancelOptClick);
         //SPCREATE MENU
-        EventHandler.removeEventListener(EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.handleCreateWorldCancelClick);
+        EventHandler.removeListener(EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.handleCreateWorldCancelClick);
 
         this.element.style.display = '';
     };

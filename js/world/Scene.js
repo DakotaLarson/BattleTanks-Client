@@ -2,7 +2,7 @@ import {Scene as Three_Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, H
 
 import Component from 'Component';
 import BlockCreationTool from 'BlockCreationTool';
-import EventHandler from "../EventHandler";
+import EventHandler from 'EventHandler';
 
 
 
@@ -26,13 +26,13 @@ export default class Scene extends Component{
     }
 
     enable = () => {
-        EventHandler.addEventListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.addEventListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
-        EventHandler.addEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
-        EventHandler.addEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
-        EventHandler.addEventListener(EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.handleBCTPrimary);
-        EventHandler.addEventListener(EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.handleBCTSecondary);
-        EventHandler.addEventListener(EventHandler.Event.GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
+        EventHandler.addListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
+        EventHandler.addListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
+        EventHandler.addListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
+        EventHandler.addListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
+        EventHandler.addListener(EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.handleBCTPrimary);
+        EventHandler.addListener(EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.handleBCTSecondary);
+        EventHandler.addListener(EventHandler.Event.GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
 
         for(let i = 0; i < this.lights.length; i ++){
             this.scene.add(this.lights[i]);
@@ -43,13 +43,13 @@ export default class Scene extends Component{
     };
 
     disable = () => {
-        EventHandler.removeEventListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.removeEventListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
-        EventHandler.removeEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
-        EventHandler.removeEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
-        EventHandler.removeEventListener(EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.handleBCTPrimary);
-        EventHandler.removeEventListener(EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.handleBCTSecondary);
-        EventHandler.removeEventListener(EventHandler.Event.GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
+        EventHandler.removeListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
+        EventHandler.removeListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
+        EventHandler.removeListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
+        EventHandler.removeListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
+        EventHandler.removeListener(EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.handleBCTPrimary);
+        EventHandler.removeListener(EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.handleBCTSecondary);
+        EventHandler.removeListener(EventHandler.Event.GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
 
         for(let i = 0; i < this.lights.length; i ++){
             this.scene.remove(this.lights[i]);

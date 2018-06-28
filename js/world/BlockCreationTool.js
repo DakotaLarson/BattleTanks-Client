@@ -17,17 +17,17 @@ export default class BlockCreationTool extends Component{
     }
 
     enable = () => {
-        EventHandler.addEventListener(EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
-        EventHandler.addEventListener(EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
-        EventHandler.addEventListener(EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
-        EventHandler.addEventListener(EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
+        EventHandler.addListener(EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
+        EventHandler.addListener(EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
+        EventHandler.addListener(EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
+        EventHandler.addListener(EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
     };
 
     disable = () => {
-        EventHandler.removeEventListener(EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
-        EventHandler.removeEventListener(EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
-        EventHandler.removeEventListener(EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
-        EventHandler.removeEventListener(EventHandler.Event.DOM_MOUSEDOWN, this.onMouseUp);
+        EventHandler.removeListener(EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
+        EventHandler.removeListener(EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
+        EventHandler.removeListener(EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
+        EventHandler.removeListener(EventHandler.Event.DOM_MOUSEDOWN, this.onMouseUp);
     };
 
     onBeforeRender = () => {

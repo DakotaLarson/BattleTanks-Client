@@ -85,19 +85,19 @@ document.addEventListener('pointerlockchange', () => {
     }
 });
 
-EventHandler.addEventListener(EventHandler.Event.DOM_RESIZE, () => {
+EventHandler.addListener(EventHandler.Event.DOM_RESIZE, () => {
     displayDimensions.width = window.innerWidth;
     displayDimensions.height = window.innerHeight;
 });
 
-EventHandler.addEventListener(EventHandler.Event.DOM_MOUSEMOVE, (event) => {
+EventHandler.addListener(EventHandler.Event.DOM_MOUSEMOVE, (event) => {
     mousePosition.x = event.clientX;
     mousePosition.y = event.clientY;
 });
 
 const stopDefaultActions = () => {
     document.oncontextmenu = () => { return false };
-    // document.addEventListener('keydown', (event) => {
+    // document.addListener('keydown', (event) => {
     //     event.preventDefault();
     // });
 };

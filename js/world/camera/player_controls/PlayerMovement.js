@@ -45,20 +45,20 @@ export default class PlayerMovement extends Component{
 
         this.attachChild(this.firstPersonRotation);
 
-        EventHandler.addEventListener(EventHandler.Event.GAME_ANIMATION_UPDATE, this.move);
+        EventHandler.addListener(EventHandler.Event.GAME_ANIMATION_UPDATE, this.move);
 
-        EventHandler.addEventListener(EventHandler.Event.GUI_TOGGLE_CONTROLS_ENABLED, this.handleRotationEnabled);
-        EventHandler.addEventListener(EventHandler.Event.GUI_TOGGLE_CONTROLS_DISABLED, this.handleRotationDisabled);
+        EventHandler.addListener(EventHandler.Event.GUI_TOGGLE_CONTROLS_ENABLED, this.handleRotationEnabled);
+        EventHandler.addListener(EventHandler.Event.GUI_TOGGLE_CONTROLS_DISABLED, this.handleRotationDisabled);
     };
 
     disable = () => {
         this.pitchObject.remove(this.camera);
         this.scene.remove(this.yawObject);
 
-        EventHandler.removeEventListener(EventHandler.Event.GAME_ANIMATION_UPDATE, this.move);
+        EventHandler.removeListener(EventHandler.Event.GAME_ANIMATION_UPDATE, this.move);
 
-        EventHandler.removeEventListener(EventHandler.Event.GUI_TOGGLE_CONTROLS_ENABLED, this.handleRotationEnabled);
-        EventHandler.removeEventListener(EventHandler.Event.GUI_TOGGLE_CONTROLS_DISABLED, this.handleRotationDisabled);
+        EventHandler.removeListener(EventHandler.Event.GUI_TOGGLE_CONTROLS_ENABLED, this.handleRotationEnabled);
+        EventHandler.removeListener(EventHandler.Event.GUI_TOGGLE_CONTROLS_DISABLED, this.handleRotationDisabled);
         this.moveForward = this.moveBackward = this.moveLeft = this.moveRight = this.sprinting = this.jumping = false;
     };
 

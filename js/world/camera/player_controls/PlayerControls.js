@@ -12,8 +12,8 @@ export default class PlayerControls extends Component{
     }
 
     enable = () => {
-        EventHandler.addEventListener(EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
-        EventHandler.addEventListener(EventHandler.Event.DOM_KEYUP, this.onKeyUp);
+        EventHandler.addListener(EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+        EventHandler.addListener(EventHandler.Event.DOM_KEYUP, this.onKeyUp);
 
         this.attachChild(this.movement);
 
@@ -21,8 +21,8 @@ export default class PlayerControls extends Component{
     };
 
     disable = () => {
-        EventHandler.removeEventListener(EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
-        EventHandler.removeEventListener(EventHandler.Event.DOM_KEYUP, this.onKeyUp);
+        EventHandler.removeListener(EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+        EventHandler.removeListener(EventHandler.Event.DOM_KEYUP, this.onKeyUp);
     };
 
     onKeyDown = (event) => {

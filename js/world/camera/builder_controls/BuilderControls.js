@@ -29,19 +29,19 @@ export default class BuilderControls extends Component{
     }
 
     enable = ()=> {
-        EventHandler.addEventListener(EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
-        EventHandler.addEventListener(EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
-        EventHandler.addEventListener(EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
-        EventHandler.addEventListener(EventHandler.Event.DOM_WHEEL, this.onWheel);
+        EventHandler.addListener(EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
+        EventHandler.addListener(EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
+        EventHandler.addListener(EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
+        EventHandler.addListener(EventHandler.Event.DOM_WHEEL, this.onWheel);
 
         this.update();
     };
 
     disable = () => {
-        EventHandler.removeEventListener(EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
-        EventHandler.removeEventListener(EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
-        EventHandler.removeEventListener(EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
-        EventHandler.removeEventListener(EventHandler.Event.DOM_WHEEL, this.onWheel);
+        EventHandler.removeListener(EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
+        EventHandler.removeListener(EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
+        EventHandler.removeListener(EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
+        EventHandler.removeListener(EventHandler.Event.DOM_WHEEL, this.onWheel);
     };
 
     onMouseDown = (event) => {

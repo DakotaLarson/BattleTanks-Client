@@ -17,23 +17,23 @@ export default class Camera extends Component{
     }
 
     enable = () => {
-        EventHandler.addMonitorEventListener(EventHandler.Event.DOM_RESIZE, this.onResize);
-        EventHandler.addEventListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.addEventListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
-        // EventHandler.addEventListener(EventHandler.Event.CONTROLS_TOGGLE_BUILDER, this.onToggleBuilder);
-        // EventHandler.addEventListener(EventHandler.Event.CONTROLS_TOGGLE_PLAYER, this.onTogglePlayer);
-        EventHandler.addEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
-        EventHandler.addEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
+        EventHandler.addMonitorListener(EventHandler.Event.DOM_RESIZE, this.onResize);
+        EventHandler.addListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
+        EventHandler.addListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
+        // EventHandler.addListener(EventHandler.Event.CONTROLS_TOGGLE_BUILDER, this.onToggleBuilder);
+        // EventHandler.addListener(EventHandler.Event.CONTROLS_TOGGLE_PLAYER, this.onTogglePlayer);
+        EventHandler.addListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
+        EventHandler.addListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
 
         this.attachControls();
     };
 
     disable = () => {
-        EventHandler.removeEventListener(EventHandler.Event.DOM_RESIZE, this.onResize);
-        EventHandler.removeEventListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.removeEventListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
-        EventHandler.removeEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
-        EventHandler.removeEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
+        EventHandler.removeListener(EventHandler.Event.DOM_RESIZE, this.onResize);
+        EventHandler.removeListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
+        EventHandler.removeListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
+        EventHandler.removeListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
+        EventHandler.removeListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
 
         this.detachControls();
     };

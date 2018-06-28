@@ -1,5 +1,4 @@
 const path = require('path');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = (env, argv) => {
     let config = {
@@ -42,9 +41,6 @@ module.exports = (env, argv) => {
         config.devtool = "source-map";
         config.mode = 'development';
         config.output.path = path.resolve(__dirname, 'build');
-        config.plugins = [
-            new UglifyJsPlugin({toplevel: true})
-        ]
     }
     return config;
 };

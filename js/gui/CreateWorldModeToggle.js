@@ -12,9 +12,9 @@ export default class CreateWorldModeToggle extends Component{
     }
 
     enable = () => {
-        EventHandler.addEventListener(EventHandler.Event.DOM_CLICK, this.onClick);
-        EventHandler.addEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.onSwitchToBlock);
-        EventHandler.addEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.onSwitchToCamera);
+        EventHandler.addListener(EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.onSwitchToBlock);
+        EventHandler.addListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.onSwitchToCamera);
 
         if(this.switchToCamera){
             this.element.textContent = 'Switch to Camera (C)';
@@ -27,9 +27,9 @@ export default class CreateWorldModeToggle extends Component{
     };
 
     disable = () => {
-        EventHandler.removeEventListener(EventHandler.Event.DOM_CLICK, this.onClick);
-        EventHandler.removeEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.onSwitchToBlock);
-        EventHandler.removeEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.onSwitchToCamera);
+        EventHandler.removeListener(EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.removeListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.onSwitchToBlock);
+        EventHandler.removeListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.onSwitchToCamera);
 
         this.element.style.display = 'none';
     };

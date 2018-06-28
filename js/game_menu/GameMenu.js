@@ -15,13 +15,13 @@ export default class GameMenu extends Component {
     enable = () => {
         EventHandler.callEvent(EventHandler.Event.GAMEMENU_OPEN);
 
-        EventHandler.addEventListener(EventHandler.Event.DOM_CLICK, this.handleClick);
+        EventHandler.addListener(EventHandler.Event.DOM_CLICK, this.handleClick);
 
         this.element.style.display = 'block';
     };
 
     disable = () => {
-        EventHandler.removeEventListener(EventHandler.Event.DOM_CLICK, this.handleClick);
+        EventHandler.removeListener(EventHandler.Event.DOM_CLICK, this.handleClick);
 
         this.element.style.display = '';
     };

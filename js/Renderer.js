@@ -22,13 +22,13 @@ export default class Renderer extends Component{
     }
 
     enable = () => {
-        EventHandler.addMonitorEventListener(EventHandler.Event.DOM_RESIZE, this.handleResize);
-        EventHandler.addMonitorEventListener(EventHandler.Event.GAME_ANIMATION_UPDATE, this.render);
+        EventHandler.addMonitorListener(EventHandler.Event.DOM_RESIZE, this.handleResize);
+        EventHandler.addMonitorListener(EventHandler.Event.GAME_ANIMATION_UPDATE, this.render);
     };
 
     disable = () => {
-        EventHandler.removeEventListener(EventHandler.Event.DOM_RESIZE, this.handleResize);
-        EventHandler.removeEventListener(EventHandler.Event.GAME_ANIMATION_UPDATE, this.render);
+        EventHandler.removeListener(EventHandler.Event.DOM_RESIZE, this.handleResize);
+        EventHandler.removeListener(EventHandler.Event.GAME_ANIMATION_UPDATE, this.render);
     };
 
     render = () => {

@@ -14,12 +14,12 @@ export default class DebugPanel extends Component{
     }
 
     enable = () => {
-        EventHandler.addEventListener(EventHandler.Event.GAME_DEBUG_OUTPUT, this.handleDebugOutput);
+        EventHandler.addListener(EventHandler.Event.GAME_DEBUG_OUTPUT, this.handleDebugOutput);
         this.element.style.display = 'inline-block';
     };
 
     disable = () => {
-        EventHandler.removeEventListener(EventHandler.Event.GAME_DEBUG_OUTPUT, this.handleDebugOutput);
+        EventHandler.removeListener(EventHandler.Event.GAME_DEBUG_OUTPUT, this.handleDebugOutput);
         this.element.style.display = '';
     };
 

@@ -76,21 +76,21 @@ const Event = {
 
 export default class EventHandler{
 
-     static addEventListener(event, callback){
+     static addListener(event, callback){
         if(eventListeners.hasOwnProperty(event)){
             eventListeners[event].unshift(callback);
         }else{
             eventListeners[event] = [callback];
         }
     }
-    static addMonitorEventListener(event, callback){
+    static addMonitorListener(event, callback){
         if(eventListeners.hasOwnProperty(event)){
             eventListeners[event].push(callback);
         }else{
             eventListeners[event] = [callback];
         }
     }
-    static removeEventListener(event, callback){
+    static removeListener(event, callback){
         if(eventListeners.hasOwnProperty(event)){
             let callbackIndex = eventListeners[event].indexOf(callback);
             if(callbackIndex > -1){

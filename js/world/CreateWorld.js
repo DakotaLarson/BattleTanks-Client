@@ -25,11 +25,11 @@ export default class CreateWorld extends Component{
     }
 
     enable = () => {
-        EventHandler.addEventListener(EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
-        EventHandler.addEventListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenu);
-        EventHandler.addEventListener(EventHandler.Event.DOM_BLUR, this.onBlur);
-        EventHandler.addEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
-        EventHandler.addEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
+        EventHandler.addListener(EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+        EventHandler.addListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenu);
+        EventHandler.addListener(EventHandler.Event.DOM_BLUR, this.onBlur);
+        EventHandler.addListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
+        EventHandler.addListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
 
         this.attachChild(this.scene);
         this.attachChild(this.renderer);
@@ -39,11 +39,11 @@ export default class CreateWorld extends Component{
     };
 
     disable = () => {
-        EventHandler.removeEventListener(EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
-        EventHandler.removeEventListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenu);
-        EventHandler.removeEventListener(EventHandler.Event.DOM_BLUR, this.onBlur);
-        EventHandler.removeEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
-        EventHandler.removeEventListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
+        EventHandler.removeListener(EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+        EventHandler.removeListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenu);
+        EventHandler.removeListener(EventHandler.Event.DOM_BLUR, this.onBlur);
+        EventHandler.removeListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
+        EventHandler.removeListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
 
         this.detachChild(this.scene);
         this.detachChild(this.renderer);

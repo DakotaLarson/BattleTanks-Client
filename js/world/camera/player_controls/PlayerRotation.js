@@ -11,11 +11,11 @@ export default class PlayerRotation extends Component{
     }
 
     enable = () => {
-        EventHandler.addEventListener(EventHandler.Event.DOM_MOUSEMOVE, this.rotate);
+        EventHandler.addListener(EventHandler.Event.DOM_MOUSEMOVE, this.rotate);
     };
 
     disable = () => {
-        EventHandler.removeEventListener(EventHandler.Event.DOM_MOUSEMOVE, this.rotate);
+        EventHandler.removeListener(EventHandler.Event.DOM_MOUSEMOVE, this.rotate);
     };
 
     rotate = (event) => {
