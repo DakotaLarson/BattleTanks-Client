@@ -3,12 +3,14 @@ import EventHandler from 'EventHandler';
 
 import MainMenu from 'MainMenu';
 import CreateWorld from 'CreateWorld';
+import MultiplayerConnection from 'MultiplayerConnection';
 
 class Game extends Component{
     constructor(){
         super();
         this.mainMenu = new MainMenu();
         this.world = null;
+        this.mpConnection = null;
 
     }
     start = () => {
@@ -17,6 +19,7 @@ class Game extends Component{
         EventHandler.addListener(EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.handleCreateWorldInit);
         EventHandler.addListener(EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.handleCreateWorldInit);
         EventHandler.addListener(EventHandler.Event.GAMEMENU_RETURN_TO_MAIN_REQUEST, this.handleReturnToMain);
+        EventHandler.addListener(EventHandler.Event.MPMENU_CONNECT_OPT_CLICK, this.connectToMultiplayer);
 
     };
     update = (delta) => {
@@ -34,7 +37,13 @@ class Game extends Component{
         this.detachChild(this.world);
         this.attachChild(this.mainMenu);
         this.world = null;
-    }
+    };
+
+    connectToMultiplayer = () => {
+        this.detachChild(this.mainMenu);
+        this.mpConnection = new MultiplayerConnection();
+        this.attachChild(this.mpConnection);
+    };
 }
 (() => {
     let game = new Game();
@@ -89,4 +98,3 @@ class Game extends Component{
 
 
 })();
-
