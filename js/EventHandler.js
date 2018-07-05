@@ -32,7 +32,7 @@ const Event = {
     SPMENU_CANCEL_OPT_CLICK: 16,
     //MP MENU
     MPMENU_CANCEL_OPT_CLICK: 17,
-    MPMENU_CONNECT_OPT_CLICK: 43,
+    MPMENU_CONNECT_OPT_CLICK: 44,
 
     //OPT MENU
     OPTMENU_CANCEL_OPT_CLICK: 18,
@@ -71,7 +71,7 @@ const Event = {
     CREATE_WORLD_MODE_TOGGLE_CAMERA: 35,
     CREATE_WORLD_MODE_TOGGLE_BLOCK: 36
 
-};//Latest Event #: 43 (Update upon event addition!)
+};//Latest Event #: 44 (Update upon event addition!)
 
 export default class EventHandler{
 

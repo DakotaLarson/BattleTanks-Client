@@ -1,16 +1,17 @@
 import Component from 'Component';
 
+const address = 'ws://localhost:8000';
+const protocol = 'tanks-MP';
+
 export default class MultiplayerConnection extends Component{
 
     constructor(){
         super();
-        this.address = 'ws://localhost:8000';
         this.ws = null;
     }
 
     enable = () => {
-        console.log('reached');
-        this.ws = new WebSocket(this.address);
+        this.ws = new WebSocket(address, protocol);
         this.ws.addEventListener('open', () => {
             this.initHandshake();
         });
@@ -24,6 +25,7 @@ export default class MultiplayerConnection extends Component{
     };
 
     initHandshake = () => {
+        console.log('init handshake');
         this.ws.send('test');
     };
 }

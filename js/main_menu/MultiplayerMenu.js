@@ -19,7 +19,7 @@ export default class MultiplayerMenu extends Component{
     };
     disable = () => {
         this.cancelBtn.removeEventListener('click', this.handleCancelOption);
-        this.connectBtn.removeEventListener('click', this.handleCancelOption);
+        this.connectBtn.removeEventListener('click', this.handleConnectOption);
         this.element.style.display = '';
     };
 
