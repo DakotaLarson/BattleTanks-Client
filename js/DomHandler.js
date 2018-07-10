@@ -53,7 +53,7 @@ const eventTitles = {
     'blur': EventHandler.Event.DOM_BLUR,
     'focus': EventHandler.Event.DOM_FOCUS,
     'wheel': EventHandler.Event.DOM_WHEEL,
-    'contextmenu': EventHandler.Event.DOM_CONTEXTMENU,
+    'contextmenu': EventHandler.Event.DOM_CONTEXTMENU
 };
 const windowEventTitles = ['resize', 'blur', 'focus', 'click'];
 
