@@ -4,23 +4,27 @@ import EventHandler from 'EventHandler';
 import MainMenu from 'MainMenu';
 import CreateWorld from 'CreateWorld';
 import MultiplayerConnection from 'MultiplayerConnection';
+import ConnectionScreen from 'ConnectionScreen';
 
 class Game extends Component{
     constructor(){
         super();
         this.mainMenu = new MainMenu();
+        this.connectionScreen = new ConnectionScreen();
         this.world = null;
         this.mpConnection = null;
 
     }
     start = () => {
         EventHandler.callEvent(EventHandler.Event.GAME_START);
-        this.attachChild(this.mainMenu);
         EventHandler.addListener(EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.handleCreateWorldInit);
         EventHandler.addListener(EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.handleCreateWorldInit);
         EventHandler.addListener(EventHandler.Event.GAMEMENU_RETURN_TO_MAIN_REQUEST, this.handleReturnToMain);
         EventHandler.addListener(EventHandler.Event.MPMENU_CONNECT_OPT_CLICK, this.connectToMultiplayer);
+        EventHandler.addListener(EventHandler.Event.CONNECTION_SCREEN_DISCONNECTED_CANCEL, this.handleDisconnectedCancel);
+        EventHandler.addListener(EventHandler.Event.CONNECTION_SCREEN_CONNECTING_CANCEL, this.handleDisconnectedCancel);
 
+        this.attachChild(this.mainMenu);
     };
     update = (delta) => {
         EventHandler.callEvent(EventHandler.Event.GAME_ANIMATION_UPDATE, delta);
@@ -41,10 +45,19 @@ class Game extends Component{
 
     connectToMultiplayer = () => {
         this.detachChild(this.mainMenu);
+        this.attachChild(this.connectionScreen);
         this.mpConnection = new MultiplayerConnection();
         this.attachChild(this.mpConnection);
     };
+
+    handleDisconnectedCancel = () => {
+        this.detachChild(this.connectionScreen);
+        this.detachChild(this.mpConnection);
+        this.mpConnection = null;
+        this.attachChild(this.mainMenu)
+    };
 }
+
 (() => {
     let game = new Game();
     game.start();

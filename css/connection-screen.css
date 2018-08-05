@@ -1,0 +1,10 @@
+.connection-screen{
+    background: radial-gradient(#303030, #101010);
+    align-items: center;
+    justify-content: center;
+}
+.connection-screen .section{
+    color: #ffffff;
+    font-size: 5vmin;
+    display: none;
+}

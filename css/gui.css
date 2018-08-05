@@ -1,0 +1,20 @@
+/* GUI */
+.gui{
+    display: none;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+.gui .crosshair{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 32px;
+    width: 32px;
+}
+.gui .gui-element{
+    display: none;
+    position: absolute;
+}
+

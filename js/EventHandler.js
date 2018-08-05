@@ -69,9 +69,18 @@ const Event = {
 
     //CREATE WORLD MODE TOGGLE
     CREATE_WORLD_MODE_TOGGLE_CAMERA: 35,
-    CREATE_WORLD_MODE_TOGGLE_BLOCK: 36
+    CREATE_WORLD_MODE_TOGGLE_BLOCK: 36,
 
-};//Latest Event #: 44 (Update upon event addition!)
+    //MULTIPLAYER_CONNECTION
+    MULTIPLAYER_CONNECTION_WS_OPEN: 45,
+    MULTIPLAYER_CONNECTION_WS_CLOSE: 46,
+
+    //CONNECTION SCREEN
+    //TODO Possible Event Duplication.
+    CONNECTION_SCREEN_CONNECTING_CANCEL: 47,
+    CONNECTION_SCREEN_DISCONNECTED_CANCEL: 48,
+
+};//Latest Event #: 48 (Update upon event addition!)
 
 export default class EventHandler{
 

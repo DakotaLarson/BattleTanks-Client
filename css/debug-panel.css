@@ -1,0 +1,23 @@
+/*Debug Panel*/
+.debug-panel{
+    width: 150px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.debug-panel .debug-data{
+    color: white;
+    font-size: 12px;
+}
+
+.create-world-mode-toggle{
+    top: 100px;
+    background-color: gold;
+    padding: 10px;
+}
+
+.toggle-to-camera {
+    background-color: slateblue;
+    color: white;
+}
+.create-world-mode-toggle:hover{
+    cursor: pointer;
+}

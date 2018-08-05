@@ -6,7 +6,12 @@ html, body{
 #game-canvas{
     display: block;
 }
-/* Main Menu */
+.no-select{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 .menu{
     position: absolute;
     height: 100%;
@@ -15,15 +20,6 @@ html, body{
     text-align: center;
     text-transform: uppercase;
     display: none;
-}
-.main-menu{
-    background: radial-gradient(#303030, #101010);
-}
-.main-menu .main-menu-title{
-    font-size: 15vmin;
-    margin: 5vmin 0 10vmin 0;
-    display: inline-block;
-    color: #ffffff
 }
 .menu-selection{
     font-size: 5vmin;
@@ -35,119 +31,5 @@ html, body{
 .menu-selection:hover{
     background-color: green;
     border-color: green;
-    cursor: pointer;
-}
-.main-menu .menu-input{
-    outline: none;
-    background: none;
-    padding: 0.5vmin 1vmin;
-    font: 3vmin 'Inconsolata', monospace;
-    color: #ffffff;
-    border: solid 1px;
-    margin-bottom: 3vmin;
-}
-.main-menu .menu-input:focus{
-    border-color: green;
-}
-.main-menu .menu-number-input{
-    width: 9vmin;
-}
-.main-menu .menu-error{
-    font-size: 3vmin;
-    color: red;
-    text-transform: none;
-}
-.main-menu .main-menu-sub{
-    display: none;
-}
-.main-menu input[type='file']{
-    display: none;
-}
-.main-menu .menu-file-input {
-    border: dashed 3px;
-    width: 50vmin;
-    height: 30vmin;
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 5vmin;
-}
-.main-menu .menu-file-choose{
-    font-size: 4vmin;
-    display: inline-block;
-}
-.main-menu .menu-or {
-    font-size: 2vmin;
-    display: inline-block;
-}
-.main-menu .menu-drop{
-    font-size: 4vmin;
-    display: inline-block;
-}
-.main-menu .menu-file-name{
-    display: inline-block;
-    color: green;
-    font-size: 5vmin;
-    margin-top: 5vmin;
-}
-
-/*Game Menu*/
-.game-menu{
-    background-color: rgba(0, 0, 0, 0.5);
-}
-.game-menu-options{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-/* GUI */
-.gui{
-    display: none;
-    position: absolute;
-    height: 100%;
-    width: 100%; 
-}
-.crosshair{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    height: 32px;
-    width: 32px;
-}
-.gui-element{
-    display: none;
-    position: absolute;
-}
-.no-select{
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-/*Debug Panel*/
-.debug-panel{
-    width: 150px;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-.debug-data{
-    color: white;
-    font-size: 12px;
-}
-
-.create-world-mode-toggle{
-    top: 100px;
-    background-color: gold;
-
-    padding: 10px;
-}
-
-.toggle-to-camera {
-    background-color: slateblue;
-    color: white;
-}
-.create-world-mode-toggle:hover{
     cursor: pointer;
 }

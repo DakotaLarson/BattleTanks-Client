@@ -1,0 +1,64 @@
+/* Main Menu */
+.main-menu{
+    background: radial-gradient(#303030, #101010);
+}
+.main-menu .main-menu-title{
+    font-size: 15vmin;
+    margin: 5vmin 0 10vmin 0;
+    display: inline-block;
+    color: #ffffff
+}
+.main-menu .menu-input{
+    outline: none;
+    background: none;
+    padding: 0.5vmin 1vmin;
+    font: 3vmin 'Inconsolata', monospace;
+    color: #ffffff;
+    border: solid 1px;
+    margin-bottom: 3vmin;
+}
+.main-menu .menu-input:focus{
+    border-color: green;
+}
+.main-menu .menu-number-input{
+    width: 9vmin;
+}
+.main-menu .menu-error{
+    font-size: 3vmin;
+    color: red;
+    text-transform: none;
+}
+.main-menu .main-menu-sub{
+    display: none;
+}
+.main-menu input[type='file']{
+    display: none;
+}
+.main-menu .menu-file-input {
+    border: dashed 3px;
+    width: 50vmin;
+    height: 30vmin;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5vmin;
+}
+.main-menu .menu-file-choose{
+    font-size: 4vmin;
+    display: inline-block;
+}
+.main-menu .menu-or {
+    font-size: 2vmin;
+    display: inline-block;
+}
+.main-menu .menu-drop{
+    font-size: 4vmin;
+    display: inline-block;
+}
+.main-menu .menu-file-name{
+    display: inline-block;
+    color: green;
+    font-size: 5vmin;
+    margin-top: 5vmin;
+}

@@ -5,7 +5,14 @@
     <title>Tanks</title>
     <link href="https://fonts.googleapis.com/css?family=Nova+Mono" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+
     <link rel="stylesheet" type="text/css" href="./css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/game-menu.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/gui.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/debug-panel.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/main-menu.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/connection-screen.css"/>
+
 </head>
 <body>
 <div class="menu main-menu no-select">
@@ -48,6 +55,18 @@
         <span class="menu-error" id="load-opt-error"></span>
     </div>
 </div>
+
+<div class="menu connection-screen no-select">
+    <div class="section section-connecting">
+        <span class="message">Connecting...</span><br/>
+        <span class="menu-selection option-cancel">Cancel</span>
+    </div>
+    <div class="section section-disconnected">
+        <span class="message">Disconnected.</span><br/>
+        <span class="menu-selection option-cancel">Cancel</span>
+    </div>
+</div>
+
 <div class="gui no-select">
     <div class="debug-panel gui-element no-select">
         <span class="debug-data no-select">FPS: <span id="debug-fps">...</span></span><br/>
@@ -57,6 +76,7 @@
     </div>
     <div class="create-world-mode-toggle gui-element no-select"></div>
 </div>
+
 <div class="menu game-menu no-select">
     <div class="game-menu-options">
         <span class="menu-selection" id="return-to-main">Return to Main Menu</span><br/>
@@ -66,6 +86,7 @@
 </div>
 
 <canvas id="game-canvas"></canvas>
+
 </body>
 <script src="./polyfill/encoding.js"></script>
 <script src="./polyfill/encoding-indexes.js"></script>
