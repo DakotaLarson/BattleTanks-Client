@@ -79,6 +79,7 @@ export default class BlockCreationTool extends Component{
             }
         }
     };
+
     updateMouseCoords = () => {
         let dimensions = DomHandler.getDisplayDimensions();
         let mouseCoords = DomHandler.getMouseCoordinates();

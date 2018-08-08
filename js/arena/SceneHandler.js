@@ -1,4 +1,4 @@
-import {Scene as Three_Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, HemisphereLightHelper, DirectionalLight, DirectionalLightHelper, CameraHelper, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, BoxGeometry, Geometry} from 'three';
+import {Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, HemisphereLightHelper, DirectionalLight, DirectionalLightHelper, CameraHelper, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, BoxGeometry, Geometry} from 'three';
 
 import Component from 'Component';
 import BlockCreationTool from 'BlockCreationTool';
@@ -6,30 +6,26 @@ import EventHandler from 'EventHandler';
 
 
 
-export default class Scene extends Component{
+export default class SceneHandler extends Component{
 
-    constructor(camera, worldData){
+    constructor(worldData){
         super();
         this.title = worldData.title;
         this.width = worldData.width + 2;
         this.height = worldData.height + 2;
-        this.scene = new Three_Scene();
+        this.scene = new Scene();
         this.scene.background = new Color(0x1e1e20);
         this.blockLocations = [];
         this.floor = this.createFloor();
         this.lines = this.createLines();
         this.lights = this.createLights();
         this.blocks = null;
-        this.createBlocks(worldData.blockLocations, true);
-        this.blockCreationTool = new BlockCreationTool(camera, this.floor);
-        this.state.bctEnabled = false;
+        this.updateBlocks(worldData.blockLocations, true);
+
     }
 
     enable = () => {
-        EventHandler.addListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.addListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
-        EventHandler.addListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
-        EventHandler.addListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
+
         EventHandler.addListener(EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.handleBCTPrimary);
         EventHandler.addListener(EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.handleBCTSecondary);
         EventHandler.addListener(EventHandler.Event.GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
@@ -43,10 +39,6 @@ export default class Scene extends Component{
     };
 
     disable = () => {
-        EventHandler.removeListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.removeListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
-        EventHandler.removeListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
-        EventHandler.removeListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
         EventHandler.removeListener(EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.handleBCTPrimary);
         EventHandler.removeListener(EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.handleBCTSecondary);
         EventHandler.removeListener(EventHandler.Event.GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
@@ -57,18 +49,6 @@ export default class Scene extends Component{
         this.scene.remove(this.lines);
         this.scene.remove(this.floor);
         this.scene.remove(this.blocks);
-    };
-
-    onGameMenuOpen = () => {
-        if(this.state.bctEnabled){
-            this.detachChild(this.blockCreationTool);
-        }
-    };
-
-    onGameMenuClose = () => {
-        if(this.state.bctEnabled){
-            this.attachChild(this.blockCreationTool);
-        }
     };
 
     getScene = () => {
@@ -83,9 +63,8 @@ export default class Scene extends Component{
         location.floor();
         let locationString = location.x + ' ' + location.y + ' ' + location.z;
         if(this.blockLocations.indexOf(locationString) === -1){
-            //TODO add block to mesh
             this.blockLocations.push(locationString);
-            this.createBlocks(this.blockLocations, false);
+            this.updateBlocks(this.blockLocations, false);
         }
 
     };
@@ -96,18 +75,8 @@ export default class Scene extends Component{
         let index = this.blockLocations.indexOf(locationString);
         if(index > -1){
             this.blockLocations.splice(index, 1);
-            this.createBlocks(this.blockLocations, false);
+            this.updateBlocks(this.blockLocations, false);
         }
-    };
-
-    handleToggleToCamera = () => {
-        this.detachChild(this.blockCreationTool);
-        this.state.bctEnabled = false;
-    };
-
-    handleToggleToBlock = () => {
-        this.attachChild(this.blockCreationTool);
-        this.state.bctEnabled = true;
     };
 
     onSaveGameRequest = () => {
@@ -192,7 +161,7 @@ export default class Scene extends Component{
         return floor;
     };
 
-    createBlocks = (locStrings, createMesh) => {
+    updateBlocks = (locStrings, createMesh) => {
         let blocks = [];
         let masterGeo = new Geometry();
         if(locStrings){

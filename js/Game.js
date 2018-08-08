@@ -2,7 +2,7 @@ import Component from 'Component';
 import EventHandler from 'EventHandler';
 
 import MainMenu from 'MainMenu';
-import CreateWorld from 'CreateWorld';
+import Arena from 'Arena';
 import MultiplayerConnection from 'MultiplayerConnection';
 import ConnectionScreen from 'ConnectionScreen';
 
@@ -33,7 +33,7 @@ class Game extends Component{
     handleCreateWorldInit = (worldData) => {
         this.detachChild(this.mainMenu);
 
-        this.world = new CreateWorld(worldData);
+        this.world = new Arena(worldData);
         this.attachChild(this.world);
     };
 

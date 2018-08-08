@@ -2,22 +2,24 @@ import {PerspectiveCamera} from 'three';
 
 import Component from 'Component';
 import Renderer from 'Renderer';
-import Scene from 'Scene';
+import SceneHandler from 'SceneHandler';
 import GUI from 'GUI';
 import EventHandler from 'EventHandler';
 import GameMenu from 'GameMenu';
 import Camera from 'Camera';
+import CreationToolHandler from 'CreationToolHandler';
 
-export default class CreateWorld extends Component{
+export default class Arena extends Component{
 
     constructor(worldData){
         super();
         let perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.scene = new Scene(perspectiveCamera, worldData);
-        this.camera = new Camera(perspectiveCamera, this.scene);
-        this.renderer = new Renderer(this.scene.getScene(), this.camera.getCamera());
+        this.sceneHandler = new SceneHandler(worldData);
+        this.camera = new Camera(perspectiveCamera, this.sceneHandler);
+        this.renderer = new Renderer(this.sceneHandler.getScene(), this.camera.getCamera());
         this.gui = new GUI();
         this.gameMenu = new GameMenu();
+        this.creationToolHandler = new CreationToolHandler(perspectiveCamera, this.sceneHandler.floor);
 
         this.state.gameMenuEnabled = false;
         this.state.switchToCamera = false;
@@ -31,10 +33,11 @@ export default class CreateWorld extends Component{
         EventHandler.addListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
         EventHandler.addListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
 
-        this.attachChild(this.scene);
+        this.attachChild(this.sceneHandler);
         this.attachChild(this.renderer);
         this.attachChild(this.camera);
         this.attachChild(this.gui);
+        this.attachChild(this.creationToolHandler);
 
     };
 
@@ -45,10 +48,11 @@ export default class CreateWorld extends Component{
         EventHandler.removeListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
         EventHandler.removeListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
 
-        this.detachChild(this.scene);
+        this.detachChild(this.sceneHandler);
         this.detachChild(this.renderer);
         this.detachChild(this.camera);
         this.detachChild(this.gui);
+        this.detachChild(this.creationToolHandler);
     };
 
     onKeyDown = (event) => {
