@@ -4,13 +4,18 @@ const receiveArena = (data) => {
     console.log(data);
 };
 
+const receiveGameStatus = (data) => {
+    console.log('GameStatus: ' + data);
+};
 //Keep indices in line with headers and handlers
 //TODO Consider reconstruction with a better implementation
 const headers = [
-    0X00
+    0X00,
+    0x01
 ];
 const handlers = [
-    receiveArena
+    receiveArena,
+    receiveGameStatus
 ];
 export default class PacketReceiver{
     static handleMessage(message){
@@ -20,6 +25,8 @@ export default class PacketReceiver{
         let index = headers.indexOf(header);
         if(index > -1){
             handlers[index](body);
+        }else{
+            console.log('Received unknown header: ' + header);
         }
     }
 }
