@@ -2,16 +2,26 @@ import Component from 'Component';
 import DomHandler from 'DomHandler';
 import EventHandler from 'EventHandler';
 
+import ConnectedScreen from 'ConnectedScreen';
+import ConnectingScreen from 'ConnectingScreen';
+import DisconnectedScreen from 'DisconnectedScreen';
+import FinishingScreen from 'FinishingScreen';
+import WaitingScreen from 'WaitingScreen';
+
 export default class ConnectionScreen extends Component{
 
     constructor(){
         super();
         this.element = DomHandler.getElement('.connection-screen');
-        this.connectingElt = DomHandler.getElement('.section-connecting', this.element);
-        this.disconnectedElt = DomHandler.getElement('.section-disconnected', this.element);
-        this.connectingCancelElt = DomHandler.getElement('.option-cancel', this.connectingElt);
-        this.disconnectedCancelElt = DomHandler.getElement('.option-cancel', this.disconnectedElt);
-        this.connectionOpen = false;
+
+        this.connectedScreen = new ConnectedScreen(this.element);
+        this.connectingScreen = new ConnectingScreen(this.element);
+        this.disconnectedScreen = new DisconnectedScreen(this.element);
+        this.finishingScreen = new FinishingScreen(this.element);
+        this.waitingScreen = new WaitingScreen(this.element);
+
+        this.hidden = false;
+        this.activeScreen = undefined;
     }
 
     enable = () => {
@@ -19,11 +29,13 @@ export default class ConnectionScreen extends Component{
         EventHandler.addListener(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_OPEN, this.onConnectionOpen);
         EventHandler.addListener(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.onConnectionClose);
 
-        this.connectingCancelElt.addEventListener('click', this.onConnectingCancel);
-        this.disconnectedCancelElt.addEventListener('click', this.onDisconnectedCancel);
+        EventHandler.addListener(EventHandler.Event.GAME_STATUS_WAITING, this.onWaitingGameStatus);
+        EventHandler.addListener(EventHandler.Event.GAME_STATUS_PREPARING, this.onOtherGameStatus);
+        EventHandler.addListener(EventHandler.Event.GAME_STATUS_RUNNING, this.onOtherGameStatus);
+        EventHandler.addListener(EventHandler.Event.GAME_STATUS_FINISHING, this.onFinishingGameStatus);
 
         this.element.style.display = 'flex';
-        this.displayConnecting();
+        this.showScreen(this.connectingScreen);
     };
 
     disable = () => {
@@ -31,45 +43,62 @@ export default class ConnectionScreen extends Component{
         EventHandler.removeListener(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_OPEN, this.onConnectionOpen);
         EventHandler.removeListener(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.onConnectionClose);
 
-        this.connectingCancelElt.removeEventListener('click', this.onConnectingCancel);
-        this.disconnectedCancelElt.removeEventListener('click', this.onDisconnectedCancel);
+        EventHandler.removeListener(EventHandler.Event.GAME_STATUS_WAITING, this.onWaitingGameStatus);
+        EventHandler.removeListener(EventHandler.Event.GAME_STATUS_PREPARING, this.onOtherGameStatus);
+        EventHandler.removeListener(EventHandler.Event.GAME_STATUS_RUNNING, this.onOtherGameStatus);
+        EventHandler.removeListener(EventHandler.Event.GAME_STATUS_FINISHING, this.onFinishingGameStatus);
 
         this.element.style.display = '';
     };
 
     onConnectionOpen = () => {
-        this.connectionOpen = true;
-        this.element.style.display = '';
+        this.showScreen(this.connectedScreen);
     };
 
     onConnectionClose = (event) => {
-        this.displayDisconnected();
-        console.log(event.code);
+        console.log('Disconnected: ' + event.code);
+        this.showScreen(this.disconnectedScreen);
     };
 
-    onConnectingCancel = () => {
-        EventHandler.callEvent(EventHandler.Event.CONNECTION_SCREEN_CONNECTING_CANCEL);
+    onWaitingGameStatus = () => {
+        this.showScreen(this.waitingScreen);
     };
 
-    onDisconnectedCancel = () => {
-        EventHandler.callEvent(EventHandler.Event.CONNECTION_SCREEN_DISCONNECTED_CANCEL);
+    onFinishingGameStatus = () => {
+        this.showScreen(this.finishingScreen);
     };
 
-    displayDisconnected = () => {
-        this.connectingElt.style.display = '';
-        this.disconnectedElt.style.display = 'inline';
-        if(this.connectionOpen){
-            this.element.style.display = 'flex';
-            this.connectionOpen = false;
+    onOtherGameStatus = () => {
+        this.hide();
+    };
+
+    showScreen = (screen) => {
+        if(this.hidden){
+            this.show();
+        }
+        if(this.activeScreen){
+            if(this.activeScreen !== screen){
+                this.detachChild(this.activeScreen);
+                this.attachChild(screen);
+                this.activeScreen = screen;
+            }
+        }else{
+            this.attachChild(screen);
+            this.activeScreen = screen;
         }
     };
 
-    displayConnecting = () => {
-        this.disconnectedElt.style.display = '';
-        this.connectingElt.style.display = 'inline';
-        if(this.connectionOpen){
-            this.element.style.display = 'flex';
-            this.connectionOpen = false;
+    hide = () => {
+        if(this.activeScreen){
+            this.detachChild(this.activeScreen);
+            this.activeScreen = undefined;
         }
+        this.element.style.display = '';
+        this.hidden = true;
+    };
+
+    show = () => {
+        this.element.style.display = 'flex';
+        this.hidden = false;
     };
 }

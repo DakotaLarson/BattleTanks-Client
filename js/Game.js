@@ -5,14 +5,16 @@ import MainMenu from 'MainMenu';
 import Arena from 'Arena';
 import MultiplayerConnection from 'MultiplayerConnection';
 import ConnectionScreen from 'ConnectionScreen';
+import GameStatusHandler from 'GameStatusHandler';
 
 class Game extends Component{
     constructor(){
         super();
         this.mainMenu = new MainMenu();
         this.connectionScreen = new ConnectionScreen();
-        this.world = null;
-        this.mpConnection = null;
+        this.arena = undefined;
+        this.mpConnection = undefined;
+        this.gameStatusHandler = new GameStatusHandler();
 
     }
     start = () => {
@@ -21,8 +23,7 @@ class Game extends Component{
         EventHandler.addListener(EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.handleCreateWorldInit);
         EventHandler.addListener(EventHandler.Event.GAMEMENU_RETURN_TO_MAIN_REQUEST, this.handleReturnToMain);
         EventHandler.addListener(EventHandler.Event.MPMENU_CONNECT_OPT_CLICK, this.connectToMultiplayer);
-        EventHandler.addListener(EventHandler.Event.CONNECTION_SCREEN_DISCONNECTED_CANCEL, this.handleDisconnectedCancel);
-        EventHandler.addListener(EventHandler.Event.CONNECTION_SCREEN_CONNECTING_CANCEL, this.handleDisconnectedCancel);
+        EventHandler.addListener(EventHandler.Event.CONNECTION_SCREEN_CANCEL, this.handleConnectionScreenCancel);
 
         this.attachChild(this.mainMenu);
     };
@@ -33,14 +34,14 @@ class Game extends Component{
     handleCreateWorldInit = (worldData) => {
         this.detachChild(this.mainMenu);
 
-        this.world = new Arena(worldData);
-        this.attachChild(this.world);
+        this.arena = new Arena(worldData);
+        this.attachChild(this.arena);
     };
 
     handleReturnToMain = () => {
-        this.detachChild(this.world);
+        this.detachChild(this.arena);
         this.attachChild(this.mainMenu);
-        this.world = null;
+        this.arena = undefined;
     };
 
     connectToMultiplayer = () => {
@@ -48,12 +49,14 @@ class Game extends Component{
         this.attachChild(this.connectionScreen);
         this.mpConnection = new MultiplayerConnection();
         this.attachChild(this.mpConnection);
+        this.attachChild(this.gameStatusHandler);
     };
 
-    handleDisconnectedCancel = () => {
+    handleConnectionScreenCancel = () => {
         this.detachChild(this.connectionScreen);
         this.detachChild(this.mpConnection);
-        this.mpConnection = null;
+        this.detachChild(this.gameStatusHandler);
+        this.mpConnection = undefined;
         this.attachChild(this.mainMenu)
     };
 }

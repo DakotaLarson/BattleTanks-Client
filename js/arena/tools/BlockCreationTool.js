@@ -12,7 +12,7 @@ export default class BlockCreationTool extends Component{
         this.raycaster = new Raycaster();
         this.mouseCoords = new Vector2();
         this.intersect = undefined;
-        this.eventToCall = null;
+        this.eventToCall = undefined;
         this.floor = floor;
     }
 
@@ -60,7 +60,7 @@ export default class BlockCreationTool extends Component{
                     }else if(event.button === 2){
                         this.eventToCall = EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY;
                     }else{
-                        this.eventToCall = null;
+                        this.eventToCall = undefined;
                         return;
                     }
                     let intersectionLocation = this.intersect[0].point.setY(0);
@@ -75,7 +75,7 @@ export default class BlockCreationTool extends Component{
     onMouseUp = (event) => {
         if(this.eventToCall){
             if(this.eventToCall === EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY && event.button === 0 || this.eventToCall === EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY && event.button === 2){
-                this.eventToCall = null;
+                this.eventToCall = undefined;
             }
         }
     };

@@ -15,7 +15,7 @@ export default class LoadWorldMenu extends Component{
         this.fileInputElt = DomHandler.getElement('#load-opt-file', this.element);
         this.fileInputParentElt = DomHandler.getElement('.menu-file-input', this.element);
 
-        this.world = null;
+        this.world = undefined;
     }
 
     enable = () => {
@@ -34,7 +34,7 @@ export default class LoadWorldMenu extends Component{
         this.errorElt.textContent = '';
         this.fileNameElt.textContent = '';
 
-        this.world = null;
+        this.world = undefined;
 
         this.element.style.display = 'none';
     };
@@ -61,7 +61,7 @@ export default class LoadWorldMenu extends Component{
                     this.fileNameElt.textContent = file.name;
                 }else{
                     this.fileNameElt.textContent = '';
-                    this.world = null;
+                    this.world = undefined;
                 }
             });
         }else{
@@ -74,7 +74,7 @@ export default class LoadWorldMenu extends Component{
             let fr = new FileReader();
             fr.onload = (event) => {
                 let parsedResult = event.target.result;
-                let json = null;
+                let json = undefined;
                 try{
                     json = JSON.parse(parsedResult);
                 }catch(ex){

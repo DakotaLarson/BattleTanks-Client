@@ -15,7 +15,7 @@ export default class DomHandler{
     };
 
     static hasPointerLock = () => {
-        return document.pointerLockElement !== null;
+        return document.pointerLockElement !== undefined;
     };
 
     static getElement = (query, parent) => {

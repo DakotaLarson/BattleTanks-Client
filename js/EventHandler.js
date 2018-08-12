@@ -76,11 +76,22 @@ const Event = {
     MULTIPLAYER_CONNECTION_WS_CLOSE: 46,
 
     //CONNECTION SCREEN
-    //TODO Possible Event Duplication.
-    CONNECTION_SCREEN_CONNECTING_CANCEL: 47,
-    CONNECTION_SCREEN_DISCONNECTED_CANCEL: 48,
+    CONNECTION_SCREEN_CANCEL: 47,
 
-};//Latest Event #: 48 (Update upon event addition!)
+    //PACKET RECEIVER
+    PKT_RECV_ARENA_DATA: 49,
+    PKT_RECV_GAME_STATUS: 50,
+
+    //GAME STATUS
+    GAME_STATUS_WAITING: 51,
+    GAME_STATUS_PREPARING: 52,
+    GAME_STATUS_RUNNING: 53,
+    GAME_STATUS_FINISHING: 54,
+
+};
+//Latest Event #: 54 (Append upon event addition.)
+//Missing Event #s: 48 (Append on event removal; Use and remove from list for event addition when available.)
+
 
 export default class EventHandler{
 

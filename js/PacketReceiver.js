@@ -1,30 +1,33 @@
+import EventHandler from 'EventHandler';
+
 const decoder = new TextDecoder();
 
 const receiveArena = (data) => {
-    console.log(data);
+    EventHandler.callEvent(EventHandler.Event.PKT_RECV_ARENA_DATA, data);
 };
 
 const receiveGameStatus = (data) => {
-    console.log('GameStatus: ' + data);
+    EventHandler.callEvent(EventHandler.Event.PKT_RECV_GAME_STATUS, data);
 };
-//Keep indices in line with headers and handlers
-//TODO Consider reconstruction with a better implementation
-const headers = [
-    0X00,
-    0x01
-];
-const handlers = [
-    receiveArena,
-    receiveGameStatus
-];
+const handlers = new Map([
+    [0x00, receiveArena],
+    [0x01, receiveGameStatus]
+]);
+
 export default class PacketReceiver{
     static handleMessage(message){
-        console.log(message);
-        let header = new Uint8Array(message.slice(0, 1))[0];
-        let body = decoder.decode(new Uint8Array(message.slice(1)));
-        let index = headers.indexOf(header);
-        if(index > -1){
-            handlers[index](body);
+        let headerArr = new Uint8Array(message.slice(0, 2));
+        let header = headerArr[0];
+        let isString = headerArr[1] === 0x01;
+        let body;
+        if(isString){
+            body = decoder.decode(new Uint8Array(message.slice(1)));
+        }else{
+            body = new Uint8Array(message.slice(2, 3))[0];
+        }
+        let handler = handlers.get(header);
+        if(handler){
+            handler(body);
         }else{
             console.log('Received unknown header: ' + header);
         }

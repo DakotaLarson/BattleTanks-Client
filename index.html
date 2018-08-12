@@ -17,24 +17,24 @@
 <body>
 <div class="menu main-menu no-select">
     <span class="main-menu-title">Tanks</span><br/>
-    <div class="main-menu-sub" id="main-menu-top">
+    <div class="menu-section" id="main-menu-top">
         <span class="menu-selection" id="top-opt-mp">Play</span><br/>
         <span class="menu-selection" id="top-opt-sp">Create Arena</span><br/>
         <span class="menu-selection" id="top-opt-opt">Options</span>
     </div>
-    <div class="main-menu-sub" id="main-menu-sp">
+    <div class="menu-section" id="main-menu-sp">
         <span class="menu-selection" id="sp-opt-create">Create New</span><br/>
         <span class="menu-selection" id="sp-opt-load">Load Existing</span><br/>
         <span class="menu-selection" id="sp-opt-cancel">Cancel</span>
     </div>
-    <div class="main-menu-sub" id="main-menu-mp">
+    <div class="menu-section" id="main-menu-mp">
         <span class="menu-selection" id="mp-opt-connect">Connect</span><br/>
         <span class="menu-selection" id="mp-opt-cancel">Cancel</span>
     </div>
-    <div class="main-menu-sub" id="main-menu-opt">
+    <div class="menu-section" id="main-menu-opt">
         <span class="menu-selection" id="opt-cancel">Cancel</span>
     </div>
-    <div class="main-menu-sub" id="sp-menu-create">
+    <div class="menu-section" id="sp-menu-create">
         <input type="text" class="menu-input" id="create-opt-title" placeholder="Title"/><br/>
         <input type="text" class="menu-input menu-number-input" id="create-opt-width" placeholder="Width"/><br/>
         <input type="text" class="menu-input menu-number-input" id="create-opt-height" placeholder="Height"/><br/>
@@ -42,7 +42,7 @@
         <span class="menu-selection" id="create-opt-cancel">Cancel</span><br/>
         <span class="menu-error" id="create-opt-error"></span>
     </div>
-    <div class="main-menu-sub" id="sp-menu-load">
+    <div class="menu-section" id="sp-menu-load">
         <input type="file" class="" id="load-opt-file" accept=".json"/>
         <div class="menu-file-input">
             <label for="load-opt-file" class="menu-selection menu-file-choose" id="menu-file-choose">Choose File</label><br/>
@@ -57,12 +57,24 @@
 </div>
 
 <div class="menu connection-screen no-select">
-    <div class="section section-connecting">
+    <div class="menu-section section-connecting">
         <span class="message">Connecting...</span><br/>
         <span class="menu-selection option-cancel">Cancel</span>
     </div>
-    <div class="section section-disconnected">
+    <div class="menu-section section-disconnected">
         <span class="message">Disconnected.</span><br/>
+        <span class="menu-selection option-cancel">Cancel</span>
+    </div>
+    <div class="menu-section section-connected">
+        <span class="message">Connected.</span><br/>
+        <span class="menu-selection option-cancel">Cancel</span>
+    </div>
+    <div class="menu-section section-waiting">
+        <span class="message">Waiting for match to start.</span><br/>
+        <span class="menu-selection option-cancel">Cancel</span>
+    </div>
+    <div class="menu-section section-finishing">
+        <span class="message">Last match finishing up.</span><br/>
         <span class="menu-selection option-cancel">Cancel</span>
     </div>
 </div>

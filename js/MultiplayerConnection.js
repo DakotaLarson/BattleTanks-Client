@@ -10,7 +10,7 @@ export default class MultiplayerConnection extends Component{
 
     constructor(){
         super();
-        this.ws = null;
+        this.ws = undefined;
     }
 
     enable = () => {
@@ -28,7 +28,7 @@ export default class MultiplayerConnection extends Component{
     };
 
     disable = () => {
-        this.ws.close();
+        this.ws.close(1000);
     };
 
     initHandshake = () => {

@@ -2,6 +2,8 @@ html, body{
     margin: 0;
     background-color: black;
     font-family: 'Inconsolata', monospace;
+    height: 100%;
+    overflow: hidden;
 }
 #game-canvas{
     display: block;
@@ -13,7 +15,6 @@ html, body{
     user-select: none;
 }
 .menu{
-    position: absolute;
     height: 100%;
     width: 100%;
     color: #d0d0d0;
@@ -27,6 +28,9 @@ html, body{
     display: inline-block;
     border: solid 1px;
     padding: 0 1vmin;
+}
+.menu-section{
+    display: none;
 }
 .menu-selection:hover{
     background-color: green;

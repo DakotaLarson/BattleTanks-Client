@@ -19,7 +19,7 @@ export default class SceneHandler extends Component{
         this.floor = this.createFloor();
         this.lines = this.createLines();
         this.lights = this.createLights();
-        this.blocks = null;
+        this.blocks = undefined;
         this.updateBlocks(worldData.blockLocations, true);
 
     }

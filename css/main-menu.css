@@ -28,9 +28,6 @@
     color: red;
     text-transform: none;
 }
-.main-menu .main-menu-sub{
-    display: none;
-}
 .main-menu input[type='file']{
     display: none;
 }

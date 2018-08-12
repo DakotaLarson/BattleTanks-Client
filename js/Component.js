@@ -1,7 +1,7 @@
 export default class Component{
     constructor(){
         this.children = [];
-        this.parent = null;
+        this.parent = undefined;
         this.state = {};
     }
     enable = () =>{};
@@ -41,7 +41,7 @@ export default class Component{
     };
 
     detachFromParent = () => {
-        this.parent = null;
+        this.parent = undefined;
     };
 
 };
