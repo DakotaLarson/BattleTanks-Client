@@ -14,14 +14,22 @@ module.exports = (env, argv) => {
             filename: 'bundle.js',
         },
         module: {
-            rules: [{
-                test: /\.js?$/,
-                exclude: /node_modules/,
-                loader: 'babel-loader',
-                query: {
-                    presets: ['env', 'stage-0']
+            rules: [
+                {
+                    test: /\.js?$/,
+                    exclude: /node_modules/,
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['env', 'stage-0']
+                    }
+                },
+                {
+                    enforce: "pre",
+                    test: /\.js?$/,
+                    exclude: /node_modules/,
+                    loader: "eslint-loader"
                 }
-            }]
+            ]
         },
         resolve: {
             modules: [
