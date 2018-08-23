@@ -1,11 +1,11 @@
-import Component from 'Component';
-import EventHandler from 'EventHandler';
+import Component from './Component';
+import EventHandler from './EventHandler';
 
-import MainMenu from 'MainMenu';
-import Arena from 'Arena';
-import MultiplayerConnection from 'MultiplayerConnection';
-import ConnectionScreen from 'ConnectionScreen';
-import GameStatusHandler from 'GameStatusHandler';
+import MainMenu from './main_menu/MainMenu';
+import Arena from './arena/Arena';
+import MultiplayerConnection from './MultiplayerConnection';
+import ConnectionScreen from './connection_screen/ConnectionScreen';
+import GameStatusHandler from './GameStatusHandler';
 
 class Game extends Component{
     constructor(){
@@ -24,7 +24,7 @@ class Game extends Component{
         EventHandler.addListener(EventHandler.Event.GAMEMENU_RETURN_TO_MAIN_REQUEST, this.handleReturnToMain);
         EventHandler.addListener(EventHandler.Event.MPMENU_CONNECT_OPT_CLICK, this.connectToMultiplayer);
         EventHandler.addListener(EventHandler.Event.CONNECTION_SCREEN_CANCEL, this.handleConnectionScreenCancel);
-
+        
         this.attachChild(this.mainMenu);
     };
     update = (delta) => {

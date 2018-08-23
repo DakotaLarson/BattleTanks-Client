@@ -1,8 +1,8 @@
 import {Vector2, Raycaster} from 'three';
 
-import Component from 'Component';
-import DomHandler from 'DomHandler';
-import EventHandler from 'EventHandler';
+import Component from '../../Component';
+import DomHandler from '../../DomHandler';
+import EventHandler from '../../EventHandler';
 
 export default class BlockCreationTool extends Component{
 

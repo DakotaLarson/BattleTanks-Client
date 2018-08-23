@@ -1,8 +1,8 @@
-import {WebGLRenderer, PCFSoftShadowMap} from 'three';
+import {WebGLRenderer} from 'three';
 
-import Component from 'Component';
-import EventHandler from 'EventHandler';
-import DomHandler from 'DomHandler';
+import Component from './Component';
+import EventHandler from './EventHandler';
+import DomHandler from './DomHandler';
 
 export default class Renderer extends Component{
 

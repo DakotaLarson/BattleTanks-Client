@@ -1,8 +1,7 @@
-import Component from 'Component';
-import EventHandler from 'EventHandler';
-import DomHandler from 'DomHandler';
-import PlayerControls from 'PlayerControls';
-import BuilderControls from 'BuilderControls';
+import Component from '../../Component';
+import EventHandler from '../../EventHandler';
+import DomHandler from '../../DomHandler';
+import BuilderControls from './builder_controls/BuilderControls';
 
 export default class Camera extends Component{
 
@@ -12,7 +11,6 @@ export default class Camera extends Component{
         this.state.controls = 'builder';
         this.state.bctEnabled = false;
 
-        this.playerControls = new PlayerControls(scene.getScene(), this.getCamera());
         this.builderControls = new BuilderControls(this.getCamera(), scene);
     }
 
@@ -20,8 +18,6 @@ export default class Camera extends Component{
         EventHandler.addMonitorListener(EventHandler.Event.DOM_RESIZE, this.onResize);
         EventHandler.addListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.addListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
-        // EventHandler.addListener(EventHandler.Event.CONTROLS_TOGGLE_BUILDER, this.onToggleBuilder);
-        // EventHandler.addListener(EventHandler.Event.CONTROLS_TOGGLE_PLAYER, this.onTogglePlayer);
         EventHandler.addListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
         EventHandler.addListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
 

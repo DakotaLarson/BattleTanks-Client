@@ -1,8 +1,8 @@
 
-import Component from 'Component';
-import DomHandler from 'DomHandler';
-import EventHandler from 'EventHandler';
-import PlayerMovement from 'PlayerMovement';
+import Component from '../../../Component';
+import DomHandler from '../../../DomHandler';
+import EventHandler from '../../../EventHandler';
+import PlayerMovement from './PlayerMovement';
 
 export default class PlayerControls extends Component{
 

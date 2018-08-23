@@ -1,13 +1,13 @@
-import Component from "Component";
-import EventHandler from 'EventHandler';
-import DomHandler from "DomHandler";
+import Component from "../Component";
+import EventHandler from '../EventHandler';
+import DomHandler from "../DomHandler";
 
-import TopMenu from "TopMenu";
-import SingleplayerMenu from 'SingleplayerMenu';
-import MultiplayerMenu from 'MultiplayerMenu';
-import OptionsMenu from 'OptionsMenu';
-import CreateWorldMenu from 'CreateWorldMenu';
-import LoadWorldMenu from 'LoadWorldMenu';
+import TopMenu from "./TopMenu";
+import SingleplayerMenu from './SingleplayerMenu';
+import MultiplayerMenu from './MultiplayerMenu';
+import OptionsMenu from './OptionsMenu';
+import CreateWorldMenu from './CreateWorldMenu';
+import LoadWorldMenu from './LoadWorldMenu';
 
 
 export default class MainMenu extends Component{

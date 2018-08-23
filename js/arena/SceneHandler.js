@@ -1,8 +1,7 @@
-import {Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, HemisphereLightHelper, DirectionalLight, DirectionalLightHelper, CameraHelper, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, BoxGeometry, Geometry} from 'three';
+import {Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, DirectionalLight, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, BoxGeometry, Geometry} from 'three';
 
-import Component from 'Component';
-import BlockCreationTool from 'BlockCreationTool';
-import EventHandler from 'EventHandler';
+import Component from '../Component';
+import EventHandler from '../EventHandler';
 
 
 

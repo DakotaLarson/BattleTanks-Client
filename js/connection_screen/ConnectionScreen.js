@@ -1,12 +1,12 @@
-import Component from 'Component';
-import DomHandler from 'DomHandler';
-import EventHandler from 'EventHandler';
+import Component from '../Component';
+import DomHandler from '../DomHandler';
+import EventHandler from '../EventHandler';
 
-import ConnectedScreen from 'ConnectedScreen';
-import ConnectingScreen from 'ConnectingScreen';
-import DisconnectedScreen from 'DisconnectedScreen';
-import FinishingScreen from 'FinishingScreen';
-import WaitingScreen from 'WaitingScreen';
+import ConnectedScreen from './ConnectedScreen';
+import ConnectingScreen from './ConnectingScreen';
+import DisconnectedScreen from './DisconnectedScreen';
+import FinishingScreen from './FinishingScreen';
+import WaitingScreen from './WaitingScreen';
 
 export default class ConnectionScreen extends Component{
 

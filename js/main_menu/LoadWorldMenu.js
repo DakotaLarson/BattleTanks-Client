@@ -1,6 +1,6 @@
-import Component from 'Component';
-import EventHandler from 'EventHandler';
-import DomHandler from 'DomHandler';
+import Component from '../Component';
+import EventHandler from '../EventHandler';
+import DomHandler from '../DomHandler';
 
 
 export default class LoadWorldMenu extends Component{

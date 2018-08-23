@@ -1,20 +1,20 @@
 import {PerspectiveCamera} from 'three';
 
-import Component from 'Component';
-import Renderer from 'Renderer';
-import SceneHandler from 'SceneHandler';
-import GUI from 'GUI';
-import EventHandler from 'EventHandler';
-import GameMenu from 'GameMenu';
-import Camera from 'Camera';
-import CreationToolHandler from 'CreationToolHandler';
+import Component from '../Component';
+import Renderer from '../Renderer';
+import SceneHandler from './SceneHandler';
+import GUI from '../gui/GUI';
+import EventHandler from '../EventHandler';
+import GameMenu from '../game_menu/GameMenu';
+import Camera from './camera/Camera';
+import CreationToolHandler from './tools/CreationToolHandler';
 
 export default class Arena extends Component{
 
-    constructor(worldData){
+    constructor(arenaData){
         super();
         let perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.sceneHandler = new SceneHandler(worldData);
+        this.sceneHandler = new SceneHandler(arenaData);
         this.camera = new Camera(perspectiveCamera, this.sceneHandler);
         this.renderer = new Renderer(this.sceneHandler.getScene(), this.camera.getCamera());
         this.gui = new GUI();

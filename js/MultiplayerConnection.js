@@ -1,7 +1,7 @@
-import Component from 'Component';
-import EventHandler from 'EventHandler';
-import PacketSender from 'PacketSender';
-import PacketReceiver from 'PacketReceiver';
+import Component from './Component';
+import EventHandler from './EventHandler';
+import PacketSender from './PacketSender';
+import PacketReceiver from './PacketReceiver';
 
 const address = 'ws://localhost:8000';
 const protocol = 'tanks-MP';

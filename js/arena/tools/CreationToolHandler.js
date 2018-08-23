@@ -1,6 +1,6 @@
-import Component from 'Component';
-import EventHandler from 'EventHandler';
-import BlockCreationTool from 'BlockCreationTool';
+import Component from '../../Component';
+import EventHandler from '../../EventHandler';
+import BlockCreationTool from './BlockCreationTool';
 
 export default class CreationToolHandler extends Component{
 

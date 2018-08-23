@@ -1,7 +1,7 @@
-import Component from 'Component';
-import DomHandler from 'DomHandler';
-import DebugPanel from 'DebugPanel';
-import CreateWorldModeToggle from 'CreateWorldModeToggle';
+import Component from '../Component';
+import DomHandler from '../DomHandler';
+import DebugPanel from './DebugPanel';
+import CreateWorldModeToggle from './CreateWorldModeToggle';
 
 export default class GUI extends Component {
 

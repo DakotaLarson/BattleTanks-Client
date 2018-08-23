@@ -1,5 +1,5 @@
-import Component from 'Component';
-import EventHandler from 'EventHandler';
+import Component from '../../../Component';
+import EventHandler from '../../../EventHandler';
 
 export default class PlayerRotation extends Component{
 

@@ -1,8 +1,8 @@
 import {Object3D, Vector3} from 'three';
 
-import Component from 'Component';
-import EventHandler from 'EventHandler';
-import PlayerRotation from 'PlayerRotation';
+import Component from '../../../Component';
+import EventHandler from '../../../EventHandler';
+import PlayerRotation from './PlayerRotation';
 
 export default class PlayerMovement extends Component{
 
