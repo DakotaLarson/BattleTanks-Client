@@ -47,9 +47,15 @@ const Event = {
 
     //GAME MENU
     GAMEMENU_CLOSE_REQUEST: 19,
-    GAMEMENU_SAVE_GAME_REQUEST: 37,
     GAMEMENU_OPEN: 26,
-    GAMEMENU_RETURN_TO_MAIN_REQUEST: 42,
+
+    //SINGLEPLAYER GAME MENU
+    SP_GAMEMENU_SAVE_GAME_REQUEST: 37,
+    SP_GAMEMENU_RETURN_TO_MAIN_REQUEST: 42,
+
+    //MULTIPLAYER GAME MENU
+
+    MP_GAMEMENU_DISCONNECT: 49,
 
     //RENDERER
     RENDERER_RENDER_COMPLETE: 20,
@@ -67,9 +73,9 @@ const Event = {
     BLOCK_CREATION_TOOL_PRIMARY: 33,
     BLOCK_CREATION_TOOL_SECONDARY: 34,
 
-    //CREATE WORLD MODE TOGGLE
-    CREATE_WORLD_MODE_TOGGLE_CAMERA: 35,
-    CREATE_WORLD_MODE_TOGGLE_BLOCK: 36,
+    //ARENA CREATE MODE TOGGLE
+    ARENA_CREATE_MODE_TOGGLE_CAMERA: 35,
+    ARENA_CREATE_MODE_TOGGLE_BLOCK: 36,
 
     //MULTIPLAYER_CONNECTION
     MULTIPLAYER_CONNECTION_WS_OPEN: 45,
@@ -78,19 +84,19 @@ const Event = {
     //CONNECTION SCREEN
     CONNECTION_SCREEN_CANCEL: 47,
 
-    //PACKET RECEIVER
-    PKT_RECV_ARENA_DATA: 49,
-    PKT_RECV_GAME_STATUS: 50,
-
     //GAME STATUS
+    GAME_STATUS_UPDATE: 50,
     GAME_STATUS_WAITING: 51,
     GAME_STATUS_PREPARING: 52,
     GAME_STATUS_RUNNING: 53,
     GAME_STATUS_FINISHING: 54,
 
+    //ARENA
+    ARENA_SCENE_UPDATE: 48,
+
 };
 //Latest Event #: 54 (Append upon event addition.)
-//Missing Event #s: 48 (Append on event removal; Use and remove from list for event addition when available.)
+//Missing Event #s: NONE (Append on event removal; Use and remove from list for event addition when available.)
 
 
 export default class EventHandler{

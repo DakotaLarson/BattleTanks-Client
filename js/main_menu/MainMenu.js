@@ -6,8 +6,8 @@ import TopMenu from "./TopMenu";
 import SingleplayerMenu from './SingleplayerMenu';
 import MultiplayerMenu from './MultiplayerMenu';
 import OptionsMenu from './OptionsMenu';
-import CreateWorldMenu from './CreateWorldMenu';
-import LoadWorldMenu from './LoadWorldMenu';
+import CreateWorldMenu from './CreateArenaMenu';
+import LoadWorldMenu from './LoadArenaMenu';
 
 
 export default class MainMenu extends Component{

@@ -24,7 +24,7 @@ export default class MultiplayerConnection extends Component{
             PacketReceiver.handleMessage(event.data);
         });
         this.ws.addEventListener('close', this.handleClose);
-        this.ws.addEventListener('error', this.handleError);
+        //this.ws.addEventListener('error', this.handleError);
     };
 
     disable = () => {
@@ -38,10 +38,6 @@ export default class MultiplayerConnection extends Component{
 
     handleClose = (event) => {
         EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, event);
-    };
-
-    handleError = (error) => {
-        //console.log(error);
     };
 
 }

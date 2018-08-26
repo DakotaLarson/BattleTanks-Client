@@ -1,80 +1,111 @@
-import {Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, DirectionalLight, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, BoxGeometry, Geometry} from 'three';
+import {Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, DirectionalLight, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, BoxGeometry, Geometry, Raycaster, Vector2} from 'three';
 
 import Component from '../Component';
 import EventHandler from '../EventHandler';
+import DomHandler from '../DomHandler';
 
 
 
 export default class SceneHandler extends Component{
 
-    constructor(worldData){
+    constructor(camera){
         super();
-        this.title = worldData.title;
-        this.width = worldData.width + 2;
-        this.height = worldData.height + 2;
+
+        this.title = undefined;
+        this.width = undefined;
+        this.height = undefined;
+
+        this.blockLocations = [];
+        this.floor = undefined;
+        this.lines = undefined;
+        this.lights = undefined;
+        this.blocks = undefined;
+
         this.scene = new Scene();
         this.scene.background = new Color(0x1e1e20);
-        this.blockLocations = [];
-        this.floor = this.createFloor();
-        this.lines = this.createLines();
-        this.lights = this.createLights();
-        this.blocks = undefined;
-        this.updateBlocks(worldData.blockLocations, true);
 
+        this.camera = camera;
+
+        this.raycaster = new Raycaster();
+        this.mouseCoords = new Vector2();
+
+        this.blocksIntersection = [];
+        this.floorIntersection = [];
     }
 
     enable = () => {
 
         EventHandler.addListener(EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.handleBCTPrimary);
         EventHandler.addListener(EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.handleBCTSecondary);
-        EventHandler.addListener(EventHandler.Event.GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
+        EventHandler.addListener(EventHandler.Event.SP_GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
+        EventHandler.addListener(EventHandler.Event.ARENA_SCENE_UPDATE, this.handleSceneUpdate);
+        EventHandler.addListener(EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
 
-        for(let i = 0; i < this.lights.length; i ++){
-            this.scene.add(this.lights[i]);
-        }
-        this.scene.add(this.lines);
-        this.scene.add(this.floor);
-        this.scene.add(this.blocks);
     };
 
     disable = () => {
         EventHandler.removeListener(EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.handleBCTPrimary);
         EventHandler.removeListener(EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.handleBCTSecondary);
-        EventHandler.removeListener(EventHandler.Event.GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
+        EventHandler.removeListener(EventHandler.Event.SP_GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
+        EventHandler.removeListener(EventHandler.Event.ARENA_SCENE_UPDATE, this.handleSceneUpdate);
+        EventHandler.removeListener(EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
 
-        for(let i = 0; i < this.lights.length; i ++){
-            this.scene.remove(this.lights[i]);
+        this.clearScene();
+    };
+
+    handleSceneUpdate = (data) => {
+        this.title = data.title;
+        this.width = data.width + 2;
+        this.height = data.height + 2;
+
+        this.clearScene();
+
+        this.floor = this.createFloor();
+        this.lines = this.createLines();
+        this.lights = this.createLights();
+
+        this.updateBlocks(data.blockLocations);
+        
+        this.scene.add(this.lines);
+        this.scene.add(this.floor);
+        this.scene.add(this.blocks);
+        this.scene.add.apply(this.scene, this.lights);
+    };
+
+    handleBCTPrimary = () => {
+        if(this.floorIntersection){
+            let location = this.floorIntersection[0].point.setY(0);
+            location.floor();
+            let locationString = location.x + ' ' + location.y + ' ' + location.z;
+            if(this.blockLocations.indexOf(locationString) === -1){
+                this.blockLocations.push(locationString);
+                this.updateBlocks(this.blockLocations);
+            }
         }
-        this.scene.remove(this.lines);
-        this.scene.remove(this.floor);
-        this.scene.remove(this.blocks);
     };
 
-    getScene = () => {
-        return this.scene;
-    };
-
-    getCenter = () => {
-        return new Vector3(this.width / 2, 0, this.height / 2);
-    };
-
-    handleBCTPrimary = (location) => {
-        location.floor();
-        let locationString = location.x + ' ' + location.y + ' ' + location.z;
-        if(this.blockLocations.indexOf(locationString) === -1){
-            this.blockLocations.push(locationString);
-            this.updateBlocks(this.blockLocations, false);
+    handleBCTSecondary = () => {
+        if(this.floorIntersection){
+            let location = this.floorIntersection[0].point.setY(0);
+            location.floor();
+            let locationString = location.x + ' ' + location.y + ' ' + location.z;
+            let index = this.blockLocations.indexOf(locationString);
+            if(index > -1){
+                this.blockLocations.splice(index, 1);
+                this.updateBlocks(this.blockLocations);
+            }
         }
-
     };
 
-    handleBCTSecondary = (location) => {
-        location.floor();
-        let locationString = location.x + ' ' + location.y + ' ' + location.z;
-        let index = this.blockLocations.indexOf(locationString);
-        if(index > -1){
-            this.blockLocations.splice(index, 1);
-            this.updateBlocks(this.blockLocations, false);
+    onBeforeRender = () => {
+        if(this.blocks && this.floor){
+            this.updateMouseCoords();
+            this.raycaster.setFromCamera(this.mouseCoords, this.camera);
+            this.blocksIntersection = this.raycaster.intersectObject(this.blocks);
+            this.floorIntersection = this.raycaster.intersectObject(this.floor);
+        }else{
+            this.blocksIntersection = [];
+            this.floorIntersection = [];
         }
     };
 
@@ -128,25 +159,6 @@ export default class SceneHandler extends Component{
         dirLight.color.setHSL( 0.1, 1, 0.95 );
         dirLight.position.set(45, 30, 25);
         dirLight.target.position.copy(this.getCenter());
-
-        dirLight.castShadow = true;
-        let shadowRadius = 50;
-
-        dirLight.shadow.camera.left = -shadowRadius;
-        dirLight.shadow.camera.right = shadowRadius;
-        dirLight.shadow.camera.top = shadowRadius;
-        dirLight.shadow.camera.bottom = -shadowRadius;
-        dirLight.shadow.camera.far = 150;
-
-        dirLight.shadow.mapSize.width = 2048;
-        dirLight.shadow.mapSize.height = 2048;
-
-        // let hemiLightHelper = new HemisphereLightHelper( hemiLight);
-        // this.scene.add( hemiLightHelper );
-        // let dirLightHelper = new DirectionalLightHelper( dirLight );
-        // this.scene.add( dirLightHelper );
-        // let helper = new CameraHelper(dirLight.shadow.camera);
-        // this.scene.add(helper);
         return [dirLight, dirLight.target, hemiLight];
     };
 
@@ -160,7 +172,7 @@ export default class SceneHandler extends Component{
         return floor;
     };
 
-    updateBlocks = (locStrings, createMesh) => {
+    updateBlocks = (locStrings) => {
         let blocks = [];
         let masterGeo = new Geometry();
         if(locStrings){
@@ -216,15 +228,54 @@ export default class SceneHandler extends Component{
                 masterGeo.merge(geo);
             }
         }
-        let material = new MeshLambertMaterial({color: 0x0077ef});
         masterGeo.mergeVertices();
-        if(createMesh){
+
+        if(this.blocks){
+            this.blocks.geometry = masterGeo;
+            this.blocks.needsUpdate = true;
+            
+        }else{
+            let material = new MeshLambertMaterial({color: 0x0077ef});
             this.blocks = new Mesh(masterGeo, material);
             this.blocks.position.addScalar(0.5);
             this.blockLocations = blocks;
-        }else{
-            this.blocks.geometry = masterGeo;
-            this.blocks.needsUpdate = true;
         }
+    };
+
+    clearScene = () => {
+        if(this.floor){
+            this.scene.remove(this.floor);
+            this.floor = undefined;
+        }
+        if(this.lines){
+            this.scene.remove(this.lines);
+            this.lines = undefined;
+        }
+        if(this.blocks){
+            this.scene.remove(this.blocks);
+            this.blocks = undefined;
+        }
+        if(this.lights){
+            this.scene.remove.apply(this.scene, this.lights);
+            this.lights = undefined;
+        }
+        if(this.blockLocations){
+            this.blockLocations = [];
+        }
+    };
+
+    updateMouseCoords = () => {
+        let dimensions = DomHandler.getDisplayDimensions();
+        let mouseCoords = DomHandler.getMouseCoordinates();
+        this.mouseCoords.x = (mouseCoords.x / dimensions.width) * 2 - 1;
+        this.mouseCoords.y = -(mouseCoords.y / dimensions.height) * 2 + 1;
+    };
+
+    getScene = () => {
+        return this.scene;
+    };
+
+    getCenter = () => {
+        return new Vector3(this.width / 2, 0, this.height / 2);
     };
 }

@@ -8,11 +8,11 @@ export default class GameStatusHandler extends Component{
     }
 
     enable = () => {
-        EventHandler.addListener(EventHandler.Event.PKT_RECV_GAME_STATUS, this.onGameStatusUpdate);
+        EventHandler.addListener(EventHandler.Event.GAME_STATUS_UPDATE, this.onGameStatusUpdate);
     };
 
     disable = () => {
-        EventHandler.removeListener(EventHandler.Event.PKT_RECV_GAME_STATUS, this.onGameStatusUpdate);
+        EventHandler.removeListener(EventHandler.Event.GAME_STATUS_UPDATE, this.onGameStatusUpdate);
 
     };
 

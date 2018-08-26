@@ -2,7 +2,7 @@ import Component from './Component';
 import EventHandler from './EventHandler';
 
 import MainMenu from './main_menu/MainMenu';
-import Arena from './arena/Arena';
+import ArenaHandler from './arena/ArenaHandler';
 import MultiplayerConnection from './MultiplayerConnection';
 import ConnectionScreen from './connection_screen/ConnectionScreen';
 import GameStatusHandler from './GameStatusHandler';
@@ -12,36 +12,38 @@ class Game extends Component{
         super();
         this.mainMenu = new MainMenu();
         this.connectionScreen = new ConnectionScreen();
-        this.arena = undefined;
+        this.arenaHandler = new ArenaHandler();
         this.mpConnection = undefined;
         this.gameStatusHandler = new GameStatusHandler();
 
     }
     start = () => {
         EventHandler.callEvent(EventHandler.Event.GAME_START);
-        EventHandler.addListener(EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.handleCreateWorldInit);
-        EventHandler.addListener(EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.handleCreateWorldInit);
-        EventHandler.addListener(EventHandler.Event.GAMEMENU_RETURN_TO_MAIN_REQUEST, this.handleReturnToMain);
+
+        EventHandler.addListener(EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.loadSingleplayer);
+        EventHandler.addListener(EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.loadSingleplayer);
+
+        EventHandler.addListener(EventHandler.Event.SP_GAMEMENU_RETURN_TO_MAIN_REQUEST, this.unloadSingleplayer);
+
         EventHandler.addListener(EventHandler.Event.MPMENU_CONNECT_OPT_CLICK, this.connectToMultiplayer);
-        EventHandler.addListener(EventHandler.Event.CONNECTION_SCREEN_CANCEL, this.handleConnectionScreenCancel);
+
+        EventHandler.addListener(EventHandler.Event.CONNECTION_SCREEN_CANCEL, this.disconnectFromMultiplayer);
+        EventHandler.addListener(EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.disconnectFromMultiplayer);
         
         this.attachChild(this.mainMenu);
+        this.attachChild(this.arenaHandler);
     };
     update = (delta) => {
         EventHandler.callEvent(EventHandler.Event.GAME_ANIMATION_UPDATE, delta);
     };
 
-    handleCreateWorldInit = (worldData) => {
+    loadSingleplayer = (worldData) => {
+        EventHandler.callEvent(EventHandler.Event.ARENA_SCENE_UPDATE, worldData);
         this.detachChild(this.mainMenu);
-
-        this.arena = new Arena(worldData);
-        this.attachChild(this.arena);
     };
 
-    handleReturnToMain = () => {
-        this.detachChild(this.arena);
+    unloadSingleplayer = () => {
         this.attachChild(this.mainMenu);
-        this.arena = undefined;
     };
 
     connectToMultiplayer = () => {
@@ -52,7 +54,7 @@ class Game extends Component{
         this.attachChild(this.gameStatusHandler);
     };
 
-    handleConnectionScreenCancel = () => {
+    disconnectFromMultiplayer = () => {
         this.detachChild(this.connectionScreen);
         this.detachChild(this.mpConnection);
         this.detachChild(this.gameStatusHandler);

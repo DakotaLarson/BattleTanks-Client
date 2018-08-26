@@ -6,10 +6,9 @@ export default class GameMenu extends Component {
 
     constructor(){
         super();
-        this.element = DomHandler.getElement('.game-menu');
-        this.cancelBtn = DomHandler.getElement('#game-cancel', this.element);
-        this.saveBtn = DomHandler.getElement('#world-save', this.element);
-        this.returnBtn = DomHandler.getElement("#return-to-main", this.element);
+        this.element = DomHandler.getElement('#game-menu-mp');
+        this.cancelBtn = DomHandler.getElement('#game-menu-mp-cancel', this.element);
+        this.disconnectBtn = DomHandler.getElement("#game-menu-mp-disconnect", this.element);
     }
 
     enable = () => {
@@ -29,10 +28,8 @@ export default class GameMenu extends Component {
     handleClick = (event) => {
         if(event.target === this.cancelBtn){
             EventHandler.callEvent(EventHandler.Event.GAMEMENU_CLOSE_REQUEST);
-        }else if(event.target === this.saveBtn){
-            EventHandler.callEvent(EventHandler.Event.GAMEMENU_SAVE_GAME_REQUEST);
-        }else if(event.target === this.returnBtn){
-            EventHandler.callEvent(EventHandler.Event.GAMEMENU_RETURN_TO_MAIN_REQUEST);
+        }else if(event.target === this.disconnectBtn){
+            EventHandler.callEvent(EventHandler.Event.MP_GAMEMENU_DISCONNECT);
         }
     };
 }

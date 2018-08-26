@@ -17,11 +17,12 @@ const ButtonState = {
 
 
 export default class BuilderControls extends Component{
-    constructor(camera, scene){
+    constructor(camera){
         super();
         this.camera = camera;
+        
+        this.target = new Vector3();
 
-        this.target = scene.getCenter();
         this.spherical = new Spherical(25, Math.PI / 4, Math.PI / 3);
         this.update();
 
@@ -33,6 +34,7 @@ export default class BuilderControls extends Component{
         EventHandler.addListener(EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
         EventHandler.addListener(EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
         EventHandler.addListener(EventHandler.Event.DOM_WHEEL, this.onWheel);
+        EventHandler.addListener(EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
 
         this.update();
     };
@@ -42,6 +44,7 @@ export default class BuilderControls extends Component{
         EventHandler.removeListener(EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
         EventHandler.removeListener(EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
         EventHandler.removeListener(EventHandler.Event.DOM_WHEEL, this.onWheel);
+        EventHandler.removeListener(EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
     };
 
     onMouseDown = (event) => {
@@ -131,6 +134,11 @@ export default class BuilderControls extends Component{
         this.camera.position.add(this.target);
         this.camera.lookAt(this.target);
 
+    }
+    onArenaSceneUpdate = (data) => {
+        this.target = new Vector3(data.width / 2, 0, data.height / 2);
+        this.spherical = new Spherical(25, Math.PI / 4, Math.PI / 3);
+        this.update();
     }
 }
 

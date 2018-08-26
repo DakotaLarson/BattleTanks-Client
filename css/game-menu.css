@@ -1,6 +1,7 @@
 /*Game Menu*/
 .game-menu{
     background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
 }
 .game-menu .game-menu-options{
     position: absolute;

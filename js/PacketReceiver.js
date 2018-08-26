@@ -3,11 +3,12 @@ import EventHandler from './EventHandler';
 const decoder = new TextDecoder();
 
 const receiveArena = (data) => {
-    EventHandler.callEvent(EventHandler.Event.PKT_RECV_ARENA_DATA, data);
+    let parsedData = JSON.parse(data);
+    EventHandler.callEvent(EventHandler.Event.ARENA_SCENE_UPDATE, parsedData);
 };
 
 const receiveGameStatus = (data) => {
-    EventHandler.callEvent(EventHandler.Event.PKT_RECV_GAME_STATUS, data);
+    EventHandler.callEvent(EventHandler.Event.GAME_STATUS_UPDATE, data);
 };
 const handlers = new Map([
     [0x00, receiveArena],
@@ -21,7 +22,7 @@ export default class PacketReceiver{
         let isString = headerArr[1] === 0x01;
         let body;
         if(isString){
-            body = decoder.decode(new Uint8Array(message.slice(1)));
+            body = decoder.decode(new Uint8Array(message.slice(2)));
         }else{
             body = new Uint8Array(message.slice(2, 3))[0];
         }

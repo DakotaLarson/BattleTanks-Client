@@ -2,7 +2,7 @@ import Component from '../Component';
 import DomHandler from '../DomHandler';
 import EventHandler from '../EventHandler';
 
-export default class CreateWorldModeToggle extends Component{
+export default class ArenaCreateModeToggle extends Component{
 
     constructor(parent){
         super();
@@ -13,8 +13,9 @@ export default class CreateWorldModeToggle extends Component{
 
     enable = () => {
         EventHandler.addListener(EventHandler.Event.DOM_CLICK, this.onClick);
-        EventHandler.addListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.onSwitchToBlock);
-        EventHandler.addListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.onSwitchToCamera);
+        EventHandler.addListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.onSwitchToBlock);
+        EventHandler.addListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.onSwitchToCamera);
+        EventHandler.addListener(EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
 
         if(this.switchToCamera){
             this.element.textContent = 'Switch to Camera (C)';
@@ -28,8 +29,10 @@ export default class CreateWorldModeToggle extends Component{
 
     disable = () => {
         EventHandler.removeListener(EventHandler.Event.DOM_CLICK, this.onClick);
-        EventHandler.removeListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK, this.onSwitchToBlock);
-        EventHandler.removeListener(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA, this.onSwitchToCamera);
+        EventHandler.removeListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.onSwitchToBlock);
+        EventHandler.removeListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.onSwitchToCamera);
+        EventHandler.removeListener(EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+
 
         this.element.style.display = 'none';
     };
@@ -37,9 +40,21 @@ export default class CreateWorldModeToggle extends Component{
     onClick = (event) => {
         if(event.target === this.element){
             if(this.switchToCamera){
-                EventHandler.callEvent(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_CAMERA);
+                EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA);
             }else{
-                EventHandler.callEvent(EventHandler.Event.CREATE_WORLD_MODE_TOGGLE_BLOCK);
+                EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK);
+            }
+        }
+    };
+
+    onKeyDown = (event) => {
+        if(event.code === 'KeyB'){
+            if(!this.switchToCamera){
+                EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK);
+            }
+        }else if(event.code === 'KeyC'){
+            if(this.switchToCamera){
+                EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA)
             }
         }
     };
