@@ -16,7 +16,7 @@ const ButtonState = {
 };
 
 
-export default class BuilderControls extends Component{
+export default class MultiplayerControls extends Component{
     constructor(camera){
         super();
         this.camera = camera;
@@ -50,15 +50,15 @@ export default class BuilderControls extends Component{
     onMouseDown = (event) => {
         if(this.state === -1){
             switch(event.button){
-                case 0:
-                    this.state = ButtonState.PRIMARY;
-                    break;
+                // case 0:
+                //     this.state = ButtonState.PRIMARY;
+                //     break;
                 case 1:
                     this.state = ButtonState.TERTIARY;
                     break;
-                case 2:
-                    this.state = ButtonState.SECONDARY;
-                    break;
+                // case 2:
+                //     this.state = ButtonState.SECONDARY;
+                //     break;
             }
         }
     };

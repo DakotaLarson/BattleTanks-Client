@@ -56,13 +56,11 @@ export default class LoadWorldMenu extends Component{
         let files = this.fileInputElt.files;
         if(files.length === 1){
             let file = files[0];
-            this.parseFile(file).then((result) => {
-                if(result){
-                    this.fileNameElt.textContent = file.name;
-                }else{
-                    this.fileNameElt.textContent = '';
-                    this.world = undefined;
-                }
+            this.parseFile(file).then(() => {
+                this.fileNameElt.textContent = file.name;
+            }).catch(() => {
+                this.fileNameElt.textContent = '';
+                this.world = undefined;
             });
         }else{
             this.fileNameElt.textContent = '';
@@ -70,7 +68,7 @@ export default class LoadWorldMenu extends Component{
     };
 
     parseFile = (file) => {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             let fr = new FileReader();
             fr.onload = (event) => {
                 let parsedResult = event.target.result;
@@ -79,14 +77,15 @@ export default class LoadWorldMenu extends Component{
                     json = JSON.parse(parsedResult);
                 }catch(ex){
                     this.errorElt.textContent = 'Invalid or corrupt file';
-                    resolve(false);
+                    reject();
                     return;
                 }
                 if(json.title && json.width && json.height && json.blockLocations && json.width > 0 && json.height > 0){
                      this.world = json;
-                     resolve(true);
+                     resolve();
                 }else{
-                    resolve(false);
+                    this.errorElt.textContent = 'Invalid or corrupt file';
+                    reject();
                 }
             };
             fr.readAsText(file);

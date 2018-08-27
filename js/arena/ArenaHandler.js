@@ -1,3 +1,5 @@
+import {PerspectiveCamera} from 'three';
+
 import EventHandler from '../EventHandler';
 import Component from '../Component';
 import Arena from './Arena';
@@ -6,6 +8,8 @@ import MultiplayerGUI from '../gui/MultiplayerGUI';
 import SingleplayerGameMenu from '../game_menu/SingleplayerGameMenu';
 import MultiplayerGameMenu from '../game_menu/MultiplayerGameMenu';
 import CreationToolHandler from './tools/CreationToolHandler';
+import SingleplayerCamera from './camera/singleplayer/SingleplayerCamera';
+import MultiplayerCamera from './camera/multiplayer/MultiplayerCamera';
 
 
 export default class ArenaHandler extends Component{
@@ -13,7 +17,10 @@ export default class ArenaHandler extends Component{
     constructor(){
         super();
 
-        this.arena = new Arena();
+        let perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        this.arena = new Arena(perspectiveCamera);
+
         this.creationToolHandler = new CreationToolHandler();
 
         this.singleplayerGUI = new SingleplayerGUI();
@@ -21,6 +28,9 @@ export default class ArenaHandler extends Component{
 
         this.singleplayerGameMenu = new SingleplayerGameMenu();
         this.multiplayerGameMenu = new MultiplayerGameMenu();
+
+        this.singleplayerCamera = new SingleplayerCamera(perspectiveCamera);
+        this.MultiplayerCamera = new MultiplayerCamera(perspectiveCamera);
 
         this.isSingleplayer = false;
         this.gameMenuEnabled = false;
@@ -34,7 +44,7 @@ export default class ArenaHandler extends Component{
 
         EventHandler.addListener(EventHandler.Event.MPMENU_CONNECT_OPT_CLICK, this.attachMultiplayerArena);
 
-        EventHandler.addListener(EventHandler.Event.CONNECTION_SCREEN_CANCEL, this.detachMultiplayerArena);
+        EventHandler.addListener(EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.detachMultiplayerArena);
         EventHandler.addListener(EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.detachMultiplayerArena);
     };
 
@@ -46,7 +56,7 @@ export default class ArenaHandler extends Component{
 
         EventHandler.removeListener(EventHandler.Event.MPMENU_CONNECT_OPT_CLICK, this.attachMultiplayerArena);
 
-        EventHandler.removeListener(EventHandler.Event.CONNECTION_SCREEN_CANCEL, this.detachMultiplayerArena);
+        EventHandler.removeListener(EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.detachMultiplayerArena);
         EventHandler.removeListener(EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.detachMultiplayerArena);
     }
 
@@ -55,6 +65,7 @@ export default class ArenaHandler extends Component{
 
         this.attachChild(this.singleplayerGUI);
         this.attachChild(this.creationToolHandler);
+        this.attachChild(this.singleplayerCamera);
 
         EventHandler.callEvent(EventHandler.Event.ARENA_SCENE_UPDATE, worldData);
 
@@ -66,12 +77,14 @@ export default class ArenaHandler extends Component{
 
         this.detachChild(this.singleplayerGUI);
         this.detachChild(this.creationToolHandler);
+        this.detachChild(this.singleplayerCamera);
     };
 
     attachMultiplayerArena = () => {
         this.attachArena();
 
         this.attachChild(this.multiplayerGUI);
+        this.attachChild(this.MultiplayerCamera);
 
         this.isSingleplayer = false;
     };
@@ -80,6 +93,7 @@ export default class ArenaHandler extends Component{
         this.detachArena();
 
         this.detachChild(this.multiplayerGUI);
+        this.detachChild(this.MultiplayerCamera);
     };
 
     attachArena = () => {

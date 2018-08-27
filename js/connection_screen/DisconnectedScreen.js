@@ -7,21 +7,21 @@ export default class DisconnectedScreen extends Component{
     constructor(parent){
         super();
         this.element = DomHandler.getElement('.section-disconnected', parent);
-        this.cancelElt = DomHandler.getElement('.option-cancel', this.element);
+        this.disconnectElt = DomHandler.getElement('.option-disconnect', this.element);
 
     }
 
     enable = () => {
-        this.cancelElt.addEventListener('click', this.onCancel);
+        this.disconnectElt.addEventListener('click', this.onDisconnect);
         this.element.style.display = 'block';
     };
 
     disable = () => {
-        this.cancelElt.addEventListener('click', this.onCancel);
+        this.disconnectElt.addEventListener('click', this.onDisconnect);
         this.element.style.display = '';
     };
 
-    onCancel = () => {
-        EventHandler.callEvent(EventHandler.Event.CONNECTION_SCREEN_CANCEL);
+    onDisconnect = () => {
+        EventHandler.callEvent(EventHandler.Event.CONNECTION_SCREEN_DISCONNECT);
     };
 }

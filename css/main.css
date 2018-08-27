@@ -1,7 +1,7 @@
 html, body{
     margin: 0;
     background-color: black;
-    font-family: 'Inconsolata', monospace;
+    font-family: 'No Regular', monospace;
     height: 100%;
     overflow: hidden;
 }
