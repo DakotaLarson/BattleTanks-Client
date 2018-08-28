@@ -16,6 +16,9 @@ export default class SceneHandler extends Component{
         this.height = undefined;
 
         this.blockLocations = [];
+        this.initialSpawnLocations = [];
+        this.gameSpawnLocations = [];
+
         this.floor = undefined;
         this.lines = undefined;
         this.lights = undefined;
@@ -34,9 +37,15 @@ export default class SceneHandler extends Component{
     }
 
     enable = () => {
+        EventHandler.addListener(EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.onBCTPrimary);
+        EventHandler.addListener(EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.onBCTSecondary);
 
-        EventHandler.addListener(EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.handleBCTPrimary);
-        EventHandler.addListener(EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.handleBCTSecondary);
+        EventHandler.addListener(EventHandler.Event.INITIALSPAWN_CREATION_TOOL_PRIMARY, this.onInitialSpawnPrimary);
+        EventHandler.addListener(EventHandler.Event.INITIALSPAWN_CREATION_TOOL_SECONDARY, this.onInitialSpawnSecondary);
+
+        EventHandler.addListener(EventHandler.Event.GAMESPAWN_CREATION_TOOL_PRIMARY, this.onGameSpawnPrimary);
+        EventHandler.addListener(EventHandler.Event.GAMESPAWN_CREATION_TOOL_SECONDARY, this.onGameSpawnSecondary);
+
         EventHandler.addListener(EventHandler.Event.SP_GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
         EventHandler.addListener(EventHandler.Event.ARENA_SCENE_UPDATE, this.handleSceneUpdate);
         EventHandler.addListener(EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
@@ -44,8 +53,15 @@ export default class SceneHandler extends Component{
     };
 
     disable = () => {
-        EventHandler.removeListener(EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.handleBCTPrimary);
-        EventHandler.removeListener(EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.handleBCTSecondary);
+        EventHandler.removeListener(EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.onBCTPrimary);
+        EventHandler.removeListener(EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.onBCTSecondary);
+
+        EventHandler.removeListener(EventHandler.Event.INITIALSPAWN_CREATION_TOOL_PRIMARY, this.onInitialSpawnPrimary);
+        EventHandler.removeListener(EventHandler.Event.INITIALSPAWN_CREATION_TOOL_SECONDARY, this.onInitialSpawnSecondary);
+
+        EventHandler.removeListener(EventHandler.Event.GAMESPAWN_CREATION_TOOL_PRIMARY, this.onGameSpawnPrimary);
+        EventHandler.removeListener(EventHandler.Event.GAMESPAWN_CREATION_TOOL_SECONDARY, this.onGameSpawnSecondary);
+
         EventHandler.removeListener(EventHandler.Event.SP_GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
         EventHandler.removeListener(EventHandler.Event.ARENA_SCENE_UPDATE, this.handleSceneUpdate);
         EventHandler.removeListener(EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
@@ -64,37 +80,17 @@ export default class SceneHandler extends Component{
         this.lines = this.createLines();
         this.lights = this.createLights();
 
-        this.updateBlocks(data.blockLocations);
+        let locations = this.parseLocationData(data.blockLocations);
+
+        this.gameSpawnLocations = this.parseLocationData(data.gameSpawnLocations) || [];
+        this.initialSpawnLocations = this.parseLocationData(data.initialSpawnLocations) || [];
+
+        this.updateBlocks(locations);
         
         this.scene.add(this.lines);
         this.scene.add(this.floor);
         this.scene.add(this.blocks);
         this.scene.add.apply(this.scene, this.lights);
-    };
-
-    handleBCTPrimary = () => {
-        if(this.floorIntersection){
-            let location = this.floorIntersection[0].point.setY(0);
-            location.floor();
-            let locationString = location.x + ' ' + location.y + ' ' + location.z;
-            if(this.blockLocations.indexOf(locationString) === -1){
-                this.blockLocations.push(locationString);
-                this.updateBlocks(this.blockLocations);
-            }
-        }
-    };
-
-    handleBCTSecondary = () => {
-        if(this.floorIntersection){
-            let location = this.floorIntersection[0].point.setY(0);
-            location.floor();
-            let locationString = location.x + ' ' + location.y + ' ' + location.z;
-            let index = this.blockLocations.indexOf(locationString);
-            if(index > -1){
-                this.blockLocations.splice(index, 1);
-                this.updateBlocks(this.blockLocations);
-            }
-        }
     };
 
     onBeforeRender = () => {
@@ -110,11 +106,16 @@ export default class SceneHandler extends Component{
     };
 
     onSaveGameRequest = () => {
+        let blockData = this.generateLocationData(this.blockLocations);
+        let gameSpawnData = this.generateLocationData(this.gameSpawnLocations);
+        let initialSpawnData = this.generateLocationData(this.initialSpawnLocations);
         let saveObject = {
             title: this.title,
             width: this.width - 2,
             height: this.height - 2,
-            blockLocations: this.blockLocations
+            blockLocations: blockData,
+            gameSpawnLocations: gameSpawnData,
+            initialSpawnLocations: initialSpawnData
         };
         let blob = new Blob([JSON.stringify(saveObject)], {type : "application/json"});
         let objectURL = URL.createObjectURL(blob);
@@ -125,6 +126,94 @@ export default class SceneHandler extends Component{
         anchor.click();
         document.body.removeChild(anchor);
         URL.revokeObjectURL(objectURL);
+    };
+
+    onBCTPrimary = () => {
+        if(this.floorIntersection.length){
+            let location = this.floorIntersection[0].point.setY(0);
+            location.floor();
+            if(!this.isLocationBlock(location)){
+                this.blockLocations.push(location);
+                this.updateBlocks(this.blockLocations);
+            }
+        }
+    };
+
+    onBCTSecondary = () => {
+        if(this.floorIntersection.length){
+            let location = this.floorIntersection[0].point.setY(0);
+            location.floor();
+            let removed = this.removeBlockLocation(location);
+            if(removed){
+                this.updateBlocks(this.blockLocations);
+            }
+        }
+    };
+
+    onInitialSpawnPrimary = () => {
+        if(this.floorIntersection.length){
+            let location = this.floorIntersection[0].point.setY(0);
+            location.floor();
+            if(this.isLocationBlock(location)){
+                //TODO alert user cannot use location
+                console.log('IS is block');
+            }else if(this.isLocationInitialSpawn(location)){
+                //TODO alert user cannot use location
+                console.log('IS is already IS');
+            }else{
+                this.initialSpawnLocations.push(location);
+                //TODO Alert success
+                console.log('IS added');
+            }
+        }
+    };
+
+    onInitialSpawnSecondary = () => {
+        if(this.floorIntersection.length){
+            let location = this.floorIntersection[0].point.setY(0);
+            location.floor();
+            let removed = this.removeInitialSpawnLocation(location);
+            if(removed){
+                //TODO Alert success
+                console.log('IS removed');
+            }else{
+                //TODO Alert failure
+                console.log('IS not removed');
+            }
+        }
+    };
+
+    onGameSpawnPrimary = () => {
+        if(this.floorIntersection.length){
+            let location = this.floorIntersection[0].point.setY(0);
+            location.floor();
+            if(this.isLocationBlock(location)){
+                //TODO alert user cannot use location
+                console.log('GS is Block');
+            }else if(this.isLocationGameSpawn(location)){
+                //TODO alert user cannot use location
+                console.log('GS is already GS');
+            }else{
+                this.gameSpawnLocations.push(location);
+                console.log('GS added');
+                //TODO Alert success
+            }
+        }
+    };
+
+    onGameSpawnSecondary = () => {
+        if(this.floorIntersection.length){
+            let location = this.floorIntersection[0].point.setY(0);
+            location.floor();
+            let removed = this.removeGameSpawnLocation(location);
+            if(removed){
+                //TODO Alert success
+                console.log('GS removed');
+            }else{
+                //TODO Alert failure
+                console.log('GS not removed');
+            }
+        }
     };
 
     createLines = () => {
@@ -172,22 +261,16 @@ export default class SceneHandler extends Component{
         return floor;
     };
 
-    updateBlocks = (locStrings) => {
-        let blocks = [];
+    updateBlocks = (locations) => {
+        let blockGeometries = [];
         let masterGeo = new Geometry();
-        if(locStrings){
-            for(let i = 0; i < locStrings.length; i ++){
-                let args = locStrings[i].split(' ');
-                let pos = new Vector3(
-                    Number(args[0]),
-                    Number(args[1]),
-                    Number(args[2])
-                );
+        if(locations){
+            for(let i = 0; i < locations.length; i ++){
+                let pos = locations[i];
                 let geo = new BoxGeometry();
                 for(let i = 0; i < geo.vertices.length; i ++){
                     geo.vertices[i].add(pos);
                 }
-                blocks.push(locStrings[i]);
                 masterGeo.merge(geo);
             }
         }else{
@@ -198,7 +281,7 @@ export default class SceneHandler extends Component{
                 for(let i = 0; i < geo.vertices.length; i ++){
                     geo.vertices[i].add(pos);
                 }
-                blocks.push(pos.x + ' ' + pos.y + ' ' + pos.z);
+                blockGeometries.push(pos.clone());
                 masterGeo.merge(geo);
 
                 geo = new BoxGeometry();
@@ -206,7 +289,7 @@ export default class SceneHandler extends Component{
                 for(let i = 0; i < geo.vertices.length; i ++){
                     geo.vertices[i].add(pos);
                 }
-                blocks.push(pos.x + ' ' + pos.y + ' ' + pos.z);
+                blockGeometries.push(pos);
                 masterGeo.merge(geo);
             }
 
@@ -216,7 +299,7 @@ export default class SceneHandler extends Component{
                 for(let i = 0; i < geo.vertices.length; i ++){
                     geo.vertices[i].add(pos);
                 }
-                blocks.push(pos.x + ' ' + pos.y + ' ' + pos.z);
+                blockGeometries.push(pos.clone());
                 masterGeo.merge(geo);
 
                 geo = new BoxGeometry();
@@ -224,7 +307,7 @@ export default class SceneHandler extends Component{
                 for(let i = 0; i < geo.vertices.length; i ++){
                     geo.vertices[i].add(pos);
                 }
-                blocks.push(pos.x + ' ' + pos.y + ' ' + pos.z);
+                blockGeometries.push(pos);
                 masterGeo.merge(geo);
             }
         }
@@ -238,7 +321,11 @@ export default class SceneHandler extends Component{
             let material = new MeshLambertMaterial({color: 0x0077ef});
             this.blocks = new Mesh(masterGeo, material);
             this.blocks.position.addScalar(0.5);
-            this.blockLocations = blocks;
+            if(locations){
+                this.blockLocations = locations;
+            }else{
+                this.blockLocations = blockGeometries;
+            }
         }
     };
 
@@ -278,4 +365,80 @@ export default class SceneHandler extends Component{
     getCenter = () => {
         return new Vector3(this.width / 2, 0, this.height / 2);
     };
+
+    isLocationBlock = (loc) => {
+        for(let i = 0; i < this.blockLocations.length; i ++){
+            if(this.blockLocations[i].equals(loc)) return true;
+        }
+        return false;
+    };
+
+    isLocationGameSpawn = (loc) => {
+        for(let i = 0; i < this.gameSpawnLocations.length; i ++){
+            if(this.gameSpawnLocations[i].equals(loc)) return true;
+        }
+        return false;
+    };
+
+    isLocationInitialSpawn = (loc) => {
+        for(let i = 0; i < this.initialSpawnLocations.length; i ++){
+            if(this.initialSpawnLocations[i].equals(loc)) return true;
+        }
+        return false;
+    };
+
+    removeBlockLocation = (loc) => {
+        return this.removeLocation(loc, this.blockLocations);
+    };
+
+    removeInitialSpawnLocation = (loc) => {
+        return this.removeLocation(loc, this.initialSpawnLocations);
+    };
+
+    removeGameSpawnLocation = (loc) => {
+        return this.removeLocation(loc, this.gameSpawnLocations);
+    };
+
+    removeLocation(loc, arr){
+        let spliceIndex = -1;
+        for(let i = 0; i < arr.length; i ++){
+            if(arr[i].equals(loc)){
+                spliceIndex = i;
+                break;
+            }
+        }
+        if(spliceIndex > -1){
+            arr.splice(spliceIndex, 1);
+            return true;
+        }
+        return false;
+    }
+
+    generateLocationData = (data) => {
+        let locationCount = data.length;
+        let output = [];
+        for(let i = 0; i < locationCount; i ++){
+            let loc = data[i];
+            output.push(loc.x, loc.y, loc.z);
+        }
+        return output;
+    }
+    parseLocationData = (data) => {
+        if(data){
+            let dataCount = data.length;
+            if(dataCount % 3 === 0){
+                let locations = [];
+                for(let i = 0; i < dataCount / 3; i ++){
+                    let x = data[i * 3];
+                    let y = data[i * 3 + 1];
+                    let z = data[i * 3 + 2];
+    
+                    locations.push(new Vector3(x, y, z));
+                }
+                return locations;
+            }else{
+                console.log('Invalid block location data');
+            }
+        }
+    }
 }

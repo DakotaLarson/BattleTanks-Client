@@ -15,9 +15,14 @@ export default class Camera extends Component{
 
     enable = () => {
         EventHandler.addMonitorListener(EventHandler.Event.DOM_RESIZE, this.onResize);
+
         EventHandler.addListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.addListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
-        EventHandler.addListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
+
+        EventHandler.addListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.handleToggleToOther);
+        EventHandler.addListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN, this.handleToggleToOther);
+        EventHandler.addListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.handleToggleToOther);
+
         EventHandler.addListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
 
         this.attachControls(true);
@@ -25,9 +30,14 @@ export default class Camera extends Component{
 
     disable = () => {
         EventHandler.removeListener(EventHandler.Event.DOM_RESIZE, this.onResize);
+        
         EventHandler.removeListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.removeListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
-        EventHandler.removeListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
+
+        EventHandler.removeListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.handleToggleToOther);
+        EventHandler.removeListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN, this.handleToggleToOther);
+        EventHandler.removeListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.handleToggleToOther);
+
         EventHandler.removeListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
 
         this.detachControls(true);
@@ -69,7 +79,7 @@ export default class Camera extends Component{
         this.attachControls(true);
     };
 
-    handleToggleToBlock = () => {
+    handleToggleToOther = () => {
         this.detachControls(true);
     };
 }

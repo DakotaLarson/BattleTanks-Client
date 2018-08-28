@@ -8,17 +8,3 @@
     color: white;
     font-size: 12px;
 }
-
-.create-world-mode-toggle{
-    top: 100px;
-    background-color: gold;
-    padding: 10px;
-}
-
-.toggle-to-camera {
-    background-color: slateblue;
-    color: white;
-}
-.create-world-mode-toggle:hover{
-    cursor: pointer;
-}

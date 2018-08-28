@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="./css/debug-panel.css"/>
     <link rel="stylesheet" type="text/css" href="./css/main-menu.css"/>
     <link rel="stylesheet" type="text/css" href="./css/connection-screen.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/create-world-mode-toggle.css"/>
 
 </head>
 <body>
@@ -81,13 +82,20 @@
 </div>
 
 <div class="gui no-select">
+     
     <div class="debug-panel gui-element no-select">
         <span class="debug-data no-select">FPS: <span id="debug-fps">...</span></span><br/>
         <span class="debug-data no-select">Rendering: <span id="debug-rendering">...</span></span><br/>
         <span class="debug-data no-select">Computation: <span id="debug-computation">...</span></span><br/>
         <span class="debug-data no-select">Idle: <span id="debug-idle">...</span></span><br/>
     </div>
-    <div class="create-world-mode-toggle gui-element no-select"></div>
+
+    <div class="create-world-mode-toggle-parent gui-element no-select">
+        <div class="create-world-mode-toggle no-select" id="gui-create-world-toggle-camera">Camera (C)</div>
+        <div class="create-world-mode-toggle no-select"id="gui-create-world-toggle-block">Block (B)</div>
+        <div class="create-world-mode-toggle no-select"id="gui-create-world-toggle-gamespawn">Game Spawn</div>
+        <div class="create-world-mode-toggle no-select"id="gui-create-world-toggle-initialspawn">Initial Spawn</div>
+    </div>
 </div>
 
 <div class="menu game-menu no-select" id="game-menu-sp">

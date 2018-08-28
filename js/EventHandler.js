@@ -61,21 +61,23 @@ const Event = {
     RENDERER_RENDER_COMPLETE: 20,
     RENDERER_RENDER_PREPARE: 32,
 
-    //GUI TEMPORARY TOGGLE
-    GUI_TOGGLE_CONTROLS_ENABLED: 22,
-    GUI_TOGGLE_CONTROLS_DISABLED: 23,
-
-    //CONTROLS SELECTOR TOGGLE
-    CONTROLS_TOGGLE_PLAYER: 29,
-    CONTROLS_TOGGLE_BUILDER: 30,
-
     //BLOCK CREATION TOOL
     BLOCK_CREATION_TOOL_PRIMARY: 33,
     BLOCK_CREATION_TOOL_SECONDARY: 34,
 
+    //GAME SPAWN CREATION TOOL
+    GAMESPAWN_CREATION_TOOL_PRIMARY: 55,
+    GAMESPAWN_CREATION_TOOL_SECONDARY: 56,
+
+    //INITIAL SPAWN CREATION TOOL
+    INITIALSPAWN_CREATION_TOOL_PRIMARY: 22,
+    INITIALSPAWN_CREATION_TOOL_SECONDARY: 23,
+
     //ARENA CREATE MODE TOGGLE
     ARENA_CREATE_MODE_TOGGLE_CAMERA: 35,
     ARENA_CREATE_MODE_TOGGLE_BLOCK: 36,
+    ARENA_CREATE_MODE_TOGGLE_GAMESPAWN: 29,
+    ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN: 30,
 
     //MULTIPLAYER_CONNECTION
     MULTIPLAYER_CONNECTION_WS_OPEN: 45,
@@ -95,7 +97,7 @@ const Event = {
     ARENA_SCENE_UPDATE: 48,
 
 };
-//Latest Event #: 54 (Append upon event addition.)
+//Latest Event #: 56 (Append upon event addition.)
 //Missing Event #s: NONE (Append on event removal; Use and remove from list for event addition when available.)
 
 
@@ -124,6 +126,7 @@ export default class EventHandler{
         }
     }
     static callEvent(event, argument){
+        
         if(eventListeners.hasOwnProperty(event)){
             let callbacks = eventListeners[event];
             for(let i = 0; i < callbacks.length; i ++){

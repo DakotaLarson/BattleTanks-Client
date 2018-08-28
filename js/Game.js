@@ -37,8 +37,7 @@ class Game extends Component{
         EventHandler.callEvent(EventHandler.Event.GAME_ANIMATION_UPDATE, delta);
     };
 
-    loadSingleplayer = (worldData) => {
-        EventHandler.callEvent(EventHandler.Event.ARENA_SCENE_UPDATE, worldData);
+    loadSingleplayer = () => {
         this.detachChild(this.mainMenu);
     };
 
