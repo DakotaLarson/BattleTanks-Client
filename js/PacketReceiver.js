@@ -10,9 +10,15 @@ const receiveArena = (data) => {
 const receiveGameStatus = (data) => {
     EventHandler.callEvent(EventHandler.Event.GAME_STATUS_UPDATE, data);
 };
+
+const receiveAlert = (message) => {
+    EventHandler.callEvent(EventHandler.Event.ALERT_MESSAGE_REQUEST, message);
+};
+
 const handlers = new Map([
     [0x00, receiveArena],
-    [0x01, receiveGameStatus]
+    [0x01, receiveGameStatus],
+    [0x02, receiveAlert]
 ]);
 
 export default class PacketReceiver{

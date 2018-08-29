@@ -96,8 +96,11 @@ const Event = {
     //ARENA
     ARENA_SCENE_UPDATE: 48,
 
+    //ALERT MESSAGE
+    ALERT_MESSAGE_REQUEST: 57
+
 };
-//Latest Event #: 56 (Append upon event addition.)
+//Latest Event #: 57 (Append upon event addition.)
 //Missing Event #s: NONE (Append on event removal; Use and remove from list for event addition when available.)
 
 

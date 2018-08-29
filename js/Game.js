@@ -6,6 +6,7 @@ import ArenaHandler from './arena/ArenaHandler';
 import MultiplayerConnection from './MultiplayerConnection';
 import ConnectionScreen from './connection_screen/ConnectionScreen';
 import GameStatusHandler from './GameStatusHandler';
+import AlertMessageHandler from './alert_message/AlertMessageHandler';
 
 class Game extends Component{
     constructor(){
@@ -15,6 +16,7 @@ class Game extends Component{
         this.arenaHandler = new ArenaHandler();
         this.mpConnection = undefined;
         this.gameStatusHandler = new GameStatusHandler();
+        this.alertMessageHandler = new AlertMessageHandler();
 
     }
     start = () => {
@@ -31,6 +33,7 @@ class Game extends Component{
         EventHandler.addListener(EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.disconnectFromMultiplayer);
         
         this.attachChild(this.mainMenu);
+        this.attachChild(this.alertMessageHandler);
         this.attachChild(this.arenaHandler);
     };
     update = (delta) => {
