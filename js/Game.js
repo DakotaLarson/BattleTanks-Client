@@ -17,52 +17,52 @@ class Game extends Component{
         this.mpConnection = undefined;
         this.gameStatusHandler = new GameStatusHandler();
         this.alertMessageHandler = new AlertMessageHandler();
-
     }
-    start = () => {
+    start(){
         EventHandler.callEvent(EventHandler.Event.GAME_START);
 
-        EventHandler.addListener(EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.loadSingleplayer);
-        EventHandler.addListener(EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.loadSingleplayer);
+        EventHandler.addListener(this, EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.loadSingleplayer);
+        EventHandler.addListener(this, EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.loadSingleplayer);
 
-        EventHandler.addListener(EventHandler.Event.SP_GAMEMENU_RETURN_TO_MAIN_REQUEST, this.unloadSingleplayer);
+        EventHandler.addListener(this, EventHandler.Event.SP_GAMEMENU_RETURN_TO_MAIN_REQUEST, this.unloadSingleplayer);
 
-        EventHandler.addListener(EventHandler.Event.MPMENU_CONNECT_OPT_CLICK, this.connectToMultiplayer);
+        EventHandler.addListener(this, EventHandler.Event.MPMENU_CONNECT_OPT_CLICK, this.connectToMultiplayer);
 
-        EventHandler.addListener(EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.disconnectFromMultiplayer);
-        EventHandler.addListener(EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.disconnectFromMultiplayer);
+        EventHandler.addListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.disconnectFromMultiplayer);
+        EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.disconnectFromMultiplayer);
         
         this.attachChild(this.mainMenu);
         this.attachChild(this.alertMessageHandler);
         this.attachChild(this.arenaHandler);
-    };
+    }
+
     update = (delta) => {
         EventHandler.callEvent(EventHandler.Event.GAME_ANIMATION_UPDATE, delta);
-    };
+    }
 
-    loadSingleplayer = () => {
+    loadSingleplayer(){
         this.detachChild(this.mainMenu);
-    };
+    }
 
-    unloadSingleplayer = () => {
+    unloadSingleplayer(){
         this.attachChild(this.mainMenu);
-    };
+    }
 
-    connectToMultiplayer = () => {
+    connectToMultiplayer(){
         this.detachChild(this.mainMenu);
         this.attachChild(this.connectionScreen);
         this.mpConnection = new MultiplayerConnection();
         this.attachChild(this.mpConnection);
         this.attachChild(this.gameStatusHandler);
-    };
+    }
 
-    disconnectFromMultiplayer = () => {
+    disconnectFromMultiplayer(){
         this.detachChild(this.connectionScreen);
         this.detachChild(this.mpConnection);
         this.detachChild(this.gameStatusHandler);
         this.mpConnection = undefined;
         this.attachChild(this.mainMenu)
-    };
+    }
 }
 
 (() => {
@@ -100,7 +100,7 @@ class Game extends Component{
 
     };
     update();
-    EventHandler.addListener(EventHandler.Event.RENDERER_RENDER_COMPLETE, (time) => {
+    EventHandler.addListener(this, EventHandler.Event.RENDERER_RENDER_COMPLETE, (time) => {
         latestRenderTime = time;
     });
 
@@ -115,6 +115,4 @@ class Game extends Component{
          EventHandler.callEvent(EventHandler.Event.GAME_DEBUG_OUTPUT, debugData);
          debugRenderTime = debugComputeTime = debugFPSCount =0;
     };
-
-
 })();

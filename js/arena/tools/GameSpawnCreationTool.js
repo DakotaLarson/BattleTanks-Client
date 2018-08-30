@@ -7,19 +7,19 @@ export default class GameSpawnCreationTool extends Component{
         super();
     }
 
-    enable = () => {
-        EventHandler.addListener(EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
+    enable(){
+        EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
     }
 
-    disable = () => {
-        EventHandler.removeListener(EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
+    disable(){
+        EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
     }
 
-    onMouseUp = (event) => {
+    onMouseUp(event){
         if(event.button === 0){
             EventHandler.callEvent(EventHandler.Event.GAMESPAWN_CREATION_TOOL_PRIMARY);
         }else if(event.button === 2){
             EventHandler.callEvent(EventHandler.Event.GAMESPAWN_CREATION_TOOL_SECONDARY);
         }
-    };
+    }
 }

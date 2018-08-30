@@ -1,5 +1,3 @@
-const eventListeners = {};
-
 const Event = {
     //GAME
     GAME_START: 0,
@@ -95,50 +93,136 @@ const Event = {
 
     //ARENA
     ARENA_SCENE_UPDATE: 48,
+    ARENA_GAMESPAWN_UPDATE: 58,
+    ARENA_INITIALSPAWN_UPDATE: 59,
+    ARENA_BLOCKLOCATION_UPDATE: 60,
 
     //ALERT MESSAGE
     ALERT_MESSAGE_REQUEST: 57
 
 };
-//Latest Event #: 57 (Append upon event addition.)
+
+const Level = {
+    LOW: 0,
+    MEDIUM: 1,
+    HIGH: 2
+}
+//Latest Event #: 60 (Append upon event addition.)
 //Missing Event #s: NONE (Append on event removal; Use and remove from list for event addition when available.)
 
+const lowListeners = new Map();
+const mediumListeners = new Map();
+const highListeners = new Map();
 
 export default class EventHandler{
 
-     static addListener(event, callback){
-        if(eventListeners.hasOwnProperty(event)){
-            eventListeners[event].unshift(callback);
-        }else{
-            eventListeners[event] = [callback];
+     static addListener(context, event, callback, level){
+        if(isNaN(Number(level))){
+            level = Level.MEDIUM;
         }
-    }
-    static addMonitorListener(event, callback){
-        if(eventListeners.hasOwnProperty(event)){
-            eventListeners[event].push(callback);
-        }else{
-            eventListeners[event] = [callback];
+
+        let newListener = {
+            context: context,
+            callback: callback
         }
+
+        let listeners;
+        switch(level){
+            case Level.LOW:
+                listeners = lowListeners;
+                break;
+            case Level.MEDIUM:
+                listeners = mediumListeners;
+                break;
+            case Level.HIGH:
+                listeners = highListeners;
+                break;
+        }
+
+        let eventLevelListeners;
+        if(listeners.has(event)){
+            eventLevelListeners = listeners.get(event);
+        }else{
+            eventLevelListeners = [];
+        }
+        eventLevelListeners.unshift(newListener);
+        listeners.set(event, eventLevelListeners);
     }
-    static removeListener(event, callback){
-        if(eventListeners.hasOwnProperty(event)){
-            let callbackIndex = eventListeners[event].indexOf(callback);
-            if(callbackIndex > -1){
-                eventListeners[event].splice(callbackIndex, 1);
+    static removeListener(context, event, callback, level){
+        if(isNaN(Number(level))){
+            level = Level.MEDIUM;
+        }
+
+        let listeners;
+        switch(level){
+            case Level.LOW:
+                listeners = lowListeners;
+                break;
+            case Level.MEDIUM:
+                listeners = mediumListeners;
+                break;
+            case Level.HIGH:
+                listeners = highListeners;
+                break;
+        }
+
+        if(listeners.has(event)){
+            let eventLevelListeners = listeners.get(event);
+            let spliceIndex = -1;
+
+            for (let i = 0; i < eventLevelListeners.length; i++) {
+                let eventLevelListener = eventLevelListeners[i];
+                if(eventLevelListener.context === context && eventLevelListener.callback === callback){
+                    spliceIndex = i;
+                    break;
+                }
             }
+
+            if(spliceIndex > -1){
+                eventLevelListeners.splice(spliceIndex, 1);
+                listeners.set(event, eventLevelListeners);
+            }
+
         }
     }
     static callEvent(event, argument){
-        
-        if(eventListeners.hasOwnProperty(event)){
-            let callbacks = eventListeners[event];
-            for(let i = 0; i < callbacks.length; i ++){
-                callbacks[i](argument);
+        //LOW
+        if(lowListeners.has(event)){
+            let eventListeners = lowListeners.get(event);
+            for(let i = 0; i < eventListeners.length; i ++){
+                let listener = eventListeners[i];
+                let context = listener.context;
+                let callback = listener.callback;
+                callback.call(context, argument);
+            }
+        }
+        //MEDIUM
+        if(mediumListeners.has(event)){
+            let eventListeners = mediumListeners.get(event);
+            for(let i = 0; i < eventListeners.length; i ++){
+                let listener = eventListeners[i];
+                let context = listener.context;
+                let callback = listener.callback;
+                callback.call(context, argument);
+            }
+        }
+        //HIGH
+        if(highListeners.has(event)){
+            let eventListeners = highListeners.get(event);
+            for(let i = 0; i < eventListeners.length; i ++){
+                let listener = eventListeners[i];
+                let context = listener.context;
+                let callback = listener.callback;
+                callback.call(context, argument);
             }
         }
     }
     static get Event(){
-         return Event;
+        return Event;
+    }
+
+    static get Level(){
+        return Level;
     }
 }
 

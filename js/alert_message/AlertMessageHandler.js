@@ -11,16 +11,16 @@ export default class AlertMessageHandler extends Component{
         this.taskId = -1;
     }
 
-    enable = () => {
-        EventHandler.addListener(EventHandler.Event.ALERT_MESSAGE_REQUEST, this.onAlertRequest);
+    enable(){
+        EventHandler.addListener(this, this, EventHandler.Event.ALERT_MESSAGE_REQUEST, this.onAlertRequest);
 
-    };
+    }
 
-    disable = () => {
-        EventHandler.removeListener(EventHandler.Event.ALERT_MESSAGE_REQUEST, this.onAlertRequest);
-    };
+    disable(){
+        EventHandler.removeListener(this, this, EventHandler.Event.ALERT_MESSAGE_REQUEST, this.onAlertRequest);
+    }
 
-    onAlertRequest = (message) => {
+    onAlertRequest(message){
         if(this.taskId === -1){
             this.alertElt.textContent = message;
             this.parentElt.style.opacity = '1';
@@ -36,5 +36,5 @@ export default class AlertMessageHandler extends Component{
                 this.taskId = -1;
             }, 3000);
         }
-    };
+    }
 }

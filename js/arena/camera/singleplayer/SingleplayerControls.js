@@ -29,25 +29,25 @@ export default class SinglePlayerControls extends Component{
         this.state = -1;
     }
 
-    enable = ()=> {
-        EventHandler.addListener(EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
-        EventHandler.addListener(EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
-        EventHandler.addListener(EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
-        EventHandler.addListener(EventHandler.Event.DOM_WHEEL, this.onWheel);
-        EventHandler.addListener(EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
+    enable(){
+        EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
+        EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
+        EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
+        EventHandler.addListener(this, EventHandler.Event.DOM_WHEEL, this.onWheel);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
 
         this.update();
-    };
+    }
 
-    disable = () => {
-        EventHandler.removeListener(EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
-        EventHandler.removeListener(EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
-        EventHandler.removeListener(EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
-        EventHandler.removeListener(EventHandler.Event.DOM_WHEEL, this.onWheel);
-        EventHandler.removeListener(EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
-    };
+    disable(){
+        EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_WHEEL, this.onWheel);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
+    }
 
-    onMouseDown = (event) => {
+    onMouseDown(event){
         if(this.state === -1){
             switch(event.button){
                 case 0:
@@ -61,13 +61,13 @@ export default class SinglePlayerControls extends Component{
                     break;
             }
         }
-    };
+    }
 
-    onMouseUp = () => {
+    onMouseUp(){
         this.state = -1;
-    };
+    }
 
-    onMouseMove = (event) => {
+    onMouseMove(event){
         if(this.state === -1) return;
         switch(this.state){
             case ButtonState.PRIMARY:
@@ -80,20 +80,20 @@ export default class SinglePlayerControls extends Component{
                 this.handleZoom(event.movementY, false);
                 break;
         }
-    };
+    }
 
-    onWheel = (event) => {
+    onWheel(event){
         this.handleZoom(event.deltaY, true);
-    };
+    }
 
-    handleRotation = (deltaX, deltaY) => {
+    handleRotation(deltaX, deltaY){
          this.spherical.theta += deltaX * Math.PI /180 / 3;
          this.spherical.phi += deltaY * Math.PI / 180 / 5;
          this.spherical.phi = Math.min(Math.PI / 2 - Math.PI / 24, this.spherical.phi);
          this.update();
-    };
+    }
 
-    handlePan = (deltaX, deltaY) => {
+    handlePan(deltaX, deltaY){
         let offset = new Vector3();
         let position = this.camera.position;
         offset.copy(position).sub(this.target);
@@ -114,9 +114,9 @@ export default class SinglePlayerControls extends Component{
         xVec.multiplyScalar(-(2 * deltaX * targetDistance / DomHandler.getDisplayDimensions().height));
         this.target.add(xVec);
         this.update();
-    };
+    }
 
-    handleZoom = (deltaY, isScroll) => {
+    handleZoom(deltaY, isScroll){
         if(isScroll){
             if(deltaY > 0){
                 this.spherical.radius = Math.min(this.spherical.radius + 2, 100);
@@ -127,15 +127,16 @@ export default class SinglePlayerControls extends Component{
             this.spherical.radius = Math.max(Math.min(this.spherical.radius + deltaY / 10, 50), 3);
         }
         this.update();
-    };
+    }
 
-    update = () => {
+    update(){
         this.camera.position.setFromSpherical(this.spherical.makeSafe());
         this.camera.position.add(this.target);
         this.camera.lookAt(this.target);
 
     }
-    onArenaSceneUpdate = (data) => {
+    
+    onArenaSceneUpdate(data){
         this.target = new Vector3(data.width / 2, 0, data.height / 2);
         this.spherical = new Spherical(25, Math.PI / 4, Math.PI / 3);
         this.update();

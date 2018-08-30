@@ -12,17 +12,17 @@ export default class GUI extends Component {
         this.createWorldModeToggle = new ArenaCreateModeToggle(this.element);
     }
 
-    enable = () => {
+    enable(){
         this.attachChild(this.debugPanel);
         this.attachChild(this.createWorldModeToggle);
 
         this.element.style.display = 'block';
-    };
+    }
 
-    disable = () => {
+    disable(){
         this.detachChild(this.debugPanel);
         this.detachChild(this.createWorldModeToggle);
 
         this.element.style.display = '';
-    };
+    }
 }

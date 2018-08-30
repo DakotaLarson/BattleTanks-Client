@@ -1,5 +1,6 @@
 import Component from '../Component';
 import EventHandler from '../EventHandler';
+import DomEventHandler from '../DomEventHandler';
 import DomHandler from '../DomHandler';
 
 const MAX_DIMENSION = 100;
@@ -17,18 +18,17 @@ export default class CreateWorldMenu extends Component{
         this.errorElt = DomHandler.getElement('#create-opt-error', this.element);
     }
 
-    enable = () => {
-        this.createElt.addEventListener('click', this.onCreateClick);
-        this.cancelElt.addEventListener('click', this.onCancelClick);
+    enable(){
+        DomEventHandler.addListener(this, this.createElt, 'click', this.onCreateClick);
+        DomEventHandler.addListener(this, this.cancelElt, 'click', this.onCancelClick);
 
         this.element.style.display = 'block';
         this.titleElt.focus();
+    }
 
-    };
-
-    disable = () => {
-        this.createElt.removeEventListener('click', this.onCreateClick);
-        this.cancelElt.removeEventListener('click', this.onCancelClick);
+    disable(){
+        DomEventHandler.removeListener(this, this.createElt, 'click', this.onCreateClick);
+        DomEventHandler.removeListener(this, this.cancelElt, 'click', this.onCancelClick);
 
         this.titleElt.value = '';
         this.heightElt.value = '';
@@ -36,9 +36,9 @@ export default class CreateWorldMenu extends Component{
         this.errorElt.textContent = '';
 
         this.element.style.display = 'none';
-    };
+    }
 
-    onCreateClick = () => {
+    onCreateClick(){
         let titleValue = this.titleElt.value.trim();
         let widthValue = Number(this.widthElt.value);
         let heightValue = Number(this.heightElt.value);
@@ -58,9 +58,9 @@ export default class CreateWorldMenu extends Component{
                 height: heightValue
             });
         }
-    };
+    }
 
-    onCancelClick = () => {
+    onCancelClick(){
         EventHandler.callEvent(EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK);
-    };
+    }
 }

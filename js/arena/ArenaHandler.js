@@ -2,7 +2,8 @@ import {PerspectiveCamera} from 'three';
 
 import EventHandler from '../EventHandler';
 import Component from '../Component';
-import Arena from './Arena';
+import SingleplayerArena from './arena/SinglePlayerArena';
+import MultiplayerArena from './arena/MultiplayerArena';
 import SingleplayerGUI from '../gui/SingleplayerGUI';
 import MultiplayerGUI from '../gui/MultiplayerGUI';
 import SingleplayerGameMenu from '../game_menu/SingleplayerGameMenu';
@@ -10,6 +11,8 @@ import MultiplayerGameMenu from '../game_menu/MultiplayerGameMenu';
 import CreationToolHandler from './tools/CreationToolHandler';
 import SingleplayerCamera from './camera/singleplayer/SingleplayerCamera';
 import MultiplayerCamera from './camera/multiplayer/MultiplayerCamera';
+import Renderer from '../Renderer';
+import SceneHandler from './SceneHandler';
 
 
 export default class ArenaHandler extends Component{
@@ -19,7 +22,11 @@ export default class ArenaHandler extends Component{
 
         let perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-        this.arena = new Arena(perspectiveCamera);
+        this.sceneHandler = new SceneHandler(perspectiveCamera);
+        this.renderer = new Renderer(this.sceneHandler.getScene(), perspectiveCamera);
+
+        this.singleplayerArena = new SingleplayerArena(perspectiveCamera);
+        this.multiplayerArena = new MultiplayerArena(perspectiveCamera);
 
         this.creationToolHandler = new CreationToolHandler();
 
@@ -36,33 +43,34 @@ export default class ArenaHandler extends Component{
         this.gameMenuEnabled = false;
     }
 
-    enable = () => {
-        EventHandler.addListener(EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.attachSingleplayerArena);
-        EventHandler.addListener(EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.attachSingleplayerArena);
+    enable(){
+        EventHandler.addListener(this, EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.attachSingleplayerArena);
+        EventHandler.addListener(this, EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.attachSingleplayerArena);
 
-        EventHandler.addListener(EventHandler.Event.SP_GAMEMENU_RETURN_TO_MAIN_REQUEST, this.detachSingleplayerArena);
+        EventHandler.addListener(this, EventHandler.Event.SP_GAMEMENU_RETURN_TO_MAIN_REQUEST, this.detachSingleplayerArena);
 
-        EventHandler.addListener(EventHandler.Event.MPMENU_CONNECT_OPT_CLICK, this.attachMultiplayerArena);
+        EventHandler.addListener(this, EventHandler.Event.MPMENU_CONNECT_OPT_CLICK, this.attachMultiplayerArena);
 
-        EventHandler.addListener(EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.detachMultiplayerArena);
-        EventHandler.addListener(EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.detachMultiplayerArena);
-    };
-
-    disable = () => {
-        EventHandler.removeListener(EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.attachSingleplayerArena);
-        EventHandler.removeListener(EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.attachSingleplayerArena);
-
-        EventHandler.removeListener(EventHandler.Event.SP_GAMEMENU_RETURN_TO_MAIN_REQUEST, this.detachSingleplayerArena);
-
-        EventHandler.removeListener(EventHandler.Event.MPMENU_CONNECT_OPT_CLICK, this.attachMultiplayerArena);
-
-        EventHandler.removeListener(EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.detachMultiplayerArena);
-        EventHandler.removeListener(EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.detachMultiplayerArena);
+        EventHandler.addListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.detachMultiplayerArena);
+        EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.detachMultiplayerArena);
     }
 
-    attachSingleplayerArena = (worldData) => {
+    disable(){
+        EventHandler.removeListener(this, EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.attachSingleplayerArena);
+        EventHandler.removeListener(this, EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.attachSingleplayerArena);
+
+        EventHandler.removeListener(this, EventHandler.Event.SP_GAMEMENU_RETURN_TO_MAIN_REQUEST, this.detachSingleplayerArena);
+
+        EventHandler.removeListener(this, EventHandler.Event.MPMENU_CONNECT_OPT_CLICK, this.attachMultiplayerArena);
+
+        EventHandler.removeListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.detachMultiplayerArena);
+        EventHandler.removeListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.detachMultiplayerArena);
+    }
+
+    attachSingleplayerArena(worldData){
         this.attachArena();
 
+        this.attachChild(this.singleplayerArena);
         this.attachChild(this.singleplayerGUI);
         this.attachChild(this.creationToolHandler);
         this.attachChild(this.singleplayerCamera);
@@ -70,51 +78,58 @@ export default class ArenaHandler extends Component{
         EventHandler.callEvent(EventHandler.Event.ARENA_SCENE_UPDATE, worldData);
 
         this.isSingleplayer = true;
-    };
+    }
 
-    detachSingleplayerArena = () => {
+    detachSingleplayerArena(){
         this.detachArena();
 
+        this.detachChild(this.singleplayerArena);
         this.detachChild(this.singleplayerGUI);
         this.detachChild(this.creationToolHandler);
         this.detachChild(this.singleplayerCamera);
-    };
+    }
 
-    attachMultiplayerArena = () => {
+    attachMultiplayerArena(){
         this.attachArena();
 
+        this.attachChild(this.multiplayerArena);
         this.attachChild(this.multiplayerGUI);
         this.attachChild(this.MultiplayerCamera);
 
         this.isSingleplayer = false;
-    };
+    }
 
-    detachMultiplayerArena = () => {
+    detachMultiplayerArena(){
         this.detachArena();
 
+        this.detachChild(this.multiplayerArena);
         this.detachChild(this.multiplayerGUI);
         this.detachChild(this.MultiplayerCamera);
-    };
+    }
 
-    attachArena = () => {
-        EventHandler.addListener(EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
-        EventHandler.addListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenu);
-        EventHandler.addListener(EventHandler.Event.DOM_BLUR, this.onBlur);
-        this.attachChild(this.arena);
-    };
+    attachArena(){
+        EventHandler.addListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenu);
+        EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
 
-    detachArena = () => {
-        EventHandler.removeListener(EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
-        EventHandler.removeListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenu);
-        EventHandler.removeListener(EventHandler.Event.DOM_BLUR, this.onBlur);
-        this.detachChild(this.arena);
+        this.attachChild(this.sceneHandler);
+        this.attachChild(this.renderer);
+    }
+
+    detachArena(){
+        EventHandler.removeListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenu);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
+
+        this.detachChild(this.sceneHandler);
+        this.detachChild(this.renderer);
         
         if(this.gameMenuEnabled){
             this.closeGameMenu();
         }
-    };
+    }
 
-    onKeyDown = (event) => {
+    onKeyDown(event){
         if(event.code === 'Escape') {
             if(this.gameMenuEnabled){
                 EventHandler.callEvent(EventHandler.Event.GAMEMENU_CLOSE_REQUEST);
@@ -122,29 +137,29 @@ export default class ArenaHandler extends Component{
                 this.openGameMenu();
             }
         }
-    };
+    }
 
-    onBlur = () => {
+    onBlur(){
         if(!this.gameMenuEnabled){
             this.openGameMenu();
         }
-    };
+    }
 
-    closeGameMenu = () => {
+    closeGameMenu(){
         if(this.isSingleplayer){
             this.detachChild(this.singleplayerGameMenu);
         }else{
             this.detachChild(this.multiplayerGameMenu);
         }
         this.gameMenuEnabled = false;
-    };
+    }
 
-    openGameMenu = () => {
+    openGameMenu(){
         if(this.isSingleplayer){
             this.attachChild(this.singleplayerGameMenu);
         }else{
             this.attachChild(this.multiplayerGameMenu);
         }        
         this.gameMenuEnabled = true;
-    };
+    }
 }

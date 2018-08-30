@@ -1,32 +1,32 @@
 import EventHandler from './EventHandler';
 
 export default class DomHandler{
-    static getDisplayDimensions = () =>{
+    static getDisplayDimensions(){
         return displayDimensions;
-    };
+    }
 
-    static requestPointerLock = () => {
+    static requestPointerLock(){
         document.body.requestPointerLock();
-    };
+    }
 
-    static exitPointerLock = () => {
+    static exitPointerLock(){
         nextPointerLockExitInvoked = true;
         document.exitPointerLock();
-    };
+    }
 
-    static hasPointerLock = () => {
+    static hasPointerLock(){
         return document.pointerLockElement !== undefined;
-    };
+    }
 
-    static getElement = (query, parent) => {
+    static getElement(query, parent){
         if(parent){
             return parent.querySelector(query);
         }else{
             return document.querySelector(query);
         }
-    };
+    }
 
-    static getMouseCoordinates = () => {
+    static getMouseCoordinates(){
         return mousePosition;
     }
 }
@@ -36,11 +36,13 @@ let nextPointerLockExitInvoked = false;
 const displayDimensions = {
     width: window.innerWidth,
     height: window.innerHeight
-};
+}
+
 const mousePosition = {
     x: 0,
     y: 0
-};
+}
+
 const eventTitles = {
     'resize': EventHandler.Event.DOM_RESIZE,
     'mousemove': EventHandler.Event.DOM_MOUSEMOVE,
@@ -54,14 +56,17 @@ const eventTitles = {
     'focus': EventHandler.Event.DOM_FOCUS,
     'wheel': EventHandler.Event.DOM_WHEEL,
     'contextmenu': EventHandler.Event.DOM_CONTEXTMENU
-};
+}
+
 const windowEventTitles = ['resize', 'blur', 'focus', 'click'];
 
 
 let keys = Object.keys(eventTitles);
+
 for(let i = 0; i < keys.length; i ++){
     let eventTitle = keys[i];
     let eventHandlerEvent = eventTitles[eventTitle];
+
     if(windowEventTitles.indexOf(eventTitle) > -1){
         window.addEventListener(eventTitle, (event) => {
             EventHandler.callEvent(eventHandlerEvent, event);
@@ -72,6 +77,7 @@ for(let i = 0; i < keys.length; i ++){
         });
     }
 }
+
 document.addEventListener('pointerlockchange', () => {
     if(DomHandler.hasPointerLock()){
         EventHandler.callEvent(EventHandler.Event.DOM_POINTERLOCK_ENABLE);
@@ -85,19 +91,19 @@ document.addEventListener('pointerlockchange', () => {
     }
 });
 
-EventHandler.addListener(EventHandler.Event.DOM_RESIZE, () => {
+EventHandler.addListener(this, EventHandler.Event.DOM_RESIZE, () => {
     displayDimensions.width = window.innerWidth;
     displayDimensions.height = window.innerHeight;
 });
 
-EventHandler.addListener(EventHandler.Event.DOM_MOUSEMOVE, (event) => {
+EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, (event) => {
     mousePosition.x = event.clientX;
     mousePosition.y = event.clientY;
 });
 
 const stopDefaultActions = () => {
     document.oncontextmenu = () => { return false };
-    // document.addListener('keydown', (event) => {
+    // document.addListener(this, 'keydown', (event) => {
     //     event.preventDefault();
     // });
 };

@@ -7,16 +7,16 @@ export default class GameStatusHandler extends Component{
         super();
     }
 
-    enable = () => {
-        EventHandler.addListener(EventHandler.Event.GAME_STATUS_UPDATE, this.onGameStatusUpdate);
-    };
+    enable(){
+        EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_UPDATE, this.onGameStatusUpdate);
+    }
 
-    disable = () => {
-        EventHandler.removeListener(EventHandler.Event.GAME_STATUS_UPDATE, this.onGameStatusUpdate);
+    disable(){
+        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_UPDATE, this.onGameStatusUpdate);
 
-    };
+    }
 
-    onGameStatusUpdate = (status) => {
+    onGameStatusUpdate(status){
         switch(status){
             case GameStatus.WAITING:
                 console.log('Waiting GameStatus');
@@ -35,7 +35,7 @@ export default class GameStatusHandler extends Component{
                 EventHandler.callEvent(EventHandler.Event.GAME_STATUS_FINISHING);
                 break;
         }
-    };
+    }
 }
 
 const GameStatus = {

@@ -13,17 +13,17 @@ export default class DebugPanel extends Component{
         this.debugIdleElement = DomHandler.getElement('#debug-idle', this.element);
     }
 
-    enable = () => {
-        EventHandler.addListener(EventHandler.Event.GAME_DEBUG_OUTPUT, this.handleDebugOutput);
+    enable(){
+        EventHandler.addListener(this, EventHandler.Event.GAME_DEBUG_OUTPUT, this.handleDebugOutput);
         this.element.style.display = 'inline-block';
-    };
+    }
 
-    disable = () => {
-        EventHandler.removeListener(EventHandler.Event.GAME_DEBUG_OUTPUT, this.handleDebugOutput);
+    disable(){
+        EventHandler.removeListener(this, EventHandler.Event.GAME_DEBUG_OUTPUT, this.handleDebugOutput);
         this.element.style.display = '';
-    };
+    }
 
-    handleDebugOutput = (data) => {
+    handleDebugOutput(data){
         let renderingPercent = Math.round(data.rendering / 10);
         let renderingMS = Math.round(data.rendering);
         let computationPercent = Math.round(data.computation / 10);
@@ -36,6 +36,6 @@ export default class DebugPanel extends Component{
         this.debugComputationElement.textContent = computationPercent + '% (' + computationMS + 'ms)';
         this.debugIdleElement.textContent = idlePercent + '% (' + idleMS + 'ms)';
 
-    };
+    }
 }
 

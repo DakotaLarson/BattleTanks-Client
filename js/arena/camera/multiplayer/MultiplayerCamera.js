@@ -3,6 +3,8 @@ import EventHandler from '../../../EventHandler';
 import DomHandler from '../../../DomHandler';
 import MultiplayerControls from './MultiplayerControls';
 
+import {Vector3, Spherical} from 'three';
+
 export default class Camera extends Component{
 
     constructor(camera){
@@ -12,41 +14,54 @@ export default class Camera extends Component{
         this.controls = new MultiplayerControls(camera);
     }
 
-    enable = () => {
-        EventHandler.addMonitorListener(EventHandler.Event.DOM_RESIZE, this.onResize);
-        EventHandler.addListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.addListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
+    enable(){
+        EventHandler.addListener(this, EventHandler.Event.DOM_RESIZE, this.onResize, EventHandler.Level.LOW);
+        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
+        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
+
+        EventHandler.addListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
+
 
         this.attachControls();
-    };
+    }
 
-    disable = () => {
-        EventHandler.removeListener(EventHandler.Event.DOM_RESIZE, this.onResize);
-        EventHandler.removeListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.removeListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
+    disable(){
+        EventHandler.removeListener(this, EventHandler.Event.DOM_RESIZE, this.onResize, EventHandler.Level.LOW);
+        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
+        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
+
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
+        console.log('camera removed');
 
         this.detachControls();
-    };
+    }
 
-    onResize = () => {
+    onResize(){
         let dimensions = DomHandler.getDisplayDimensions();
         this.camera.aspect = dimensions.width / dimensions.height;
         this.camera.updateProjectionMatrix();
-    };
+    }
 
-    onGameMenuOpen = () => {
+    onGameMenuOpen(){
         this.detachControls();
-    };
+    }
 
-    onGameMenuClose = () => {
+    onGameMenuClose(){
         this.attachControls();
-    };
+    }
 
-    attachControls = () => {
+    attachControls(){
         this.attachChild(this.controls);
-    };
+    }
 
-    detachControls = () => {
+    detachControls(){
         this.detachChild(this.controls);
-    };
+    }
+
+    onArenaSceneUpdate(data){
+        console.log('camera location update')
+        this.controls.target = new Vector3(data.width / 2, 0, data.height / 2);
+        this.controls.spherical = new Spherical(25, Math.PI / 4, Math.PI / 3);
+        this.controls.update();
+    }
 }

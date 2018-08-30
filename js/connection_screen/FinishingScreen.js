@@ -1,6 +1,7 @@
 import Component from '../Component';
 import DomHandler from '../DomHandler';
 import EventHandler from '../EventHandler';
+import DomEventHandler from '../DomEventHandler';
 
 export default class FinishingScreen extends Component{
 
@@ -11,17 +12,17 @@ export default class FinishingScreen extends Component{
 
     }
 
-    enable = () => {
-        this.disconnectElt.addEventListener('click', this.onDisconnect);
+    enable(){
+        DomEventHandler.addListener(this, this.disconnectElt, 'click', this.onDisconnect);
         this.element.style.display = 'block';
-    };
+    }
 
-    disable = () => {
-        this.disconnectElt.addEventListener('click', this.onDisconnect);
+    disable(){
+        DomEventHandler.removeListener(this, this.disconnectElt, 'click', this.onDisconnect);
         this.element.style.display = '';
-    };
+    }
 
-    onDisconnect = () => {
+    onDisconnect(){
         EventHandler.callEvent(EventHandler.Event.CONNECTION_SCREEN_DISCONNECT);
-    };
+    }
 }

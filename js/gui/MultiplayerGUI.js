@@ -10,15 +10,15 @@ export default class GUI extends Component {
         this.debugPanel = new DebugPanel(this.element);
     }
 
-    enable = () => {
+    enable(){
         this.attachChild(this.debugPanel);
 
         this.element.style.display = 'block';
-    };
+    }
 
-    disable = () => {
+    disable(){
         this.detachChild(this.debugPanel);
 
         this.element.style.display = '';
-    };
+    }
 }

@@ -1,6 +1,7 @@
 import Component from "../Component";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
+import DomEventHandler from "../DomEventHandler";
 
 
 export default class OptionsMenu extends Component{
@@ -12,17 +13,18 @@ export default class OptionsMenu extends Component{
         this.cancelBtn = DomHandler.getElement('#opt-cancel', mainMenu);
     }
 
-    enable = () => {
-        this.cancelBtn.addEventListener('click', this.handleCancelOption);
+    enable(){
+        DomEventHandler.addListener(this, this.cancelBtn, 'click', this.handleCancelOption);
         this.element.style.display = 'block';
-    };
-    disable = () => {
-        this.cancelBtn.removeEventListener('click', this.handleCancelOption);
+    }
+
+    disable(){
+        DomEventHandler.removeListener(this, this.cancelBtn, 'click', this.handleCancelOption);
         this.element.style.display = '';
-    };
+    }
 
     //Click Handlers
-    handleCancelOption = () => {
+    handleCancelOption(){
         EventHandler.callEvent(EventHandler.Event.OPTMENU_CANCEL_OPT_CLICK);
-    };
+    }
 }

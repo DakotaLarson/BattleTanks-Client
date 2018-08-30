@@ -1,6 +1,7 @@
 import Component from "../Component";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
+import DomEventHandler from '../DomEventHandler';
 
 
 export default class MultiplayerMenu extends Component{
@@ -12,23 +13,26 @@ export default class MultiplayerMenu extends Component{
         this.connectBtn = DomHandler.getElement('#mp-opt-connect', mainMenu);
     }
 
-    enable = () => {
-        this.cancelBtn.addEventListener('click', this.handleCancelOption);
-        this.connectBtn.addEventListener('click', this.handleConnectOption);
+    enable(){
+        DomEventHandler.addListener(this, this.cancelBtn, 'click', this.handleCancelOption);
+        DomEventHandler.addListener(this, this.connectBtn, 'click', this.handleConnectOption);
+
         this.element.style.display = 'block';
-    };
-    disable = () => {
-        this.cancelBtn.removeEventListener('click', this.handleCancelOption);
-        this.connectBtn.removeEventListener('click', this.handleConnectOption);
+    }
+
+    disable(){
+        DomEventHandler.removeListener(this, this.cancelBtn, 'click', this.handleCancelOption);
+        DomEventHandler.removeListener(this, this.connectBtn, 'click', this.handleConnectOption);
+
         this.element.style.display = '';
-    };
+    }
 
     //Click Handlers
-    handleCancelOption = () => {
+    handleCancelOption(){
         EventHandler.callEvent(EventHandler.Event.MPMENU_CANCEL_OPT_CLICK);
-    };
+    }
 
-    handleConnectOption = () => {
+    handleConnectOption(){
         EventHandler.callEvent(EventHandler.Event.MPMENU_CONNECT_OPT_CLICK);
     }
 }

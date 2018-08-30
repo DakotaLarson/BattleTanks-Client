@@ -2,6 +2,7 @@ import Component from './Component';
 import EventHandler from './EventHandler';
 import PacketSender from './PacketSender';
 import PacketReceiver from './PacketReceiver';
+import DomEventHandler from './DomEventHandler';
 
 const address = 'ws://localhost:8000';
 const protocol = 'tanks-MP';
@@ -13,31 +14,39 @@ export default class MultiplayerConnection extends Component{
         this.ws = undefined;
     }
 
-    enable = () => {
+    enable(){
         this.ws = new WebSocket(address, protocol);
         this.ws.binaryType = 'arraybuffer';
-        this.ws.addEventListener('open', () => {
-            PacketSender.setSocket(this.ws);
-            this.initHandshake();
-        });
-        this.ws.addEventListener('message', (event) => {
-            PacketReceiver.handleMessage(event.data);
-        });
-        this.ws.addEventListener('close', this.handleClose);
-        //this.ws.addEventListener('error', this.handleError);
-    };
 
-    disable = () => {
+        DomEventHandler.addListener(this, this.ws, 'open', this.onOpen);
+        DomEventHandler.addListener(this, this.ws, 'message', this.onMessage);
+        DomEventHandler.addListener(this, this.ws, 'close', this.onClose);
+    }
+
+    disable(){
+        DomEventHandler.removeListener(this, this.ws, 'open', this.onOpen);
+        DomEventHandler.removeListener(this, this.ws, 'message', this.onMessage);
+        DomEventHandler.removeListener(this, this.ws, 'close', this.onClose);
+
         this.ws.close(1000);
-    };
+    }
 
-    initHandshake = () => {
+    onOpen(){
+        PacketSender.setSocket(this.ws);
+        this.initHandshake();
+    }
+
+    onMessage(event){
+        PacketReceiver.handleMessage(event.data);
+    }
+
+    initHandshake(){
         EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_OPEN);
         PacketSender.sendPlayerJoin('Guest');
-    };
+    }
 
-    handleClose = (event) => {
+    onClose(event){
         EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, event);
-    };
+    }
 
 }

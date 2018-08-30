@@ -12,21 +12,21 @@ export default class SinglePlayerGameMenu extends Component {
         this.returnBtn = DomHandler.getElement("#game-menu-sp-return-to-main", this.element);
     }
 
-    enable = () => {
+    enable(){
         EventHandler.callEvent(EventHandler.Event.GAMEMENU_OPEN);
 
-        EventHandler.addListener(EventHandler.Event.DOM_CLICK, this.handleClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleClick);
 
         this.element.style.display = 'block';
-    };
+    }
 
-    disable = () => {
-        EventHandler.removeListener(EventHandler.Event.DOM_CLICK, this.handleClick);
+    disable(){
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleClick);
 
         this.element.style.display = '';
-    };
+    }
 
-    handleClick = (event) => {
+    handleClick(event){
         if(event.target === this.cancelBtn){
             EventHandler.callEvent(EventHandler.Event.GAMEMENU_CLOSE_REQUEST);
         }else if(event.target === this.saveBtn){
@@ -34,5 +34,5 @@ export default class SinglePlayerGameMenu extends Component {
         }else if(event.target === this.returnBtn){
             EventHandler.callEvent(EventHandler.Event.SP_GAMEMENU_RETURN_TO_MAIN_REQUEST);
         }
-    };
+    }
 }

@@ -4,8 +4,7 @@ export default class Component{
         this.parent = undefined;
         this.state = {};
     }
-    enable = () =>{};
-    disable = () => {};
+    
     attachChild = (component) => {
         if(this.children.indexOf(component) < 0){
             this.children.push(component);
@@ -34,14 +33,14 @@ export default class Component{
             detachChildren(component);
         }
 
-    };
+    }
     
     attachToParent = (component) => {
         this.parent = component;
-    };
+    }
 
-    detachFromParent = () => {
+    detachFromParent(){
         this.parent = undefined;
-    };
+    }
 
 }

@@ -24,55 +24,55 @@ export default class ConnectionScreen extends Component{
         this.activeScreen = undefined;
     }
 
-    enable = () => {
+    enable(){
 
-        EventHandler.addListener(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_OPEN, this.onConnectionOpen);
-        EventHandler.addListener(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.onConnectionClose);
+        EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_OPEN, this.onConnectionOpen);
+        EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.onConnectionClose);
 
-        EventHandler.addListener(EventHandler.Event.GAME_STATUS_WAITING, this.onWaitingGameStatus);
-        EventHandler.addListener(EventHandler.Event.GAME_STATUS_PREPARING, this.onOtherGameStatus);
-        EventHandler.addListener(EventHandler.Event.GAME_STATUS_RUNNING, this.onOtherGameStatus);
-        EventHandler.addListener(EventHandler.Event.GAME_STATUS_FINISHING, this.onFinishingGameStatus);
+        EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_WAITING, this.onWaitingGameStatus);
+        EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_PREPARING, this.onOtherGameStatus);
+        EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onOtherGameStatus);
+        EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_FINISHING, this.onFinishingGameStatus);
 
         this.element.style.display = 'flex';
         this.showScreen(this.connectingScreen);
-    };
+    }
 
-    disable = () => {
+    disable(){
 
-        EventHandler.removeListener(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_OPEN, this.onConnectionOpen);
-        EventHandler.removeListener(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.onConnectionClose);
+        EventHandler.removeListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_OPEN, this.onConnectionOpen);
+        EventHandler.removeListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.onConnectionClose);
 
-        EventHandler.removeListener(EventHandler.Event.GAME_STATUS_WAITING, this.onWaitingGameStatus);
-        EventHandler.removeListener(EventHandler.Event.GAME_STATUS_PREPARING, this.onOtherGameStatus);
-        EventHandler.removeListener(EventHandler.Event.GAME_STATUS_RUNNING, this.onOtherGameStatus);
-        EventHandler.removeListener(EventHandler.Event.GAME_STATUS_FINISHING, this.onFinishingGameStatus);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_WAITING, this.onWaitingGameStatus);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_PREPARING, this.onOtherGameStatus);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onOtherGameStatus);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_FINISHING, this.onFinishingGameStatus);
 
         this.element.style.display = '';
-    };
+    }
 
-    onConnectionOpen = () => {
+    onConnectionOpen(){
         this.showScreen(this.connectedScreen);
-    };
+    }
 
-    onConnectionClose = (event) => {
+    onConnectionClose(event){
         console.log('Disconnected: ' + event.code);
         this.showScreen(this.disconnectedScreen);
-    };
+    }
 
-    onWaitingGameStatus = () => {
+    onWaitingGameStatus(){
         this.showScreen(this.waitingScreen);
-    };
+    }
 
-    onFinishingGameStatus = () => {
+    onFinishingGameStatus(){
         this.showScreen(this.finishingScreen);
-    };
+    }
 
-    onOtherGameStatus = () => {
+    onOtherGameStatus(){
         this.hide();
-    };
+    }
 
-    showScreen = (screen) => {
+    showScreen(screen){
         if(this.hidden){
             this.show();
         }
@@ -86,19 +86,19 @@ export default class ConnectionScreen extends Component{
             this.attachChild(screen);
             this.activeScreen = screen;
         }
-    };
+    }
 
-    hide = () => {
+    hide(){
         if(this.activeScreen){
             this.detachChild(this.activeScreen);
             this.activeScreen = undefined;
         }
         this.element.style.display = '';
         this.hidden = true;
-    };
+    }
 
-    show = () => {
+    show(){
         this.element.style.display = 'flex';
         this.hidden = false;
-    };
+    }
 }

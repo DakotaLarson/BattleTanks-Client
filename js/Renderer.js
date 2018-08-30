@@ -21,26 +21,26 @@ export default class Renderer extends Component{
 
     }
 
-    enable = () => {
-        EventHandler.addMonitorListener(EventHandler.Event.DOM_RESIZE, this.handleResize);
-        EventHandler.addMonitorListener(EventHandler.Event.GAME_ANIMATION_UPDATE, this.render);
-    };
+    enable(){
+        EventHandler.addListener(this, EventHandler.Event.DOM_RESIZE, this.handleResize, EventHandler.Level.LOW);
+        EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.render, EventHandler.Level.LOW);
+    }
 
-    disable = () => {
-        EventHandler.removeListener(EventHandler.Event.DOM_RESIZE, this.handleResize);
-        EventHandler.removeListener(EventHandler.Event.GAME_ANIMATION_UPDATE, this.render);
-    };
+    disable(){
+        EventHandler.removeListener(this, EventHandler.Event.DOM_RESIZE, this.handleResize, EventHandler.Level.LOW);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.render, EventHandler.Level.LOW);
+    }
 
-    render = () => {
+    render(){
         let time = performance.now();
         EventHandler.callEvent(EventHandler.Event.RENDERER_RENDER_PREPARE);
         this.renderer.render(this.scene, this.camera);
         time = performance.now() - time;
         EventHandler.callEvent(EventHandler.Event.RENDERER_RENDER_COMPLETE, time);
-    };
+    }
 
-    handleResize = () =>{
+    handleResize(){
         let dimensions = DomHandler.getDisplayDimensions();
         this.renderer.setSize(dimensions.width, dimensions.height);
-    };
+    }
 }

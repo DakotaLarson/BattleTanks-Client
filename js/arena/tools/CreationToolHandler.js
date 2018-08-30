@@ -14,62 +14,62 @@ export default class CreationToolHandler extends Component{
         this.mode = Mode.CAMERA;
     }
 
-    enable = () => {
-        EventHandler.addListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.addListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
+    enable(){
+        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
+        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
 
-        EventHandler.addListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
-        EventHandler.addListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
-        EventHandler.addListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN, this.handleToggleToGameSpawn);
-        EventHandler.addListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.handleToggleToInitialSpawn);
-    };
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN, this.handleToggleToGameSpawn);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.handleToggleToInitialSpawn);
+    }
 
-    disable = () => {
-        EventHandler.removeListener(EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.removeListener(EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
+    disable(){
+        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
+        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
 
-        EventHandler.removeListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
-        EventHandler.removeListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
-        EventHandler.removeListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN, this.handleToggleToGameSpawn);
-        EventHandler.removeListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.handleToggleToInitialSpawn);
-    };
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.handleToggleToBlock);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.handleToggleToCamera);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN, this.handleToggleToGameSpawn);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.handleToggleToInitialSpawn);
+    }
 
-    onGameMenuOpen = () => {
+    onGameMenuOpen(){
         if(this.mode === Mode.BLOCK){
             this.detachChild(this.blockCreationTool);
         }
-    };
+    }
 
-    onGameMenuClose = () => {
+    onGameMenuClose(){
         if(this.mode === Mode.BLOCK){
             this.attachChild(this.blockCreationTool);
         }
-    };
+    }
 
-    handleToggleToCamera = () => {
+    handleToggleToCamera(){
         this.removeTool();
         this.mode = Mode.CAMERA;
-    };
+    }
 
-    handleToggleToBlock = () => {
+    handleToggleToBlock(){
         this.removeTool();
         this.attachChild(this.blockCreationTool);
         this.mode = Mode.BLOCK;
-    };
+    }
 
-    handleToggleToGameSpawn = () => {
+    handleToggleToGameSpawn(){
         this.removeTool();
         this.attachChild(this.gameSpawnCreationTool);
         this.mode = Mode.GAMESPAWN;
-    };
+    }
 
-    handleToggleToInitialSpawn = () => {
+    handleToggleToInitialSpawn(){
         this.removeTool();
         this.attachChild(this.initialSpawnCreationTool);
         this.mode = Mode.INITIALSPAWN;
-    };
+    }
 
-    removeTool = () => {
+    removeTool(){
         switch(this.mode){
             case Mode.BLOCK:
                 this.detachChild(this.blockCreationTool);

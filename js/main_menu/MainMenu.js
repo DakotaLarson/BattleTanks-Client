@@ -21,101 +21,101 @@ export default class MainMenu extends Component{
         this.createMenu = new CreateWorldMenu(this.element);
         this.loadMenu = new LoadWorldMenu(this.element);
     }
-    enable = () => {
+    enable(){
         //TOP MENU
-        EventHandler.addListener(EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.handleTopSpOptClick);
-        EventHandler.addListener(EventHandler.Event.TOPMENU_MP_OPT_CLICK, this.handleTopMpOptClick);
-        EventHandler.addListener(EventHandler.Event.TOPMENU_OPT_OPT_CLICK, this.handleTopOptOptClick);
+        EventHandler.addListener(this, EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.handleTopSpOptClick);
+        EventHandler.addListener(this, EventHandler.Event.TOPMENU_MP_OPT_CLICK, this.handleTopMpOptClick);
+        EventHandler.addListener(this, EventHandler.Event.TOPMENU_OPT_OPT_CLICK, this.handleTopOptOptClick);
         //SP MENU
-        EventHandler.addListener(EventHandler.Event.SPMENU_LOAD_OPT_CLICK, this.handleSpLoadOptClick);
-        EventHandler.addListener(EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.handleSpCancelOptClick);
-        EventHandler.addListener(EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
+        EventHandler.addListener(this, EventHandler.Event.SPMENU_LOAD_OPT_CLICK, this.handleSpLoadOptClick);
+        EventHandler.addListener(this, EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.handleSpCancelOptClick);
+        EventHandler.addListener(this, EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
         //MP MENU
-        EventHandler.addListener(EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.handleMpCancelOptClick);
+        EventHandler.addListener(this, EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.handleMpCancelOptClick);
         //OPT MENU
-        EventHandler.addListener(EventHandler.Event.OPTMENU_CANCEL_OPT_CLICK, this.handleOptCancelOptClick);
+        EventHandler.addListener(this, EventHandler.Event.OPTMENU_CANCEL_OPT_CLICK, this.handleOptCancelOptClick);
         //CREATE WORLD MENU
-        EventHandler.addListener(EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.handleCreateWorldCancelClick);
+        EventHandler.addListener(this, EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.handleCreateWorldCancelClick);
         //LOAD WORLD MENU
-        EventHandler.addListener(EventHandler.Event.LOADWORLDMENU_CANCEL_OPT_CLICK, this.handleLoadWorldCancelClick);
+        EventHandler.addListener(this, EventHandler.Event.LOADWORLDMENU_CANCEL_OPT_CLICK, this.handleLoadWorldCancelClick);
 
         this.attachChild(this.topMenu);
 
         this.element.style.display = 'block';
-    };
-    disable = () => {
+    }
+
+    disable(){
         //TOP MENU
-        EventHandler.removeListener(EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.handleTopSpOptClick);
-        EventHandler.removeListener(EventHandler.Event.TOPMENU_MP_OPT_CLICK, this.handleTopMpOptClick);
-        EventHandler.removeListener(EventHandler.Event.TOPMENU_OPT_OPT_CLICK, this.handleTopOptOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.handleTopSpOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.TOPMENU_MP_OPT_CLICK, this.handleTopMpOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.TOPMENU_OPT_OPT_CLICK, this.handleTopOptOptClick);
         //SP MENU
-        EventHandler.removeListener(EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
-        EventHandler.removeListener(EventHandler.Event.SPMENU_LOAD_OPT_CLICK, this.handleSpLoadOptClick);
-        EventHandler.removeListener(EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.handleSpCancelOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.SPMENU_LOAD_OPT_CLICK, this.handleSpLoadOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.handleSpCancelOptClick);
         //MP MENU
-        EventHandler.removeListener(EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.handleMpCancelOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.handleMpCancelOptClick);
         //OPT MENU
-        EventHandler.removeListener(EventHandler.Event.OPTMENU_CANCEL_OPT_CLICK, this.handleOptCancelOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.OPTMENU_CANCEL_OPT_CLICK, this.handleOptCancelOptClick);
         //SPCREATE MENU
-        EventHandler.removeListener(EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.handleCreateWorldCancelClick);
+        EventHandler.removeListener(this, EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.handleCreateWorldCancelClick);
 
         this.element.style.display = '';
-    };
+    }
 
-    handleTopSpOptClick = () => {
+    //Top menu options
+    handleTopSpOptClick(){
         this.detachChild(this.topMenu);
         this.attachChild(this.spMenu);
-    };
+    }
 
-    handleTopMpOptClick = () => {
+    handleTopMpOptClick(){
         this.detachChild(this.topMenu);
         this.attachChild(this.mpMenu);
-    };
+    }
 
-    handleTopOptOptClick = () => {
+    handleTopOptOptClick(){
         this.detachChild(this.topMenu);
         this.attachChild(this.optMenu);
-    };
-    //Singleplayer Option Handlers
+    }
 
-    handleSpLoadOptClick = () => {
+    //Singleplayer Option Handlers
+    handleSpLoadOptClick(){
         this.detachChild(this.spMenu);
         this.attachChild(this.loadMenu);
-    };
+    }
 
-    handleSpCancelOptClick = () => {
+    handleSpCancelOptClick(){
         this.detachChild(this.spMenu);
         this.attachChild(this.topMenu);
-    };
+    }
 
-    handleSpCreateOptClick = () => {
+    handleSpCreateOptClick(){
         this.detachChild(this.spMenu);
         this.attachChild(this.createMenu);
-    };
+    }
 
     //Multiplayer Option Handlers
-    //TODO Add additional MP handlers here
-
-    handleMpCancelOptClick = () => {
+    handleMpCancelOptClick(){
         this.detachChild(this.mpMenu);
         this.attachChild(this.topMenu);
-    };
+    }
 
     //Options Option Handlers
-    //TODO Add additional Option handlers here
-
-    handleOptCancelOptClick = () => {
+    handleOptCancelOptClick(){
         this.detachChild(this.optMenu);
         this.attachChild(this.topMenu);
-    };
+    }
 
-    handleCreateWorldCancelClick = () => {
+    //create world menu
+    handleCreateWorldCancelClick(){
         this.detachChild(this.createMenu);
         this.attachChild(this.spMenu);
-    };
+    }
 
-    handleLoadWorldCancelClick = () => {
+    //load world menu
+    handleLoadWorldCancelClick(){
         this.detachChild(this.loadMenu);
         this.attachChild(this.spMenu);
-    };
+    }
 }

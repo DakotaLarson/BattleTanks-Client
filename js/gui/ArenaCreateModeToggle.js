@@ -16,31 +16,31 @@ export default class ArenaCreateModeToggle extends Component{
 
     }
 
-    enable = () => {
-        EventHandler.addListener(EventHandler.Event.DOM_CLICK, this.onClick);
-        EventHandler.addListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.onToggleBlock);
-        EventHandler.addListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.onToggleCamera);
-        EventHandler.addListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN, this.onToggleGameSpawn);
-        EventHandler.addListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.onToggleInitialSpawn);
+    enable(){
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.onToggleBlock);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.onToggleCamera);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN, this.onToggleGameSpawn);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.onToggleInitialSpawn);
 
-        EventHandler.addListener(EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+        EventHandler.addListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
 
         this.updateHTMLClasses();
         
         this.parentElt.style.display = 'inline-block';
-    };
+    }
 
-    disable = () => {
-        EventHandler.removeListener(EventHandler.Event.DOM_CLICK, this.onClick);
-        EventHandler.removeListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.onToggleBlock);
-        EventHandler.removeListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.onToggleCamera);
-        EventHandler.removeListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN, this.onToggleGameSpawn);
-        EventHandler.removeListener(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.onToggleInitialSpawn);
-        EventHandler.removeListener(EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+    disable(){
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.onToggleBlock);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.onToggleCamera);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN, this.onToggleGameSpawn);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.onToggleInitialSpawn);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
 
 
         this.parentElt.style.display = 'none';
-    };
+    }
 
     onClick = (event) => {
         if(event.target === this.cameraToggleElt){
@@ -60,9 +60,9 @@ export default class ArenaCreateModeToggle extends Component{
                 EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN);
             }
         }
-    };
+    }
 
-    onKeyDown = (event) => {
+    onKeyDown(event){
         if(event.code === 'KeyB'){
             if(!this.mode !== Mode.BLOCK){
                 EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK);
@@ -72,29 +72,29 @@ export default class ArenaCreateModeToggle extends Component{
                 EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA)
             }
         }
-    };
+    }
 
-    onToggleCamera = () => {
+    onToggleCamera(){
         this.mode = Mode.CAMERA;
         this.updateHTMLClasses();
-    };
+    }
 
-    onToggleBlock = () => {
+    onToggleBlock(){
         this.mode = Mode.BLOCK;
         this.updateHTMLClasses();
     }
 
-    onToggleGameSpawn = () => {
+    onToggleGameSpawn(){
         this.mode = Mode.GAMESPAWN;
         this.updateHTMLClasses();
-    };
+    }
 
-    onToggleInitialSpawn = () => {
+    onToggleInitialSpawn(){
         this.mode = Mode.INITIALSPAWN;
         this.updateHTMLClasses();
-    };
+    }
 
-    updateHTMLClasses = () => {
+    updateHTMLClasses(){
         switch(this.mode){
             case Mode.CAMERA:
                 this.cameraToggleElt.classList.add('create-world-toggle-enabled');
@@ -125,7 +125,7 @@ export default class ArenaCreateModeToggle extends Component{
                 this.blockToggleElt.classList.remove('create-world-toggle-enabled');
                 break;
         }
-    };
+    }
 }
 
 const Mode = {

@@ -1,6 +1,7 @@
 import Component from '../Component';
 import EventHandler from '../EventHandler';
 import DomHandler from '../DomHandler';
+import DomEventHandler from '../DomEventHandler';
 
 
 export default class LoadWorldMenu extends Component{
@@ -18,18 +19,18 @@ export default class LoadWorldMenu extends Component{
         this.world = undefined;
     }
 
-    enable = () => {
-        this.loadElt.addEventListener('click', this.onLoadClick);
-        this.cancelElt.addEventListener('click', this.onCancelClick);
-        this.fileInputElt.addEventListener('change', this.onFileChange);
+    enable(){
+        DomEventHandler.addListener(this, this.loadElt, 'click', this.onLoadClick);
+        DomEventHandler.addListener(this, this.cancelElt, 'click', this.onCancelClick);
+        DomEventHandler.addListener(this, this.fileInputElt, 'change', this.onFileChange);
 
         this.element.style.display = 'block';
-    };
+    }
 
-    disable = () => {
-        this.loadElt.removeEventListener('click', this.onLoadClick);
-        this.cancelElt.removeEventListener('click', this.onCancelClick);
-        this.fileInputElt.removeEventListener('change', this.onFileChange);
+    disable(){
+        DomEventHandler.removeListener(this, this.loadElt, 'click', this.onLoadClick);
+        DomEventHandler.removeListener(this, this.cancelElt, 'click', this.onCancelClick);
+        DomEventHandler.removeListener(this, this.fileInputElt, 'change', this.onFileChange);
 
         this.errorElt.textContent = '';
         this.fileNameElt.textContent = '';
@@ -37,22 +38,22 @@ export default class LoadWorldMenu extends Component{
         this.world = undefined;
 
         this.element.style.display = 'none';
-    };
+    }
 
-    onLoadClick = () => {
+    onLoadClick(){
         if(this.world){
             //call event
             EventHandler.callEvent(EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.world);
         }else{
             this.errorElt.textContent = 'No File selected';
         }
-    };
+    }
 
-    onCancelClick = () => {
+    onCancelClick(){
         EventHandler.callEvent(EventHandler.Event.LOADWORLDMENU_CANCEL_OPT_CLICK);
-    };
+    }
 
-    onFileChange = () => {
+    onFileChange(){
         let files = this.fileInputElt.files;
         if(files.length === 1){
             let file = files[0];
@@ -65,9 +66,9 @@ export default class LoadWorldMenu extends Component{
         }else{
             this.fileNameElt.textContent = '';
         }
-    };
+    }
 
-    parseFile = (file) => {
+    parseFile(file){
         return new Promise((resolve, reject) => {
             let fr = new FileReader();
             fr.onload = (event) => {
@@ -91,5 +92,5 @@ export default class LoadWorldMenu extends Component{
             fr.readAsText(file);
         });
 
-    };
+    }
 }
