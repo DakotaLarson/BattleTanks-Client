@@ -3,7 +3,7 @@ import EventHandler from '../../../EventHandler';
 import DomHandler from '../../../DomHandler';
 import MultiplayerControls from './MultiplayerControls';
 
-import {Vector3, Spherical} from 'three';
+import {Spherical} from 'three';
 
 export default class Camera extends Component{
 
@@ -19,8 +19,7 @@ export default class Camera extends Component{
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
 
-        EventHandler.addListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
-
+        EventHandler.addListener(this, EventHandler.Event.ARENA_INITIALSPAWN_ASSIGNMENT, this.onArenaSceneUpdate);
 
         this.attachControls();
     }
@@ -30,8 +29,7 @@ export default class Camera extends Component{
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.onGameMenuClose);
 
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
-        console.log('camera removed');
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_INITIALSPAWN_ASSIGNMENT, this.onArenaSceneUpdate);
 
         this.detachControls();
     }
@@ -58,10 +56,9 @@ export default class Camera extends Component{
         this.detachChild(this.controls);
     }
 
-    onArenaSceneUpdate(data){
-        console.log('camera location update')
-        this.controls.target = new Vector3(data.width / 2, 0, data.height / 2);
-        this.controls.spherical = new Spherical(25, Math.PI / 4, Math.PI / 3);
+    onArenaSceneUpdate(loc){
+        this.controls.target = loc.clone().addScalar(0.5).setY(0);
+        this.controls.spherical = new Spherical(25, Math.PI / 4, Math.PI);
         this.controls.update();
     }
 }

@@ -1,4 +1,4 @@
-import {Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, DirectionalLight, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, BoxGeometry, Geometry, Raycaster, Vector2} from 'three';
+import {Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, DirectionalLight, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, BoxGeometry, Geometry, Raycaster, Vector2, CylinderGeometry, DoubleSide}from 'three';
 
 import Component from '../Component';
 import EventHandler from '../EventHandler';
@@ -19,6 +19,8 @@ export default class SceneHandler extends Component{
         this.initialSpawnLocations = [];
         this.gameSpawnLocations = [];
 
+        this.players = new Map();
+
         this.floor = undefined;
         this.lines = undefined;
         this.lights = undefined;
@@ -34,6 +36,13 @@ export default class SceneHandler extends Component{
 
         this.blocksIntersection = [];
         this.floorIntersection = [];
+
+        this.playerBodyWidth = 1;
+        this.playerBodyHeight = 0.55;
+        this.playerBodyDepth = 1.5;
+
+        this.playerOffset = new Vector3(this.playerBodyWidth/2, this.playerBodyHeight/2, this.playerBodyDepth/2 - 0.25);
+
     }
 
     enable(){
@@ -47,8 +56,13 @@ export default class SceneHandler extends Component{
         EventHandler.addListener(this, EventHandler.Event.GAMESPAWN_CREATION_TOOL_SECONDARY, this.onGameSpawnSecondary);
 
         EventHandler.addListener(this, EventHandler.Event.SP_GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
-        EventHandler.addListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.handleSceneUpdate);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onSceneUpdate);
         EventHandler.addListener(this, EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
+
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
+         
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_MOVEMENT_UPDATE, this.onPlayerMove);
 
     }
 
@@ -63,18 +77,23 @@ export default class SceneHandler extends Component{
         EventHandler.removeListener(this, EventHandler.Event.GAMESPAWN_CREATION_TOOL_SECONDARY, this.onGameSpawnSecondary);
 
         EventHandler.removeListener(this, EventHandler.Event.SP_GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.handleSceneUpdate);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onSceneUpdate);
         EventHandler.removeListener(this, EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
 
-        this.clearScene();
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
+
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_MOVEMENT_UPDATE, this.onPlayerMove);
+
+        this.clearScene(true);
     }
 
-    handleSceneUpdate(data){
+    onSceneUpdate(data){
         this.title = data.title;
         this.width = data.width + 2;
         this.height = data.height + 2;
 
-        this.clearScene();
+        this.clearScene(true);
 
         this.floor = this.createFloor();
         this.lines = this.createLines();
@@ -84,6 +103,11 @@ export default class SceneHandler extends Component{
 
         this.gameSpawnLocations = this.parseLocationData(data.gameSpawnLocations) || [];
         this.initialSpawnLocations = this.parseLocationData(data.initialSpawnLocations) || [];
+
+        EventHandler.callEvent(EventHandler.Event.ARENA_BLOCKLOCATION_UPDATE, this.blockLocations);
+        EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.initialSpawnLocations);
+        EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.gameSpawnLocations);
+
 
         this.updateBlocks(locations);
         
@@ -128,6 +152,64 @@ export default class SceneHandler extends Component{
         URL.revokeObjectURL(objectURL);
     }
 
+    onPlayerAddition(player){
+        let playerGeo = new Geometry();
+
+        let bodyGeo = new BoxGeometry(this.playerBodyWidth, this.playerBodyHeight, this.playerBodyDepth);
+        let headGeo = new BoxGeometry(0.5, 0.35, 0.5);
+        let turretGeo = new CylinderGeometry(0.0625, 0.0625, 0.75, 8, 1, true);
+        turretGeo.rotateX(Math.PI / 2);
+
+
+        // let material = new MeshLambertMaterial({
+        //     color: 0xce141a
+        // });
+        let playerMaterial = new MeshLambertMaterial({
+            color: 0xce141a,
+            side: DoubleSide
+        });
+
+        let headOffset = new Vector3(0, this.playerBodyHeight / 2 + 0.35/2, 0);
+        let turretOffset = new Vector3(0, this.playerBodyHeight / 2 + 0.35/2, 0.25); 
+
+        for(let i = 0; i < bodyGeo.vertices.length; i ++){
+            //bodyGeo.vertices[i].add(bodyOffset);
+        }
+        for(let i = 0; i < headGeo.vertices.length; i ++){
+            headGeo.vertices[i].add(headOffset);
+        }
+        for(let i = 0; i < turretGeo.vertices.length; i ++){
+            turretGeo.vertices[i].add(turretOffset);
+        }
+
+        playerGeo.merge(bodyGeo);
+        playerGeo.merge(headGeo);
+        playerGeo.merge(turretGeo);
+
+        let mesh = new Mesh(playerGeo, playerMaterial);
+        mesh.position.copy(player.position).add(this.playerOffset);
+
+        this.scene.add(mesh);
+
+        this.players.set(player.id, mesh);
+    }
+
+    onPlayerRemoval(player){
+        if(this.players.has(player.id)){
+            let mesh = this.players.get(player.id);
+            this.scene.remove(mesh);
+            this.players.delete(player.id);
+        }
+    }
+
+    onPlayerMove(data){
+        if(this.players.has(data.id)){
+            let mesh = this.players.get(data.id);
+            mesh.position.copy(data.pos).add(this.playerOffset);
+            mesh.rotation.y = data.rot;
+        }
+    }
+
     onBCTPrimary(){
         if(this.floorIntersection.length){
             let location = this.floorIntersection[0].point.setY(0);
@@ -166,7 +248,7 @@ export default class SceneHandler extends Component{
                 this.initialSpawnLocations.push(location);
                 //TODO Alert success
                 console.log('IS added');
-                EventHandler.addListener(this, EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.initialSpawnLocations);
+                EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.initialSpawnLocations);
             }
         }
     }
@@ -179,7 +261,7 @@ export default class SceneHandler extends Component{
             if(removed){
                 //TODO Alert success
                 console.log('IS removed');
-                EventHandler.addListener(this, EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.initialSpawnLocations);
+                EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.initialSpawnLocations);
             }else{
                 //TODO Alert failure
                 console.log('IS not removed');
@@ -201,7 +283,7 @@ export default class SceneHandler extends Component{
                 this.gameSpawnLocations.push(location);
                 console.log('GS added');
                 //TODO Alert success
-                EventHandler.addListener(this, EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.gameSpawnLocations);
+                EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.gameSpawnLocations);
             }
         }
     }
@@ -214,7 +296,7 @@ export default class SceneHandler extends Component{
             if(removed){
                 //TODO Alert success
                 console.log('GS removed');
-                EventHandler.addListener(this, EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.gameSpawnLocations);
+                EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.gameSpawnLocations);
             }else{
                 //TODO Alert failure
                 console.log('GS not removed');
@@ -335,7 +417,7 @@ export default class SceneHandler extends Component{
         }
     }
 
-    clearScene(){
+    clearScene(removePlayers){
         if(this.floor){
             this.scene.remove(this.floor);
             this.floor = undefined;
@@ -355,6 +437,14 @@ export default class SceneHandler extends Component{
         if(this.blockLocations){
             this.blockLocations = [];
         }
+        if(removePlayers){
+            let playerValues = this.players.values();
+            let playerValue = playerValues.next();
+            while(!playerValue.done){
+                this.scene.remove(playerValue.value);
+                playerValue = playerValues.next();
+            }
+        }
     }
 
     updateMouseCoords(){
@@ -373,39 +463,30 @@ export default class SceneHandler extends Component{
     }
 
     isLocationBlock(loc){
-        for(let i = 0; i < this.blockLocations.length; i ++){
-            if(this.blockLocations[i].equals(loc)) return true;
-        }
-        return false;
+        return this.isLocationInArray(loc, this.blockLocations);
     }
 
     isLocationGameSpawn(loc){
-        for(let i = 0; i < this.gameSpawnLocations.length; i ++){
-            if(this.gameSpawnLocations[i].equals(loc)) return true;
-        }
-        return false;
+        return this.isLocationInArray(loc, this.gameSpawnLocations);
     }
 
     isLocationInitialSpawn(loc){
-        for(let i = 0; i < this.initialSpawnLocations.length; i ++){
-            if(this.initialSpawnLocations[i].equals(loc)) return true;
-        }
-        return false;
+        return this.isLocationInArray(loc, this.initialSpawnLocations);
     }
 
     removeBlockLocation(loc){
-        return this.removeLocation(loc, this.blockLocations);
+        return this.removeLocationFromArray(loc, this.blockLocations);
     }
 
     removeInitialSpawnLocation(loc){
-        return this.removeLocation(loc, this.initialSpawnLocations);
+        return this.removeLocationFromArray(loc, this.initialSpawnLocations);
     }
 
     removeGameSpawnLocation(loc){
-        return this.removeLocation(loc, this.gameSpawnLocations);
+        return this.removeLocationFromArray(loc, this.gameSpawnLocations);
     }
 
-    removeLocation(loc, arr){
+    removeLocationFromArray(loc, arr){
         let spliceIndex = -1;
         for(let i = 0; i < arr.length; i ++){
             if(arr[i].equals(loc)){
@@ -416,6 +497,13 @@ export default class SceneHandler extends Component{
         if(spliceIndex > -1){
             arr.splice(spliceIndex, 1);
             return true;
+        }
+        return false;
+    }
+
+    isLocationInArray(loc, arr){
+        for(let i = 0; i < arr.length; i ++){
+            if(arr[i].equals(loc)) return true;
         }
         return false;
     }

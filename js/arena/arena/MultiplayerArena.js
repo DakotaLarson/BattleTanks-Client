@@ -1,39 +1,35 @@
-import Component from '../../Component';
+import Arena from './Arena';
 import EventHandler from '../../EventHandler';
+import Player from '../player/Player';
 
-export default class MultiplayerArena extends Component{
+export default class MultiplayerArena extends Arena{
 
     constructor(){
         super();
-
-        this.blockLocations = [];
-        this.initialSpawnLocations = [];
-        this.gameSpawnLocations = [];
+        
+        this.player = undefined;
     }
 
     enable(){
-        EventHandler.addListener(this, EventHandler.Event.ARENA_BLOCKLOCATION_UPDATE, this.onBlockLocationUpdate);
-        EventHandler.addListener(this, EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.onGameSpawnUpdate);
-        EventHandler.addListener(this, EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.onInitialSpawnUpdate);
+        super.enable();
+        EventHandler.addListener(this, EventHandler.Event.ARENA_INITIALSPAWN_ASSIGNMENT, this.onInitialSpawnAssignment);
     }
 
     disable(){
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_BLOCKLOCATION_UPDATE, this.onBlockLocationUpdate);
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.onGameSpawnUpdate);
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.onInitialSpawnUpdate);
+        super.disable();
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_INITIALSPAWN_ASSIGNMENT, this.onInitialSpawnAssignment);
     }
 
-    onBlockLocationUpdate(blockLocations){
-        this.blockLocations = blockLocations;
+    onInitialSpawnAssignment(loc){
+        let playerId = this.getNewPlayerId();
+        this.player = new Player(playerId, loc);
+        this.attachChild(this.player);
+        EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_ADDITION, this.player);
     }
 
-    onGameSpawnUpdate(gameSpawnLocations){
-        this.gameSpawnLocations = gameSpawnLocations;
+    getNewPlayerId(){
+        return latestId ++;
     }
-    
-    onInitialSpawnUpdate(initialSpawnLocations){
-        this.initialSpawnLocations = initialSpawnLocations;
-    }
-
-    
 }
+
+let latestId = 0;

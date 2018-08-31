@@ -36,7 +36,7 @@ class Game extends Component{
         this.attachChild(this.arenaHandler);
     }
 
-    update = (delta) => {
+    update(delta){
         EventHandler.callEvent(EventHandler.Event.GAME_ANIMATION_UPDATE, delta);
     }
 

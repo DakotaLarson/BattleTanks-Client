@@ -42,7 +42,7 @@ export default class ArenaCreateModeToggle extends Component{
         this.parentElt.style.display = 'none';
     }
 
-    onClick = (event) => {
+    onClick(event){
         if(event.target === this.cameraToggleElt){
             if(!this.mode !== Mode.CAMERA){
                 EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA);

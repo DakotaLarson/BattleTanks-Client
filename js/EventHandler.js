@@ -96,6 +96,10 @@ const Event = {
     ARENA_GAMESPAWN_UPDATE: 58,
     ARENA_INITIALSPAWN_UPDATE: 59,
     ARENA_BLOCKLOCATION_UPDATE: 60,
+    ARENA_PLAYER_ADDITION: 61,
+    ARENA_PLAYER_REMOVAL: 62,
+    ARENA_PLAYER_MOVEMENT_UPDATE: 64,
+    ARENA_INITIALSPAWN_ASSIGNMENT: 63,
 
     //ALERT MESSAGE
     ALERT_MESSAGE_REQUEST: 57
@@ -107,7 +111,7 @@ const Level = {
     MEDIUM: 1,
     HIGH: 2
 }
-//Latest Event #: 60 (Append upon event addition.)
+//Latest Event #: 64 (Append upon event addition.)
 //Missing Event #s: NONE (Append on event removal; Use and remove from list for event addition when available.)
 
 const lowListeners = new Map();
@@ -181,8 +185,9 @@ export default class EventHandler{
             if(spliceIndex > -1){
                 eventLevelListeners.splice(spliceIndex, 1);
                 listeners.set(event, eventLevelListeners);
+            }else{
+                console.warn('Attempt to remove event listener was unsuccessful.');
             }
-
         }
     }
     static callEvent(event, argument){

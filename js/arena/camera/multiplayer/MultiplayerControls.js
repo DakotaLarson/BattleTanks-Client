@@ -23,7 +23,7 @@ export default class MultiplayerControls extends Component{
         
         this.target = new Vector3();
 
-        this.spherical = new Spherical(25, Math.PI / 4, Math.PI / 3);
+        this.spherical = new Spherical(25, Math.PI / 4,2 * Math.PI);
         this.update();
 
         this.state = -1;
@@ -34,7 +34,6 @@ export default class MultiplayerControls extends Component{
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
         EventHandler.addListener(this, EventHandler.Event.DOM_WHEEL, this.onWheel);
-        console.log('listener added');
 
         this.update();
     }
@@ -44,10 +43,9 @@ export default class MultiplayerControls extends Component{
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
         EventHandler.removeListener(this, EventHandler.Event.DOM_WHEEL, this.onWheel);
-        console.log('listener removed');
     }
 
-    onMouseDown = (event) => {
+    onMouseDown(event){
         if(this.state === -1){
             switch(event.button){
                 // case 0:
@@ -63,11 +61,11 @@ export default class MultiplayerControls extends Component{
         }
     }
 
-    onMouseUp = () => {
+    onMouseUp(){
         this.state = -1;
     }
 
-    onMouseMove = (event) => {
+    onMouseMove(event){
         if(this.state === -1) return;
         switch(this.state){
             case ButtonState.PRIMARY:
@@ -82,9 +80,9 @@ export default class MultiplayerControls extends Component{
         }
     }
 
-    onWheel = (event) => {
+    onWheel(event){
         this.handleZoom(event.deltaY, true);
-    };
+    }
 
     // handleRotation = (deltaX, deltaY) => {
     //      this.spherical.theta += deltaX * Math.PI /180 / 3;

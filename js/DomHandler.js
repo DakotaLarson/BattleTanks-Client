@@ -94,7 +94,7 @@ document.addEventListener('pointerlockchange', () => {
 EventHandler.addListener(this, EventHandler.Event.DOM_RESIZE, () => {
     displayDimensions.width = window.innerWidth;
     displayDimensions.height = window.innerHeight;
-});
+}, EventHandler.Level.LOW);
 
 EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, (event) => {
     mousePosition.x = event.clientX;

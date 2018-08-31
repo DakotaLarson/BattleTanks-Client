@@ -27,6 +27,8 @@ export default class DomEventHandler{
             let boundCallback = listeners.get(key);
             obj.removeEventListener(event, boundCallback);
             listeners.delete(key);
+        }else{
+            console.warn('Attempt to remove DOM event listener was unsuccessful.');
         }
     }
 }

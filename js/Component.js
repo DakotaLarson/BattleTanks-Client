@@ -4,16 +4,24 @@ export default class Component{
         this.parent = undefined;
         this.state = {};
     }
+
+    enable(){
+
+    }
+
+    disable(){
+
+    }
     
-    attachChild = (component) => {
+    attachChild(component){
         if(this.children.indexOf(component) < 0){
             this.children.push(component);
             component.attachToParent(this);
             component.enable();
         }
-    };
+    }
     
-    detachChild = (component) => {
+    detachChild(component){
         let index = this.children.indexOf(component);
         let detachChildren = (component) => {
             let childCount = component.children.length;
@@ -35,7 +43,7 @@ export default class Component{
 
     }
     
-    attachToParent = (component) => {
+    attachToParent(component){
         this.parent = component;
     }
 
