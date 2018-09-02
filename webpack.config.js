@@ -33,17 +33,8 @@ module.exports = (env, argv) => {
         },
         resolve: {
             modules: [
-                path.resolve('./js/'),
-                path.resolve('./js/main_menu/'),
-                path.resolve('./js/arena/'),
-                path.resolve('./js/arena/camera'),
-                path.resolve('./js/arena/camera/player_controls'),
-                path.resolve('./js/arena/camera/builder_controls'),
-                path.resolve('./js/arena/tools'),
-                path.resolve('./js/gui'),
-                path.resolve('./js/game_menu'),
-                path.resolve('./js/connection_screen'),
-                path.resolve('./node_modules')
+                './js/',
+                './node_modules'
             ]
         }
     };
