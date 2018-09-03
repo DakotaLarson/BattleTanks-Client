@@ -67,7 +67,7 @@ export default class ConnectionScreen extends Component{
         this.showScreen(this.connectedScreen);
     }
 
-    onConnectionClose(event){
+    onConnectionClose(event: CloseEvent){
         console.log('Disconnected: ' + event.code);
         this.showScreen(this.disconnectedScreen);
     }
@@ -84,7 +84,7 @@ export default class ConnectionScreen extends Component{
         this.hide();
     }
 
-    showScreen(screen){
+    showScreen(screen: Component){
         if(this.hidden){
             this.show();
         }

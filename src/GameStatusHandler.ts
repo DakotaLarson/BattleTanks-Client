@@ -38,9 +38,9 @@ export default class GameStatusHandler extends Component{
     }
 }
 
-const GameStatus = {
-    WAITING: 0,
-    PREPARING: 1,
-    RUNNING: 2,
-    FINISHING: 3
+enum GameStatus{
+    WAITING,
+    PREPARING,
+    RUNNING,
+    FINISHING
 };

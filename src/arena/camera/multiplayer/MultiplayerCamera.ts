@@ -3,14 +3,14 @@ import EventHandler from '../../../EventHandler';
 import DomHandler from '../../../DomHandler';
 import MultiplayerControls from './MultiplayerControls';
 
-import {Spherical, PerspectiveCamera} from 'three';
+import {Spherical, PerspectiveCamera, Vector3} from 'three';
 
 export default class Camera extends Component{
 
     camera: PerspectiveCamera;
     controls: MultiplayerControls;
     
-    constructor(camera){
+    constructor(camera: PerspectiveCamera){
         super();
         this.camera = camera;
 
@@ -59,7 +59,7 @@ export default class Camera extends Component{
         this.detachChild(this.controls);
     }
 
-    onArenaSceneUpdate(loc){
+    onArenaSceneUpdate(loc: Vector3){
         this.controls.target = loc.clone().addScalar(0.5).setY(0);
         this.controls.spherical = new Spherical(25, Math.PI / 4, Math.PI);
         this.controls.update();

@@ -29,7 +29,7 @@ export default class GameMenu extends Component {
         this.element.style.display = '';
     }
 
-    handleClick(event){
+    handleClick(event: MouseEvent){
         if(event.target === this.cancelBtn){
             EventHandler.callEvent(EventHandler.Event.GAMEMENU_CLOSE_REQUEST);
         }else if(event.target === this.disconnectBtn){

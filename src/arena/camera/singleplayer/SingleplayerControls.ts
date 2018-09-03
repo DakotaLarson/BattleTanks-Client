@@ -9,10 +9,10 @@ import {Vector3, Spherical, PerspectiveCamera} from 'three';
 //    Zoom - middle mouse, or mousewheel
 //    Pan - right mouse or keys
 
-const ButtonState = {
-    PRIMARY: 0,
-    SECONDARY: 2,
-    TERTIARY: 1
+enum ButtonState{
+    PRIMARY,
+    SECONDARY,
+    TERTIARY
 };
 
 
@@ -23,7 +23,7 @@ export default class SinglePlayerControls extends Component{
     spherical: Spherical;
     state: number;
 
-    constructor(camera){
+    constructor(camera: PerspectiveCamera){
         super();
         this.camera = camera;
         
@@ -53,7 +53,7 @@ export default class SinglePlayerControls extends Component{
         EventHandler.removeListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
     }
 
-    onMouseDown(event){
+    onMouseDown(event: MouseEvent){
         if(this.state === -1){
             switch(event.button){
                 case 0:
@@ -73,7 +73,7 @@ export default class SinglePlayerControls extends Component{
         this.state = -1;
     }
 
-    onMouseMove(event){
+    onMouseMove(event: MouseEvent){
         if(this.state === -1) return;
         switch(this.state){
             case ButtonState.PRIMARY:
@@ -88,18 +88,18 @@ export default class SinglePlayerControls extends Component{
         }
     }
 
-    onWheel(event){
+    onWheel(event: MouseWheelEvent){
         this.handleZoom(event.deltaY, true);
     }
 
-    handleRotation(deltaX, deltaY){
+    handleRotation(deltaX: number, deltaY: number){
          this.spherical.theta += deltaX * Math.PI /180 / 3;
          this.spherical.phi += deltaY * Math.PI / 180 / 5;
          this.spherical.phi = Math.min(Math.PI / 2 - Math.PI / 24, this.spherical.phi);
          this.update();
     }
 
-    handlePan(deltaX, deltaY){
+    handlePan(deltaX: number, deltaY: number){
         let offset = new Vector3();
         let position = this.camera.position;
         offset.copy(position).sub(this.target);
@@ -122,7 +122,7 @@ export default class SinglePlayerControls extends Component{
         this.update();
     }
 
-    handleZoom(deltaY, isScroll){
+    handleZoom(deltaY: number, isScroll: boolean){
         if(isScroll){
             if(deltaY > 0){
                 this.spherical.radius = Math.min(this.spherical.radius + 2, 100);

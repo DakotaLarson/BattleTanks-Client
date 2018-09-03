@@ -3,6 +3,7 @@ import {Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight,
 import Component from '../Component';
 import EventHandler from '../EventHandler';
 import DomHandler from '../DomHandler';
+import Player from './player/Player';
 
 
 
@@ -181,7 +182,7 @@ export default class SceneHandler extends Component{
         URL.revokeObjectURL(objectURL);
     }
 
-    onPlayerAddition(player){
+    onPlayerAddition(player: Player){
         let playerGeo = new Geometry();
 
         let bodyGeo = new BoxGeometry(this.playerBodyWidth, this.playerBodyHeight, this.playerBodyDepth);
@@ -223,7 +224,7 @@ export default class SceneHandler extends Component{
         this.players.set(player.id, mesh);
     }
 
-    onPlayerRemoval(player){
+    onPlayerRemoval(player: Player){
         if(this.players.has(player.id)){
             let mesh = this.players.get(player.id);
             this.scene.remove(mesh);
@@ -379,7 +380,7 @@ export default class SceneHandler extends Component{
         return floor;
     }
 
-    updateBlocks(locations){
+    updateBlocks(locations: Array<Vector3>){
         let blockGeometries = [];
         let masterGeo = new Geometry();
         if(locations){
@@ -447,7 +448,7 @@ export default class SceneHandler extends Component{
         }
     }
 
-    clearScene(removePlayers){
+    clearScene(removePlayers: boolean){
         if(this.floor){
             this.scene.remove(this.floor);
             this.floor = undefined;
@@ -492,31 +493,31 @@ export default class SceneHandler extends Component{
         return new Vector3(this.width / 2, 0, this.height / 2);
     }
 
-    isLocationBlock(loc){
+    isLocationBlock(loc: Vector3){
         return this.isLocationInArray(loc, this.blockLocations);
     }
 
-    isLocationGameSpawn(loc){
+    isLocationGameSpawn(loc: Vector3){
         return this.isLocationInArray(loc, this.gameSpawnLocations);
     }
 
-    isLocationInitialSpawn(loc){
+    isLocationInitialSpawn(loc: Vector3){
         return this.isLocationInArray(loc, this.initialSpawnLocations);
     }
 
-    removeBlockLocation(loc){
+    removeBlockLocation(loc: Vector3){
         return this.removeLocationFromArray(loc, this.blockLocations);
     }
 
-    removeInitialSpawnLocation(loc){
+    removeInitialSpawnLocation(loc: Vector3){
         return this.removeLocationFromArray(loc, this.initialSpawnLocations);
     }
 
-    removeGameSpawnLocation(loc){
+    removeGameSpawnLocation(loc: Vector3){
         return this.removeLocationFromArray(loc, this.gameSpawnLocations);
     }
 
-    removeLocationFromArray(loc, arr){
+    removeLocationFromArray(loc: Vector3, arr: Array<Vector3>){
         let spliceIndex = -1;
         for(let i = 0; i < arr.length; i ++){
             if(arr[i].equals(loc)){
@@ -531,7 +532,7 @@ export default class SceneHandler extends Component{
         return false;
     }
 
-    isLocationInArray(loc, arr){
+    isLocationInArray(loc: Vector3, arr: Array<Vector3>){
         for(let i = 0; i < arr.length; i ++){
             if(arr[i].equals(loc)) return true;
         }

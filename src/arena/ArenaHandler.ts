@@ -149,7 +149,7 @@ export default class ArenaHandler extends Component{
         }
     }
 
-    onKeyDown(event){
+    onKeyDown(event: KeyboardEvent){
         if(event.code === 'Escape') {
             if(this.gameMenuEnabled){
                 EventHandler.callEvent(EventHandler.Event.GAMEMENU_CLOSE_REQUEST);

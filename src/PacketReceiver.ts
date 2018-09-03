@@ -30,10 +30,10 @@ const handlers = new Map([
     [0x03, receiveAssignedInitialSpawn]
 ]);
 
-const DataType = {
-    NUMBER: 0X00,
-    STRING: 0X01,
-    ARRAY: 0x02
+enum DataType{
+    NUMBER = 0X00,
+    STRING = 0X01,
+    ARRAY = 0x02
 }
 
 export default class PacketReceiver{

@@ -1,6 +1,6 @@
 
-const Packets = {
-    PLAYER_JOIN: 0X00
+enum Packets{
+    PLAYER_JOIN = 0X00
 };
 
 const encoder = new TextEncoder();

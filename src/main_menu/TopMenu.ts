@@ -10,7 +10,7 @@ export default class TopMenu extends Component{
     mpBtn: HTMLElement;
     optBtn: HTMLElement;
 
-    constructor(mainMenu){
+    constructor(mainMenu: HTMLElement){
     super();
         this.element = DomHandler.getElement('#main-menu-top', mainMenu);
 

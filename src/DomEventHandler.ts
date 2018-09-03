@@ -1,7 +1,10 @@
 const listeners = new Map();
 
+type eventCallback = (data?: any) => any;
+
 export default class DomEventHandler{
-    static addListener(context, obj, event, callback){
+
+    static addListener(context, obj: HTMLElement | WebSocket, event: string, callback: eventCallback){
         let listenerKey = {
             context: context,
             obj: obj,
@@ -15,7 +18,7 @@ export default class DomEventHandler{
         }
     }
 
-    static removeListener(context, obj, event, callback){
+    static removeListener(context, obj: HTMLElement | WebSocket, event: string, callback: eventCallback){
         let listenerKey = {
             context: context,
             obj: obj,

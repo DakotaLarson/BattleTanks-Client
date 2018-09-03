@@ -16,15 +16,15 @@ export default class AlertMessageHandler extends Component{
     }
 
     enable(){
-        EventHandler.addListener(this, this, EventHandler.Event.ALERT_MESSAGE_REQUEST, this.onAlertRequest);
+        EventHandler.addListener(this, EventHandler.Event.ALERT_MESSAGE_REQUEST, this.onAlertRequest);
 
     }
 
     disable(){
-        EventHandler.removeListener(this, this, EventHandler.Event.ALERT_MESSAGE_REQUEST, this.onAlertRequest);
+        EventHandler.removeListener(this, EventHandler.Event.ALERT_MESSAGE_REQUEST, this.onAlertRequest);
     }
 
-    onAlertRequest(message){
+    onAlertRequest(message: string){
         if(this.taskId === -1){
             this.alertElt.textContent = message;
             this.parentElt.style.opacity = '1';

@@ -15,14 +15,14 @@ export default class LoadWorldMenu extends Component{
     fileInputParentElt: HTMLElement;
     world: Object;
 
-    constructor(mainMenu){
+    constructor(mainMenu: HTMLElement){
         super();
         this.element = DomHandler.getElement('#sp-menu-load', mainMenu);
         this.loadElt = DomHandler.getElement('#load-opt-load', this.element);
         this.cancelElt = DomHandler.getElement('#load-opt-cancel', this.element);
         this.errorElt = DomHandler.getElement('#load-opt-error', this.element);
         this.fileNameElt = DomHandler.getElement('.menu-file-name', this.element);
-        this.fileInputElt = DomHandler.getElement('#load-opt-file', this.element);
+        this.fileInputElt = DomHandler.getElement('#load-opt-file', this.element) as HTMLInputElement;
         this.fileInputParentElt = DomHandler.getElement('.menu-file-input', this.element);
 
         this.world = undefined;
@@ -80,7 +80,7 @@ export default class LoadWorldMenu extends Component{
     parseFile(file){
         return new Promise((resolve, reject) => {
             let fr = new FileReader();
-            fr.onload = (event) => {
+            fr.onload = (event: ProgressEvent) => {
                 // @ts-ignore can use fr.result, however, requires ArrayBuffer check.
                 let parsedResult = event.target.result;
                 let json = undefined;

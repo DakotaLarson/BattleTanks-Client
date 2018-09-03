@@ -29,15 +29,15 @@ export default class Arena extends Component{
         EventHandler.removeListener(this, EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.onInitialSpawnUpdate);
     }
 
-    onBlockLocationUpdate(blockLocations){
+    onBlockLocationUpdate(blockLocations: Array<Vector3>){
         this.blockLocations = blockLocations;
     }
 
-    onGameSpawnUpdate(gameSpawnLocations){
+    onGameSpawnUpdate(gameSpawnLocations: Array<Vector3>){
         this.gameSpawnLocations = gameSpawnLocations;
     }
     
-    onInitialSpawnUpdate(initialSpawnLocations){
+    onInitialSpawnUpdate(initialSpawnLocations: Array<Vector3>){
         this.initialSpawnLocations = initialSpawnLocations;
     }
 }

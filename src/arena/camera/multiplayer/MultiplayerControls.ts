@@ -1,6 +1,5 @@
 import Component from '../../../Component';
 import EventHandler from '../../../EventHandler';
-//import DomHandler from '../../../DomHandler';
 
 import {Vector3, Spherical, PerspectiveCamera} from 'three';
 
@@ -9,10 +8,10 @@ import {Vector3, Spherical, PerspectiveCamera} from 'three';
 //    Zoom - middle mouse, or mousewheel
 //    Pan - right mouse or keys
 
-const ButtonState = {
-    PRIMARY: 0,
-    SECONDARY: 2,
-    TERTIARY: 1
+enum ButtonState{
+    PRIMARY,
+    SECONDARY,
+    TERTIARY
 };
 
 
@@ -23,7 +22,7 @@ export default class MultiplayerControls extends Component{
     spherical: Spherical;
     state: number;
 
-    constructor(camera){
+    constructor(camera: PerspectiveCamera){
         super();
         this.camera = camera;
         
@@ -51,7 +50,7 @@ export default class MultiplayerControls extends Component{
         EventHandler.removeListener(this, EventHandler.Event.DOM_WHEEL, this.onWheel);
     }
 
-    onMouseDown(event){
+    onMouseDown(event: MouseEvent){
         if(this.state === -1){
             switch(event.button){
                 // case 0:
@@ -71,7 +70,7 @@ export default class MultiplayerControls extends Component{
         this.state = -1;
     }
 
-    onMouseMove(event){
+    onMouseMove(event: MouseEvent){
         if(this.state === -1) return;
         switch(this.state){
             case ButtonState.PRIMARY:
@@ -86,7 +85,7 @@ export default class MultiplayerControls extends Component{
         }
     }
 
-    onWheel(event){
+    onWheel(event: MouseWheelEvent){
         this.handleZoom(event.deltaY, true);
     }
 

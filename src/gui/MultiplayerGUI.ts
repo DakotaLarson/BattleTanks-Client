@@ -6,6 +6,7 @@ export default class GUI extends Component {
 
     element: HTMLElement;
     debugPanel: DebugPanel;
+    
     constructor(){
         super();
         this.element = DomHandler.getElement('.gui');

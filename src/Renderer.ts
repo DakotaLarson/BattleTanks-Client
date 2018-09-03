@@ -10,15 +10,13 @@ export default class Renderer extends Component{
     scene: Scene;
     camera: PerspectiveCamera;
 
-    constructor(scene, camera){
+    constructor(scene: Scene, camera: PerspectiveCamera){
         super();
         this.renderer = new WebGLRenderer({
-            canvas: DomHandler.getElement('#game-canvas'),
+            canvas: DomHandler.getElement('#game-canvas') as HTMLCanvasElement,
             antialias: true
         });
         this.renderer.setPixelRatio(window.devicePixelRatio);
-        //this.renderer.shadowMap.enabled = true;
-        //this.renderer.shadowMap.type = PCFSoftShadowMap;
         this.scene = scene;
         this.camera = camera;
         this.handleResize();

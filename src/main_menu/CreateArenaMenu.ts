@@ -18,9 +18,9 @@ export default class CreateWorldMenu extends Component{
     constructor(mainMenu){
         super();
         this.element = DomHandler.getElement('#sp-menu-create', mainMenu);
-        this.titleElt = DomHandler.getElement('#create-opt-title', this.element);
-        this.widthElt = DomHandler.getElement('#create-opt-width', this.element);
-        this.heightElt = DomHandler.getElement('#create-opt-height', this.element);
+        this.titleElt = DomHandler.getElement('#create-opt-title', this.element) as HTMLInputElement;
+        this.widthElt = DomHandler.getElement('#create-opt-width', this.element) as HTMLInputElement; 
+        this.heightElt = DomHandler.getElement('#create-opt-height', this.element) as HTMLInputElement;
         this.createElt = DomHandler.getElement('#create-opt-create', this.element);
         this.cancelElt = DomHandler.getElement('#create-opt-cancel', this.element);
         this.errorElt = DomHandler.getElement('#create-opt-error', this.element);

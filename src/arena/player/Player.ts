@@ -19,7 +19,7 @@ export default class Player extends Component{
     rotatingLeft: boolean;
     rotatingRight: boolean;
 
-    constructor(id, pos){
+    constructor(id: number, pos: Vector3){
         super();
         this.id = id;
 
@@ -46,7 +46,7 @@ export default class Player extends Component{
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
     }
 
-    onKeyDown(event){
+    onKeyDown(event: KeyboardEvent){
         if(event.code === 'KeyW'){
             if(!this.movingBackward){
                 this.movingForward = true;
@@ -68,7 +68,7 @@ export default class Player extends Component{
         }
     }
 
-    onKeyUp(event){
+    onKeyUp(event: KeyboardEvent){
         if(event.code === 'KeyW'){
             this.movingForward = false;
         }else if(event.code === 'KeyS'){
@@ -82,7 +82,7 @@ export default class Player extends Component{
         }
     }
 
-    onUpdate(delta){
+    onUpdate(delta: number){
         if(!this.movingForward && !this.movingBackward && !this.rotatingLeft && !this.rotatingRight){
             return;
         }

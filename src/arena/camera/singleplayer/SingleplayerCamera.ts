@@ -10,7 +10,7 @@ export default class Camera extends Component{
     controlsEnabled: boolean;
     controls: SinglePlayerControls;
     
-    constructor(camera){
+    constructor(camera: PerspectiveCamera){
         super();
         this.camera = camera;
         this.controlsEnabled = true;
@@ -66,14 +66,14 @@ export default class Camera extends Component{
         }
     }
 
-    attachControls(updateStatus){
+    attachControls(updateStatus: boolean){
         this.attachChild(this.controls);
         if(updateStatus){
             this.controlsEnabled = true;
         }
     }
 
-    detachControls(updateStatus){
+    detachControls(updateStatus: boolean){
         this.detachChild(this.controls);
         if(updateStatus){
             this.controlsEnabled = false;

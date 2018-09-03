@@ -4,9 +4,6 @@
   "description": "BattleTanks",
   "main": "main.js",
   "scripts": {
-    "build-old": "webpack",
-    "build-prod-old": "webpack --mode=production",
-    "start-old": "webpack-dev-server --output-public-path=/build/",
     "server": "lite-server",
     "watch": "tsc -w",
     "build": "tsc"
@@ -22,22 +19,11 @@
   },
   "homepage": "https://github.com/DakotaLarson/Tanks#readme",
   "dependencies": {
-    "three": "^0.93.0"
+    "three": "^0.96.0"
   },
   "devDependencies": {
     "@types/three": "^0.92.18",
-    "babel-core": "^6.26.3",
-    "babel-eslint": "^8.2.6",
-    "babel-loader": "^7.1.4",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-0": "^6.24.1",
     "eslint": "^5.3.0",
-    "eslint-loader": "^2.1.0",
-    "jshint": "^2.9.6",
-    "lite-server": "^2.4.0",
-    "webpack": "^4.12.0",
-    "webpack-cli": "^2.1.5",
-    "webpack-dev-server": "^3.1.5"
+    "lite-server": "^2.4.0"
   }
 }

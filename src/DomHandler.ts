@@ -18,7 +18,7 @@ export default class DomHandler{
         return document.pointerLockElement !== undefined;
     }
 
-    static getElement(query, parent?){
+    static getElement(query: string, parent?: HTMLElement) : HTMLElement{
         if(parent){
             return parent.querySelector(query);
         }else{

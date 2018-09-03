@@ -8,7 +8,8 @@ export default class OptionsMenu extends Component{
 
     element: HTMLElement;
     cancelBtn: HTMLElement;
-    constructor(mainMenu){
+
+    constructor(mainMenu: HTMLElement){
         super();
         this.element = DomHandler.getElement('#main-menu-opt', mainMenu);
 

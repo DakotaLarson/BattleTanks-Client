@@ -50,7 +50,7 @@ export default class ArenaCreateModeToggle extends Component{
         this.parentElt.style.display = 'none';
     }
 
-    onClick(event){
+    onClick(event: MouseEvent){
         if(event.target === this.cameraToggleElt){
             if(this.mode !== Mode.CAMERA){
                 EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA);
@@ -70,7 +70,7 @@ export default class ArenaCreateModeToggle extends Component{
         }
     }
 
-    onKeyDown(event){
+    onKeyDown(event: KeyboardEvent){
         if(event.code === 'KeyB'){
             if(this.mode !== Mode.BLOCK){
                 EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK);
@@ -136,9 +136,9 @@ export default class ArenaCreateModeToggle extends Component{
     }
 }
 
-const Mode = {
-    CAMERA: 0,
-    BLOCK: 1,
-    GAMESPAWN: 2,
-    INITIALSPAWN: 3
+enum Mode{
+    CAMERA,
+    BLOCK,
+    GAMESPAWN,
+    INITIALSPAWN
 }

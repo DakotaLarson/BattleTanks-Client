@@ -1,10 +1,9 @@
 import Component from '../../Component';
-import DomHandler from '../../DomHandler';
 import EventHandler from '../../EventHandler';
 
 export default class BlockCreationTool extends Component{
-
-    eventToCall: number;
+ 
+    eventToCall;
 
     constructor(){
         super();
@@ -29,7 +28,7 @@ export default class BlockCreationTool extends Component{
         }
     }
 
-    onMouseDown(event){
+    onMouseDown(event: MouseEvent){
         if(!this.eventToCall){
             if(event.button === 0){
                 this.eventToCall = EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY;
@@ -40,7 +39,7 @@ export default class BlockCreationTool extends Component{
         }
     }
 
-    onMouseUp(event){
+    onMouseUp(event: MouseEvent){
         if(this.eventToCall){
             if(this.eventToCall === EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY && event.button === 0 || this.eventToCall === EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY && event.button === 2){
                 this.eventToCall = undefined;

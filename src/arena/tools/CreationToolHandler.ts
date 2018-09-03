@@ -89,9 +89,9 @@ export default class CreationToolHandler extends Component{
     }
 }
 
-const Mode = {
-    CAMERA: 0,
-    BLOCK: 1,
-    GAMESPAWN: 2,
-    INITIALSPAWN: 3
+enum Mode{
+    CAMERA,
+    BLOCK,
+    GAMESPAWN,
+    INITIALSPAWN
 }

@@ -1,6 +1,7 @@
 import Arena from './Arena';
 import EventHandler from '../../EventHandler';
 import Player from '../player/Player';
+import { Vector3 } from 'three';
 
 export default class MultiplayerArena extends Arena{
 
@@ -22,14 +23,14 @@ export default class MultiplayerArena extends Arena{
         EventHandler.removeListener(this, EventHandler.Event.ARENA_INITIALSPAWN_ASSIGNMENT, this.onInitialSpawnAssignment);
     }
 
-    onInitialSpawnAssignment(loc){
+    onInitialSpawnAssignment(loc: Vector3){
         let playerId = this.getNewPlayerId();
         this.player = new Player(playerId, loc);
         this.attachChild(this.player);
         EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_ADDITION, this.player);
     }
 
-    getNewPlayerId(){
+    getNewPlayerId(): number{
         return latestId ++;
     }
 }

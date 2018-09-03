@@ -11,7 +11,7 @@ export default class SingleplayerMenu extends Component{
     loadBtn: HTMLElement;
     cancelBtn: HTMLElement;
 
-    constructor(mainMenu){
+    constructor(mainMenu: HTMLElement){
         super();
         this.element = DomHandler.getElement('#main-menu-sp', mainMenu);
 

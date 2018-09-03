@@ -10,7 +10,7 @@ export default class MultiplayerMenu extends Component{
     cancelBtn: HTMLElement;
     connectBtn: HTMLElement;
     
-    constructor(mainMenu){
+    constructor(mainMenu: HTMLElement){
         super();
         this.element = DomHandler.getElement('#main-menu-mp', mainMenu);
 

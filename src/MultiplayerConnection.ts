@@ -10,6 +10,7 @@ const protocol = 'tanks-MP';
 export default class MultiplayerConnection extends Component{
 
     ws: WebSocket;
+
     constructor(){
         super();
         this.ws = undefined;
@@ -37,7 +38,7 @@ export default class MultiplayerConnection extends Component{
         this.initHandshake();
     }
 
-    onMessage(event){
+    onMessage(event: MessageEvent){
         PacketReceiver.handleMessage(event.data);
     }
 

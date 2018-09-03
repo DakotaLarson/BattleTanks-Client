@@ -9,7 +9,7 @@ export default class DebugPanel extends Component{
     debugComputationElement: HTMLElement;
     debugIdleElement: HTMLElement;
 
-    constructor(guiElement){
+    constructor(guiElement: HTMLElement){
         super();
         this.element = DomHandler.getElement('.debug-panel', guiElement);
 
