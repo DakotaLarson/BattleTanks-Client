@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Tanks</title>
+    <title>Battle Tanks</title>
     <link href="https://fonts.googleapis.com/css?family=Nova+Mono" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet"/>
     
@@ -19,7 +19,7 @@
 </head>
 <body>
 <div class="menu main-menu no-select">
-    <span class="main-menu-title">Tanks</span><br/>
+    <span class="main-menu-title">Battle Tanks</span><br/>
     <div class="menu-section" id="main-menu-top">
         <span class="menu-selection" id="top-opt-mp">Play</span><br/>
         <span class="menu-selection" id="top-opt-sp">Create Arena</span><br/>
@@ -123,6 +123,20 @@
 </body>
 <script src="./polyfill/encoding.js"></script>
 <script src="./polyfill/encoding-indexes.js"></script>
-<script src="./build/bundle.js"></script>
+<script src="./systemjs/system.js"></script>
+<script>
+    SystemJS.config({
+        map: {
+            three: 'build/node_modules/three/build/three'
+        },
+        packages: {
+            "build": {
+                defaultExtension: 'js'
+            }
+        } 
+    });
+    SystemJS.import('/build/src/Game.js');
+</script>
+<!-- <script src="./build/bundle.js"></script> -->
 </html>
 <!--https://discord.gg/kGcw5M6-->
