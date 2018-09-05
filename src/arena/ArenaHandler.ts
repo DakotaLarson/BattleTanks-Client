@@ -13,6 +13,7 @@ import SingleplayerCamera from './camera/singleplayer/SingleplayerCamera';
 import MultiplayerCamera from './camera/multiplayer/MultiplayerCamera';
 import Renderer from '../Renderer';
 import SceneHandler from './SceneHandler';
+import RaycastHandler from '../RaycastHandler';
 
 
 export default class ArenaHandler extends Component{
@@ -42,7 +43,10 @@ export default class ArenaHandler extends Component{
 
         let perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-        this.sceneHandler = new SceneHandler(perspectiveCamera);
+        RaycastHandler.init();
+        RaycastHandler.updateCamera(perspectiveCamera);
+
+        this.sceneHandler = new SceneHandler();
         this.renderer = new Renderer(this.sceneHandler.getScene(), perspectiveCamera);
 
         this.singleplayerArena = new SingleplayerArena();

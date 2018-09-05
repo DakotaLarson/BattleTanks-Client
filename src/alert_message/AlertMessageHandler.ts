@@ -28,14 +28,14 @@ export default class AlertMessageHandler extends Component{
         if(this.taskId === -1){
             this.alertElt.textContent = message;
             this.parentElt.style.opacity = '1';
-            this.taskId = setTimeout(() => {
+            this.taskId = window.setTimeout(() => {
                 this.parentElt.style.opacity = '0';
                 this.taskId = -1;
             }, 3000);
         }else{
             clearTimeout(this.taskId);
             this.alertElt.textContent = message;
-            this.taskId = setTimeout(() => {
+            this.taskId = window.setTimeout(() => {
                 this.parentElt.style.opacity = '0';
                 this.taskId = -1;
             }, 3000);

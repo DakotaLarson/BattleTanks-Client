@@ -5,10 +5,10 @@
         "sourceMap": true,
         "outDir": "build",
         "allowJs": true,
-        "moduleResolution": "node"  
+        "moduleResolution": "node"
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
     ],
     
 }

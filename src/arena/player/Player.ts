@@ -1,6 +1,7 @@
 import Component from '../../Component';
 import EventHandler from '../../EventHandler';
-import { Vector3 } from 'three';
+import { Vector3, Raycaster, Ray, Plane } from 'three';
+import RaycastHandler from '../../RaycastHandler';
 
 const PLAYER_MOVEMENT_SPEED = 3;
 const PLAYER_ROTATION_SPEED = 2;
@@ -83,9 +84,10 @@ export default class Player extends Component{
     }
 
     onUpdate(delta: number){
-        if(!this.movingForward && !this.movingBackward && !this.rotatingLeft && !this.rotatingRight){
-            return;
-        }
+        //TODO add check for mouse movement and return if no movement
+        // if(!this.movingForward && !this.movingBackward && !this.rotatingLeft && !this.rotatingRight){
+        //     return;
+        // }
 
         let movementSpeed = 0;
         let rotationSpeed = 0;
@@ -104,13 +106,32 @@ export default class Player extends Component{
         this.position.x += delta * movementSpeed * Math.sin(this.bodyRotation),
         this.position.z += delta * movementSpeed * Math.cos(this.bodyRotation);
 
+        this.computeTurretRotation();
+
         let movementData = {
             id: this.id,
             pos: this.position,
-            rot: this.bodyRotation
+            bodyRot: this.bodyRotation,
+            headRot: this.headRotation
         }
 
         EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVEMENT_UPDATE, movementData);
             
+    }
+
+    computeTurretRotation(){
+        let ray: Ray = RaycastHandler.getRaycaster().ray;
+        let intersection = new Vector3();
+        ray.intersectPlane(new Plane(new Vector3(0, 1, 0)), intersection);
+        if(intersection){
+            let slope = (this.position.x - intersection.x) / (this.position.z - intersection.z);
+            
+            let angle = Math.atan(slope);
+
+            if(this.position.z > intersection.z){
+                angle += Math.PI;
+            }
+            this.headRotation = angle;
+        }
     }
 }

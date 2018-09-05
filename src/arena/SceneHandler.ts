@@ -1,11 +1,14 @@
-import {Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, DirectionalLight, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, BoxGeometry, Geometry, Raycaster, Vector2, CylinderGeometry, DoubleSide, Light, Camera, PerspectiveCamera, Intersection, Object3D}from 'three';
+import {Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, DirectionalLight, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, BoxGeometry, Geometry, Raycaster, Vector2, CylinderGeometry, DoubleSide, Intersection, Object3D}from 'three';
 
 import Component from '../Component';
 import EventHandler from '../EventHandler';
-import DomHandler from '../DomHandler';
 import Player from './player/Player';
+import RaycastHandler from '../RaycastHandler';
 
-
+type PlayerObj = {
+    body: Mesh,
+    head: Mesh
+};
 
 export default class SceneHandler extends Component{
 
@@ -19,9 +22,6 @@ export default class SceneHandler extends Component{
     blocks: Mesh;
 
     scene: Scene;
-    camera: PerspectiveCamera;
-    raycaster: Raycaster;
-    mouseCoords: Vector2;
 
     blocksIntersection: Intersection[];
     floorIntersection: Intersection[]
@@ -36,9 +36,11 @@ export default class SceneHandler extends Component{
     initialSpawnLocations: Array<Vector3>;
     gameSpawnLocations: Array<Vector3>;
 
-    players: Map<number, Mesh>;
+    
 
-    constructor(camera){
+    players: Map<number, PlayerObj>;
+
+    constructor(){
         super();
 
         this.title = undefined;
@@ -58,11 +60,6 @@ export default class SceneHandler extends Component{
 
         this.scene = new Scene();
         this.scene.background = new Color(0x1e1e20);
-
-        this.camera = camera;
-
-        this.raycaster = new Raycaster();
-        this.mouseCoords = new Vector2();
 
         this.blocksIntersection = [];
         this.floorIntersection = [];
@@ -149,10 +146,9 @@ export default class SceneHandler extends Component{
 
     onBeforeRender(){
         if(this.blocks && this.floor){
-            this.updateMouseCoords();
-            this.raycaster.setFromCamera(this.mouseCoords, this.camera);
-            this.blocksIntersection = this.raycaster.intersectObject(this.blocks);
-            this.floorIntersection = this.raycaster.intersectObject(this.floor);
+            let raycaster = RaycastHandler.getRaycaster();
+            this.blocksIntersection = raycaster.intersectObject(this.blocks);
+            this.floorIntersection = raycaster.intersectObject(this.floor);
         }else{
             this.blocksIntersection = [];
             this.floorIntersection = [];
@@ -184,6 +180,7 @@ export default class SceneHandler extends Component{
 
     onPlayerAddition(player: Player){
         let playerGeo = new Geometry();
+        let playerHeadGeo = new Geometry();
 
         let bodyGeo = new BoxGeometry(this.playerBodyWidth, this.playerBodyHeight, this.playerBodyDepth);
         let headGeo = new BoxGeometry(0.5, 0.35, 0.5);
@@ -191,10 +188,11 @@ export default class SceneHandler extends Component{
         turretGeo.rotateX(Math.PI / 2);
 
 
-        // let material = new MeshLambertMaterial({
-        //     color: 0xce141a
-        // });
-        let playerMaterial = new MeshLambertMaterial({
+        let bodyMaterial = new MeshLambertMaterial({
+            color: 0xce141a
+        });
+
+        let headMaterial = new MeshLambertMaterial({
             color: 0xce141a,
             side: DoubleSide
         });
@@ -202,9 +200,6 @@ export default class SceneHandler extends Component{
         let headOffset = new Vector3(0, this.playerBodyHeight / 2 + 0.35/2, 0);
         let turretOffset = new Vector3(0, this.playerBodyHeight / 2 + 0.35/2, 0.25); 
 
-        for(let i = 0; i < bodyGeo.vertices.length; i ++){
-            //bodyGeo.vertices[i].add(bodyOffset);
-        }
         for(let i = 0; i < headGeo.vertices.length; i ++){
             headGeo.vertices[i].add(headOffset);
         }
@@ -212,31 +207,49 @@ export default class SceneHandler extends Component{
             turretGeo.vertices[i].add(turretOffset);
         }
 
+        playerHeadGeo.merge(headGeo);
+        playerHeadGeo.merge(turretGeo);
+
+        //playerGeo.merge(playerHeadGeo);
         playerGeo.merge(bodyGeo);
-        playerGeo.merge(headGeo);
-        playerGeo.merge(turretGeo);
 
-        let mesh = new Mesh(playerGeo, playerMaterial);
-        mesh.position.copy(player.position).add(this.playerOffset);
+        let bodyMesh = new Mesh(playerGeo, bodyMaterial);
+        bodyMesh.position.copy(player.position).add(this.playerOffset);
 
-        this.scene.add(mesh);
+        let headMesh = new Mesh(playerHeadGeo, headMaterial);
+        headMesh.position.copy(player.position).add(this.playerOffset);
 
-        this.players.set(player.id, mesh);
+        this.scene.add(bodyMesh, headMesh);
+
+        this.players.set(player.id, {
+            body: bodyMesh,
+            head: headMesh
+        });
     }
 
     onPlayerRemoval(player: Player){
         if(this.players.has(player.id)){
-            let mesh = this.players.get(player.id);
-            this.scene.remove(mesh);
+            let obj = this.players.get(player.id);
+            this.scene.remove(obj.body);
+            this.scene.remove(obj.head)
             this.players.delete(player.id);
         }
     }
 
     onPlayerMove(data){
         if(this.players.has(data.id)){
-            let mesh = this.players.get(data.id);
-            mesh.position.copy(data.pos).add(this.playerOffset);
-            mesh.rotation.y = data.rot;
+            let playerObj = this.players.get(data.id);
+
+            let body = playerObj.body;
+            let head = playerObj.head;
+
+            head.position.copy(data.pos).add(this.playerOffset);
+            head.rotation.y = data.headRot;
+
+            body.position.copy(data.pos).add(this.playerOffset);
+            body.rotation.y = data.bodyRot; 
+
+            //some head rotation
         }
     }
 
@@ -472,17 +485,10 @@ export default class SceneHandler extends Component{
             let playerValues = this.players.values();
             let playerValue = playerValues.next();
             while(!playerValue.done){
-                this.scene.remove(playerValue.value);
+                this.scene.remove(playerValue.value.body);
                 playerValue = playerValues.next();
             }
         }
-    }
-
-    updateMouseCoords(){
-        let dimensions = DomHandler.getDisplayDimensions();
-        let mouseCoords = DomHandler.getMouseCoordinates();
-        this.mouseCoords.x = (mouseCoords.x / dimensions.width) * 2 - 1;
-        this.mouseCoords.y = -(mouseCoords.y / dimensions.height) * 2 + 1;
     }
 
     getScene(){

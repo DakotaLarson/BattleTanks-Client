@@ -127,7 +127,7 @@
 <script>
     SystemJS.config({
         map: {
-            three: 'build/node_modules/three/build/three'
+            three: './build/three/three.module.js'
         },
         packages: {
             build: {
@@ -135,7 +135,7 @@
             }
         } 
     });
-    SystemJS.import('/build/src/Game.js');
+    SystemJS.import('/build/Game.js');
 </script>
 </html>
 <!--https://discord.gg/kGcw5M6-->
