@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "system",
+        "sourceMap": true,
+        "outDir": "build",
+        "allowJs": true,
+        "moduleResolution": "node"
+    },
+    "include": [
+        "src/**/*",
+    ],
+    
+}
