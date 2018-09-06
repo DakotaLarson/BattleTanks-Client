@@ -19,8 +19,6 @@ export default class SinglePlayerGameMenu extends Component {
     }
 
     enable(){
-        EventHandler.callEvent(EventHandler.Event.GAMEMENU_OPEN);
-
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleClick);
 
         this.element.style.display = 'block';

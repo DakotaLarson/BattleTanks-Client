@@ -248,8 +248,6 @@ export default class SceneHandler extends Component{
 
             body.position.copy(data.pos).add(this.playerOffset);
             body.rotation.y = data.bodyRot; 
-
-            //some head rotation
         }
     }
 
@@ -423,6 +421,7 @@ export default class SceneHandler extends Component{
                 }
                 blockGeometries.push(pos);
                 masterGeo.merge(geo);
+                masterGeo.mergeVertices();
             }
 
             for(let i = 1; i < this.width - 1; i ++){
@@ -441,6 +440,7 @@ export default class SceneHandler extends Component{
                 }
                 blockGeometries.push(pos);
                 masterGeo.merge(geo);
+                masterGeo.mergeVertices();
             }
         }
         masterGeo.mergeVertices();
@@ -485,7 +485,9 @@ export default class SceneHandler extends Component{
             let playerValues = this.players.values();
             let playerValue = playerValues.next();
             while(!playerValue.done){
-                this.scene.remove(playerValue.value.body);
+                let playerObj = playerValue.value;
+                this.scene.remove(playerObj.body, playerObj.head);
+
                 playerValue = playerValues.next();
             }
         }

@@ -80,6 +80,7 @@ export default class ArenaHandler extends Component{
     }
 
     disable(){
+        console.log('disabled');
         EventHandler.removeListener(this, EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.attachSingleplayerArena);
         EventHandler.removeListener(this, EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.attachSingleplayerArena);
 
@@ -156,7 +157,7 @@ export default class ArenaHandler extends Component{
     onKeyDown(event: KeyboardEvent){
         if(event.code === 'Escape') {
             if(this.gameMenuEnabled){
-                EventHandler.callEvent(EventHandler.Event.GAMEMENU_CLOSE_REQUEST);
+                this.closeGameMenu();
             }else{
                 this.openGameMenu();
             }
@@ -175,6 +176,8 @@ export default class ArenaHandler extends Component{
         }else{
             this.detachChild(this.multiplayerGameMenu);
         }
+        EventHandler.callEvent(EventHandler.Event.GAMEMENU_CLOSE);
+
         this.gameMenuEnabled = false;
     }
 
@@ -183,7 +186,9 @@ export default class ArenaHandler extends Component{
             this.attachChild(this.singleplayerGameMenu);
         }else{
             this.attachChild(this.multiplayerGameMenu);
-        }        
+        }
+        EventHandler.callEvent(EventHandler.Event.GAMEMENU_OPEN);
+
         this.gameMenuEnabled = true;
     }
 }

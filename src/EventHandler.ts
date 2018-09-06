@@ -46,6 +46,7 @@ enum Event{
     //GAME MENU
     GAMEMENU_CLOSE_REQUEST,
     GAMEMENU_OPEN,
+    GAMEMENU_CLOSE,
 
     //SINGLEPLAYER GAME MENU
     SP_GAMEMENU_SAVE_GAME_REQUEST,
@@ -152,7 +153,7 @@ export default class EventHandler{
         }else{
             eventLevelListeners = [];
         }
-        eventLevelListeners.unshift(newListener);
+        eventLevelListeners.push(newListener);
         listeners.set(event, eventLevelListeners);
     }
     static removeListener(context: any, event: Event, callback: eventCallback, level?: Level){
@@ -198,19 +199,24 @@ export default class EventHandler{
         if(lowListeners.has(event)){
             let eventListeners = lowListeners.get(event);
             for(let i = 0; i < eventListeners.length; i ++){
+
                 let listener = eventListeners[i];
                 let context = listener.context;
                 let callback = listener.callback;
+                
                 callback.call(context, argument);
             }
         }
         //MEDIUM
         if(mediumListeners.has(event)){
             let eventListeners = mediumListeners.get(event);
+            
             for(let i = 0; i < eventListeners.length; i ++){
+
                 let listener = eventListeners[i];
                 let context = listener.context;
                 let callback = listener.callback;
+
                 callback.call(context, argument);
             }
         }
