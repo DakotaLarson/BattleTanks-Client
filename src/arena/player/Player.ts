@@ -1,7 +1,8 @@
 import Component from '../../Component';
 import EventHandler from '../../EventHandler';
-import { Vector3, Raycaster, Ray, Plane } from 'three';
+import { Vector3, Ray, Plane } from 'three';
 import RaycastHandler from '../../RaycastHandler';
+import PacketSender from '../../PacketSender';
 
 const PLAYER_MOVEMENT_SPEED = 3;
 const PLAYER_ROTATION_SPEED = 2;
@@ -39,12 +40,18 @@ export default class Player extends Component{
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
+        EventHandler.addListener(this, EventHandler.Event.GAME_TICK, this.onTick);
+
+        PacketSender.sendPlayerMove(this.position, this.bodyRotation, this.headRotation);
     }
 
     disable(){
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_TICK, this.onTick);
+
+        PacketSender.sendPlayerMove(this.position, this.bodyRotation, this.headRotation);
     }
 
     onKeyDown(event: KeyboardEvent){
@@ -117,6 +124,11 @@ export default class Player extends Component{
 
         EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVEMENT_UPDATE, movementData);
             
+    }
+
+    onTick(){
+        PacketSender.sendPlayerMove(this.position, this.bodyRotation, this.headRotation);
+        console.log('sent');
     }
 
     computeTurretRotation(){

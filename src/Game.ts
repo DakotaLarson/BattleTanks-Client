@@ -74,11 +74,14 @@ class Game extends Component{
 }
 
 (() => {
+
+    const TICK_INTERVAL = 50; //20 ticks/second
+
     let game = new Game();
     game.start();
 
-
     let prevTime = performance.now();
+    let prevTickTime = performance.now();
     let latestRenderTime = 0;
     let prevDebugTime = prevTime;
     let debugRenderTime = 0;
@@ -96,6 +99,12 @@ class Game extends Component{
         let computeAndRenderTime = currentTime;
 
         let delta = (currentTime - prevTime) / 1000;
+
+        let tickTime = currentTime - prevTickTime;
+        if(tickTime > TICK_INTERVAL){
+            EventHandler.callEvent(EventHandler.Event.GAME_TICK);
+            prevTickTime = prevTickTime + TICK_INTERVAL;
+        }
 
         game.update(delta);
 

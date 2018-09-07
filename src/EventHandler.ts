@@ -3,6 +3,7 @@ enum Event{
     GAME_START,
     GAME_ANIMATION_UPDATE,
     GAME_DEBUG_OUTPUT,
+    GAME_TICK,
     //DOM
     DOM_RESIZE,
     DOM_MOUSEMOVE,

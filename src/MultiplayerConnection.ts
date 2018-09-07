@@ -31,6 +31,7 @@ export default class MultiplayerConnection extends Component{
         DomEventHandler.removeListener(this, this.ws, 'close', this.onClose);
 
         this.ws.close(1000);
+        PacketSender.setSocket(undefined);
     }
 
     onOpen(){
@@ -43,8 +44,9 @@ export default class MultiplayerConnection extends Component{
     }
 
     initHandshake(){
+        let number = Math.floor(Math.random() * 1000);
         EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_OPEN);
-        PacketSender.sendPlayerJoin('Guest');
+        PacketSender.sendPlayerJoin('Guest ' + number);
     }
 
     onClose(event){
