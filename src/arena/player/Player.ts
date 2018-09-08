@@ -128,7 +128,6 @@ export default class Player extends Component{
 
     onTick(){
         PacketSender.sendPlayerMove(this.position, this.bodyRotation, this.headRotation);
-        console.log('sent');
     }
 
     computeTurretRotation(){

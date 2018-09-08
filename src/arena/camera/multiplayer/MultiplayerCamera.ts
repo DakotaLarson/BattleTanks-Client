@@ -41,8 +41,8 @@ export default class Camera extends Component{
         this.detachControls();
     }
 
-    onArenaSceneUpdate(loc: Vector3){
-        this.controls.target = loc.clone().addScalar(0.5).setY(0);
+    onArenaSceneUpdate(data){
+        this.controls.target = data.pos.clone().addScalar(0.5).setY(0);
         this.controls.spherical = new Spherical(25, 5 * Math.PI / 16, Math.PI);
         this.controls.update();
     }

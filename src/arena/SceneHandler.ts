@@ -3,6 +3,7 @@ import {Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight,
 import Component from '../Component';
 import EventHandler from '../EventHandler';
 import Player from './player/Player';
+import ConnectedPlayer from './player/ConnectedPlayer';
 import RaycastHandler from '../RaycastHandler';
 
 type PlayerObj = {
@@ -90,6 +91,7 @@ export default class SceneHandler extends Component{
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
          
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_MOVEMENT_UPDATE, this.onPlayerMove);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVEMENT_UPDATE, this.onPlayerMove);
 
     }
 
@@ -111,6 +113,7 @@ export default class SceneHandler extends Component{
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
 
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_MOVEMENT_UPDATE, this.onPlayerMove);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVEMENT_UPDATE, this.onPlayerMove);
 
         this.clearScene(true);
     }
@@ -178,7 +181,7 @@ export default class SceneHandler extends Component{
         URL.revokeObjectURL(objectURL);
     }
 
-    onPlayerAddition(player: Player){
+    onPlayerAddition(player: Player | ConnectedPlayer){
         let playerGeo = new Geometry();
         let playerHeadGeo = new Geometry();
 
@@ -187,16 +190,29 @@ export default class SceneHandler extends Component{
         let turretGeo = new CylinderGeometry(0.0625, 0.0625, 0.75, 8, 1, true);
         turretGeo.rotateX(Math.PI / 2);
 
-
-        let bodyMaterial = new MeshLambertMaterial({
-            color: 0xce141a
-        });
-
-        let headMaterial = new MeshLambertMaterial({
-            color: 0xce141a,
-            side: DoubleSide
-        });
-
+        let bodyMaterial, headMaterial;
+        if(player.constructor === ConnectedPlayer){
+            bodyMaterial = new MeshLambertMaterial({
+                color: 0xce141a
+            });
+    
+            headMaterial = new MeshLambertMaterial({
+                color: 0xce141a,
+                side: DoubleSide
+            });
+    
+        }else{
+            bodyMaterial = new MeshLambertMaterial({
+                color: 0x1ace14
+            });
+    
+            headMaterial = new MeshLambertMaterial({
+                color: 0x1ace14,
+                side: DoubleSide
+            });
+    
+        }
+       
         let headOffset = new Vector3(0, this.playerBodyHeight / 2 + 0.35/2, 0);
         let turretOffset = new Vector3(0, this.playerBodyHeight / 2 + 0.35/2, 0.25); 
 
@@ -227,7 +243,7 @@ export default class SceneHandler extends Component{
         });
     }
 
-    onPlayerRemoval(player: Player){
+    onPlayerRemoval(player: Player | ConnectedPlayer){
         if(this.players.has(player.id)){
             let obj = this.players.get(player.id);
             this.scene.remove(obj.body);
