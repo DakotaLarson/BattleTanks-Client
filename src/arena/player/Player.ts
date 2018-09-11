@@ -3,6 +3,7 @@ import EventHandler from '../../EventHandler';
 import { Vector3, Ray, Plane } from 'three';
 import RaycastHandler from '../../RaycastHandler';
 import PacketSender from '../../PacketSender';
+import CollisionHandler from '../CollisionHandler';
 
 const PLAYER_MOVEMENT_SPEED = 3;
 const PLAYER_ROTATION_SPEED = 2;
@@ -122,7 +123,11 @@ export default class Player extends Component{
             headRot: this.headRotation
         }
 
-        EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVEMENT_UPDATE, movementData);
+        let collisionExists = CollisionHandler.getCollision(this.position.clone(), this.bodyRotation);
+        
+        if(!collisionExists){
+            EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVEMENT_UPDATE, movementData);
+        }
             
     }
 

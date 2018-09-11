@@ -1,14 +1,16 @@
-import {Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, DirectionalLight, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, BoxGeometry, Geometry, Raycaster, Vector2, CylinderGeometry, DoubleSide, Intersection, Object3D}from 'three';
+import {Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, DirectionalLight, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, BoxGeometry, Geometry, CylinderGeometry, DoubleSide, Intersection, Object3D, SphereGeometry, MeshBasicMaterial, Vector2, Spherical}from 'three';
 
 import Component from '../Component';
 import EventHandler from '../EventHandler';
 import Player from './player/Player';
 import ConnectedPlayer from './player/ConnectedPlayer';
 import RaycastHandler from '../RaycastHandler';
+import CollisionHandler from './CollisionHandler';
 
 type PlayerObj = {
     body: Mesh,
-    head: Mesh
+    head: Mesh,
+    isConnectedPlayer: boolean
 };
 
 export default class SceneHandler extends Component{
@@ -33,9 +35,9 @@ export default class SceneHandler extends Component{
 
     playerOffset: Vector3;
 
-    blockLocations: Array<Vector3>;
-    initialSpawnLocations: Array<Vector3>;
-    gameSpawnLocations: Array<Vector3>;
+    blockPositions: Array<Vector3>;
+    initialSpawnPositions: Array<Vector3>;
+    gameSpawnPositions: Array<Vector3>;
 
     
 
@@ -48,9 +50,9 @@ export default class SceneHandler extends Component{
         this.width = undefined;
         this.height = undefined;
 
-        this.blockLocations = [];
-        this.initialSpawnLocations = [];
-        this.gameSpawnLocations = [];
+        this.blockPositions = [];
+        this.initialSpawnPositions = [];
+        this.gameSpawnPositions = [];
 
         this.players = new Map();
 
@@ -129,17 +131,20 @@ export default class SceneHandler extends Component{
         this.lines = this.createLines();
         this.lights = this.createLights();
 
-        let locations = this.parseLocationData(data.blockLocations);
+        let positions = this.parsePositionData(data.blockLocations);
 
-        this.gameSpawnLocations = this.parseLocationData(data.gameSpawnLocations) || [];
-        this.initialSpawnLocations = this.parseLocationData(data.initialSpawnLocations) || [];
+        CollisionHandler.updateBlockPositions(positions);
+        
 
-        EventHandler.callEvent(EventHandler.Event.ARENA_BLOCKLOCATION_UPDATE, this.blockLocations);
-        EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.initialSpawnLocations);
-        EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.gameSpawnLocations);
+        this.gameSpawnPositions = this.parsePositionData(data.gameSpawnLocations) || [];
+        this.initialSpawnPositions = this.parsePositionData(data.initialSpawnLocations) || [];
+
+        EventHandler.callEvent(EventHandler.Event.ARENA_BLOCKLOCATION_UPDATE, this.blockPositions);
+        EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.initialSpawnPositions);
+        EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.gameSpawnPositions);
 
 
-        this.updateBlocks(locations);
+        this.updateBlocks(positions);
         
         this.scene.add(this.lines);
         this.scene.add(this.floor);
@@ -159,16 +164,16 @@ export default class SceneHandler extends Component{
     }
 
     onSaveGameRequest(){
-        let blockData = this.generateLocationData(this.blockLocations);
-        let gameSpawnData = this.generateLocationData(this.gameSpawnLocations);
-        let initialSpawnData = this.generateLocationData(this.initialSpawnLocations);
+        let blockData = this.generatePositionData(this.blockPositions);
+        let gameSpawnData = this.generatePositionData(this.gameSpawnPositions);
+        let initialSpawnData = this.generatePositionData(this.initialSpawnPositions);
         let saveObject = {
             title: this.title,
             width: this.width - 2,
             height: this.height - 2,
-            blockLocations: blockData,
-            gameSpawnLocations: gameSpawnData,
-            initialSpawnLocations: initialSpawnData
+            blockPositions: blockData,
+            gameSpawnPositions: gameSpawnData,
+            initialSpawnPositions: initialSpawnData
         };
         let blob = new Blob([JSON.stringify(saveObject)], {type : "application/json"});
         let objectURL = URL.createObjectURL(blob);
@@ -182,6 +187,8 @@ export default class SceneHandler extends Component{
     }
 
     onPlayerAddition(player: Player | ConnectedPlayer){
+        let isConnectedPlayer = player.constructor === ConnectedPlayer;
+        
         let playerGeo = new Geometry();
         let playerHeadGeo = new Geometry();
 
@@ -191,7 +198,7 @@ export default class SceneHandler extends Component{
         turretGeo.rotateX(Math.PI / 2);
 
         let bodyMaterial, headMaterial;
-        if(player.constructor === ConnectedPlayer){
+        if(isConnectedPlayer){
             bodyMaterial = new MeshLambertMaterial({
                 color: 0xce141a
             });
@@ -237,10 +244,13 @@ export default class SceneHandler extends Component{
 
         this.scene.add(bodyMesh, headMesh);
 
-        this.players.set(player.id, {
+        let playerObj: PlayerObj = {
             body: bodyMesh,
-            head: headMesh
-        });
+            head: headMesh,
+            isConnectedPlayer: isConnectedPlayer
+        }
+
+        this.players.set(player.id, playerObj);
     }
 
     onPlayerRemoval(player: Player | ConnectedPlayer){
@@ -263,62 +273,168 @@ export default class SceneHandler extends Component{
             head.rotation.y = data.headRot;
 
             body.position.copy(data.pos).add(this.playerOffset);
-            body.rotation.y = data.bodyRot; 
+            body.rotation.y = data.bodyRot;
+        }       
+    }
+
+    getCollision(pos: Vector3, rot: number): boolean{
+
+        pos.add(new Vector3(0.5, 0, 0.5));
+
+        const radius = Math.sqrt(0.75 * 0.75 + 0.5 * 0.5);
+        const phi = Math.PI / 2;
+        const theta = Math.atan(0.5/0.75);
+
+        let blockPos = pos.clone().floor();
+
+        let blockPositions: Array<Vector3> = new Array();
+        for(let x = blockPos.x - 1; x <= blockPos.x + 1; x ++){
+            for(let z = blockPos.z - 1; z <= blockPos.z + 1; z ++){
+                let testPos = new Vector3(x, 0, z);
+                if(this.isPositionBlock(testPos)){
+                    blockPositions.push(testPos);
+                }
+            }
         }
+        if(blockPositions.length){
+            let playerCornerPositions: Array<Vector3> = new Array();
+            let blockCornerPositions: Array<Vector3> = new Array();
+
+             //front right
+            playerCornerPositions.push(new Vector3().setFromSpherical(new Spherical(radius, phi, rot - theta)).add(pos).setY(0));
+            
+            //front left
+            playerCornerPositions.push(new Vector3().setFromSpherical(new Spherical(radius, phi, rot + theta)).add(pos).setY(0));
+
+            //back left
+            playerCornerPositions.push(new Vector3().setFromSpherical(new Spherical(radius, phi,  Math.PI + rot - theta)).add(pos).setY(0));
+
+            //back right
+            playerCornerPositions.push(new Vector3().setFromSpherical(new Spherical(radius, phi,  Math.PI + rot + theta)).add(pos).setY(0));
+
+            let playerParallelAxis = new Vector3(Math.sin(rot), 0, Math.cos(rot)).normalize();
+            let playerPerpendicularAxis = playerParallelAxis.clone().applyAxisAngle(new Vector3(0, 1, 0), Math.PI / 2);
+            
+            let blockParallelAxis = new Vector3(0, 0, 1);
+            let blockPerpendicularAxis = new Vector3(1, 0, 0);
+
+            for(let i = 0; i < blockPositions.length; i ++){
+
+                let blockPosition = blockPositions[i];
+
+                blockCornerPositions.push(blockPosition.clone());
+                blockCornerPositions.push(blockPosition.clone().add(new Vector3(0, 0, 1)));
+                blockCornerPositions.push(blockPosition.clone().add(new Vector3(1, 0, 1)));
+                blockCornerPositions.push(blockPosition.clone().add(new Vector3(1, 0, 0)));
+
+                let overlapsPlayerParallel = this.overlaps(playerParallelAxis, playerCornerPositions, blockCornerPositions);
+
+                let overlapsBlockParallel = this.overlaps(blockParallelAxis, playerCornerPositions, blockCornerPositions);
+
+                let overlapsPlayerPerpendicular = this.overlaps(playerPerpendicularAxis, playerCornerPositions, blockCornerPositions);
+
+                let overlapsBlockPerpendicular = this.overlaps(blockPerpendicularAxis, playerCornerPositions, blockCornerPositions);
+
+                let intersects = overlapsBlockParallel && overlapsBlockPerpendicular && overlapsPlayerParallel && overlapsPlayerPerpendicular 
+
+                if(intersects){
+                    return true;
+                }
+
+                blockCornerPositions.length = 0;
+            }
+        }
+        return false;
+    }
+
+    overlaps(axis: Vector3, playerCornerPositions: Array<Vector3>, blockCornerPositions: Array<Vector3>){
+
+        const between = (val: number, min: number, max: number ): boolean => {
+            return min <= val && max >= val;
+        };
+
+        let playerMin = playerCornerPositions[0].dot(axis);
+        let playerMax = playerCornerPositions[0].dot(axis);
+
+        for (let i = 1; i < playerCornerPositions.length; i ++) {
+            let dotProduct = playerCornerPositions[i].dot(axis);
+            
+            if(dotProduct < playerMin){
+                playerMin = dotProduct;
+            }
+            if(dotProduct > playerMax){
+                playerMax = dotProduct;
+            }
+        }
+
+        let blockMin = blockCornerPositions[0].dot(axis);
+        let blockMax = blockCornerPositions[0].dot(axis);
+
+        for (let i = 1; i < blockCornerPositions.length; i ++) {
+            let dotProduct = blockCornerPositions[i].dot(axis);
+            
+            if(dotProduct < blockMin){
+                blockMin = dotProduct;
+            }
+            if(dotProduct > blockMax){
+                blockMax = dotProduct;
+            }
+        }
+        return between(playerMin, blockMin, blockMax) || between(blockMin, playerMin, playerMax);
     }
 
     onBCTPrimary(){
         if(this.floorIntersection.length){
-            let location = this.floorIntersection[0].point.setY(0);
-            location.floor();
-            if(!this.isLocationBlock(location)){
-                this.blockLocations.push(location);
-                this.updateBlocks(this.blockLocations);
-                EventHandler.callEvent(EventHandler.Event.ARENA_BLOCKLOCATION_UPDATE, this.blockLocations);
+            let position = this.floorIntersection[0].point.setY(0);
+            position.floor();
+            if(!this.isPositionBlock(position)){
+                this.blockPositions.push(position);
+                this.updateBlocks(this.blockPositions);
+                EventHandler.callEvent(EventHandler.Event.ARENA_BLOCKLOCATION_UPDATE, this.blockPositions);
             }
         }
     }
 
     onBCTSecondary(){
         if(this.floorIntersection.length){
-            let location = this.floorIntersection[0].point.setY(0);
-            location.floor();
-            let removed = this.removeBlockLocation(location);
+            let position = this.floorIntersection[0].point.setY(0);
+            position.floor();
+            let removed = this.removeBlockPosition(position);
             if(removed){
-                this.updateBlocks(this.blockLocations);
-                EventHandler.callEvent(EventHandler.Event.ARENA_BLOCKLOCATION_UPDATE, this.blockLocations);
+                this.updateBlocks(this.blockPositions);
+                EventHandler.callEvent(EventHandler.Event.ARENA_BLOCKLOCATION_UPDATE, this.blockPositions);
             }
         }
     }
 
     onInitialSpawnPrimary(){
         if(this.floorIntersection.length){
-            let location = this.floorIntersection[0].point.setY(0);
-            location.floor();
-            if(this.isLocationBlock(location)){
-                //TODO alert user cannot use location
+            let position = this.floorIntersection[0].point.setY(0);
+            position.floor();
+            if(this.isPositionBlock(position)){
+                //TODO alert user cannot use position
                 console.log('IS is block');
-            }else if(this.isLocationInitialSpawn(location)){
-                //TODO alert user cannot use location
+            }else if(this.isPositionInitialSpawn(position)){
+                //TODO alert user cannot use position
                 console.log('IS is already IS');
             }else{
-                this.initialSpawnLocations.push(location);
+                this.initialSpawnPositions.push(position);
                 //TODO Alert success
                 console.log('IS added');
-                EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.initialSpawnLocations);
+                EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.initialSpawnPositions);
             }
         }
     }
 
     onInitialSpawnSecondary(){
         if(this.floorIntersection.length){
-            let location = this.floorIntersection[0].point.setY(0);
-            location.floor();
-            let removed = this.removeInitialSpawnLocation(location);
+            let position = this.floorIntersection[0].point.setY(0);
+            position.floor();
+            let removed = this.removeInitialSpawnPosition(position);
             if(removed){
                 //TODO Alert success
                 console.log('IS removed');
-                EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.initialSpawnLocations);
+                EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.initialSpawnPositions);
             }else{
                 //TODO Alert failure
                 console.log('IS not removed');
@@ -328,32 +444,32 @@ export default class SceneHandler extends Component{
 
     onGameSpawnPrimary(){
         if(this.floorIntersection.length){
-            let location = this.floorIntersection[0].point.setY(0);
-            location.floor();
-            if(this.isLocationBlock(location)){
-                //TODO alert user cannot use location
+            let position = this.floorIntersection[0].point.setY(0);
+            position.floor();
+            if(this.isPositionBlock(position)){
+                //TODO alert user cannot use position
                 console.log('GS is Block');
-            }else if(this.isLocationGameSpawn(location)){
-                //TODO alert user cannot use location
+            }else if(this.isPositionGameSpawn(position)){
+                //TODO alert user cannot use position
                 console.log('GS is already GS');
             }else{
-                this.gameSpawnLocations.push(location);
+                this.gameSpawnPositions.push(position);
                 console.log('GS added');
                 //TODO Alert success
-                EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.gameSpawnLocations);
+                EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.gameSpawnPositions);
             }
         }
     }
 
     onGameSpawnSecondary(){
         if(this.floorIntersection.length){
-            let location = this.floorIntersection[0].point.setY(0);
-            location.floor();
-            let removed = this.removeGameSpawnLocation(location);
+            let position = this.floorIntersection[0].point.setY(0);
+            position.floor();
+            let removed = this.removeGameSpawnPosition(position);
             if(removed){
                 //TODO Alert success
                 console.log('GS removed');
-                EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.gameSpawnLocations);
+                EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.gameSpawnPositions);
             }else{
                 //TODO Alert failure
                 console.log('GS not removed');
@@ -407,12 +523,12 @@ export default class SceneHandler extends Component{
         return floor;
     }
 
-    updateBlocks(locations: Array<Vector3>){
+    updateBlocks(positions: Array<Vector3>){
         let blockGeometries = [];
         let masterGeo = new Geometry();
-        if(locations){
-            for(let i = 0; i < locations.length; i ++){
-                let pos = locations[i];
+        if(positions){
+            for(let i = 0; i < positions.length; i ++){
+                let pos = positions[i];
                 let geo = new BoxGeometry();
                 for(let i = 0; i < geo.vertices.length; i ++){
                     geo.vertices[i].add(pos);
@@ -469,10 +585,10 @@ export default class SceneHandler extends Component{
             let material = new MeshLambertMaterial({color: 0x0077ef});
             this.blocks = new Mesh(masterGeo, material);
             this.blocks.position.addScalar(0.5);
-            if(locations){
-                this.blockLocations = locations;
+            if(positions){
+                this.blockPositions = positions;
             }else{
-                this.blockLocations = blockGeometries;
+                this.blockPositions = blockGeometries;
             }
         }
     }
@@ -494,8 +610,8 @@ export default class SceneHandler extends Component{
             this.scene.remove.apply(this.scene, this.lights);
             this.lights = undefined;
         }
-        if(this.blockLocations){
-            this.blockLocations = [];
+        if(this.blockPositions){
+            this.blockPositions = [];
         }
         if(removePlayers){
             let playerValues = this.players.values();
@@ -517,34 +633,34 @@ export default class SceneHandler extends Component{
         return new Vector3(this.width / 2, 0, this.height / 2);
     }
 
-    isLocationBlock(loc: Vector3){
-        return this.isLocationInArray(loc, this.blockLocations);
+    isPositionBlock(pos: Vector3){
+        return this.isPositionInArray(pos, this.blockPositions);
     }
 
-    isLocationGameSpawn(loc: Vector3){
-        return this.isLocationInArray(loc, this.gameSpawnLocations);
+    isPositionGameSpawn(pos: Vector3){
+        return this.isPositionInArray(pos, this.gameSpawnPositions);
     }
 
-    isLocationInitialSpawn(loc: Vector3){
-        return this.isLocationInArray(loc, this.initialSpawnLocations);
+    isPositionInitialSpawn(pos: Vector3){
+        return this.isPositionInArray(pos, this.initialSpawnPositions);
     }
 
-    removeBlockLocation(loc: Vector3){
-        return this.removeLocationFromArray(loc, this.blockLocations);
+    removeBlockPosition(pos: Vector3){
+        return this.removePositionFromArray(pos, this.blockPositions);
     }
 
-    removeInitialSpawnLocation(loc: Vector3){
-        return this.removeLocationFromArray(loc, this.initialSpawnLocations);
+    removeInitialSpawnPosition(pos: Vector3){
+        return this.removePositionFromArray(pos, this.initialSpawnPositions);
     }
 
-    removeGameSpawnLocation(loc: Vector3){
-        return this.removeLocationFromArray(loc, this.gameSpawnLocations);
+    removeGameSpawnPosition(pos: Vector3){
+        return this.removePositionFromArray(pos, this.gameSpawnPositions);
     }
 
-    removeLocationFromArray(loc: Vector3, arr: Array<Vector3>){
+    removePositionFromArray(pos: Vector3, arr: Array<Vector3>){
         let spliceIndex = -1;
         for(let i = 0; i < arr.length; i ++){
-            if(arr[i].equals(loc)){
+            if(arr[i].equals(pos)){
                 spliceIndex = i;
                 break;
             }
@@ -556,38 +672,38 @@ export default class SceneHandler extends Component{
         return false;
     }
 
-    isLocationInArray(loc: Vector3, arr: Array<Vector3>){
+    isPositionInArray(pos: Vector3, arr: Array<Vector3>){
         for(let i = 0; i < arr.length; i ++){
-            if(arr[i].equals(loc)) return true;
+            if(arr[i].equals(pos)) return true;
         }
         return false;
     }
 
-    generateLocationData(data){
-        let locationCount = data.length;
+    generatePositionData(data): Array<number>{
+        let positionCount = data.length;
         let output = [];
-        for(let i = 0; i < locationCount; i ++){
+        for(let i = 0; i < positionCount; i ++){
             let loc = data[i];
             output.push(loc.x, loc.y, loc.z);
         }
         return output;
     }
 
-    parseLocationData(data){
+    parsePositionData(data): Array<Vector3>{
         if(data){
             let dataCount = data.length;
             if(dataCount % 3 === 0){
-                let locations = [];
+                let positions = [];
                 for(let i = 0; i < dataCount / 3; i ++){
                     let x = data[i * 3];
                     let y = data[i * 3 + 1];
                     let z = data[i * 3 + 2];
     
-                    locations.push(new Vector3(x, y, z));
+                    positions.push(new Vector3(x, y, z));
                 }
-                return locations;
+                return positions;
             }else{
-                console.log('Invalid block location data');
+                console.log('Invalid block position data');
             }
         }
     }
