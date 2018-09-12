@@ -3,7 +3,7 @@ import EventHandler from '../../EventHandler';
 import { Vector3, Ray, Plane } from 'three';
 import RaycastHandler from '../../RaycastHandler';
 import PacketSender from '../../PacketSender';
-import CollisionHandler from '../CollisionHandler';
+import {CollisionHandler, TestCollision} from '../CollisionHandler';
 
 const PLAYER_MOVEMENT_SPEED = 3;
 const PLAYER_ROTATION_SPEED = 2;
@@ -110,11 +110,27 @@ export default class Player extends Component{
             rotationSpeed = -PLAYER_ROTATION_SPEED;
         }
 
-        this.bodyRotation += delta * rotationSpeed;
-        this.position.x += delta * movementSpeed * Math.sin(this.bodyRotation),
-        this.position.z += delta * movementSpeed * Math.cos(this.bodyRotation);
+        let potentialRotation = this.bodyRotation + delta * rotationSpeed;
+
+        let potentialPosition = this.position.clone();
+        potentialPosition.x += delta * movementSpeed * Math.sin(potentialRotation),
+        potentialPosition.z += delta * movementSpeed * Math.cos(potentialRotation);
+
+        let collisionExists = CollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, this.position.clone(), this.bodyRotation);
+
+        let collisionCorrections = TestCollision.test(potentialPosition.clone(), potentialRotation);
+
+        if(collisionCorrections.length){
+            console.log(collisionCorrections);
+        }
 
         this.computeTurretRotation();
+
+        if(!collisionExists){
+
+            this.bodyRotation = potentialRotation
+            this.position.copy(potentialPosition);
+        }
 
         let movementData = {
             id: this.id,
@@ -123,12 +139,7 @@ export default class Player extends Component{
             headRot: this.headRotation
         }
 
-        let collisionExists = CollisionHandler.getCollision(this.position.clone(), this.bodyRotation);
-        
-        if(!collisionExists){
-            EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVEMENT_UPDATE, movementData);
-        }
-            
+        EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVEMENT_UPDATE, movementData);      
     }
 
     onTick(){

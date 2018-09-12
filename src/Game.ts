@@ -34,7 +34,7 @@ class Game extends Component{
 
         EventHandler.addListener(this, EventHandler.Event.SP_GAMEMENU_RETURN_TO_MAIN_REQUEST, this.unloadSingleplayer);
 
-        EventHandler.addListener(this, EventHandler.Event.MPMENU_CONNECT_OPT_CLICK, this.connectToMultiplayer);
+        EventHandler.addListener(this, EventHandler.Event.CONNECTMENU_CONNECT_OPT_CLICK, this.connectToMultiplayer);
 
         EventHandler.addListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.disconnectFromMultiplayer);
         EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.disconnectFromMultiplayer);

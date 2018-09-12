@@ -22,18 +22,28 @@ html, body{
     text-transform: uppercase;
     display: none;
 }
-.menu-selection{
+.menu-section{
+    display: none;
+}
+.menu-selection, .menu-text-input{
     font-size: 5vmin;
     margin: 1vmin;
     display: inline-block;
     border: solid 1px;
     padding: 0 1vmin;
 }
-.menu-section{
-    display: none;
-}
 .menu-selection:hover{
     background-color: green;
     border-color: green;
     cursor: pointer;
+}
+.menu-text-input{
+    font-family: 'No Regular', monospace;
+    font-size: 7.5vmin;
+    background: none;
+    color: #d0d0d0;
+    outline: none;
+}
+.menu-text-input:focus{
+    border-color: green;
 }
