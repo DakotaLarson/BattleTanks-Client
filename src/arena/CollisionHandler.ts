@@ -4,8 +4,7 @@ let blockPositions: Array<Vector3>;
 
 export class CollisionHandler{
 
-    static getCollision(pos: Vector3, rot: number, prevPos: Vector3, prevRot: number): boolean{
-        prevPos.add(new Vector3(0.5, 0, 0.5));
+    static getCollision(pos: Vector3, rot: number): boolean{
         pos.add(new Vector3(0.5, 0, 0.5));
 
         const radius = Math.sqrt(0.75 * 0.75 + 0.5 * 0.5);
@@ -64,7 +63,7 @@ export class CollisionHandler{
 
                 let overlapsBlockPerpendicular = this.overlaps(blockPerpendicularAxis, playerCornerPositions, blockCornerPositions);
 
-                let intersects = overlapsBlockParallel && overlapsBlockPerpendicular && overlapsPlayerParallel && overlapsPlayerPerpendicular 
+                let intersects = overlapsBlockParallel && overlapsBlockPerpendicular && overlapsPlayerParallel && overlapsPlayerPerpendicular;
 
                 if(intersects){
                     collidedBlockPositions.push(blockPosition.add(new Vector3(0.5, 0, 0.5)));
@@ -171,15 +170,16 @@ export class CollisionHandler{
 export class TestCollision{
 
     private static dot(a: Vector3, b: Vector3){
-        return a.x * b.x + a.z + b.z;
+        return a.x * b.x + a.z * b.z;
     }
 
     private static getAxes(rot: number){
-        let playerParallelAxis = new Vector3(Math.sin(rot), 0, Math.cos(rot)).normalize();
-        let playerPerpendicularAxis = playerParallelAxis.clone().applyAxisAngle(new Vector3(0, 1, 0), Math.PI / 2);
+        let playerParallelAxis = new Vector3(Math.sin(rot), 0, Math.cos(rot));
+        let playerPerpendicularAxis = new Vector3(Math.cos(rot), 0, Math.sin(rot));
 
         let blockParallelAxis = new Vector3(0, 0, 1);
         let blockPerpendicularAxis = new Vector3(1, 0, 0);
+
         return [playerParallelAxis, playerPerpendicularAxis, blockParallelAxis, blockPerpendicularAxis];
     }
 
@@ -243,6 +243,10 @@ export class TestCollision{
         return correctionArray;
     }
     static collide(playerPos: Vector3, playerRot: number, blockPos: Vector3){
+        const between = (val: number, min: number, max: number ): boolean => {
+            return min <= val && max >= val;
+        };
+
         let playerCorners = TestCollision.getCorners(playerPos, playerRot);
         let blockCorners = TestCollision.getCorners(blockPos);
 
@@ -256,8 +260,10 @@ export class TestCollision{
             let blockScalars: Array<number> = new Array();
            
             for(let k = 0; k < axes.length; k ++){
-                playerScalars.push(TestCollision.dot(axes[i], playerCorners[k]));
-                blockScalars.push(TestCollision.dot(axes[i], blockCorners[k]));
+                //playerScalars.push(TestCollision.dot(axes[i], playerCorners[k]));
+                //blockScalars.push(TestCollision.dot(axes[i], blockCorners[k]));
+                playerScalars.push(playerCorners[k].dot(axes[i]));
+                blockScalars.push(blockCorners[k].dot(axes[i]));
             }
     
             let playerMax = Math.max.apply(null, playerScalars);
@@ -269,11 +275,11 @@ export class TestCollision{
             if(blockMin > playerMax || blockMax < playerMin){
                 return new Vector3(); //there is no collision.
             }
+            
             let overlap = playerMax - blockMin;
             if(playerMax > blockMax){
                 overlap = - (blockMax - playerMin);
             }
-
 
             mtvs.push(axes[i].clone().multiplyScalar(overlap)); //clone not needed??    
         }

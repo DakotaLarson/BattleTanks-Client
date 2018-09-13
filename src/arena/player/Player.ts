@@ -110,13 +110,13 @@ export default class Player extends Component{
             rotationSpeed = -PLAYER_ROTATION_SPEED;
         }
 
-        let potentialRotation = this.bodyRotation + delta * rotationSpeed;
+        let potentialRotation = (this.bodyRotation + delta * rotationSpeed);
 
         let potentialPosition = this.position.clone();
         potentialPosition.x += delta * movementSpeed * Math.sin(potentialRotation),
         potentialPosition.z += delta * movementSpeed * Math.cos(potentialRotation);
 
-        let collisionExists = CollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, this.position.clone(), this.bodyRotation);
+        let collisionExists = CollisionHandler.getCollision(potentialPosition.clone(), potentialRotation);
 
         let collisionCorrections = TestCollision.test(potentialPosition.clone(), potentialRotation);
 
@@ -128,7 +128,7 @@ export default class Player extends Component{
 
         if(!collisionExists){
 
-            this.bodyRotation = potentialRotation
+            this.bodyRotation = potentialRotation;
             this.position.copy(potentialPosition);
         }
 
