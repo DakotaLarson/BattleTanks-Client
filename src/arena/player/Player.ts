@@ -3,7 +3,7 @@ import EventHandler from '../../EventHandler';
 import { Vector3, Ray, Plane } from 'three';
 import RaycastHandler from '../../RaycastHandler';
 import PacketSender from '../../PacketSender';
-import {CollisionHandler, TestCollision} from '../CollisionHandler';
+import {CollisionHandler} from '../CollisionHandler';
 
 const PLAYER_MOVEMENT_SPEED = 3;
 const PLAYER_ROTATION_SPEED = 2;
@@ -40,7 +40,11 @@ export default class Player extends Component{
     enable(){
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
+
+        EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
+
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
+
         EventHandler.addListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
         PacketSender.sendPlayerMove(this.position, this.bodyRotation, this.headRotation);
@@ -49,10 +53,14 @@ export default class Player extends Component{
     disable(){
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
+        
+        EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
+
+
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
+
         EventHandler.removeListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
-        PacketSender.sendPlayerMove(this.position, this.bodyRotation, this.headRotation);
     }
 
     onKeyDown(event: KeyboardEvent){
@@ -91,6 +99,12 @@ export default class Player extends Component{
         }
     }
 
+    onMouseDown(event: MouseEvent){
+        if(event.button === 0){
+            PacketSender.sendPlayerShoot();
+        }
+    }
+
     onUpdate(delta: number){
         //TODO add check for mouse movement and return if no movement
         // if(!this.movingForward && !this.movingBackward && !this.rotatingLeft && !this.rotatingRight){
@@ -116,21 +130,23 @@ export default class Player extends Component{
         potentialPosition.x += delta * movementSpeed * Math.sin(potentialRotation),
         potentialPosition.z += delta * movementSpeed * Math.cos(potentialRotation);
 
-        let collisionExists = CollisionHandler.getCollision(potentialPosition.clone(), potentialRotation);
-
-        let collisionCorrections = TestCollision.test(potentialPosition.clone(), potentialRotation);
-
-        if(collisionCorrections.length){
-            console.log(collisionCorrections);
-        }
+        let collisionCorrection = CollisionHandler.getCollision(potentialPosition.clone(), potentialRotation);
 
         this.computeTurretRotation();
 
-        if(!collisionExists){
-
+        if(collisionCorrection){
+            potentialPosition.sub(collisionCorrection);
+            this.bodyRotation = potentialRotation;
+            this.position.copy(potentialPosition);
+        }else{
             this.bodyRotation = potentialRotation;
             this.position.copy(potentialPosition);
         }
+        // if(!collisionCorrection){
+            
+        //     this.bodyRotation = potentialRotation;
+        //     this.position.copy(potentialPosition);
+        // }
 
         let movementData = {
             id: this.id,

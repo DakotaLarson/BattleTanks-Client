@@ -1,16 +1,17 @@
 import { Vector3 } from "three";
-import { join } from "path";
 
 enum Packet{
     PLAYER_JOIN = 0X00,
-    PLAYER_MOVE = 0X01
+    PLAYER_MOVE = 0X01,
+    PLAYER_SHOOT = 0X02
 };
 
 enum DataType{
     NUMBER = 0X00,
     STRING = 0X01,
     INT_ARRAY = 0x02,
-    FLOAT_ARRAY = 0X03
+    FLOAT_ARRAY = 0X03,
+    HEADER_ONLY = 0X04
 }
 
 const encoder = new TextEncoder();
@@ -67,6 +68,15 @@ const constructData = (header: Packet, body: any, dataType: DataType) => {
             arr.set(body);
 
             break;
+        case DataType.HEADER_ONLY:
+            buffer = new ArrayBuffer(3);
+            
+            arr = new Uint8Array(buffer);
+
+            arr[0] = header;
+            arr[1] = dataType;
+
+            break;
     }
 
     return buffer;
@@ -89,6 +99,11 @@ export default class PacketSender{
     static sendPlayerMove(pos: Vector3, bodyRot: number, headRot: number){
         let dataArr = [pos.x, pos.y, pos.z, bodyRot, headRot];
         let data = constructData(Packet.PLAYER_MOVE, dataArr, DataType.FLOAT_ARRAY);
+        send(data);
+    }
+
+    static sendPlayerShoot(){
+        let data = constructData(Packet.PLAYER_SHOOT, undefined, DataType.HEADER_ONLY);
         send(data);
     }
 

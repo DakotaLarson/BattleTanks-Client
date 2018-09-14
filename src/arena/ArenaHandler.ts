@@ -135,7 +135,7 @@ export default class ArenaHandler extends Component{
 
     attachArena(){
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
-        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenu);
+        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenuFromEvent);
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
 
         this.attachChild(this.sceneHandler);
@@ -144,21 +144,21 @@ export default class ArenaHandler extends Component{
 
     detachArena(){
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
-        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenu);
+        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenuFromEvent);
         EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
 
         this.detachChild(this.sceneHandler);
         this.detachChild(this.renderer);
         
         if(this.gameMenuEnabled){
-            this.closeGameMenu();
+            this.closeGameMenu(false);
         }
     }
 
     onKeyDown(event: KeyboardEvent){
         if(event.code === 'Escape') {
             if(this.gameMenuEnabled){
-                this.closeGameMenu();
+                this.closeGameMenu(true);
             }else{
                 this.openGameMenu();
             }
@@ -171,13 +171,19 @@ export default class ArenaHandler extends Component{
         }
     }
 
-    closeGameMenu(){
+    closeGameMenuFromEvent(){
+        this.closeGameMenu(true);
+    }
+
+    closeGameMenu(callEvent: boolean){
         if(this.isSingleplayer){
             this.detachChild(this.singleplayerGameMenu);
         }else{
             this.detachChild(this.multiplayerGameMenu);
         }
-        EventHandler.callEvent(EventHandler.Event.GAMEMENU_CLOSE);
+        if(callEvent){
+            EventHandler.callEvent(EventHandler.Event.GAMEMENU_CLOSE);
+        }
 
         this.gameMenuEnabled = false;
     }

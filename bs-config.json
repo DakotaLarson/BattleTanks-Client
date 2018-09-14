@@ -1,3 +1,6 @@
 {
-    "ghostMode": false
+    "ghostMode": false,
+    "notify": false,
+    "scrollProportionally": false, 
+    "open": false
 }
