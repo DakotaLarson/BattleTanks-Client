@@ -20,41 +20,49 @@ export default class MultiplayerArena extends Arena{
 
     enable(){
         super.enable();
-        EventHandler.addListener(this, EventHandler.Event.ARENA_INITIALSPAWN_ASSIGNMENT, this.onInitialSpawnAssignment);
+
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
-        EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_INITIALSPAWN_ASSIGNMENT, this.onConnectedPlayerInitialSpawn);
-        EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_POSITION_UPDATE, this.onConnectedPlayerPositionUpdate);
+        
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
+
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, this.onConnectedPlayerAddition);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, this.onConnectedPlayerMove);
     }
 
     disable(){
         super.disable();
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_INITIALSPAWN_ASSIGNMENT, this.onInitialSpawnAssignment);
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
-        EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_INITIALSPAWN_ASSIGNMENT, this.onConnectedPlayerInitialSpawn);
-        EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_POSITION_UPDATE, this.onConnectedPlayerPositionUpdate);
+
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
+
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, this.onConnectedPlayerAddition);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, this.onConnectedPlayerMove);
+        
+        this.gameMenuOpen = false;
+        this.connectedPlayers.clear();
     }
 
-    onInitialSpawnAssignment(data){
+    onPlayerAddition(data){
         this.player = new Player(data.id, data.pos);
         if(!this.gameMenuOpen){
             this.attachChild(this.player);
         }
-        EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_ADDITION, this.player);
     }
 
-    onConnectedPlayerInitialSpawn(data){
+    onConnectedPlayerAddition(data){
         let player = new ConnectedPlayer(data.id, data.name, data.pos, data.bodyRot, data.headRot)
         this.connectedPlayers.set(data.id, player);
-        EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_ADDITION, player);
     }
 
-    onConnectedPlayerPositionUpdate(data){
+    onConnectedPlayerMove(data){
         let player = this.connectedPlayers.get(data.id);
-        //console.log(data.pos);
         player.updatePosition(data.pos, data.bodyRot, data.headRot);
-        EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVEMENT_UPDATE, data);
+    }
+
+    onConnectedPlayerRemoval(id){
+        this.connectedPlayers.delete(id);
     }
 
     getNewPlayerId(): number{

@@ -1,8 +1,8 @@
-import Component from '../Component';
+import Component from '../component/ChildComponent';
 import DomHandler from '../DomHandler';
 import EventHandler from '../EventHandler';
 
-export default class GameMenu extends Component {
+export default class MultiplayerGameMenu extends Component {
 
     element: HTMLElement;
     cancelBtn: HTMLElement;

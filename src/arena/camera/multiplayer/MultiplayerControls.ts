@@ -1,4 +1,4 @@
-import Component from '../../../Component';
+import Component from '../../../component/ChildComponent';
 import EventHandler from '../../../EventHandler';
 
 import {Vector3, Spherical, PerspectiveCamera} from 'three';

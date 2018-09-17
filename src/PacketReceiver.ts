@@ -3,41 +3,44 @@ import {Vector3} from 'three';
 
 const decoder = new TextDecoder();
 
-const receiveArena = (data) => {
+const receiveArena = (data: string) => {
     let parsedData = JSON.parse(data);
     EventHandler.callEvent(EventHandler.Event.ARENA_SCENE_UPDATE, parsedData);
 };
 
-const receiveGameStatus = (data) => {
+const receiveGameStatus = (data: number) => {
     EventHandler.callEvent(EventHandler.Event.GAME_STATUS_UPDATE, data);
 };
 
-const receiveAlert = (message) => {
+const receiveAlert = (message: string) => {
     EventHandler.callEvent(EventHandler.Event.ALERT_MESSAGE_REQUEST, message);
 };
 
-const receiveAssignedInitialSpawn = (data) => {
+const receivePlayerAdd = (data: string) => {
     let dataObj = JSON.parse(data);
     let pos = new Vector3(dataObj.pos[0], dataObj.pos[1], dataObj.pos[2]);
     dataObj.pos = pos;
-    EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_ASSIGNMENT, dataObj);
+    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_ADDITION, dataObj);
 }
 
-const receiveConnectedPlayerInitialSpawn = (data) => {
+const receiveConnectedPlayerAdd = (data: string) => {
     let playerData = JSON.parse(data);
-
     let pos = new Vector3(playerData.pos[0], playerData.pos[1], playerData.pos[2]);
     playerData.pos = pos;
-    EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_INITIALSPAWN_ASSIGNMENT, playerData);
-
+    EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, playerData);
 }
 
-const receiveConnectedPlayerPositionUpdate = (data) => {
+const receiveConnectedPlayerRemove = (data: string) => {
+    let playerId = JSON.parse(data).id;
+    EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_REMOVAL, playerId);
+}
+
+const receiveConnectedPlayerMove = (data) => {
     let playerId = data.header;
     let pos = new Vector3(data.body[0], data.body[1], data.body[2]);
     let bodyRot = data.body[3];
     let headRot = data.body[4];
-    EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_POSITION_UPDATE, {
+    EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, {
         id: playerId,
         pos: pos,
         bodyRot: bodyRot,
@@ -45,14 +48,15 @@ const receiveConnectedPlayerPositionUpdate = (data) => {
     });
 }
 
-const handlers = new Map([
-    [0x00, receiveArena],
-    [0x01, receiveGameStatus],
-    [0x02, receiveAlert],
-    [0x03, receiveAssignedInitialSpawn],
-    [0x04, receiveConnectedPlayerInitialSpawn],
-    [0x05, receiveConnectedPlayerPositionUpdate]
-]);
+const handlers: Map<number, any> = new Map();
+
+handlers.set(0x00, receiveArena);
+handlers.set(0x01, receiveGameStatus);
+handlers.set(0x02, receiveAlert);
+handlers.set(0x03, receivePlayerAdd);
+handlers.set(0x04, receiveConnectedPlayerAdd);
+handlers.set(0x05, receiveConnectedPlayerMove);
+handlers.set(0x06, receiveConnectedPlayerRemove);
 
 enum DataType{
     NUMBER = 0X00,

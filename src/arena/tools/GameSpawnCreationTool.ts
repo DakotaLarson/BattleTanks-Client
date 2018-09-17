@@ -1,4 +1,4 @@
-import Component from '../../Component';
+import Component from '../../component/ChildComponent';
 import EventHandler from '../../EventHandler';
 
 export default class GameSpawnCreationTool extends Component{

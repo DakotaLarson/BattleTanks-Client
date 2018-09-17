@@ -82,7 +82,7 @@ export class CollisionHandler{
                     totalCorrection.add(shortestVec);
                 }
             }
-            if(!totalCorrection.equals(new Vector3)){
+            if(!totalCorrection.equals(new Vector3())){
                 return totalCorrection;
             }
         }

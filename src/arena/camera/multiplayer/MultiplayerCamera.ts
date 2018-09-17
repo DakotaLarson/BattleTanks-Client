@@ -1,9 +1,9 @@
-import Component from '../../../Component';
+import Component from '../../../component/ChildComponent';
 import EventHandler from '../../../EventHandler';
 import DomHandler from '../../../DomHandler';
 import MultiplayerControls from './MultiplayerControls';
 
-import {Spherical, PerspectiveCamera, Vector3} from 'three';
+import {Spherical, PerspectiveCamera} from 'three';
 
 export default class Camera extends Component{
 
@@ -22,9 +22,9 @@ export default class Camera extends Component{
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
 
-        EventHandler.addListener(this, EventHandler.Event.ARENA_INITIALSPAWN_ASSIGNMENT, this.onArenaSceneUpdate);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onArenaSceneUpdate);
 
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_MOVEMENT_UPDATE, this.onPlayerMove);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
 
         this.attachControls();
     }
@@ -34,9 +34,9 @@ export default class Camera extends Component{
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
 
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_INITIALSPAWN_ASSIGNMENT, this.onArenaSceneUpdate);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onArenaSceneUpdate);
 
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_MOVEMENT_UPDATE, this.onPlayerMove);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
 
         this.detachControls();
     }

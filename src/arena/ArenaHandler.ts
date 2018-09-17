@@ -1,7 +1,7 @@
 import {PerspectiveCamera} from 'three';
 
 import EventHandler from '../EventHandler';
-import Component from '../Component';
+import Component from '../component/Component';
 import SingleplayerArena from './arena/SinglePlayerArena';
 import MultiplayerArena from './arena/MultiplayerArena';
 import SingleplayerGUI from '../gui/SingleplayerGUI';
@@ -78,19 +78,6 @@ export default class ArenaHandler extends Component{
         EventHandler.addListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.detachMultiplayerArena);
         EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.detachMultiplayerArena);
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.detachMultiplayerArena);
-    }
-
-    disable(){
-        EventHandler.removeListener(this, EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.attachSingleplayerArena);
-        EventHandler.removeListener(this, EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.attachSingleplayerArena);
-
-        EventHandler.removeListener(this, EventHandler.Event.SP_GAMEMENU_RETURN_TO_MAIN_REQUEST, this.detachSingleplayerArena);
-
-        EventHandler.removeListener(this, EventHandler.Event.CONNECTMENU_CONNECT_OPT_CLICK, this.attachMultiplayerArena);
-
-        EventHandler.removeListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.detachMultiplayerArena);
-        EventHandler.removeListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.detachMultiplayerArena);
-        EventHandler.removeListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.detachMultiplayerArena);
     }
 
     attachSingleplayerArena(worldData){

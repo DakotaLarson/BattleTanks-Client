@@ -101,18 +101,18 @@ enum Event{
 
     //ARENA
     ARENA_SCENE_UPDATE,
+
     ARENA_GAMESPAWN_UPDATE,
     ARENA_INITIALSPAWN_UPDATE,
     ARENA_BLOCKLOCATION_UPDATE,
+
     ARENA_PLAYER_ADDITION,
     ARENA_PLAYER_REMOVAL,
-    ARENA_PLAYER_MOVEMENT_UPDATE,
-    ARENA_CONNECTED_PLAYER_MOVEMENT_UPDATE,
-    ARENA_INITIALSPAWN_ASSIGNMENT,
-    
-    //CONNECTED PLAYER
-    CONNECTED_PLAYER_INITIALSPAWN_ASSIGNMENT,
-    CONNECTED_PLAYER_POSITION_UPDATE,
+    ARENA_PLAYER_MOVE,
+
+    ARENA_CONNECTED_PLAYER_ADDITION,
+    ARENA_CONNECTED_PLAYER_REMOVAL,
+    ARENA_CONNECTED_PLAYER_MOVE,
 
     //ALERT MESSAGE
     ALERT_MESSAGE_REQUEST
@@ -124,8 +124,6 @@ enum Level{
     MEDIUM,
     HIGH
 }
-//Latest Event #: 64 (Append upon event addition.)
-//Missing Event #s: NONE (Append on event removal; Use and remove from list for event addition when available.)
 
 const lowListeners = new Map();
 const mediumListeners = new Map();

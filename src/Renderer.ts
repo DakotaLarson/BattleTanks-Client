@@ -1,6 +1,6 @@
 import {WebGLRenderer, Scene, PerspectiveCamera} from 'three';
 
-import Component from './Component';
+import Component from './component/ChildComponent';
 import EventHandler from './EventHandler';
 import DomHandler from './DomHandler';
 

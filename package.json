@@ -4,7 +4,7 @@
   "description": "BattleTanks",
   "main": "main.js",
   "scripts": {
-    "server": "lite-server",
+    "start": "lite-server",
     "watch": "tsc -w",
     "build": "tsc"
   },
@@ -22,8 +22,8 @@
     "three": "^0.96.0"
   },
   "devDependencies": {
-    "@types/three": "^0.92.18",
-    "eslint": "^5.3.0",
+    "@types/three": "^0.92.21",
+    "eslint": "^5.6.0",
     "lite-server": "^2.4.0"
   }
 }

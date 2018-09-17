@@ -1,4 +1,4 @@
-import Component from '../Component';
+import Component from '../component/ChildComponent';
 import DomHandler from '../DomHandler';
 import EventHandler from '../EventHandler';
 

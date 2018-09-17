@@ -1,4 +1,4 @@
-import Component from '../Component';
+import Component from '../component/ChildComponent';
 import DomHandler from '../DomHandler';
 import EventHandler from '../EventHandler';
 
@@ -41,7 +41,6 @@ export default class DebugPanel extends Component{
         this.debugRenderingElement.textContent = renderingPercent + '% (' + renderingMS + 'ms)';
         this.debugComputationElement.textContent = computationPercent + '% (' + computationMS + 'ms)';
         this.debugIdleElement.textContent = idlePercent + '% (' + idleMS + 'ms)';
-
     }
 }
 

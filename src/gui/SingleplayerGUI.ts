@@ -1,4 +1,4 @@
-import Component from '../Component';
+import Component from '../component/ChildComponent';
 import DomHandler from '../DomHandler';
 import DebugPanel from './DebugPanel';
 import ArenaCreateModeToggle from './ArenaCreateModeToggle';

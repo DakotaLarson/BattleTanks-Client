@@ -1,4 +1,4 @@
-import Component from '../../Component';
+import Component from '../../component/ChildComponent';
 import EventHandler from '../../EventHandler';
 import { Vector3, Ray, Plane } from 'three';
 import RaycastHandler from '../../RaycastHandler';
@@ -155,7 +155,7 @@ export default class Player extends Component{
             headRot: this.headRotation
         }
 
-        EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVEMENT_UPDATE, movementData);      
+        EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVE, movementData);      
     }
 
     onTick(){

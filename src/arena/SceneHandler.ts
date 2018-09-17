@@ -1,6 +1,6 @@
 import {Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, DirectionalLight, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, BoxGeometry, Geometry, CylinderGeometry, DoubleSide, Intersection, Object3D, SphereGeometry, MeshBasicMaterial, Vector2, Spherical}from 'three';
 
-import Component from '../Component';
+import Component from '../component/ChildComponent';
 import EventHandler from '../EventHandler';
 import Player from './player/Player';
 import ConnectedPlayer from './player/ConnectedPlayer';
@@ -9,8 +9,7 @@ import {CollisionHandler} from './CollisionHandler';
 
 type PlayerObj = {
     body: Mesh,
-    head: Mesh,
-    isConnectedPlayer: boolean
+    head: Mesh
 };
 
 export default class SceneHandler extends Component{
@@ -90,11 +89,12 @@ export default class SceneHandler extends Component{
         EventHandler.addListener(this, EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
 
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
-         
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_MOVEMENT_UPDATE, this.onPlayerMove);
-        EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVEMENT_UPDATE, this.onPlayerMove);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.removePlayer);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
 
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, this.onConnectedPlayerJoin);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_REMOVAL, this.removePlayer);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, this.onPlayerMove);
     }
 
     disable(){
@@ -112,10 +112,12 @@ export default class SceneHandler extends Component{
         EventHandler.removeListener(this, EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
 
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.removePlayer);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
 
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_MOVEMENT_UPDATE, this.onPlayerMove);
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVEMENT_UPDATE, this.onPlayerMove);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, this.onConnectedPlayerJoin);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_REMOVAL, this.removePlayer);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, this.onPlayerMove);
 
         this.clearScene(true);
     }
@@ -186,9 +188,39 @@ export default class SceneHandler extends Component{
         URL.revokeObjectURL(objectURL);
     }
 
-    onPlayerAddition(player: Player | ConnectedPlayer){
-        let isConnectedPlayer = player.constructor === ConnectedPlayer;
-        
+    onPlayerAddition(data){
+        this.addPlayer(data.id, data.pos, false);
+    }
+
+    onConnectedPlayerJoin(data){
+        this.addPlayer(data.id, data.pos, true);
+    }
+
+    onPlayerMove(data){
+        if(this.players.has(data.id)){
+            let playerObj = this.players.get(data.id);
+
+            let body = playerObj.body;
+            let head = playerObj.head;
+
+            head.position.copy(data.pos).add(this.playerOffset);
+            head.rotation.y = data.headRot;
+
+            body.position.copy(data.pos).add(this.playerOffset);
+            body.rotation.y = data.bodyRot;
+        }       
+    }
+
+    removePlayer(id: number){
+        if(this.players.has(id)){
+            let obj = this.players.get(id);
+            this.scene.remove(obj.body);
+            this.scene.remove(obj.head)
+            this.players.delete(id);
+        }
+    }
+
+    addPlayer(id: number, pos: Vector3, isConnectedPlayer: boolean){
         let playerGeo = new Geometry();
         let playerHeadGeo = new Geometry();
 
@@ -233,48 +265,22 @@ export default class SceneHandler extends Component{
         playerHeadGeo.merge(headGeo);
         playerHeadGeo.merge(turretGeo);
 
-        //playerGeo.merge(playerHeadGeo);
         playerGeo.merge(bodyGeo);
 
         let bodyMesh = new Mesh(playerGeo, bodyMaterial);
-        bodyMesh.position.copy(player.position).add(this.playerOffset);
+        bodyMesh.position.copy(pos).add(this.playerOffset);
 
         let headMesh = new Mesh(playerHeadGeo, headMaterial);
-        headMesh.position.copy(player.position).add(this.playerOffset);
+        headMesh.position.copy(pos).add(this.playerOffset);
 
         this.scene.add(bodyMesh, headMesh);
 
         let playerObj: PlayerObj = {
             body: bodyMesh,
-            head: headMesh,
-            isConnectedPlayer: isConnectedPlayer
+            head: headMesh
         }
 
-        this.players.set(player.id, playerObj);
-    }
-
-    onPlayerRemoval(player: Player | ConnectedPlayer){
-        if(this.players.has(player.id)){
-            let obj = this.players.get(player.id);
-            this.scene.remove(obj.body);
-            this.scene.remove(obj.head)
-            this.players.delete(player.id);
-        }
-    }
-
-    onPlayerMove(data){
-        if(this.players.has(data.id)){
-            let playerObj = this.players.get(data.id);
-
-            let body = playerObj.body;
-            let head = playerObj.head;
-
-            head.position.copy(data.pos).add(this.playerOffset);
-            head.rotation.y = data.headRot;
-
-            body.position.copy(data.pos).add(this.playerOffset);
-            body.rotation.y = data.bodyRot;
-        }       
+        this.players.set(id, playerObj);
     }
 
     onBCTPrimary(){

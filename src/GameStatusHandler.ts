@@ -1,5 +1,5 @@
 import EventHandler from './EventHandler';
-import Component from './Component';
+import Component from './component/ChildComponent';
 
 export default class GameStatusHandler extends Component{
 
@@ -16,7 +16,7 @@ export default class GameStatusHandler extends Component{
 
     }
 
-    onGameStatusUpdate(status){
+    onGameStatusUpdate(status: number){
         switch(status){
             case GameStatus.WAITING:
                 console.log('Waiting GameStatus');

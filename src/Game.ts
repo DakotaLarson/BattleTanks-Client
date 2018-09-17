@@ -1,4 +1,4 @@
-import Component from './Component';
+import Component from './component/Component';
 import EventHandler from './EventHandler';
 
 import MainMenu from './main_menu/MainMenu';
@@ -7,6 +7,7 @@ import MultiplayerConnection from './MultiplayerConnection';
 import ConnectionScreen from './connection_screen/ConnectionScreen';
 import GameStatusHandler from './GameStatusHandler';
 import AlertMessageHandler from './alert_message/AlertMessageHandler';
+import ComponentDebugger from './component/ComponentDebugger';
 
 class Game extends Component{
 
@@ -26,7 +27,7 @@ class Game extends Component{
         this.gameStatusHandler = new GameStatusHandler();
         this.alertMessageHandler = new AlertMessageHandler();
     }
-    start(){
+    enable(){
         EventHandler.callEvent(EventHandler.Event.GAME_START);
 
         EventHandler.addListener(this, EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.loadSingleplayer);
@@ -42,7 +43,7 @@ class Game extends Component{
         
         this.attachChild(this.mainMenu);
         this.attachChild(this.alertMessageHandler);
-        this.attachChild(this.arenaHandler);
+        this.attachComponent(this.arenaHandler);
     }
 
     update(delta: number){
@@ -79,7 +80,7 @@ class Game extends Component{
     const TICK_INTERVAL = 50; //20 ticks/second
 
     let game = new Game();
-    game.start();
+    game.enable();
 
     let prevTime = performance.now();
     let prevTickTime = performance.now();
@@ -133,4 +134,10 @@ class Game extends Component{
          EventHandler.callEvent(EventHandler.Event.GAME_DEBUG_OUTPUT, debugData);
          debugRenderTime = debugComputeTime = debugFPSCount =0;
     };
+
+    EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, (event) => {
+        if(event.code === 'KeyP'){
+            ComponentDebugger.printTable();
+        }
+    }, EventHandler.Level.LOW);
 })();
