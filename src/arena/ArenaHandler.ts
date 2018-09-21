@@ -1,4 +1,4 @@
-import {PerspectiveCamera} from 'three';
+import {PerspectiveCamera, AudioListener} from 'three';
 
 import EventHandler from '../EventHandler';
 import Component from '../component/Component';
@@ -12,7 +12,7 @@ import CreationToolHandler from './tools/CreationToolHandler';
 import SingleplayerCamera from './camera/singleplayer/SingleplayerCamera';
 import MultiplayerCamera from './camera/multiplayer/MultiplayerCamera';
 import Renderer from '../Renderer';
-import SceneHandler from './SceneHandler';
+import SceneHandler from './scene/SceneHandler';
 import RaycastHandler from '../RaycastHandler';
 
 
@@ -42,11 +42,13 @@ export default class ArenaHandler extends Component{
         super();
 
         let perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+        let audioListener = new AudioListener();
+        perspectiveCamera.add(audioListener);
 
         RaycastHandler.init();
         RaycastHandler.updateCamera(perspectiveCamera);
 
-        this.sceneHandler = new SceneHandler();
+        this.sceneHandler = new SceneHandler(audioListener);
         this.renderer = new Renderer(this.sceneHandler.getScene(), perspectiveCamera);
 
         this.singleplayerArena = new SingleplayerArena();

@@ -69,7 +69,7 @@ const constructData = (header: Packet, body: any, dataType: DataType) => {
 
             break;
         case DataType.HEADER_ONLY:
-            buffer = new ArrayBuffer(3);
+            buffer = new ArrayBuffer(2);
             
             arr = new Uint8Array(buffer);
 

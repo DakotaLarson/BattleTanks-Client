@@ -16,12 +16,14 @@ const receiveAlert = (message: string) => {
     EventHandler.callEvent(EventHandler.Event.ALERT_MESSAGE_REQUEST, message);
 };
 
+
+
 const receivePlayerAdd = (data: string) => {
     let dataObj = JSON.parse(data);
     let pos = new Vector3(dataObj.pos[0], dataObj.pos[1], dataObj.pos[2]);
     dataObj.pos = pos;
     EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_ADDITION, dataObj);
-}
+};
 
 const receivePlayerMove = (data: string) => {
     let dataObj = JSON.parse(data);
@@ -29,24 +31,34 @@ const receivePlayerMove = (data: string) => {
     dataObj.pos = pos;
     dataObj.fromServer = true;
     EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVE, dataObj);
-}
+};
 
 const receivePlayerRemove = (data: string) => {
     let id = JSON.parse(data).id;
     EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_REMOVAL, id);
-}
+};
+
+const receivePlayerShotInvalid = () =>{
+    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_SHOT_INVALID);
+};
+
+const receivePlayerShoot = (id: number) => {
+    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_SHOOT, id);
+};
+
+
 
 const receiveConnectedPlayerAdd = (data: string) => {
     let playerData = JSON.parse(data);
     let pos = new Vector3(playerData.pos[0], playerData.pos[1], playerData.pos[2]);
     playerData.pos = pos;
     EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, playerData);
-}
+};
 
 const receiveConnectedPlayerRemove = (data: string) => {
     let playerId = JSON.parse(data).id;
     EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_REMOVAL, playerId);
-}
+};
 
 const receiveConnectedPlayerMove = (data) => {
     let playerId = data.header;
@@ -59,12 +71,14 @@ const receiveConnectedPlayerMove = (data) => {
         bodyRot: bodyRot,
         headRot: headRot
     });
-}
+};
+
+
 
 const receiveMatchStatistics = (rawStats) => {
     let statistics = JSON.parse(rawStats);
     EventHandler.callEvent(EventHandler.Event.MATCH_STATISTICS_RECEPTION, statistics);
-}
+};
 
 const handlers: Array<any> = new Array();
 handlers.push(receiveArena);
@@ -76,6 +90,8 @@ handlers.push(receiveAlert);
 handlers.push(receivePlayerAdd);
 handlers.push(receivePlayerMove);
 handlers.push(receivePlayerRemove);
+handlers.push(receivePlayerShotInvalid);
+handlers.push(receivePlayerShoot); //Also for connected player; Additional packet unnecessary
 
 handlers.push(receiveConnectedPlayerAdd);
 handlers.push(receiveConnectedPlayerMove);
@@ -84,18 +100,19 @@ handlers.push(receiveConnectedPlayerRemove);
 handlers.push(receiveMatchStatistics);
 
 enum DataType{
-    NUMBER = 0X00,
-    STRING = 0X01,
-    INT_ARRAY = 0x02,
-    FLOAT_ARRAY = 0X03,
-    FLOAT_ARRAY_INT_HEADER = 0X04
+    NUMBER,
+    STRING,
+    INT_ARRAY,
+    FLOAT_ARRAY,
+    FLOAT_ARRAY_INT_HEADER,
+    HEADER_ONLY
 }
 
 export default class PacketReceiver{
     static handleMessage(message: ArrayBuffer){
         let headerArr = new Uint8Array(message.slice(0, 2));
         let header = headerArr[0];
-        let body;
+        let body = undefined;
         switch(headerArr[1]){
             case DataType.NUMBER:
                 body = new Uint8Array(message.slice(2, 3))[0];
@@ -114,6 +131,9 @@ export default class PacketReceiver{
                     header: new Uint8Array(message.slice(2, 3))[0],
                     body: new Float32Array(message.slice(4))
                 };
+                break;
+            case DataType.HEADER_ONLY:
+                //There is no body. Pass along 'undefined'.
                 break;
         }
         let handler = handlers[header];

@@ -1,11 +1,9 @@
-import {Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, DirectionalLight, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, BoxGeometry, Geometry, CylinderGeometry, DoubleSide, Intersection, Object3D, SphereGeometry, MeshBasicMaterial, Vector2, Spherical}from 'three';
+import {Scene, Color, PlaneGeometry, Mesh, MeshLambertMaterial, HemisphereLight, DirectionalLight, Vector3, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, BoxGeometry, Geometry, CylinderGeometry, DoubleSide, Intersection, Object3D, AudioListener}from 'three';
 
-import Component from '../component/ChildComponent';
-import EventHandler from '../EventHandler';
-import Player from './player/Player';
-import ConnectedPlayer from './player/ConnectedPlayer';
-import RaycastHandler from '../RaycastHandler';
-import {CollisionHandler} from './CollisionHandler';
+import Component from '../../component/ChildComponent';
+import EventHandler from '../../EventHandler';
+import RaycastHandler from '../../RaycastHandler';
+import CollisionHandler from '../CollisionHandler';
 
 type PlayerObj = {
     body: Mesh,
@@ -24,6 +22,7 @@ export default class SceneHandler extends Component{
     blocks: Mesh;
 
     scene: Scene;
+    audioListener: AudioListener
 
     blocksIntersection: Intersection[];
     floorIntersection: Intersection[]
@@ -42,7 +41,7 @@ export default class SceneHandler extends Component{
 
     players: Map<number, PlayerObj>;
 
-    constructor(){
+    constructor(audioListener: AudioListener){
         super();
 
         this.title = undefined;
@@ -63,6 +62,8 @@ export default class SceneHandler extends Component{
         this.scene = new Scene();
         this.scene.background = new Color(0x1e1e20);
 
+        this.audioListener = audioListener;
+
         this.blocksIntersection = [];
         this.floorIntersection = [];
 
@@ -70,7 +71,7 @@ export default class SceneHandler extends Component{
         this.playerBodyHeight = 0.55;
         this.playerBodyDepth = 1.5;
 
-        this.playerOffset = new Vector3(this.playerBodyWidth/2, this.playerBodyHeight/2, this.playerBodyDepth/2 - 0.25);
+        this.playerOffset = new Vector3(0.5, this.playerBodyHeight/2, 0.5);
 
     }
 
@@ -95,6 +96,8 @@ export default class SceneHandler extends Component{
         EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, this.onConnectedPlayerJoin);
         EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_REMOVAL, this.removePlayer);
         EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, this.onPlayerMove);
+
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT, this.onShoot);
     }
 
     disable(){
@@ -118,6 +121,9 @@ export default class SceneHandler extends Component{
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, this.onConnectedPlayerJoin);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_REMOVAL, this.removePlayer);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, this.onPlayerMove);
+
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT, this.onShoot);
+
 
         this.clearScene(true);
     }
@@ -281,6 +287,11 @@ export default class SceneHandler extends Component{
         }
 
         this.players.set(id, playerObj);
+    }
+
+    onShoot(playerId: number){
+        console.log(playerId + ' shoot');
+        
     }
 
     onBCTPrimary(){

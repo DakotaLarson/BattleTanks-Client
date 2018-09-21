@@ -2,7 +2,7 @@ import { Vector3, Spherical } from "three";
 
 let blockPositions: Array<Vector3>;
 
-export class CollisionHandler{
+export default class CollisionHandler{
 
     static getCollision(pos: Vector3, rot: number): Vector3{
         pos.add(new Vector3(0.5, 0, 0.5));
