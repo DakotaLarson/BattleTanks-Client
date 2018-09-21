@@ -25,9 +25,14 @@ export default class MultiplayerArena extends Arena{
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
         
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
+
 
         EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, this.onConnectedPlayerAddition);
         EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, this.onConnectedPlayerMove);
+
+        
     }
 
     disable(){
@@ -36,6 +41,8 @@ export default class MultiplayerArena extends Arena{
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
 
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
 
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, this.onConnectedPlayerAddition);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, this.onConnectedPlayerMove);
@@ -48,6 +55,21 @@ export default class MultiplayerArena extends Arena{
         this.player = new Player(data.id, data.pos);
         if(!this.gameMenuOpen){
             this.attachChild(this.player);
+        }
+    }
+
+    onPlayerRemoval(){
+        if(!this.gameMenuOpen){
+            this.detachChild(this.player);
+        }
+        this.player = undefined;
+    }
+
+    onPlayerMove(data){
+        if(data.fromServer){
+            this.player.position = data.pos;
+            this.player.bodyRotation = data.bodyRot;
+            this.player.headRotation = data.headRot;
         }
     }
 

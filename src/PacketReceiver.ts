@@ -23,6 +23,19 @@ const receivePlayerAdd = (data: string) => {
     EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_ADDITION, dataObj);
 }
 
+const receivePlayerMove = (data: string) => {
+    let dataObj = JSON.parse(data);
+    let pos = new Vector3(dataObj.pos[0], dataObj.pos[1], dataObj.pos[2]);
+    dataObj.pos = pos;
+    dataObj.fromServer = true;
+    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVE, dataObj);
+}
+
+const receivePlayerRemove = (data: string) => {
+    let id = JSON.parse(data).id;
+    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_REMOVAL, id);
+}
+
 const receiveConnectedPlayerAdd = (data: string) => {
     let playerData = JSON.parse(data);
     let pos = new Vector3(playerData.pos[0], playerData.pos[1], playerData.pos[2]);
@@ -48,15 +61,27 @@ const receiveConnectedPlayerMove = (data) => {
     });
 }
 
-const handlers: Map<number, any> = new Map();
+const receiveMatchStatistics = (rawStats) => {
+    let statistics = JSON.parse(rawStats);
+    EventHandler.callEvent(EventHandler.Event.MATCH_STATISTICS_RECEPTION, statistics);
+}
 
-handlers.set(0x00, receiveArena);
-handlers.set(0x01, receiveGameStatus);
-handlers.set(0x02, receiveAlert);
-handlers.set(0x03, receivePlayerAdd);
-handlers.set(0x04, receiveConnectedPlayerAdd);
-handlers.set(0x05, receiveConnectedPlayerMove);
-handlers.set(0x06, receiveConnectedPlayerRemove);
+const handlers: Array<any> = new Array();
+handlers.push(receiveArena);
+
+handlers.push(receiveGameStatus);
+
+handlers.push(receiveAlert);
+
+handlers.push(receivePlayerAdd);
+handlers.push(receivePlayerMove);
+handlers.push(receivePlayerRemove);
+
+handlers.push(receiveConnectedPlayerAdd);
+handlers.push(receiveConnectedPlayerMove);
+handlers.push(receiveConnectedPlayerRemove);
+
+handlers.push(receiveMatchStatistics);
 
 enum DataType{
     NUMBER = 0X00,
@@ -91,7 +116,7 @@ export default class PacketReceiver{
                 };
                 break;
         }
-        let handler = handlers.get(header);
+        let handler = handlers[header];
         if(handler){
             handler(body);
         }else{

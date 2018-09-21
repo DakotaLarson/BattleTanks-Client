@@ -1,20 +1,24 @@
 import Component from '../../../component/ChildComponent';
 import EventHandler from '../../../EventHandler';
 import DomHandler from '../../../DomHandler';
-import MultiplayerControls from './MultiplayerControls';
 
 import {Spherical, PerspectiveCamera} from 'three';
+import CameraControls from '../CameraControls';
 
 export default class Camera extends Component{
 
     camera: PerspectiveCamera;
-    controls: MultiplayerControls;
+    controls: CameraControls;
+
+    gameMenuOpen: boolean;
     
     constructor(camera: PerspectiveCamera){
         super();
         this.camera = camera;
 
-        this.controls = new MultiplayerControls(camera);
+        this.controls = new CameraControls(camera, true, false);
+
+        this.gameMenuOpen = false;
     }
 
     enable(){
@@ -22,8 +26,8 @@ export default class Camera extends Component{
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
 
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onArenaSceneUpdate);
-
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
 
         this.attachControls();
@@ -34,17 +38,48 @@ export default class Camera extends Component{
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
 
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onArenaSceneUpdate);
-
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
 
         this.detachControls();
+
+        this.gameMenuOpen = false;
     }
 
-    onArenaSceneUpdate(data){
+    onPlayerAddition(data){
+        if(!this.gameMenuOpen){
+            this.detachControls();
+        }
+
+        this.controls = new CameraControls(this.camera, true, false);
         this.controls.target = data.pos.clone().addScalar(0.5).setY(0);
         this.controls.spherical = new Spherical(25, 5 * Math.PI / 16, Math.PI);
         this.controls.update();
+
+        if(!this.gameMenuOpen){
+            this.attachControls();
+        }
+    }
+
+    onPlayerRemoval(){
+        if(!this.gameMenuOpen){
+            this.detachControls();
+        }
+
+        let target = this.controls.target; 
+        let spherical = this.controls.spherical;
+
+        this.controls = new CameraControls(this.camera, false, false);
+
+        this.controls.target = target;
+        this.controls.spherical = spherical;
+        this.controls.update();
+
+        if(!this.gameMenuOpen){
+            this.attachControls();
+        }
+
     }
 
     onPlayerMove(data){
@@ -60,10 +95,12 @@ export default class Camera extends Component{
     }
 
     onGameMenuOpen(){
+        this.gameMenuOpen = true;
         this.detachControls();
     }
 
     onGameMenuClose(){
+        this.gameMenuOpen = false;
         this.attachControls();
     }
 

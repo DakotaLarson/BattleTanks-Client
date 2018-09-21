@@ -106,10 +106,6 @@ export default class Player extends Component{
     }
 
     onUpdate(delta: number){
-        //TODO add check for mouse movement and return if no movement
-        // if(!this.movingForward && !this.movingBackward && !this.rotatingLeft && !this.rotatingRight){
-        //     return;
-        // }
 
         let movementSpeed = 0;
         let rotationSpeed = 0;
@@ -142,17 +138,13 @@ export default class Player extends Component{
             this.bodyRotation = potentialRotation;
             this.position.copy(potentialPosition);
         }
-        // if(!collisionCorrection){
-            
-        //     this.bodyRotation = potentialRotation;
-        //     this.position.copy(potentialPosition);
-        // }
 
         let movementData = {
             id: this.id,
             pos: this.position,
             bodyRot: this.bodyRotation,
-            headRot: this.headRotation
+            headRot: this.headRotation,
+            fromServer: false
         }
 
         EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVE, movementData);      

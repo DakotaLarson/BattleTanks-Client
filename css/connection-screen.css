@@ -5,3 +5,7 @@
     color: #ffffff;
     font-size: 5vmin;
 }
+
+.connection-screen .stats-parent{
+    display: none;
+}

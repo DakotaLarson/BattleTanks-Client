@@ -3,19 +3,20 @@ import EventHandler from '../../../EventHandler';
 import DomHandler from '../../../DomHandler';
 import SinglePlayerControls from './SinglePlayerControls';
 import { PerspectiveCamera } from 'three';
+import CameraControls from '../CameraControls';
 
 export default class Camera extends Component{
 
     camera: PerspectiveCamera;
     controlsEnabled: boolean;
-    controls: SinglePlayerControls;
+    controls: CameraControls;
     
     constructor(camera: PerspectiveCamera){
         super();
         this.camera = camera;
         this.controlsEnabled = true;
 
-        this.controls = new SinglePlayerControls(camera);
+        this.controls = new CameraControls(camera, false, true);
     }
 
     enable(){
