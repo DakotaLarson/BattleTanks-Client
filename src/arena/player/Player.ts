@@ -3,7 +3,7 @@ import EventHandler from '../../EventHandler';
 import { Vector3, Ray, Plane } from 'three';
 import RaycastHandler from '../../RaycastHandler';
 import PacketSender from '../../PacketSender';
-import {CollisionHandler} from '../CollisionHandler';
+import CollisionHandler from '../CollisionHandler';
 
 const PLAYER_MOVEMENT_SPEED = 3;
 const PLAYER_ROTATION_SPEED = 2;

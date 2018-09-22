@@ -1,7 +1,6 @@
 import Arena from './Arena';
 import EventHandler from '../../EventHandler';
 import Player from '../player/Player';
-import { Vector3 } from 'three';
 import ConnectedPlayer from '../player/ConnectedPlayer';
 
 export default class MultiplayerArena extends Arena{
@@ -87,10 +86,6 @@ export default class MultiplayerArena extends Arena{
         this.connectedPlayers.delete(id);
     }
 
-    getNewPlayerId(): number{
-        return latestId ++;
-    }
-
     onGameMenuOpen(){
         if(this.player){
             this.detachChild(this.player);
@@ -105,5 +100,3 @@ export default class MultiplayerArena extends Arena{
         }
     }
 }
-
-let latestId = 0;
