@@ -1,5 +1,6 @@
 import EventHandler from './EventHandler';
 import {Vector3} from 'three';
+import Audio from './audio/Audio';
 
 const decoder = new TextDecoder();
 
@@ -38,8 +39,8 @@ const receivePlayerRemove = (data: string) => {
     EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_REMOVAL, id);
 };
 
-const receivePlayerShotInvalid = () =>{
-    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_SHOT_INVALID);
+const receivePlayerShootInvalid = () =>{
+    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_SHOOT_INVALID);
 };
 
 const receivePlayerShoot = (id: number) => {
@@ -80,6 +81,10 @@ const receiveMatchStatistics = (rawStats) => {
     EventHandler.callEvent(EventHandler.Event.MATCH_STATISTICS_RECEPTION, statistics);
 };
 
+const receiveAudio = (value: number) => {
+    EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST,  value);
+};
+
 const handlers: Array<any> = new Array();
 handlers.push(receiveArena);
 
@@ -90,7 +95,7 @@ handlers.push(receiveAlert);
 handlers.push(receivePlayerAdd);
 handlers.push(receivePlayerMove);
 handlers.push(receivePlayerRemove);
-handlers.push(receivePlayerShotInvalid);
+handlers.push(receivePlayerShootInvalid);
 handlers.push(receivePlayerShoot); //Also for connected player; Additional packet unnecessary
 
 handlers.push(receiveConnectedPlayerAdd);
@@ -98,6 +103,8 @@ handlers.push(receiveConnectedPlayerMove);
 handlers.push(receiveConnectedPlayerRemove);
 
 handlers.push(receiveMatchStatistics);
+
+handlers.push(receiveAudio);
 
 enum DataType{
     NUMBER,

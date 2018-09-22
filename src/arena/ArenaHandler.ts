@@ -14,6 +14,7 @@ import MultiplayerCamera from './camera/multiplayer/MultiplayerCamera';
 import Renderer from '../Renderer';
 import SceneHandler from './scene/SceneHandler';
 import RaycastHandler from '../RaycastHandler';
+import AudioHandler from '../audio/AudioHandler';
 
 
 export default class ArenaHandler extends Component{
@@ -35,8 +36,11 @@ export default class ArenaHandler extends Component{
     singleplayerCamera: SingleplayerCamera;
     multiplayerCamera: MultiplayerCamera;
 
+    audioHandler: AudioHandler;
+
     isSingleplayer: boolean;
     gameMenuEnabled: boolean;
+
 
     constructor(){
         super();
@@ -64,6 +68,8 @@ export default class ArenaHandler extends Component{
 
         this.singleplayerCamera = new SingleplayerCamera(perspectiveCamera);
         this.multiplayerCamera = new MultiplayerCamera(perspectiveCamera);
+
+        this.audioHandler = new AudioHandler(perspectiveCamera, audioListener);
 
         this.isSingleplayer = false;
         this.gameMenuEnabled = false;
@@ -110,6 +116,7 @@ export default class ArenaHandler extends Component{
         this.attachChild(this.multiplayerArena);
         this.attachChild(this.multiplayerGUI);
         this.attachChild(this.multiplayerCamera);
+        this.attachChild(this.audioHandler);
 
         this.isSingleplayer = false;
     }
@@ -120,6 +127,7 @@ export default class ArenaHandler extends Component{
         this.detachChild(this.multiplayerArena);
         this.detachChild(this.multiplayerGUI);
         this.detachChild(this.multiplayerCamera);
+        this.detachChild(this.audioHandler);
     }
 
     attachArena(){

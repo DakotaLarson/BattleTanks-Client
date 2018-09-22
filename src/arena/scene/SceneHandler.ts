@@ -20,7 +20,6 @@ export default class SceneHandler extends Component{
     blocks: Mesh;
 
     scene: Scene;
-    audioListener: AudioListener
 
     blockPositions: Array<Vector3>;
     initialSpawnPositions: Array<Vector3>;
@@ -49,10 +48,8 @@ export default class SceneHandler extends Component{
         this.scene = new Scene();
         this.scene.background = new Color(0x1e1e20);
 
-        this.audioListener = audioListener;
-
         this.sceneSingleplayerToolHandler = new SceneSingleplayerToolHandler(this);
-        this.scenePlayerHandler = new ScenePlayerHandler(this.scene);
+        this.scenePlayerHandler = new ScenePlayerHandler(this.scene, audioListener);
 
     }
 

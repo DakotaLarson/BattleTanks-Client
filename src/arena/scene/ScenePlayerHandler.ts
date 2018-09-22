@@ -1,10 +1,10 @@
-import Component from "../../component/Component";
+import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
-import { Mesh, MeshLambertMaterial, DoubleSide, CylinderGeometry, BoxGeometry, Vector3, Scene, Geometry } from "three";
+import { Mesh, MeshLambertMaterial, DoubleSide, CylinderGeometry, BoxGeometry, Vector3, Scene, Geometry, AudioListener, AudioLoader, PositionalAudio, AudioBuffer } from "three";
 
 type PlayerObj = {
     body: Mesh,
-    head: Mesh
+    head: Mesh,
 };
 
 export default class ScenePlayerHandler extends Component{
@@ -16,17 +16,36 @@ export default class ScenePlayerHandler extends Component{
     playerBodyHeight: number;
     playerBodyDepth: number;
 
+    audioListener: AudioListener;
+
+    shootSoundBuffer: AudioBuffer;
+    invalidShootSoundBuffer: AudioBuffer;
+
+    controlledPlayerId: number;
+
     playerOffset: Vector3;
 
-    constructor(scene: Scene){
+    constructor(scene: Scene, audioListener: AudioListener){
         super();
         this.players = new Map();
         
         this.scene = scene;
 
+        this.audioListener = audioListener;
+
+        let audioLoader = new AudioLoader();
+        audioLoader.load('audio/shoot.wav', (buffer: AudioBuffer) => {
+            this.shootSoundBuffer = buffer;
+        }, undefined, undefined);
+        audioLoader.load('audio/shoot-invalid.wav', (buffer: AudioBuffer) => {
+            this.invalidShootSoundBuffer = buffer;
+        }, undefined, undefined);
+
         this.playerBodyWidth = 1;
         this.playerBodyHeight = 0.55;
         this.playerBodyDepth = 1.5;
+
+        this.controlledPlayerId = -1;
 
         this.playerOffset = new Vector3(0.5, this.playerBodyHeight/2, 0.5);
 
@@ -42,6 +61,7 @@ export default class ScenePlayerHandler extends Component{
         EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, this.onPlayerMove);
 
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT, this.onShoot);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT_INVALID, this.onShootInvalid);
 
     }
 
@@ -54,7 +74,8 @@ export default class ScenePlayerHandler extends Component{
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_REMOVAL, this.removePlayer);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, this.onPlayerMove);
 
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT, this.onShoot);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT, this.onShoot);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT_INVALID, this.onShootInvalid);
     }
 
     clearPlayers(){
@@ -97,6 +118,9 @@ export default class ScenePlayerHandler extends Component{
             this.scene.remove(obj.body);
             this.scene.remove(obj.head)
             this.players.delete(id);
+            if(this.controlledPlayerId === id){
+                this.controlledPlayerId = -1;
+            }
         }
     }
 
@@ -129,7 +153,7 @@ export default class ScenePlayerHandler extends Component{
                 color: 0x1ace14,
                 side: DoubleSide
             });
-    
+
         }
        
         let headOffset = new Vector3(0, this.playerBodyHeight / 2 + 0.35/2, 0);
@@ -155,16 +179,55 @@ export default class ScenePlayerHandler extends Component{
 
         this.scene.add(bodyMesh, headMesh);
 
+        
+
         let playerObj: PlayerObj = {
             body: bodyMesh,
-            head: headMesh
+            head: headMesh,
         }
 
         this.players.set(id, playerObj);
+        
+        if(!isConnectedPlayer){
+            this.controlledPlayerId = id;
+        }
     }
 
     onShoot(playerId: number){
-        console.log(playerId + ' shoot');
+        if(this.players.has(playerId)){
+            let head = this.players.get(playerId).head;
+            
+            let audio = new PositionalAudio(this.audioListener);
         
+            head.add(audio);
+
+            audio.onEnded = () => {
+                audio.isPlaying = false;
+                head.remove(audio);
+            }
+
+            audio.setBuffer(this.shootSoundBuffer);
+            audio.play();
+        }
+    }
+
+    onShootInvalid(){
+        if(this.controlledPlayerId > -1){
+            if(this.players.has(this.controlledPlayerId)){
+                let head = this.players.get(this.controlledPlayerId).head;
+            
+            let audio = new PositionalAudio(this.audioListener);
+        
+            head.add(audio);
+
+            audio.onEnded = () => {
+                audio.isPlaying = false;
+                head.remove(audio);
+            }
+            
+            audio.setBuffer(this.invalidShootSoundBuffer);
+            audio.play();
+            }
+        }
     }
 }

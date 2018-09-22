@@ -1,7 +1,7 @@
 import EventHandler from '../../EventHandler';
 import SceneHandler from './SceneHandler';
 import { Vector3, Intersection } from 'three';
-import Component from '../../component/Component';
+import Component from '../../component/ChildComponent';
 import RaycastHandler from '../../RaycastHandler';
 
 export default class SceneSingleplayerToolHandler extends Component{
