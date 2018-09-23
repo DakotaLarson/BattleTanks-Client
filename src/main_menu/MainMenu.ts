@@ -8,7 +8,7 @@ import MultiplayerMenu from './MultiplayerMenu';
 import OptionsMenu from './OptionsMenu';
 import CreateWorldMenu from './CreateArenaMenu';
 import LoadWorldMenu from './LoadArenaMenu';
-import ConnectMenu from './ConnectMenu';
+import AddServerMenu from './AddServerMenu';
 
 
 export default class MainMenu extends Component{
@@ -20,7 +20,7 @@ export default class MainMenu extends Component{
     optMenu: OptionsMenu;
     createMenu: CreateWorldMenu;
     loadMenu: LoadWorldMenu;
-    connectMenu: ConnectMenu;
+    addServerMenu: AddServerMenu;
     
     constructor(){
         super();
@@ -31,7 +31,7 @@ export default class MainMenu extends Component{
         this.optMenu = new OptionsMenu(this.element);
         this.createMenu = new CreateWorldMenu(this.element);
         this.loadMenu = new LoadWorldMenu(this.element);
-        this.connectMenu = new ConnectMenu(this.element);
+        this.addServerMenu = new AddServerMenu(this.element);
     }
     enable(){
 
@@ -46,8 +46,10 @@ export default class MainMenu extends Component{
         EventHandler.addListener(this, EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
 
         //MP MENU
+        EventHandler.addListener(this, EventHandler.Event.MPMENU_ADDSERVER_OPT_CLICK, this.handleMpAddServerOptClick);
+        EventHandler.addListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.handleMpJoinOptClick);
         EventHandler.addListener(this, EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.handleMpCancelOptClick);
-        EventHandler.addListener(this, EventHandler.Event.MPMENU_CONNECT_OPT_CLICK, this.handleMpConnectOptClick);
+        
         
         //OPT MENU
         EventHandler.addListener(this, EventHandler.Event.OPTMENU_CANCEL_OPT_CLICK, this.handleOptCancelOptClick);
@@ -58,8 +60,9 @@ export default class MainMenu extends Component{
         //LOAD WORLD MENU
         EventHandler.addListener(this, EventHandler.Event.LOADWORLDMENU_CANCEL_OPT_CLICK, this.handleLoadWorldCancelClick);
 
-        //CONNECT MENU
-        EventHandler.addListener(this, EventHandler.Event.CONNECTMENU_CANCEL_OPT_CLICK, this.handleConnectCancelClick);
+        //ADD SERVER MENU
+        EventHandler.addListener(this, EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK, this.handleAddServerClick);
+        EventHandler.addListener(this, EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK, this.handleAddServerClick);
 
         this.attachChild(this.topMenu);
 
@@ -79,8 +82,9 @@ export default class MainMenu extends Component{
         EventHandler.removeListener(this, EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.handleSpCancelOptClick);
 
         //MP MENU
+        EventHandler.removeListener(this, EventHandler.Event.MPMENU_ADDSERVER_OPT_CLICK, this.handleMpAddServerOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.handleMpJoinOptClick);
         EventHandler.removeListener(this, EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.handleMpCancelOptClick);
-        EventHandler.removeListener(this, EventHandler.Event.MPMENU_CONNECT_OPT_CLICK, this.handleMpConnectOptClick);
 
         //OPT MENU
         EventHandler.removeListener(this, EventHandler.Event.OPTMENU_CANCEL_OPT_CLICK, this.handleOptCancelOptClick);
@@ -88,8 +92,9 @@ export default class MainMenu extends Component{
         //SPCREATE MENU
         EventHandler.removeListener(this, EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.handleCreateWorldCancelClick);
 
-        //CONNECT MENU
-        EventHandler.addListener(this, EventHandler.Event.CONNECTMENU_CANCEL_OPT_CLICK, this.handleConnectCancelClick);
+        //ADD SERVER MENU
+        EventHandler.removeListener(this, EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK, this.handleAddServerClick);
+        EventHandler.removeListener(this, EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK, this.handleAddServerClick);
 
         this.element.style.display = '';
     }
@@ -127,14 +132,18 @@ export default class MainMenu extends Component{
     }
 
     //Multiplayer Option Handlers
+    handleMpAddServerOptClick(){
+        this.detachChild(this.mpMenu);
+        this.attachChild(this.addServerMenu);
+    }
+
+    handleMpJoinOptClick(){
+        this.detachChild(this.mpMenu);
+    }
+
     handleMpCancelOptClick(){
         this.detachChild(this.mpMenu);
         this.attachChild(this.topMenu);
-    }
-
-    handleMpConnectOptClick(){
-        this.detachChild(this.mpMenu);
-        this.attachChild(this.connectMenu);
     }
 
     //Options Option Handlers
@@ -155,8 +164,8 @@ export default class MainMenu extends Component{
         this.attachChild(this.spMenu);
     }
 
-    handleConnectCancelClick(){
-        this.detachChild(this.connectMenu);
+    handleAddServerClick(){
+        this.detachChild(this.addServerMenu);
         this.attachChild(this.mpMenu);
     }
 }

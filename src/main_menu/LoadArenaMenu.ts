@@ -4,7 +4,7 @@ import DomHandler from '../DomHandler';
 import DomEventHandler from '../DomEventHandler';
 
 
-export default class LoadWorldMenu extends Component{
+export default class LoadArenaMenu extends Component{
 
     element: HTMLElement;
     loadElt: HTMLElement;
@@ -13,7 +13,7 @@ export default class LoadWorldMenu extends Component{
     fileNameElt: HTMLElement;
     fileInputElt: HTMLInputElement;
     fileInputParentElt: HTMLElement;
-    world: Object;
+    arena: Object;
 
     constructor(mainMenu: HTMLElement){
         super();
@@ -25,7 +25,7 @@ export default class LoadWorldMenu extends Component{
         this.fileInputElt = DomHandler.getElement('#load-opt-file', this.element) as HTMLInputElement;
         this.fileInputParentElt = DomHandler.getElement('.menu-file-input', this.element);
 
-        this.world = undefined;
+        this.arena = undefined;
     }
 
     enable(){
@@ -44,15 +44,15 @@ export default class LoadWorldMenu extends Component{
         this.errorElt.textContent = '';
         this.fileNameElt.textContent = '';
 
-        this.world = undefined;
+        this.arena = undefined;
 
         this.element.style.display = 'none';
     }
 
     onLoadClick(){
-        if(this.world){
+        if(this.arena){
             //call event
-            EventHandler.callEvent(EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.world);
+            EventHandler.callEvent(EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.arena);
         }else{
             this.errorElt.textContent = 'No File selected';
         }
@@ -70,7 +70,7 @@ export default class LoadWorldMenu extends Component{
                 this.fileNameElt.textContent = file.name;
             }).catch(() => {
                 this.fileNameElt.textContent = '';
-                this.world = undefined;
+                this.arena = undefined;
             });
         }else{
             this.fileNameElt.textContent = '';
@@ -92,7 +92,7 @@ export default class LoadWorldMenu extends Component{
                     return;
                 }
                 if(json.title && json.width && json.height && json.blockLocations && json.width > 0 && json.height > 0){
-                     this.world = json;
+                     this.arena = json;
                      resolve();
                 }else{
                     this.errorElt.textContent = 'Invalid or corrupt file';

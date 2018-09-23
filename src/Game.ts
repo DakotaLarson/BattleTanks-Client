@@ -35,7 +35,7 @@ class Game extends Component{
 
         EventHandler.addListener(this, EventHandler.Event.SP_GAMEMENU_RETURN_TO_MAIN_REQUEST, this.unloadSingleplayer);
 
-        EventHandler.addListener(this, EventHandler.Event.CONNECTMENU_CONNECT_OPT_CLICK, this.connectToMultiplayer);
+        EventHandler.addListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.connectToMultiplayer);
 
         EventHandler.addListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.disconnectFromMultiplayer);
         EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.disconnectFromMultiplayer);
@@ -58,10 +58,10 @@ class Game extends Component{
         this.attachChild(this.mainMenu);
     }
 
-    connectToMultiplayer(){
+    connectToMultiplayer(address: string){
         this.detachChild(this.mainMenu);
         this.attachChild(this.connectionScreen);
-        this.mpConnection = new MultiplayerConnection();
+        this.mpConnection = new MultiplayerConnection(address);
         this.attachChild(this.mpConnection);
         this.attachChild(this.gameStatusHandler);
     }

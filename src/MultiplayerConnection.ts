@@ -4,20 +4,21 @@ import PacketSender from './PacketSender';
 import PacketReceiver from './PacketReceiver';
 import DomEventHandler from './DomEventHandler';
 
-const address = 'ws://localhost:8000';
 const protocol = 'tanks-MP';
 
 export default class MultiplayerConnection extends Component{
 
     ws: WebSocket;
+    address: string;
 
-    constructor(){
+    constructor(address: string){
         super();
+        this.address = address;
         this.ws = undefined;
     }
 
     enable(){
-        this.ws = new WebSocket(address, protocol);
+        this.ws = new WebSocket(this.address, protocol);
         this.ws.binaryType = 'arraybuffer';
 
         DomEventHandler.addListener(this, this.ws, 'open', this.onOpen);

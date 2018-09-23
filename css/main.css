@@ -31,15 +31,20 @@ html, body{
     display: inline-block;
     border: solid 1px;
     padding: 0 1vmin;
+    cursor: pointer;
 }
 .menu-selection:hover{
     background-color: green;
     border-color: green;
-    cursor: pointer;
+}
+.menu-selection.disabled{
+    color: #707070 !important;
+    background: none !important;
+    border-color: #707070 !important;
+    cursor: default !important;
 }
 .menu-text-input{
     font-family: 'No Regular', monospace;
-    font-size: 7.5vmin;
     background: none;
     color: #d0d0d0;
     outline: none;

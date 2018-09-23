@@ -1,7 +1,6 @@
 import Component from '../../../component/ChildComponent';
 import EventHandler from '../../../EventHandler';
 import DomHandler from '../../../DomHandler';
-import SinglePlayerControls from './SinglePlayerControls';
 import { PerspectiveCamera } from 'three';
 import CameraControls from '../CameraControls';
 

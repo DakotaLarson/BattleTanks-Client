@@ -81,7 +81,7 @@ export default class ArenaHandler extends Component{
 
         EventHandler.addListener(this, EventHandler.Event.SP_GAMEMENU_RETURN_TO_MAIN_REQUEST, this.detachSingleplayerArena);
 
-        EventHandler.addListener(this, EventHandler.Event.CONNECTMENU_CONNECT_OPT_CLICK, this.attachMultiplayerArena);
+        EventHandler.addListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.attachMultiplayerArena);
 
         EventHandler.addListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.detachMultiplayerArena);
         EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.detachMultiplayerArena);

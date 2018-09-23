@@ -21,23 +21,33 @@
 <body>
 <div class="menu main-menu no-select">
     <span class="main-menu-title">Battle Tanks</span><br/>
+    <!-- TOP MENU -->
     <div class="menu-section" id="main-menu-top">
         <span class="menu-selection" id="top-opt-mp">Play</span><br/>
         <span class="menu-selection" id="top-opt-sp">Create Arena</span><br/>
         <span class="menu-selection" id="top-opt-opt">Options</span>
     </div>
+    <!-- SINGLEPLAYER MENU -->
     <div class="menu-section" id="main-menu-sp">
         <span class="menu-selection" id="sp-opt-create">Create New</span><br/>
         <span class="menu-selection" id="sp-opt-load">Load Existing</span><br/>
         <span class="menu-selection" id="sp-opt-cancel">Cancel</span>
     </div>
+    <!-- MULTIPLAYER MENU -->
     <div class="menu-section" id="main-menu-mp">
-        <span class="menu-selection" id="mp-opt-connect">Connect</span><br/>
-        <span class="menu-selection" id="mp-opt-cancel">Cancel</span>
+        <div class="server-list"></div>
+        <div class="server-action-parent">
+            <span class="menu-selection" id="mp-opt-add-server">Add Server</span>
+            <span class="menu-selection" id="mp-opt-join-server">Join Server</span>
+            <span class="menu-selection" id="mp-opt-remove-server">Remove Server</span>
+            <span class="menu-selection" id="mp-opt-cancel">Cancel</span>
+        </div>
     </div>
+    <!-- OPTIONS MENU -->
     <div class="menu-section" id="main-menu-opt">
         <span class="menu-selection" id="opt-cancel">Cancel</span>
     </div>
+    <!-- SINGLEPLAYER CREATE MENU -->
     <div class="menu-section" id="sp-menu-create">
         <input type="text" class="menu-input" id="create-opt-title" placeholder="Title"/><br/>
         <input type="text" class="menu-input menu-number-input" id="create-opt-width" placeholder="Width"/><br/>
@@ -46,6 +56,7 @@
         <span class="menu-selection" id="create-opt-cancel">Cancel</span><br/>
         <span class="menu-error" id="create-opt-error"></span>
     </div>
+    <!-- SINGLEPLAYER LOAD MENU -->
     <div class="menu-section" id="sp-menu-load">
         <input type="file" class="" id="load-opt-file" accept=".json"/>
         <div class="menu-file-input">
@@ -58,10 +69,12 @@
         <span class="menu-selection" id="load-opt-cancel">Cancel</span><br/>
         <span class="menu-error" id="load-opt-error"></span>
     </div>
-    <div class="menu-section" id="mp-menu-connect">
-        <input type="text" class="menu-text-input" id="connect-address" placeholder="Server Address"/><br/>
-        <span class="menu-selection" id="connect-opt-connect">Connect</span>
-        <span class="menu-selection" id="connect-opt-cancel">Cancel</span>
+    <!-- MULTIPLAYER ADD SERVER MENU -->
+    <div class="menu-section" id="mp-menu-add-server">
+        <input class="menu-text-input" id="add-server-name" placeholder="Server Name"/><br/>
+        <input class="menu-text-input" id="add-server-address" placeholder="Server Address"/><br/> 
+        <span class="menu-selection" id="add-server-opt-save">Save</span>
+        <span class="menu-selection" id="add-server-opt-cancel">Cancel</span>
     </div>
 </div>
 
@@ -145,7 +158,7 @@
             }
         } 
     });
-    SystemJS.import('/build/Game.js');
+    SystemJS.import('./build/Game.js');
 </script>
 </html>
 <!--https://discord.gg/kGcw5M6-->

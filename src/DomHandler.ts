@@ -25,6 +25,13 @@ export default class DomHandler{
             return document.querySelector(query);
         }
     }
+    static getElements(query: string, parent?: HTMLElement): NodeListOf<HTMLElement> {
+        if(parent){
+            return parent.querySelectorAll(query);
+        }else{
+            return document.querySelectorAll(query);
+        }
+    }
 
     static getMouseCoordinates(){
         return mousePosition;
