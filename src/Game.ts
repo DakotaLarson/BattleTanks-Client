@@ -8,6 +8,7 @@ import ConnectionScreen from './connection_screen/ConnectionScreen';
 import GameStatusHandler from './GameStatusHandler';
 import AlertMessageHandler from './alert_message/AlertMessageHandler';
 import ComponentDebugger from './component/ComponentDebugger';
+import Options from './Options';
 
 class Game extends Component{
 
@@ -17,6 +18,7 @@ class Game extends Component{
     mpConnection: MultiplayerConnection;
     gameStatusHandler: GameStatusHandler;
     alertMessageHandler: AlertMessageHandler;
+    options: Options;
 
     constructor(){
         super();
@@ -26,6 +28,7 @@ class Game extends Component{
         this.mpConnection = undefined;
         this.gameStatusHandler = new GameStatusHandler();
         this.alertMessageHandler = new AlertMessageHandler();
+        this.options = new Options();
     }
     enable(){
         EventHandler.callEvent(EventHandler.Event.GAME_START);
@@ -41,6 +44,7 @@ class Game extends Component{
         EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.disconnectFromMultiplayer);
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.disconnectFromMultiplayer);
         
+        this.attachComponent(this.options);
         this.attachChild(this.mainMenu);
         this.attachChild(this.alertMessageHandler);
         this.attachComponent(this.arenaHandler);

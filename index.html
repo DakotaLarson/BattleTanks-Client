@@ -16,6 +16,7 @@
     <link rel="stylesheet" type="text/css" href="./css/connection-screen.css"/>
     <link rel="stylesheet" type="text/css" href="./css/create-world-mode-toggle.css"/>
     <link rel="stylesheet" type="text/css" href="./css/alert-message.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/options.css"/>
 
 </head>
 <body>
@@ -44,8 +45,31 @@
         </div>
     </div>
     <!-- OPTIONS MENU -->
-    <div class="menu-section" id="main-menu-opt">
-        <span class="menu-selection" id="opt-cancel">Cancel</span>
+    <div class="menu-section options-menu" id="main-menu-opt">
+        <div class='options-parent'>
+            <span class="option-title">Forward</span>
+            <span class="option-value option-listening-value" id="option-value-forward">W</span>
+
+            <span class="option-title">Backward</span>
+            <span class="option-value option-listening-value" id="option-value-backward">S</span>
+
+            <span class="option-title">Rotate Left</span>
+            <span class="option-value option-listening-value" id="option-value-left">A</span>
+
+            <span class="option-title">Rotate Right</span>
+            <span class="option-value option-listening-value" id="option-value-right">D</span>
+
+            <span class="option-title">Shoot</span>
+            <span class="option-value option-listening-value" id="option-value-shoot">Mouse 0</span>
+
+            <span class="option-title">Volume</span>
+            <input type="range" id="option-value-volume" class="option-value option-range-value" min="0" max="1" value="1" step="any"/>
+
+            <span class="option-title">Mouse Sensitivity</span>
+            <input type="range" id="option-value-mouse" class="option-value option-range-value" min="0" max="1" value="1" step="any"/>
+
+            <span class="menu-selection" id="opt-opt-return">Return</span>
+        </div>
     </div>
     <!-- SINGLEPLAYER CREATE MENU -->
     <div class="menu-section" id="sp-menu-create">

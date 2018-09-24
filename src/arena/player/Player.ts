@@ -4,6 +4,7 @@ import { Vector3, Ray, Plane } from 'three';
 import RaycastHandler from '../../RaycastHandler';
 import PacketSender from '../../PacketSender';
 import CollisionHandler from '../CollisionHandler';
+import Options from '../../Options';
 
 const PLAYER_MOVEMENT_SPEED = 3;
 const PLAYER_ROTATION_SPEED = 2;
@@ -42,6 +43,7 @@ export default class Player extends Component{
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
 
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
+        EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
 
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
 
@@ -55,7 +57,7 @@ export default class Player extends Component{
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
-
+        EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
 
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
 
@@ -64,44 +66,44 @@ export default class Player extends Component{
     }
 
     onKeyDown(event: KeyboardEvent){
-        if(event.code === 'KeyW'){
-            if(!this.movingBackward){
-                this.movingForward = true;
-            }
-        }else if(event.code === 'KeyS'){
-            if(!this.movingForward){
-                this.movingBackward = true;
-            }
-        }
-
-        if(event.code === 'KeyA'){
-            if(!this.rotatingRight){
-                this.rotatingLeft = true;
-            }
-        }else if(event.code === 'KeyD'){
-            if(!this.rotatingLeft){
-                this.rotatingRight = true;
-            }
-        }
+        this.onInputDown(event.code);
     }
 
     onKeyUp(event: KeyboardEvent){
-        if(event.code === 'KeyW'){
-            this.movingForward = false;
-        }else if(event.code === 'KeyS'){
-            this.movingBackward = false;
-        }
-
-        if(event.code === 'KeyA'){
-            this.rotatingLeft = false;
-        }else if(event.code === 'KeyD'){
-            this.rotatingRight = false;
-        }
+       this.onInputUp(event.code);
     }
 
     onMouseDown(event: MouseEvent){
-        if(event.button === 0){
+        this.onInputDown(event.button);
+    }
+
+    onMouseUp(event: MouseEvent){
+        this.onInputUp(event.button);
+    }
+
+    onInputDown(code){
+        if(code === Options.options.forward.code){
+            this.movingForward = true;
+        }else if(code === Options.options.backward.code){
+            this.movingBackward = true;
+        }else if(code === Options.options.left.code){
+            this.rotatingLeft = true;
+        }else if(code === Options.options.right.code){
+            this.rotatingRight = true;
+        }else if(code === Options.options.shoot.code){
             PacketSender.sendPlayerShoot();
+        }
+    }
+    
+    onInputUp(code){
+        if(code === Options.options.forward.code){
+            this.movingForward = false;
+        }else if(code === Options.options.backward.code){
+            this.movingBackward = false;
+        }else if(code === Options.options.left.code){
+            this.rotatingLeft = false;
+        }else if(code === Options.options.right.code){
+            this.rotatingRight = false;
         }
     }
 
@@ -110,13 +112,13 @@ export default class Player extends Component{
         let movementSpeed = 0;
         let rotationSpeed = 0;
 
-        if(this.movingForward){
+        if(this.movingForward && !this.movingBackward){
             movementSpeed = PLAYER_MOVEMENT_SPEED;
-        }else if(this.movingBackward){
+        }else if(this.movingBackward && !this.movingForward){
             movementSpeed = -PLAYER_MOVEMENT_SPEED;
-        }if(this.rotatingLeft){
+        }if(this.rotatingLeft && !this.rotatingRight){
             rotationSpeed = PLAYER_ROTATION_SPEED;
-        }else if(this.rotatingRight){
+        }else if(this.rotatingRight && !this.rotatingLeft){
             rotationSpeed = -PLAYER_ROTATION_SPEED;
         }
 

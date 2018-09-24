@@ -1,7 +1,9 @@
 import Component from '../component/ChildComponent';
 import EventHandler from '../EventHandler';
 import Audio from '../audio/Audio';
+import {Audio as Three_Audio} from 'three';
 import { PerspectiveCamera, AudioLoader, AudioBuffer, PositionalAudio, AudioListener } from 'three';
+import Options from '../Options';
 
 export default class AudioHandler extends Component{
 
@@ -46,15 +48,15 @@ export default class AudioHandler extends Component{
     }
 
     playBuffer(buffer: AudioBuffer){
-        let audio = new PositionalAudio(this.audioListener);
+        let audio = new Three_Audio(this.audioListener);
         
-        this.camera.add(audio);
+        //this.camera.add(audio);
 
-        audio.onEnded = () => {
-            audio.isPlaying = false;
-            this.camera.remove(audio);
-        }
-        
+        // audio.onEnded = () => {
+        //     audio.isPlaying = false;
+        //     this.camera.remove(audio);
+        // }
+        audio.setVolume(Options.options.volume);
         audio.setBuffer(buffer);
         audio.play();
     }
