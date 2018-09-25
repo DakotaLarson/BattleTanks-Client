@@ -1,6 +1,5 @@
 import EventHandler from './EventHandler';
 import {Vector3} from 'three';
-import Audio from './audio/Audio';
 
 const decoder = new TextDecoder();
 
@@ -43,8 +42,8 @@ const receivePlayerShootInvalid = () =>{
     EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_SHOOT_INVALID);
 };
 
-const receivePlayerShoot = (id: number) => {
-    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_SHOOT, id);
+const receivePlayerShoot = () => {
+    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_SHOOT);
 };
 
 
@@ -74,6 +73,10 @@ const receiveConnectedPlayerMove = (data) => {
     });
 };
 
+const receiveConnectedPlayerShoot = (id) => {
+    EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_SHOOT, id);
+}
+
 
 
 const receiveMatchStatistics = (rawStats) => {
@@ -84,6 +87,10 @@ const receiveMatchStatistics = (rawStats) => {
 const receiveAudio = (value: number) => {
     EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST,  value);
 };
+
+const receiveCooldownTime = (time: number) => {
+    EventHandler.callEvent(EventHandler.Event.COOLDOWN_TIME_RECEPTION, time);
+}
 
 const handlers: Array<any> = new Array();
 handlers.push(receiveArena);
@@ -96,15 +103,18 @@ handlers.push(receivePlayerAdd);
 handlers.push(receivePlayerMove);
 handlers.push(receivePlayerRemove);
 handlers.push(receivePlayerShootInvalid);
-handlers.push(receivePlayerShoot); //Also for connected player; Additional packet unnecessary
+handlers.push(receivePlayerShoot);
 
 handlers.push(receiveConnectedPlayerAdd);
 handlers.push(receiveConnectedPlayerMove);
 handlers.push(receiveConnectedPlayerRemove);
+handlers.push(receiveConnectedPlayerShoot);
 
 handlers.push(receiveMatchStatistics);
 
 handlers.push(receiveAudio);
+
+handlers.push(receiveCooldownTime);
 
 enum DataType{
     NUMBER,

@@ -62,6 +62,7 @@ export default class ScenePlayerHandler extends Component{
 
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT, this.onShoot);
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT_INVALID, this.onShootInvalid);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_SHOOT, this.onShoot);
 
     }
 
@@ -193,7 +194,10 @@ export default class ScenePlayerHandler extends Component{
         }
     }
 
-    onShoot(playerId: number){
+    onShoot(playerId?: number){
+        if(!playerId){
+            playerId = this.controlledPlayerId;
+        }
         if(this.players.has(playerId)){
             let head = this.players.get(playerId).head;
             

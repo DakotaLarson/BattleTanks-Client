@@ -5,16 +5,28 @@
     height: 100%;
     width: 100%;
 }
-.gui .crosshair{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    height: 32px;
-    width: 32px;
-}
 .gui .gui-element{
     display: none;
     position: absolute;
 }
 
+.gui .cooldown-bar-container{
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    bottom: 2.5vh;
+}
+
+.gui .cooldown-bar-parent{
+    box-sizing: border-box;
+    display: inline-block;
+    width: 33vw;
+    height: 2.5vh;
+    background-color: rgba(0, 0, 0, 0.25);
+    border: solid 1px #ffffff;
+}
+
+.gui .cooldown-bar{
+    height: 100%;
+    background-color: green;
+}
