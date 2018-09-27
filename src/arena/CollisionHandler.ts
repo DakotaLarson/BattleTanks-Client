@@ -1,131 +1,126 @@
-import { Vector3, Spherical } from "three";
+import { Spherical, Vector3 } from "three";
 
-let blockPositions: Array<Vector3>;
+let blockPositions: Vector3[];
 
-export default class CollisionHandler{
+export default class CollisionHandler {
 
-    static getCollision(pos: Vector3, rot: number): Vector3{
+    public static getCollision(pos: Vector3, rot: number): Vector3 {
         pos.add(new Vector3(0.5, 0, 0.5));
 
         const radius = Math.sqrt(0.75 * 0.75 + 0.5 * 0.5);
         const phi = Math.PI / 2;
-        const theta = Math.atan(0.5/0.75);
+        const theta = Math.atan(0.5 / 0.75);
 
-        let blockPos = pos.clone().floor();
+        const blockPos = pos.clone().floor();
 
-        let blockPositions: Array<Vector3> = new Array();
-        for(let x = blockPos.x - 1; x <= blockPos.x + 1; x ++){
-            for(let z = blockPos.z - 1; z <= blockPos.z + 1; z ++){
-                let testPos = new Vector3(x, 0, z);
-                if(CollisionHandler.isPositionBlock(testPos)){
-                    blockPositions.push(testPos);
+        const testBlockPositions: Vector3[] = new Array();
+        for (let x = blockPos.x - 1; x <= blockPos.x + 1; x ++) {
+            for (let z = blockPos.z - 1; z <= blockPos.z + 1; z ++) {
+                const testPos = new Vector3(x, 0, z);
+                if (CollisionHandler.isPositionBlock(testPos)) {
+                    testBlockPositions.push(testPos);
                 }
             }
         }
-        if(blockPositions.length){
-            let playerCornerPositions: Array<Vector3> = new Array();
+        if (testBlockPositions.length) {
+            const playerCornerPositions: Vector3[] = new Array();
 
-             //front right
+             // front right
             playerCornerPositions.push(new Vector3().setFromSpherical(new Spherical(radius, phi, rot - theta)).add(pos).setY(0));
-            
-            //front left
+
+            // front left
             playerCornerPositions.push(new Vector3().setFromSpherical(new Spherical(radius, phi, rot + theta)).add(pos).setY(0));
 
-            //back left
+            // back left
             playerCornerPositions.push(new Vector3().setFromSpherical(new Spherical(radius, phi,  Math.PI + rot - theta)).add(pos).setY(0));
 
-            //back right
+            // back right
             playerCornerPositions.push(new Vector3().setFromSpherical(new Spherical(radius, phi,  Math.PI + rot + theta)).add(pos).setY(0));
 
-            let playerParallelAxis = new Vector3(Math.sin(rot), 0, Math.cos(rot)).normalize();
-            let playerPerpendicularAxis = playerParallelAxis.clone().applyAxisAngle(new Vector3(0, 1, 0), Math.PI / 2);
-            
-            let blockParallelAxis = new Vector3(0, 0, 1);
-            let blockPerpendicularAxis = new Vector3(1, 0, 0);
+            const playerParallelAxis = new Vector3(Math.sin(rot), 0, Math.cos(rot)).normalize();
+            const playerPerpendicularAxis = playerParallelAxis.clone().applyAxisAngle(new Vector3(0, 1, 0), Math.PI / 2);
 
-            let totalCorrection = new Vector3();
+            const blockParallelAxis = new Vector3(0, 0, 1);
+            const blockPerpendicularAxis = new Vector3(1, 0, 0);
 
-            for(let i = 0; i < blockPositions.length; i ++){
+            const totalCorrection = new Vector3();
 
-                let blockCornerPositions: Array<Vector3> = new Array();
+            for (const blockPosition of testBlockPositions) {
 
-                let blockPosition = blockPositions[i];
+                const blockCornerPositions: Vector3[] = new Array();
 
                 blockCornerPositions.push(blockPosition.clone());
                 blockCornerPositions.push(blockPosition.clone().add(new Vector3(0, 0, 1)));
                 blockCornerPositions.push(blockPosition.clone().add(new Vector3(1, 0, 1)));
                 blockCornerPositions.push(blockPosition.clone().add(new Vector3(1, 0, 0)));
 
-                let playerParallelOverlap = this.overlaps(playerParallelAxis, playerCornerPositions, blockCornerPositions);
+                const playerParallelOverlap = this.overlaps(playerParallelAxis, playerCornerPositions, blockCornerPositions);
 
-                let blockParallelOverlap = this.overlaps(blockParallelAxis, playerCornerPositions, blockCornerPositions);
+                const blockParallelOverlap = this.overlaps(blockParallelAxis, playerCornerPositions, blockCornerPositions);
 
-                let playerPerpendicularOverlap = this.overlaps(playerPerpendicularAxis, playerCornerPositions, blockCornerPositions);
+                const playerPerpendicularOverlap = this.overlaps(playerPerpendicularAxis, playerCornerPositions, blockCornerPositions);
 
-                let blockPerpendicularOverlap = this.overlaps(blockPerpendicularAxis, playerCornerPositions, blockCornerPositions);
+                const blockPerpendicularOverlap = this.overlaps(blockPerpendicularAxis, playerCornerPositions, blockCornerPositions);
 
-                let intersects = playerParallelOverlap && blockParallelOverlap && playerPerpendicularOverlap && blockPerpendicularOverlap;
+                const intersects = playerParallelOverlap && blockParallelOverlap && playerPerpendicularOverlap && blockPerpendicularOverlap;
 
-                if(intersects){
-                    let mtvs: Array<Vector3> = new Array();
-                    mtvs.push(playerParallelOverlap, playerPerpendicularOverlap, blockParallelOverlap, blockPerpendicularOverlap);
+                if (intersects) {
+                    const mtvs: Vector3[] = new Array();
+                    mtvs.push(playerParallelOverlap as Vector3, playerPerpendicularOverlap as Vector3, blockParallelOverlap as Vector3, blockPerpendicularOverlap  as Vector3);
 
                     let distance = mtvs[0].lengthSq();
                     let shortestVec = mtvs[0];
-                    for(let i = 1; i < mtvs.length; i++){
-                        let squareLength = mtvs[i].lengthSq();
-                        if(squareLength < distance){
+                    for (let k = 1; k < mtvs.length; k++) {
+                        const squareLength = mtvs[k].lengthSq();
+                        if (squareLength < distance) {
                             distance = squareLength;
-                            shortestVec = mtvs[i];
+                            shortestVec = mtvs[k];
                         }
                     }
                     totalCorrection.add(shortestVec);
                 }
             }
-            if(!totalCorrection.equals(new Vector3())){
+            if (!totalCorrection.equals(new Vector3())) {
                 return totalCorrection;
             }
         }
-        return undefined;
+        return new Vector3();
     }
 
-    static updateBlockPositions(positions: Array<Vector3>){
-        blockPositions = positions;
+    public static updateBlockPositions(positions: Vector3[] | undefined) {
+        blockPositions = positions ? positions : [];
     }
 
-    private static overlaps(axis: Vector3, playerCorners: Array<Vector3>, blockCorners: Array<Vector3>): Vector3{
+    private static overlaps(axis: Vector3, playerCorners: Vector3[], blockCorners: Vector3[]): Vector3 | undefined {
 
-        let playerScalars: Array<number> = new Array();
-        let blockScalars: Array<number> = new Array();
-        
-        for(let k = 0; k < 4; k ++){
+        const playerScalars: number[] = new Array();
+        const blockScalars: number[] = new Array();
+
+        for (let k = 0; k < 4; k ++) {
             playerScalars.push(playerCorners[k].dot(axis));
             blockScalars.push(blockCorners[k].dot(axis));
         }
 
-        let playerMax = Math.max.apply(null, playerScalars);
-        let playerMin = Math.min.apply(null, playerScalars);
+        const playerMax = Math.max.apply(undefined, playerScalars);
+        const playerMin = Math.min.apply(undefined, playerScalars);
 
-        let blockMax = Math.max.apply(null, blockScalars);
-        let blockMin = Math.min.apply(null, blockScalars);
+        const blockMax = Math.max.apply(undefined, blockScalars);
+        const blockMin = Math.min.apply(undefined, blockScalars);
 
-        if(blockMin > playerMax || blockMax < playerMin){
-            return undefined;
-        }else{
-            
+        if (!(blockMin > playerMax || blockMax < playerMin)) {
             let overlap = playerMax - blockMin;
-            if(playerMax > blockMax){
+            if (playerMax > blockMax) {
                 overlap = - (blockMax - playerMin);
             }
 
-            return axis.clone().multiplyScalar(overlap); 
+            return axis.clone().multiplyScalar(overlap);
         }
-        
+        return undefined;
     }
 
-    private static isPositionBlock(pos: Vector3){
-        for(let i = 0; i < blockPositions.length; i ++){
-            if(blockPositions[i].equals(pos)) return true;
+    private static isPositionBlock(pos: Vector3) {
+        for (const blockPosition of blockPositions) {
+            if (blockPosition.equals(pos)) { return true; }
         }
         return false;
     }

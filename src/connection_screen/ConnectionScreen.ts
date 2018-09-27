@@ -1,30 +1,29 @@
-import Component from '../component/ChildComponent';
-import DomHandler from '../DomHandler';
-import EventHandler from '../EventHandler';
+import Component from "../component/ChildComponent";
+import DomHandler from "../DomHandler";
+import EventHandler from "../EventHandler";
 
-import ConnectedScreen from './ConnectedScreen';
-import ConnectingScreen from './ConnectingScreen';
-import DisconnectedScreen from './DisconnectedScreen';
-import FinishingScreen from './FinishingScreen';
-import WaitingScreen from './WaitingScreen';
+import ConnectedScreen from "./ConnectedScreen";
+import ConnectingScreen from "./ConnectingScreen";
+import DisconnectedScreen from "./DisconnectedScreen";
+import FinishingScreen from "./FinishingScreen";
+import WaitingScreen from "./WaitingScreen";
 
-export default class ConnectionScreen extends Component{
+export default class ConnectionScreen extends Component {
 
+    public element: HTMLElement;
 
-    element: HTMLElement;
+    public connectedScreen: ConnectedScreen;
+    public connectingScreen: ConnectingScreen;
+    public disconnectedScreen: DisconnectedScreen;
+    public finishingScreen: FinishingScreen;
+    public waitingScreen: WaitingScreen;
 
-    connectedScreen: ConnectedScreen;
-    connectingScreen: ConnectingScreen;
-    disconnectedScreen: DisconnectedScreen;
-    finishingScreen: FinishingScreen;
-    waitingScreen: WaitingScreen;
+    public hidden: boolean;
+    public activeScreen: Component | undefined;
 
-    hidden: boolean;
-    activeScreen: Component;
-
-    constructor(){
+    constructor() {
         super();
-        this.element = DomHandler.getElement('.connection-screen');
+        this.element = DomHandler.getElement(".connection-screen");
 
         this.connectedScreen = new ConnectedScreen(this.element);
         this.connectingScreen = new ConnectingScreen(this.element);
@@ -36,7 +35,7 @@ export default class ConnectionScreen extends Component{
         this.activeScreen = undefined;
     }
 
-    enable(){
+    public enable() {
 
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_OPEN, this.onConnectionOpen);
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.onConnectionClose);
@@ -46,11 +45,11 @@ export default class ConnectionScreen extends Component{
         EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onOtherGameStatus);
         EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_FINISHING, this.onFinishingGameStatus);
 
-        this.element.style.display = 'flex';
+        this.element.style.display = "flex";
         this.showScreen(this.connectingScreen);
     }
 
-    disable(){
+    public disable() {
 
         EventHandler.removeListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_OPEN, this.onConnectionOpen);
         EventHandler.removeListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.onConnectionClose);
@@ -60,57 +59,57 @@ export default class ConnectionScreen extends Component{
         EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onOtherGameStatus);
         EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_FINISHING, this.onFinishingGameStatus);
 
-        this.element.style.display = '';
+        this.element.style.display = "";
     }
 
-    onConnectionOpen(){
+    public onConnectionOpen() {
         this.showScreen(this.connectedScreen);
     }
 
-    onConnectionClose(event: CloseEvent){
-        console.log('Disconnected: ' + event.code);
+    public onConnectionClose(event: CloseEvent) {
+        console.log("Disconnected: " + event.code);
         this.showScreen(this.disconnectedScreen);
     }
 
-    onWaitingGameStatus(){
+    public onWaitingGameStatus() {
         this.showScreen(this.waitingScreen);
     }
 
-    onFinishingGameStatus(){
+    public onFinishingGameStatus() {
         this.showScreen(this.finishingScreen);
     }
 
-    onOtherGameStatus(){
+    public onOtherGameStatus() {
         this.hide();
     }
 
-    showScreen(screen: Component){
-        if(this.hidden){
+    public showScreen(screen: Component) {
+        if (this.hidden) {
             this.show();
         }
-        if(this.activeScreen){
-            if(this.activeScreen !== screen){
+        if (this.activeScreen) {
+            if (this.activeScreen !== screen) {
                 this.detachChild(this.activeScreen);
                 this.attachChild(screen);
                 this.activeScreen = screen;
             }
-        }else{
+        } else {
             this.attachChild(screen);
             this.activeScreen = screen;
         }
     }
 
-    hide(){
-        if(this.activeScreen){
+    public hide() {
+        if (this.activeScreen) {
             this.detachChild(this.activeScreen);
             this.activeScreen = undefined;
         }
-        this.element.style.display = '';
+        this.element.style.display = "";
         this.hidden = true;
     }
 
-    show(){
-        this.element.style.display = 'flex';
+    public show() {
+        this.element.style.display = "flex";
         this.hidden = false;
     }
 }

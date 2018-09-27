@@ -1,56 +1,58 @@
-import Component from './component/ChildComponent';
-import EventHandler from './EventHandler';
-import PacketSender from './PacketSender';
-import PacketReceiver from './PacketReceiver';
-import DomEventHandler from './DomEventHandler';
+import Component from "./component/ChildComponent";
+import DomEventHandler from "./DomEventHandler";
+import EventHandler from "./EventHandler";
+import PacketReceiver from "./PacketReceiver";
+import PacketSender from "./PacketSender";
 
-const protocol = 'tanks-MP';
+const protocol = "tanks-MP";
 
-export default class MultiplayerConnection extends Component{
+export default class MultiplayerConnection extends Component {
 
-    ws: WebSocket;
-    address: string;
+    public ws: WebSocket | undefined;
+    public address: string;
 
-    constructor(address: string){
+    constructor(address: string) {
         super();
         this.address = address;
-        this.ws = undefined;
     }
 
-    enable(){
+    public enable() {
         this.ws = new WebSocket(this.address, protocol);
-        this.ws.binaryType = 'arraybuffer';
+        this.ws.binaryType = "arraybuffer";
 
-        DomEventHandler.addListener(this, this.ws, 'open', this.onOpen);
-        DomEventHandler.addListener(this, this.ws, 'message', this.onMessage);
-        DomEventHandler.addListener(this, this.ws, 'close', this.onClose);
+        DomEventHandler.addListener(this, this.ws, "open", this.onOpen);
+        DomEventHandler.addListener(this, this.ws, "message", this.onMessage);
+        DomEventHandler.addListener(this, this.ws, "close", this.onClose);
     }
 
-    disable(){
-        DomEventHandler.removeListener(this, this.ws, 'open', this.onOpen);
-        DomEventHandler.removeListener(this, this.ws, 'message', this.onMessage);
-        DomEventHandler.removeListener(this, this.ws, 'close', this.onClose);
+    public disable() {
+        if (this.ws) {
+            DomEventHandler.removeListener(this, this.ws, "open", this.onOpen);
+            DomEventHandler.removeListener(this, this.ws, "message", this.onMessage);
+            DomEventHandler.removeListener(this, this.ws, "close", this.onClose);
 
-        this.ws.close(1000);
+            this.ws.close(1000);
+        }
         PacketSender.setSocket(undefined);
+
     }
 
-    onOpen(){
+    public onOpen() {
         PacketSender.setSocket(this.ws);
         this.initHandshake();
     }
 
-    onMessage(event: MessageEvent){
+    public onMessage(event: MessageEvent) {
         PacketReceiver.handleMessage(event.data);
     }
 
-    initHandshake(){
-        let number = Math.floor(Math.random() * 1000);
+    public initHandshake() {
+        const num = Math.floor(Math.random() * 1000);
         EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_OPEN);
-        PacketSender.sendPlayerJoin('Guest ' + number);
+        PacketSender.sendPlayerJoin("Guest " + num);
     }
 
-    onClose(event){
+    public onClose(event: any) {
         EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, event);
     }
 

@@ -1,25 +1,25 @@
-import Component from '../../component/ChildComponent';
-import EventHandler from '../../EventHandler';
-import BlockCreationTool from './BlockCreationTool';
-import GameSpawnCreationTool from './GameSpawnCreationTool';
-import InitialSpawnCreationTool from './InitialSpawnCreationTool';
+import Component from "../../component/ChildComponent";
+import EventHandler from "../../EventHandler";
+import BlockCreationTool from "./BlockCreationTool";
+import GameSpawnCreationTool from "./GameSpawnCreationTool";
+import InitialSpawnCreationTool from "./InitialSpawnCreationTool";
 
-export default class CreationToolHandler extends Component{
+export default class CreationToolHandler extends Component {
 
-    blockCreationTool: BlockCreationTool;
-    gameSpawnCreationTool: GameSpawnCreationTool;
-    initialSpawnCreationTool: InitialSpawnCreationTool;
-    mode: number;
+    public blockCreationTool: BlockCreationTool;
+    public gameSpawnCreationTool: GameSpawnCreationTool;
+    public initialSpawnCreationTool: InitialSpawnCreationTool;
+    public mode: number;
 
-    constructor(){
+    constructor() {
         super();
         this.blockCreationTool = new BlockCreationTool();
         this.gameSpawnCreationTool = new GameSpawnCreationTool();
-        this.initialSpawnCreationTool = new InitialSpawnCreationTool(); 
+        this.initialSpawnCreationTool = new InitialSpawnCreationTool();
         this.mode = Mode.CAMERA;
     }
 
-    enable(){
+    public enable() {
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
 
@@ -29,7 +29,7 @@ export default class CreationToolHandler extends Component{
         EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.handleToggleToInitialSpawn);
     }
 
-    disable(){
+    public disable() {
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
 
@@ -39,43 +39,43 @@ export default class CreationToolHandler extends Component{
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.handleToggleToInitialSpawn);
     }
 
-    onGameMenuOpen(){
-        if(this.mode === Mode.BLOCK){
+    public onGameMenuOpen() {
+        if (this.mode === Mode.BLOCK) {
             this.detachChild(this.blockCreationTool);
         }
     }
 
-    onGameMenuClose(){
-        if(this.mode === Mode.BLOCK){
+    public onGameMenuClose() {
+        if (this.mode === Mode.BLOCK) {
             this.attachChild(this.blockCreationTool);
         }
     }
 
-    handleToggleToCamera(){
+    public handleToggleToCamera() {
         this.removeTool();
         this.mode = Mode.CAMERA;
     }
 
-    handleToggleToBlock(){
+    public handleToggleToBlock() {
         this.removeTool();
         this.attachChild(this.blockCreationTool);
         this.mode = Mode.BLOCK;
     }
 
-    handleToggleToGameSpawn(){
+    public handleToggleToGameSpawn() {
         this.removeTool();
         this.attachChild(this.gameSpawnCreationTool);
         this.mode = Mode.GAMESPAWN;
     }
 
-    handleToggleToInitialSpawn(){
+    public handleToggleToInitialSpawn() {
         this.removeTool();
         this.attachChild(this.initialSpawnCreationTool);
         this.mode = Mode.INITIALSPAWN;
     }
 
-    removeTool(){
-        switch(this.mode){
+    public removeTool() {
+        switch (this.mode) {
             case Mode.BLOCK:
                 this.detachChild(this.blockCreationTool);
                 break;
@@ -89,9 +89,9 @@ export default class CreationToolHandler extends Component{
     }
 }
 
-enum Mode{
+enum Mode {
     CAMERA,
     BLOCK,
     GAMESPAWN,
-    INITIALSPAWN
+    INITIALSPAWN,
 }

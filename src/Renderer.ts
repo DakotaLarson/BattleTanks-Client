@@ -1,20 +1,20 @@
-import {WebGLRenderer, Scene, PerspectiveCamera} from 'three';
+import {PerspectiveCamera, Scene, WebGLRenderer} from "three";
 
-import Component from './component/ChildComponent';
-import EventHandler from './EventHandler';
-import DomHandler from './DomHandler';
+import Component from "./component/ChildComponent";
+import DomHandler from "./DomHandler";
+import EventHandler from "./EventHandler";
 
-export default class Renderer extends Component{
+export default class Renderer extends Component {
 
-    renderer: WebGLRenderer;
-    scene: Scene;
-    camera: PerspectiveCamera;
+    public renderer: WebGLRenderer;
+    public scene: Scene;
+    public camera: PerspectiveCamera;
 
-    constructor(scene: Scene, camera: PerspectiveCamera){
+    constructor(scene: Scene, camera: PerspectiveCamera) {
         super();
         this.renderer = new WebGLRenderer({
-            canvas: DomHandler.getElement('#game-canvas') as HTMLCanvasElement,
-            antialias: true
+            canvas: DomHandler.getElement("#game-canvas") as HTMLCanvasElement,
+            antialias: true,
         });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.scene = scene;
@@ -23,17 +23,17 @@ export default class Renderer extends Component{
 
     }
 
-    enable(){
+    public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_RESIZE, this.handleResize, EventHandler.Level.LOW);
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.render, EventHandler.Level.LOW);
     }
 
-    disable(){
+    public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_RESIZE, this.handleResize, EventHandler.Level.LOW);
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.render, EventHandler.Level.LOW);
     }
 
-    render(){
+    public render() {
         let time = performance.now();
         EventHandler.callEvent(EventHandler.Event.RENDERER_RENDER_PREPARE);
         this.renderer.render(this.scene, this.camera);
@@ -41,8 +41,8 @@ export default class Renderer extends Component{
         EventHandler.callEvent(EventHandler.Event.RENDERER_RENDER_COMPLETE, time);
     }
 
-    handleResize(){
-        let dimensions = DomHandler.getDisplayDimensions();
+    public handleResize() {
+        const dimensions = DomHandler.getDisplayDimensions();
         this.renderer.setSize(dimensions.width, dimensions.height);
     }
 }

@@ -1,42 +1,42 @@
-import Component from '../component/ChildComponent';
-import DomHandler from '../DomHandler';
-import EventHandler from '../EventHandler';
+import Component from "../component/ChildComponent";
+import DomHandler from "../DomHandler";
+import EventHandler from "../EventHandler";
 
-export default class AlertMessageHandler extends Component{
+export default class AlertMessageHandler extends Component {
 
-    parentElt: HTMLElement;
-    alertElt: HTMLElement;
-    taskId: number;
+    public parentElt: HTMLElement;
+    public alertElt: HTMLElement;
+    public taskId: number;
 
-    constructor(){
+    constructor() {
         super();
-        this.parentElt = DomHandler.getElement('.alert-message-parent');
-        this.alertElt = DomHandler.getElement('.alert-message', this.parentElt);
+        this.parentElt = DomHandler.getElement(".alert-message-parent");
+        this.alertElt = DomHandler.getElement(".alert-message", this.parentElt);
         this.taskId = -1;
     }
 
-    enable(){
+    public enable() {
         EventHandler.addListener(this, EventHandler.Event.ALERT_MESSAGE_REQUEST, this.onAlertRequest);
 
     }
 
-    disable(){
+    public disable() {
         EventHandler.removeListener(this, EventHandler.Event.ALERT_MESSAGE_REQUEST, this.onAlertRequest);
     }
 
-    onAlertRequest(message: string){
-        if(this.taskId === -1){
+    public onAlertRequest(message: string) {
+        if (this.taskId === -1) {
             this.alertElt.textContent = message;
-            this.parentElt.style.opacity = '1';
+            this.parentElt.style.opacity = "1";
             this.taskId = window.setTimeout(() => {
-                this.parentElt.style.opacity = '0';
+                this.parentElt.style.opacity = "0";
                 this.taskId = -1;
             }, 3000);
-        }else{
+        } else {
             clearTimeout(this.taskId);
             this.alertElt.textContent = message;
             this.taskId = window.setTimeout(() => {
-                this.parentElt.style.opacity = '0';
+                this.parentElt.style.opacity = "0";
                 this.taskId = -1;
             }, 3000);
         }

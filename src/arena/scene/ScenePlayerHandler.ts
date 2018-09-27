@@ -1,45 +1,49 @@
+import { AudioBuffer, AudioListener, AudioLoader, BoxGeometry, CylinderGeometry, DoubleSide, Geometry, Mesh, MeshLambertMaterial, PositionalAudio, Scene, Vector3} from "three";
 import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
-import { Mesh, MeshLambertMaterial, DoubleSide, CylinderGeometry, BoxGeometry, Vector3, Scene, Geometry, AudioListener, AudioLoader, PositionalAudio, AudioBuffer } from "three";
 
-type PlayerObj = {
-    body: Mesh,
-    head: Mesh,
-};
+interface IPlayerObj {
+    body: Mesh;
+    head: Mesh;
+}
 
-export default class ScenePlayerHandler extends Component{
-    
-    scene: Scene;
-    players: Map<number, PlayerObj>;
+export default class ScenePlayerHandler extends Component {
 
-    playerBodyWidth: number;
-    playerBodyHeight: number;
-    playerBodyDepth: number;
+    public scene: Scene;
+    public players: Map<number, IPlayerObj>;
 
-    audioListener: AudioListener;
+    public playerBodyWidth: number;
+    public playerBodyHeight: number;
+    public playerBodyDepth: number;
 
-    shootSoundBuffer: AudioBuffer;
-    invalidShootSoundBuffer: AudioBuffer;
+    public audioListener: AudioListener;
 
-    controlledPlayerId: number;
+    public shootSoundBuffer: AudioBuffer | undefined;
+    public invalidShootSoundBuffer: AudioBuffer | undefined;
 
-    playerOffset: Vector3;
+    public controlledPlayerId: number;
 
-    constructor(scene: Scene, audioListener: AudioListener){
+    public playerOffset: Vector3;
+
+    constructor(scene: Scene, audioListener: AudioListener) {
         super();
         this.players = new Map();
-        
+
         this.scene = scene;
 
         this.audioListener = audioListener;
 
-        let audioLoader = new AudioLoader();
-        audioLoader.load('audio/shoot.wav', (buffer: AudioBuffer) => {
+        const audioLoader = new AudioLoader();
+
+        // @ts-ignore Disregard additional arguments
+        audioLoader.load("audio/shoot.wav", (buffer: AudioBuffer) => {
             this.shootSoundBuffer = buffer;
-        }, undefined, undefined);
-        audioLoader.load('audio/shoot-invalid.wav', (buffer: AudioBuffer) => {
+        });
+
+        // @ts-ignore Disregard additional arguments
+        audioLoader.load("audio/shoot-invalid.wav", (buffer: AudioBuffer) => {
             this.invalidShootSoundBuffer = buffer;
-        }, undefined, undefined);
+        });
 
         this.playerBodyWidth = 1;
         this.playerBodyHeight = 0.55;
@@ -47,11 +51,11 @@ export default class ScenePlayerHandler extends Component{
 
         this.controlledPlayerId = -1;
 
-        this.playerOffset = new Vector3(0.5, this.playerBodyHeight/2, 0.5);
+        this.playerOffset = new Vector3(0.5, this.playerBodyHeight / 2, 0.5);
 
     }
 
-    enable(){
+    public enable() {
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.removePlayer);
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
@@ -66,7 +70,7 @@ export default class ScenePlayerHandler extends Component{
 
     }
 
-    disable(){
+    public disable() {
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.removePlayer);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
@@ -79,92 +83,97 @@ export default class ScenePlayerHandler extends Component{
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT_INVALID, this.onShootInvalid);
     }
 
-    clearPlayers(){
-        let playerValues = this.players.values();
+    public clearPlayers() {
+        const playerValues = this.players.values();
         let playerValue = playerValues.next();
-        while(!playerValue.done){
-            let playerObj = playerValue.value;
+        while (!playerValue.done) {
+            const playerObj = playerValue.value;
             this.scene.remove(playerObj.body, playerObj.head);
 
             playerValue = playerValues.next();
         }
     }
 
-    onPlayerAddition(data){
+    public onPlayerAddition(data: any) {
         this.addPlayer(data.id, data.pos, false);
     }
 
-    onConnectedPlayerJoin(data){
+    public onConnectedPlayerJoin(data: any) {
         this.addPlayer(data.id, data.pos, true);
     }
 
-    onPlayerMove(data){
-        if(this.players.has(data.id)){
-            let playerObj = this.players.get(data.id);
+    public onPlayerMove(data: any) {
+        if (this.players.has(data.id)) {
+            const playerObj = this.players.get(data.id);
+            if (playerObj) {
+                const body = playerObj.body;
+                const head = playerObj.head;
 
-            let body = playerObj.body;
-            let head = playerObj.head;
+                head.position.copy(data.pos).add(this.playerOffset);
+                head.rotation.y = data.headRot;
 
-            head.position.copy(data.pos).add(this.playerOffset);
-            head.rotation.y = data.headRot;
-
-            body.position.copy(data.pos).add(this.playerOffset);
-            body.rotation.y = data.bodyRot;
-        }       
-    }
-
-    removePlayer(id: number){
-        if(this.players.has(id)){
-            let obj = this.players.get(id);
-            this.scene.remove(obj.body);
-            this.scene.remove(obj.head)
-            this.players.delete(id);
-            if(this.controlledPlayerId === id){
-                this.controlledPlayerId = -1;
+                body.position.copy(data.pos).add(this.playerOffset);
+                body.rotation.y = data.bodyRot;
             }
         }
     }
 
-    addPlayer(id: number, pos: Vector3, isConnectedPlayer: boolean){
-        let playerGeo = new Geometry();
-        let playerHeadGeo = new Geometry();
+    public removePlayer(id: number) {
+        if (this.players.has(id)) {
+            const obj = this.players.get(id);
+            if (obj) {
+                this.scene.remove(obj.body);
+                this.scene.remove(obj.head);
+                this.players.delete(id);
+                if (this.controlledPlayerId === id) {
+                    this.controlledPlayerId = -1;
+                }
+            }
+        }
+    }
 
-        let bodyGeo = new BoxGeometry(this.playerBodyWidth, this.playerBodyHeight, this.playerBodyDepth);
-        let headGeo = new BoxGeometry(0.5, 0.35, 0.5);
-        let turretGeo = new CylinderGeometry(0.0625, 0.0625, 0.75, 8, 1, true);
+    public addPlayer(id: number, pos: Vector3, isConnectedPlayer: boolean) {
+        const playerGeo = new Geometry();
+        const playerHeadGeo = new Geometry();
+
+        const bodyGeo = new BoxGeometry(this.playerBodyWidth, this.playerBodyHeight, this.playerBodyDepth);
+        const headGeo = new BoxGeometry(0.5, 0.35, 0.5);
+        const turretGeo = new CylinderGeometry(0.0625, 0.0625, 0.75, 8, 1, true);
         turretGeo.rotateX(Math.PI / 2);
 
-        let bodyMaterial, headMaterial;
-        if(isConnectedPlayer){
+        let bodyMaterial: MeshLambertMaterial;
+        let headMaterial: MeshLambertMaterial;
+
+        if (isConnectedPlayer) {
             bodyMaterial = new MeshLambertMaterial({
-                color: 0xce141a
+                color: 0xce141a,
             });
-    
+
             headMaterial = new MeshLambertMaterial({
                 color: 0xce141a,
-                side: DoubleSide
+                side: DoubleSide,
             });
-    
-        }else{
+
+        } else {
             bodyMaterial = new MeshLambertMaterial({
-                color: 0x1ace14
+                color: 0x1ace14,
             });
-    
+
             headMaterial = new MeshLambertMaterial({
                 color: 0x1ace14,
-                side: DoubleSide
+                side: DoubleSide,
             });
 
         }
-       
-        let headOffset = new Vector3(0, this.playerBodyHeight / 2 + 0.35/2, 0);
-        let turretOffset = new Vector3(0, this.playerBodyHeight / 2 + 0.35/2, 0.25); 
 
-        for(let i = 0; i < headGeo.vertices.length; i ++){
-            headGeo.vertices[i].add(headOffset);
+        const headOffset = new Vector3(0, this.playerBodyHeight / 2 + 0.35 / 2, 0);
+        const turretOffset = new Vector3(0, this.playerBodyHeight / 2 + 0.35 / 2, 0.25);
+
+        for (const vert of headGeo.vertices) {
+            vert.add(headOffset);
         }
-        for(let i = 0; i < turretGeo.vertices.length; i ++){
-            turretGeo.vertices[i].add(turretOffset);
+        for (const vert of turretGeo.vertices) {
+            vert.add(turretOffset);
         }
 
         playerHeadGeo.merge(headGeo);
@@ -172,65 +181,65 @@ export default class ScenePlayerHandler extends Component{
 
         playerGeo.merge(bodyGeo);
 
-        let bodyMesh = new Mesh(playerGeo, bodyMaterial);
+        const bodyMesh = new Mesh(playerGeo, bodyMaterial);
         bodyMesh.position.copy(pos).add(this.playerOffset);
 
-        let headMesh = new Mesh(playerHeadGeo, headMaterial);
+        const headMesh = new Mesh(playerHeadGeo, headMaterial);
         headMesh.position.copy(pos).add(this.playerOffset);
 
         this.scene.add(bodyMesh, headMesh);
 
-        
-
-        let playerObj: PlayerObj = {
+        const playerObj: IPlayerObj = {
             body: bodyMesh,
             head: headMesh,
-        }
+        };
 
         this.players.set(id, playerObj);
-        
-        if(!isConnectedPlayer){
+
+        if (!isConnectedPlayer) {
             this.controlledPlayerId = id;
         }
     }
 
-    onShoot(playerId?: number){
-        if(!playerId){
+    public onShoot(playerId?: number) {
+        if (!playerId) {
             playerId = this.controlledPlayerId;
         }
-        if(this.players.has(playerId)){
-            let head = this.players.get(playerId).head;
-            
-            let audio = new PositionalAudio(this.audioListener);
-        
+        const player = this.players.get(playerId);
+        if (player) {
+            const head = player.head;
+
+            const audio = new PositionalAudio(this.audioListener);
+
             head.add(audio);
 
             audio.onEnded = () => {
                 audio.isPlaying = false;
                 head.remove(audio);
-            }
+            };
 
-            audio.setBuffer(this.shootSoundBuffer);
+            audio.setBuffer(this.shootSoundBuffer as AudioBuffer);
             audio.play();
         }
     }
 
-    onShootInvalid(){
-        if(this.controlledPlayerId > -1){
-            if(this.players.has(this.controlledPlayerId)){
-                let head = this.players.get(this.controlledPlayerId).head;
-            
-            let audio = new PositionalAudio(this.audioListener);
-        
-            head.add(audio);
+    public onShootInvalid() {
+        if (this.controlledPlayerId > -1) {
+            const player = this.players.get(this.controlledPlayerId);
+            if (player) {
+                const head = player.head;
 
-            audio.onEnded = () => {
+                const audio = new PositionalAudio(this.audioListener);
+
+                head.add(audio);
+
+                audio.onEnded = () => {
                 audio.isPlaying = false;
                 head.remove(audio);
-            }
-            
-            audio.setBuffer(this.invalidShootSoundBuffer);
-            audio.play();
+            };
+
+                audio.setBuffer(this.invalidShootSoundBuffer as AudioBuffer);
+                audio.play();
             }
         }
     }

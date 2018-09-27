@@ -1,32 +1,32 @@
-import Component from '../component/ChildComponent';
-import DomHandler from '../DomHandler';
-import DebugPanel from './DebugPanel';
-import ArenaCreateModeToggle from './ArenaCreateModeToggle';
+import Component from "../component/ChildComponent";
+import DomHandler from "../DomHandler";
+import ArenaCreateModeToggle from "./ArenaCreateModeToggle";
+import DebugPanel from "./DebugPanel";
 
 export default class GUI extends Component {
 
-    element: HTMLElement;
-    debugPanel: DebugPanel;
-    createWorldModeToggle: ArenaCreateModeToggle;
-    
-    constructor(){
+    public element: HTMLElement;
+    public debugPanel: DebugPanel;
+    public createWorldModeToggle: ArenaCreateModeToggle;
+
+    constructor() {
         super();
-        this.element = DomHandler.getElement('.gui');
+        this.element = DomHandler.getElement(".gui");
         this.debugPanel = new DebugPanel(this.element);
         this.createWorldModeToggle = new ArenaCreateModeToggle(this.element);
     }
 
-    enable(){
+    public enable() {
         this.attachChild(this.debugPanel);
         this.attachChild(this.createWorldModeToggle);
 
-        this.element.style.display = 'block';
+        this.element.style.display = "block";
     }
 
-    disable(){
+    public disable() {
         this.detachChild(this.debugPanel);
         this.detachChild(this.createWorldModeToggle);
 
-        this.element.style.display = '';
+        this.element.style.display = "";
     }
 }

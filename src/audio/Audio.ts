@@ -1,6 +1,6 @@
-enum Audio{
+enum Audio {
     WIN,
-    LOSE
+    LOSE,
 }
 
 export default Audio;

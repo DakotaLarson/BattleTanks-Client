@@ -1,18 +1,18 @@
-import Component from '../../../component/ChildComponent';
-import EventHandler from '../../../EventHandler';
-import DomHandler from '../../../DomHandler';
+import Component from "../../../component/ChildComponent";
+import DomHandler from "../../../DomHandler";
+import EventHandler from "../../../EventHandler";
 
-import {Spherical, PerspectiveCamera} from 'three';
-import CameraControls from '../CameraControls';
+import {PerspectiveCamera, Spherical} from "three";
+import CameraControls from "../CameraControls";
 
-export default class Camera extends Component{
+export default class Camera extends Component {
 
-    camera: PerspectiveCamera;
-    controls: CameraControls;
+    public camera: PerspectiveCamera;
+    public controls: CameraControls;
 
-    gameMenuOpen: boolean;
-    
-    constructor(camera: PerspectiveCamera){
+    public gameMenuOpen: boolean;
+
+    constructor(camera: PerspectiveCamera) {
         super();
         this.camera = camera;
 
@@ -21,7 +21,7 @@ export default class Camera extends Component{
         this.gameMenuOpen = false;
     }
 
-    enable(){
+    public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_RESIZE, this.onResize, EventHandler.Level.LOW);
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
@@ -33,7 +33,7 @@ export default class Camera extends Component{
         this.attachControls();
     }
 
-    disable(){
+    public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_RESIZE, this.onResize, EventHandler.Level.LOW);
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
@@ -47,8 +47,8 @@ export default class Camera extends Component{
         this.gameMenuOpen = false;
     }
 
-    onPlayerAddition(data){
-        if(!this.gameMenuOpen){
+    public onPlayerAddition(data: any) {
+        if (!this.gameMenuOpen) {
             this.detachControls();
         }
 
@@ -57,18 +57,18 @@ export default class Camera extends Component{
         this.controls.spherical = new Spherical(25, 5 * Math.PI / 16, Math.PI);
         this.controls.update();
 
-        if(!this.gameMenuOpen){
+        if (!this.gameMenuOpen) {
             this.attachControls();
         }
     }
 
-    onPlayerRemoval(){
-        if(!this.gameMenuOpen){
+    public onPlayerRemoval() {
+        if (!this.gameMenuOpen) {
             this.detachControls();
         }
 
-        let target = this.controls.target; 
-        let spherical = this.controls.spherical;
+        const target = this.controls.target;
+        const spherical = this.controls.spherical;
 
         this.controls = new CameraControls(this.camera, false, false);
 
@@ -76,39 +76,39 @@ export default class Camera extends Component{
         this.controls.spherical = spherical;
         this.controls.update();
 
-        if(!this.gameMenuOpen){
+        if (!this.gameMenuOpen) {
             this.attachControls();
         }
 
     }
 
-    onPlayerMove(data){
+    public onPlayerMove(data: any) {
         this.controls.target = data.pos.clone().addScalar(0.5).setY(0);
         this.controls.spherical.theta = data.bodyRot + Math.PI;
         this.controls.update();
     }
 
-    onResize(){
-        let dimensions = DomHandler.getDisplayDimensions();
+    public onResize() {
+        const dimensions = DomHandler.getDisplayDimensions();
         this.camera.aspect = dimensions.width / dimensions.height;
         this.camera.updateProjectionMatrix();
     }
 
-    onGameMenuOpen(){
+    public onGameMenuOpen() {
         this.gameMenuOpen = true;
         this.detachControls();
     }
 
-    onGameMenuClose(){
+    public onGameMenuClose() {
         this.gameMenuOpen = false;
         this.attachControls();
     }
 
-    attachControls(){
+    public attachControls() {
         this.attachChild(this.controls);
     }
 
-    detachControls(){
+    public detachControls() {
         this.detachChild(this.controls);
     }
 }

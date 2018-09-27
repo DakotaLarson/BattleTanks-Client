@@ -1,29 +1,29 @@
-import Component from '../../component/ChildComponent';
-import EventHandler from '../../EventHandler';
-import { Vector3, Ray, Plane } from 'three';
-import RaycastHandler from '../../RaycastHandler';
-import PacketSender from '../../PacketSender';
-import CollisionHandler from '../CollisionHandler';
-import Options from '../../Options';
+import { Plane, Ray, Vector3 } from "three";
+import Component from "../../component/ChildComponent";
+import EventHandler from "../../EventHandler";
+import Options from "../../Options";
+import PacketSender from "../../PacketSender";
+import RaycastHandler from "../../RaycastHandler";
+import CollisionHandler from "../CollisionHandler";
 
 const PLAYER_MOVEMENT_SPEED = 3;
 const PLAYER_ROTATION_SPEED = 2;
 
-export default class Player extends Component{
+export default class Player extends Component {
 
-    id: number;
+    public id: number;
 
-    position: Vector3;
+    public position: Vector3;
 
-    bodyRotation: number;
-    headRotation : number;
+    public bodyRotation: number;
+    public headRotation: number;
 
-    movingForward: boolean;
-    movingBackward: boolean;
-    rotatingLeft: boolean;
-    rotatingRight: boolean;
+    public movingForward: boolean;
+    public movingBackward: boolean;
+    public rotatingLeft: boolean;
+    public rotatingRight: boolean;
 
-    constructor(id: number, pos: Vector3){
+    constructor(id: number, pos: Vector3) {
         super();
         this.id = id;
 
@@ -38,7 +38,7 @@ export default class Player extends Component{
         this.rotatingRight = false;
     }
 
-    enable(){
+    public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
 
@@ -52,10 +52,10 @@ export default class Player extends Component{
         PacketSender.sendPlayerMove(this.position, this.bodyRotation, this.headRotation);
     }
 
-    disable(){
+    public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
-        
+
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
 
@@ -65,107 +65,109 @@ export default class Player extends Component{
 
     }
 
-    onKeyDown(event: KeyboardEvent){
+    public onKeyDown(event: KeyboardEvent) {
         this.onInputDown(event.code);
     }
 
-    onKeyUp(event: KeyboardEvent){
+    public onKeyUp(event: KeyboardEvent) {
        this.onInputUp(event.code);
     }
 
-    onMouseDown(event: MouseEvent){
+    public onMouseDown(event: MouseEvent) {
         this.onInputDown(event.button);
     }
 
-    onMouseUp(event: MouseEvent){
+    public onMouseUp(event: MouseEvent) {
         this.onInputUp(event.button);
     }
 
-    onInputDown(code){
-        if(code === Options.options.forward.code){
+    public onInputDown(code: string | number) {
+        if (code === Options.options.forward.code) {
             this.movingForward = true;
-        }else if(code === Options.options.backward.code){
+        } else if (code === Options.options.backward.code) {
             this.movingBackward = true;
-        }else if(code === Options.options.left.code){
+        } else if (code === Options.options.left.code) {
             this.rotatingLeft = true;
-        }else if(code === Options.options.right.code){
+        } else if (code === Options.options.right.code) {
             this.rotatingRight = true;
-        }else if(code === Options.options.shoot.code){
+        } else if (code === Options.options.shoot.code) {
             PacketSender.sendPlayerShoot();
         }
     }
-    
-    onInputUp(code){
-        if(code === Options.options.forward.code){
+
+    public onInputUp(code: string | number) {
+        if (code === Options.options.forward.code) {
             this.movingForward = false;
-        }else if(code === Options.options.backward.code){
+        } else if (code === Options.options.backward.code) {
             this.movingBackward = false;
-        }else if(code === Options.options.left.code){
+        } else if (code === Options.options.left.code) {
             this.rotatingLeft = false;
-        }else if(code === Options.options.right.code){
+        } else if (code === Options.options.right.code) {
             this.rotatingRight = false;
         }
     }
 
-    onUpdate(delta: number){
+    public onUpdate(delta: number) {
 
         let movementSpeed = 0;
         let rotationSpeed = 0;
 
-        if(this.movingForward && !this.movingBackward){
+        if (this.movingForward && !this.movingBackward) {
             movementSpeed = PLAYER_MOVEMENT_SPEED;
-        }else if(this.movingBackward && !this.movingForward){
+        } else if (this.movingBackward && !this.movingForward) {
             movementSpeed = -PLAYER_MOVEMENT_SPEED;
-        }if(this.rotatingLeft && !this.rotatingRight){
+        }
+
+        if (this.rotatingLeft && !this.rotatingRight) {
             rotationSpeed = PLAYER_ROTATION_SPEED;
-        }else if(this.rotatingRight && !this.rotatingLeft){
+        } else if (this.rotatingRight && !this.rotatingLeft) {
             rotationSpeed = -PLAYER_ROTATION_SPEED;
         }
 
-        let potentialRotation = (this.bodyRotation + delta * rotationSpeed);
+        const potentialRotation = (this.bodyRotation + delta * rotationSpeed);
 
-        let potentialPosition = this.position.clone();
+        const potentialPosition = this.position.clone();
         potentialPosition.x += delta * movementSpeed * Math.sin(potentialRotation),
         potentialPosition.z += delta * movementSpeed * Math.cos(potentialRotation);
 
-        let collisionCorrection = CollisionHandler.getCollision(potentialPosition.clone(), potentialRotation);
+        const collisionCorrection = CollisionHandler.getCollision(potentialPosition.clone(), potentialRotation);
 
         this.computeTurretRotation();
 
-        if(collisionCorrection){
+        if (collisionCorrection) {
             potentialPosition.sub(collisionCorrection);
             this.bodyRotation = potentialRotation;
             this.position.copy(potentialPosition);
-        }else{
+        } else {
             this.bodyRotation = potentialRotation;
             this.position.copy(potentialPosition);
         }
 
-        let movementData = {
+        const movementData = {
             id: this.id,
             pos: this.position,
             bodyRot: this.bodyRotation,
             headRot: this.headRotation,
-            fromServer: false
-        }
+            fromServer: false,
+        };
 
-        EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVE, movementData);      
+        EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVE, movementData);
     }
 
-    onTick(){
+    public onTick() {
         PacketSender.sendPlayerMove(this.position, this.bodyRotation, this.headRotation);
     }
 
-    computeTurretRotation(){
-        let ray: Ray = RaycastHandler.getRaycaster().ray;
-        let intersection = new Vector3();
+    public computeTurretRotation() {
+        const ray: Ray = RaycastHandler.getRaycaster().ray;
+        const intersection = new Vector3();
         ray.intersectPlane(new Plane(new Vector3(0, 1, 0)), intersection);
-        if(intersection){
-            let slope = (this.position.x - intersection.x) / (this.position.z - intersection.z);
-            
+        if (intersection) {
+            const slope = (this.position.x - intersection.x) / (this.position.z - intersection.z);
+
             let angle = Math.atan(slope);
 
-            if(this.position.z > intersection.z){
+            if (this.position.z > intersection.z) {
                 angle += Math.PI;
             }
             this.headRotation = angle;

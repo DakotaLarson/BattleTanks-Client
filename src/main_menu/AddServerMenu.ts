@@ -1,79 +1,78 @@
 import Component from "../component/ChildComponent";
+import DomEventHandler from "../DomEventHandler";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
-import DomEventHandler from '../DomEventHandler';
 
+export default class AddServerMenu extends Component {
 
-export default class AddServerMenu extends Component{
-    
-    element: HTMLElement;
+    public element: HTMLElement;
 
-    nameInputElt: HTMLInputElement;
-    addressInputElt: HTMLInputElement;
+    public nameInputElt: HTMLInputElement;
+    public addressInputElt: HTMLInputElement;
 
-    cancelBtn: HTMLElement;
-    saveBtn: HTMLElement;
-    
-    constructor(mainMenu: HTMLElement){
+    public cancelBtn: HTMLElement;
+    public saveBtn: HTMLElement;
+
+    constructor(mainMenu: HTMLElement) {
         super();
-        this.element = DomHandler.getElement('#mp-menu-add-server', mainMenu);
-        
-        this.nameInputElt = DomHandler.getElement('#add-server-name', this.element) as HTMLInputElement;
-        this.addressInputElt = DomHandler.getElement('#add-server-address', this.element) as HTMLInputElement;
+        this.element = DomHandler.getElement("#mp-menu-add-server", mainMenu);
 
-        this.saveBtn = DomHandler.getElement('#add-server-opt-save', this.element);
-        this.cancelBtn = DomHandler.getElement('#add-server-opt-cancel', this.element);
+        this.nameInputElt = DomHandler.getElement("#add-server-name", this.element) as HTMLInputElement;
+        this.addressInputElt = DomHandler.getElement("#add-server-address", this.element) as HTMLInputElement;
+
+        this.saveBtn = DomHandler.getElement("#add-server-opt-save", this.element);
+        this.cancelBtn = DomHandler.getElement("#add-server-opt-cancel", this.element);
 
     }
 
-    enable(){
+    public enable() {
 
-        this.nameInputElt.value = '';
-        this.addressInputElt.value = '';
+        this.nameInputElt.value = "";
+        this.addressInputElt.value = "";
 
-        DomEventHandler.addListener(this, this.saveBtn, 'click', this.handleSaveOptClick);
-        DomEventHandler.addListener(this, this.cancelBtn, 'click', this.handleCancelOptionClick);
+        DomEventHandler.addListener(this, this.saveBtn, "click", this.handleSaveOptClick);
+        DomEventHandler.addListener(this, this.cancelBtn, "click", this.handleCancelOptionClick);
 
-        this.element.style.display = 'block';
+        this.element.style.display = "block";
 
         this.nameInputElt.focus();
     }
 
-    disable(){
-        DomEventHandler.removeListener(this, this.saveBtn, 'click', this.handleSaveOptClick );
-        DomEventHandler.removeListener(this, this.cancelBtn, 'click', this.handleCancelOptionClick);
+    public disable() {
+        DomEventHandler.removeListener(this, this.saveBtn, "click", this.handleSaveOptClick );
+        DomEventHandler.removeListener(this, this.cancelBtn, "click", this.handleCancelOptionClick);
 
-        this.element.style.display = '';
+        this.element.style.display = "";
     }
 
-    //Click Handlers
-    handleSaveOptClick(){
-        let name = this.nameInputElt.value;
-        let address = this.addressInputElt.value;
-        if(name.length && address.length){
+    // Click Handlers
+    public handleSaveOptClick() {
+        const name = this.nameInputElt.value;
+        const address = this.addressInputElt.value;
+        if (name.length && address.length) {
             this.saveServer(name, address);
             EventHandler.callEvent(EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK);
-        }else{
-            EventHandler.callEvent(EventHandler.Event.ALERT_MESSAGE_REQUEST, 'Please fill out all fields.');
+        } else {
+            EventHandler.callEvent(EventHandler.Event.ALERT_MESSAGE_REQUEST, "Please fill out all fields.");
         }
     }
 
-    handleCancelOptionClick(){
+    public handleCancelOptionClick() {
         EventHandler.callEvent(EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK);
     }
 
-    saveServer(name: string, address: string){
-        let rawServerList = localStorage.getItem('serverList');
+    public saveServer(name: string, address: string) {
+        const rawServerList = localStorage.getItem("serverList");
         let serverList;
-        if(rawServerList){
+        if (rawServerList) {
             serverList = JSON.parse(rawServerList);
-        }else{
+        } else {
             serverList = new Array();
         }
         serverList.push({
-            name: name,
-            address: address
+            name,
+            address,
         });
-        localStorage.setItem('serverList', JSON.stringify(serverList));
+        localStorage.setItem("serverList", JSON.stringify(serverList));
     }
 }

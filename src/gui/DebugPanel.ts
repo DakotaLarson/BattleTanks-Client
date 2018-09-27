@@ -1,46 +1,45 @@
-import Component from '../component/ChildComponent';
-import DomHandler from '../DomHandler';
-import EventHandler from '../EventHandler';
+import Component from "../component/ChildComponent";
+import DomHandler from "../DomHandler";
+import EventHandler from "../EventHandler";
 
-export default class DebugPanel extends Component{
-    element: HTMLElement;
-    debugFPSElement: HTMLElement;
-    debugRenderingElement: HTMLElement;
-    debugComputationElement: HTMLElement;
-    debugIdleElement: HTMLElement;
+export default class DebugPanel extends Component {
+    public element: HTMLElement;
+    public debugFPSElement: HTMLElement;
+    public debugRenderingElement: HTMLElement;
+    public debugComputationElement: HTMLElement;
+    public debugIdleElement: HTMLElement;
 
-    constructor(guiElement: HTMLElement){
+    constructor(guiElement: HTMLElement) {
         super();
-        this.element = DomHandler.getElement('.debug-panel', guiElement);
+        this.element = DomHandler.getElement(".debug-panel", guiElement);
 
-        this.debugFPSElement = DomHandler.getElement('#debug-fps', this.element);
-        this.debugRenderingElement = DomHandler.getElement('#debug-rendering', this.element);
-        this.debugComputationElement = DomHandler.getElement('#debug-computation', this.element);
-        this.debugIdleElement = DomHandler.getElement('#debug-idle', this.element);
+        this.debugFPSElement = DomHandler.getElement("#debug-fps", this.element);
+        this.debugRenderingElement = DomHandler.getElement("#debug-rendering", this.element);
+        this.debugComputationElement = DomHandler.getElement("#debug-computation", this.element);
+        this.debugIdleElement = DomHandler.getElement("#debug-idle", this.element);
     }
 
-    enable(){
+    public enable() {
         EventHandler.addListener(this, EventHandler.Event.GAME_DEBUG_OUTPUT, this.handleDebugOutput);
-        this.element.style.display = 'inline-block';
+        this.element.style.display = "inline-block";
     }
 
-    disable(){
+    public disable() {
         EventHandler.removeListener(this, EventHandler.Event.GAME_DEBUG_OUTPUT, this.handleDebugOutput);
-        this.element.style.display = '';
+        this.element.style.display = "";
     }
 
-    handleDebugOutput(data){
-        let renderingPercent = Math.round(data.rendering / 10);
-        let renderingMS = Math.round(data.rendering);
-        let computationPercent = Math.round(data.computation / 10);
-        let computationMS = Math.round(data.computation);
-        let idlePercent = Math.round(data.idle / 10);
-        let idleMS = Math.round(data.idle);
+    public handleDebugOutput(data: any) {
+        const renderingPercent = Math.round(data.rendering / 10);
+        const renderingMS = Math.round(data.rendering);
+        const computationPercent = Math.round(data.computation / 10);
+        const computationMS = Math.round(data.computation);
+        const idlePercent = Math.round(data.idle / 10);
+        const idleMS = Math.round(data.idle);
 
         this.debugFPSElement.textContent = String(data.fps);
-        this.debugRenderingElement.textContent = renderingPercent + '% (' + renderingMS + 'ms)';
-        this.debugComputationElement.textContent = computationPercent + '% (' + computationMS + 'ms)';
-        this.debugIdleElement.textContent = idlePercent + '% (' + idleMS + 'ms)';
+        this.debugRenderingElement.textContent = renderingPercent + "% (" + renderingMS + "ms)";
+        this.debugComputationElement.textContent = computationPercent + "% (" + computationMS + "ms)";
+        this.debugIdleElement.textContent = idlePercent + "% (" + idleMS + "ms)";
     }
 }
-

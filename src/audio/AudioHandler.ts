@@ -1,56 +1,64 @@
-import Component from '../component/ChildComponent';
-import EventHandler from '../EventHandler';
-import Audio from '../audio/Audio';
-import {Audio as Three_Audio} from 'three';
-import { PerspectiveCamera, AudioLoader, AudioBuffer, PositionalAudio, AudioListener } from 'three';
-import Options from '../Options';
+import {Audio as Three_Audio} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, PerspectiveCamera} from "three";
+import Audio from "../audio/Audio";
+import Component from "../component/ChildComponent";
+import EventHandler from "../EventHandler";
+import Options from "../Options";
 
-export default class AudioHandler extends Component{
+export default class AudioHandler extends Component {
 
-    camera: PerspectiveCamera;
-    audioListener: AudioListener;
+    public camera: PerspectiveCamera;
+    public audioListener: AudioListener;
 
-    winAudioBuffer: AudioBuffer;
-    loseAudioBuffer: AudioBuffer;
+    public winAudioBuffer: AudioBuffer | undefined;
+    public loseAudioBuffer: AudioBuffer | undefined;
 
-    constructor(camera: PerspectiveCamera, audioListener: AudioListener){
+    constructor(camera: PerspectiveCamera, audioListener: AudioListener) {
         super();
-        
-        this.camera =  camera; 
+
+        this.camera =  camera;
         this.audioListener = audioListener;
 
-        let audioLoader = new AudioLoader();
-        audioLoader.load('audio/win.wav', (buffer: AudioBuffer) => {
+        const audioLoader = new AudioLoader();
+        // @ts-ignore Disregard extra arguments.
+        audioLoader.load("audio/win.wav", (buffer: AudioBuffer) => {
             this.winAudioBuffer = buffer;
-        }, undefined, undefined);
-        audioLoader.load('audio/lose.wav', (buffer: AudioBuffer) => {
+        });
+
+        // @ts-ignore Disregard extra arguments.
+        audioLoader.load("audio/lose.wav", (buffer: AudioBuffer) => {
             this.loseAudioBuffer = buffer;
-        }, undefined, undefined);
+        });
     }
 
-    enable(){
+    public enable() {
         EventHandler.addListener(this, EventHandler.Event.AUDIO_REQUEST, this.onAudioRequest);
     }
 
-    disable(){
+    public disable() {
         EventHandler.removeListener(this, EventHandler.Event.AUDIO_REQUEST, this.onAudioRequest);
     }
 
-    onAudioRequest(audio: Audio){
-        switch(audio){
+    public onAudioRequest(audio: Audio) {
+        switch (audio) {
             case Audio.WIN:
-                this.playBuffer(this.winAudioBuffer);
+                if (this.winAudioBuffer) {
+                    this.playBuffer(this.winAudioBuffer);
+
+                }
                 break;
             case Audio.LOSE:
-                this.playBuffer(this.loseAudioBuffer);
+                if (this.loseAudioBuffer) {
+                    this.playBuffer(this.loseAudioBuffer);
+                }
                 break;
         }
     }
 
-    playBuffer(buffer: AudioBuffer){
-        let audio = new Three_Audio(this.audioListener);
-        
-        //this.camera.add(audio);
+    public playBuffer(buffer: AudioBuffer) {
+        const audio = new Three_Audio(this.audioListener);
+
+        // this.camera.add(audio);
 
         // audio.onEnded = () => {
         //     audio.isPlaying = false;

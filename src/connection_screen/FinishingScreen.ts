@@ -1,59 +1,54 @@
-import Component from '../component/ChildComponent';
-import DomHandler from '../DomHandler';
-import EventHandler from '../EventHandler';
-import DomEventHandler from '../DomEventHandler';
+import Component from "../component/ChildComponent";
+import DomEventHandler from "../DomEventHandler";
+import DomHandler from "../DomHandler";
+import EventHandler from "../EventHandler";
 
-export default class FinishingScreen extends Component{
+export default class FinishingScreen extends Component {
 
-    element: HTMLElement;
-    disconnectElt: HTMLElement;
-    messageElt: HTMLElement;
+    public element: HTMLElement;
+    public disconnectElt: HTMLElement;
+    public messageElt: HTMLElement;
 
-    statsElt: HTMLElement;
-    winnerElt: HTMLElement;
+    public statsElt: HTMLElement;
+    public winnerElt: HTMLElement;
 
-    statsRecv: boolean;
-
-
-    constructor(parent){
+    constructor(parent: HTMLElement) {
         super();
-        this.element = DomHandler.getElement('.section-finishing', parent);
-        this.disconnectElt = DomHandler.getElement('.option-disconnect', this.element);
-        this.messageElt = DomHandler.getElement('.message', this.element);
+        this.element = DomHandler.getElement(".section-finishing", parent);
+        this.disconnectElt = DomHandler.getElement(".option-disconnect", this.element);
+        this.messageElt = DomHandler.getElement(".message", this.element);
 
-        this.statsElt = DomHandler.getElement('.stats-parent', this.element);
-        this.winnerElt = DomHandler.getElement('#stats-winner', this.statsElt);
-
+        this.statsElt = DomHandler.getElement(".stats-parent", this.element);
+        this.winnerElt = DomHandler.getElement("#stats-winner", this.statsElt);
 
     }
 
-    enable(){
-        DomEventHandler.addListener(this, this.disconnectElt, 'click', this.onDisconnect);
+    public enable() {
+        DomEventHandler.addListener(this, this.disconnectElt, "click", this.onDisconnect);
         EventHandler.addListener(this, EventHandler.Event.MATCH_STATISTICS_RECEPTION, this.onMatchStatsRecv);
-        this.element.style.display = 'block';
+        this.element.style.display = "block";
     }
 
-    disable(){
-        DomEventHandler.removeListener(this, this.disconnectElt, 'click', this.onDisconnect);
-        this.element.style.display = '';
+    public disable() {
+        DomEventHandler.removeListener(this, this.disconnectElt, "click", this.onDisconnect);
+        this.element.style.display = "";
         EventHandler.removeListener(this, EventHandler.Event.MATCH_STATISTICS_RECEPTION, this.onMatchStatsRecv);
 
+        this.messageElt.textContent = "Last match finishing up.";
 
-        this.messageElt.textContent = 'Last match finishing up.';
-
-        this.statsElt.style.display = '';
-        this.winnerElt.textContent = '';
+        this.statsElt.style.display = "";
+        this.winnerElt.textContent = "";
     }
 
-    onDisconnect(){
+    public onDisconnect() {
         EventHandler.callEvent(EventHandler.Event.CONNECTION_SCREEN_DISCONNECT);
     }
 
-    onMatchStatsRecv(stats){
-        let winner = stats.winner;
-        
-        this.messageElt.textContent = 'Match Complete!';
+    public onMatchStatsRecv(stats: any) {
+        const winner = stats.winner;
+
+        this.messageElt.textContent = "Match Complete!";
         this.winnerElt.textContent = winner;
-        this.statsElt.style.display = 'block';
+        this.statsElt.style.display = "block";
     }
 }

@@ -1,17 +1,17 @@
 import { Vector3 } from "three";
 
-export default class ConnectedPlayer{
+export default class ConnectedPlayer {
 
-    id: number;
+    public id: number;
 
-    name: string;
+    public name: string;
 
-    position: Vector3;
+    public position: Vector3;
 
-    bodyRotation: number;
-    headRotation : number;
+    public bodyRotation: number;
+    public headRotation: number;
 
-    constructor(id, name, pos, bodyRot, headRot){
+    constructor(id: number, name: string, pos: Vector3, bodyRot: number, headRot: number) {
         this.id = id;
         this.name = name;
         this.position = pos;
@@ -19,7 +19,7 @@ export default class ConnectedPlayer{
         this.headRotation = headRot;
     }
 
-    updatePosition(pos, bodyRot, headRot){
+    public updatePosition(pos: Vector3, bodyRot: number, headRot: number) {
         this.position = pos;
         this.bodyRotation = bodyRot;
         this.headRotation = headRot;

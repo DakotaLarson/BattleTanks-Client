@@ -1,17 +1,17 @@
-import EventHandler from '../../EventHandler';
-import SceneHandler from './SceneHandler';
-import { Vector3, Intersection } from 'three';
-import Component from '../../component/ChildComponent';
-import RaycastHandler from '../../RaycastHandler';
+import { Intersection, Vector3, Vector4 } from "three";
+import Component from "../../component/ChildComponent";
+import EventHandler from "../../EventHandler";
+import RaycastHandler from "../../RaycastHandler";
+import SceneHandler from "./SceneHandler";
 
-export default class SceneSingleplayerToolHandler extends Component{
+export default class SceneSingleplayerToolHandler extends Component {
 
-    parent: SceneHandler;
+    public parent: SceneHandler;
 
-    blocksIntersection: Intersection[];
-    floorIntersection: Intersection[]
+    public blocksIntersection: Intersection[];
+    public floorIntersection: Intersection[];
 
-    constructor(sceneHandler: SceneHandler){
+    constructor(sceneHandler: SceneHandler) {
         super();
         this.parent = sceneHandler;
 
@@ -19,7 +19,7 @@ export default class SceneSingleplayerToolHandler extends Component{
         this.floorIntersection = [];
     }
 
-    enable(){
+    public enable() {
         EventHandler.addListener(this, EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.onBCTPrimary);
         EventHandler.addListener(this, EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.onBCTSecondary);
 
@@ -32,7 +32,7 @@ export default class SceneSingleplayerToolHandler extends Component{
         EventHandler.addListener(this, EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
     }
 
-    disable(){
+    public disable() {
         EventHandler.addListener(this, EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.onBCTPrimary);
         EventHandler.addListener(this, EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.onBCTSecondary);
 
@@ -44,154 +44,156 @@ export default class SceneSingleplayerToolHandler extends Component{
 
         EventHandler.removeListener(this, EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
     }
-    onBCTPrimary(){
-        if(this.floorIntersection.length){
-            let position = this.floorIntersection[0].point.setY(0);
+    public onBCTPrimary() {
+        if (this.floorIntersection.length) {
+            const position = this.floorIntersection[0].point.setY(0);
             position.floor();
-            if(!this.isPositionBlock(position)){
+            if (!this.isPositionBlock(position)) {
                 this.parent.blockPositions.push(position);
                 this.parent.updateBlocks(this.parent.blockPositions);
-                EventHandler.callEvent(EventHandler.Event.ARENA_BLOCKLOCATION_UPDATE, this.parent.blockPositions);
+                EventHandler.callEvent(EventHandler.Event.ARENA_BLOCKPOSITION_UPDATE, this.parent.blockPositions);
             }
         }
     }
 
-    onBCTSecondary(){
-        if(this.floorIntersection.length){
-            let position = this.floorIntersection[0].point.setY(0);
+    public onBCTSecondary() {
+        if (this.floorIntersection.length) {
+            const position = this.floorIntersection[0].point.setY(0);
             position.floor();
-            let removed = this.removeBlockPosition(position);
-            if(removed){
+            const removed = this.removeBlockPosition(position);
+            if (removed) {
                 this.parent.updateBlocks(this.parent.blockPositions);
-                EventHandler.callEvent(EventHandler.Event.ARENA_BLOCKLOCATION_UPDATE, this.parent.blockPositions);
+                EventHandler.callEvent(EventHandler.Event.ARENA_BLOCKPOSITION_UPDATE, this.parent.blockPositions);
             }
         }
     }
 
-    onInitialSpawnPrimary(){
-        if(this.floorIntersection.length){
-            let position = this.floorIntersection[0].point.setY(0);
+    public onInitialSpawnPrimary() {
+        if (this.floorIntersection.length) {
+            const position = this.floorIntersection[0].point.setY(0);
             position.floor();
-            if(this.isPositionBlock(position)){
-                //TODO alert user cannot use position
-                console.log('IS is block');
-            }else if(this.isPositionInitialSpawn(position)){
-                //TODO alert user cannot use position
-                console.log('IS is already IS');
-            }else{
-                this.parent.initialSpawnPositions.push(position);
-                //TODO Alert success
-                console.log('IS added');
+            if (this.isPositionBlock(position)) {
+                this.sendAlert("Cannot create initial spawn (Block at position).");
+            } else if (this.isPositionInitialSpawn(position)) {
+                this.sendAlert("That is already an initial spawn.");
+            } else {
+                const rotation = RaycastHandler.getCameraRotationAboutY();
+                this.parent.initialSpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
+                this.sendAlert("Initial spawn created.");
                 EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.parent.initialSpawnPositions);
             }
         }
     }
 
-    onInitialSpawnSecondary(){
-        if(this.floorIntersection.length){
-            let position = this.floorIntersection[0].point.setY(0);
+    public onInitialSpawnSecondary() {
+        if (this.floorIntersection.length) {
+            const position = this.floorIntersection[0].point.setY(0);
             position.floor();
-            let removed = this.removeInitialSpawnPosition(position);
-            if(removed){
-                //TODO Alert success
-                console.log('IS removed');
+            const removed = this.removeInitialSpawnPosition(position);
+            if (removed) {
+                this.sendAlert("Initial spawn removed.");
                 EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.parent.initialSpawnPositions);
-            }else{
-                //TODO Alert failure
-                console.log('IS not removed');
+            } else {
+                this.sendAlert("That is not an initial spawn.");
             }
         }
     }
 
-    onGameSpawnPrimary(){
-        if(this.floorIntersection.length){
-            let position = this.floorIntersection[0].point.setY(0);
+    public onGameSpawnPrimary() {
+        if (this.floorIntersection.length) {
+            const position = this.floorIntersection[0].point.setY(0);
             position.floor();
-            if(this.isPositionBlock(position)){
-                //TODO alert user cannot use position
-                console.log('GS is Block');
-            }else if(this.isPositionGameSpawn(position)){
-                //TODO alert user cannot use position
-                console.log('GS is already GS');
-            }else{
-                this.parent.gameSpawnPositions.push(position);
-                console.log('GS added');
-                //TODO Alert success
+            if (this.isPositionBlock(position)) {
+                this.sendAlert("Cannot create game spawn (Block at position).");
+
+            } else if (this.isPositionGameSpawn(position)) {
+                this.sendAlert("That is already a game spawn.");
+            } else {
+                const rotation = RaycastHandler.getCameraRotationAboutY();
+                this.parent.gameSpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
+                this.sendAlert("Game spawn created.");
                 EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.parent.gameSpawnPositions);
             }
         }
     }
 
-    onGameSpawnSecondary(){
-        if(this.floorIntersection.length){
-            let position = this.floorIntersection[0].point.setY(0);
+    public onGameSpawnSecondary() {
+        if (this.floorIntersection.length) {
+            const position = this.floorIntersection[0].point.setY(0);
             position.floor();
-            let removed = this.removeGameSpawnPosition(position);
-            if(removed){
-                //TODO Alert success
-                console.log('GS removed');
+            const removed = this.removeGameSpawnPosition(position);
+            if (removed) {
+                this.sendAlert("Game spawn removed.");
                 EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.parent.gameSpawnPositions);
-            }else{
-                //TODO Alert failure
-                console.log('GS not removed');
+            } else {
+                this.sendAlert("That is not a game spawn.");
             }
         }
     }
 
-    isPositionBlock(pos: Vector3){
+    public isPositionBlock(pos: Vector3) {
         return this.isPositionInArray(pos, this.parent.blockPositions);
     }
 
-    isPositionGameSpawn(pos: Vector3){
+    public isPositionGameSpawn(pos: Vector3) {
         return this.isPositionInArray(pos, this.parent.gameSpawnPositions);
     }
 
-    isPositionInitialSpawn(pos: Vector3){
+    public isPositionInitialSpawn(pos: Vector3) {
         return this.isPositionInArray(pos, this.parent.initialSpawnPositions);
     }
 
-    removeBlockPosition(pos: Vector3){
+    public removeBlockPosition(pos: Vector3) {
         return this.removePositionFromArray(pos, this.parent.blockPositions);
     }
 
-    removeInitialSpawnPosition(pos: Vector3){
+    public removeInitialSpawnPosition(pos: Vector3) {
         return this.removePositionFromArray(pos, this.parent.initialSpawnPositions);
     }
 
-    removeGameSpawnPosition(pos: Vector3){
+    public removeGameSpawnPosition(pos: Vector3) {
         return this.removePositionFromArray(pos, this.parent.gameSpawnPositions);
     }
 
-    removePositionFromArray(pos: Vector3, arr: Array<Vector3>){
+    public removePositionFromArray(pos: Vector3, arr: Vector3[] | Vector4[]) {
         let spliceIndex = -1;
-        for(let i = 0; i < arr.length; i ++){
-            if(arr[i].equals(pos)){
+        for (let i = 0; i < arr.length; i ++) {
+            if (this.positionsAreEqual(pos, arr[i])) {
                 spliceIndex = i;
                 break;
             }
         }
-        if(spliceIndex > -1){
+        if (spliceIndex > -1) {
             arr.splice(spliceIndex, 1);
             return true;
         }
         return false;
     }
 
-    isPositionInArray(pos: Vector3, arr: Array<Vector3>){
-        for(let i = 0; i < arr.length; i ++){
-            if(arr[i].equals(pos)) return true;
+    public isPositionInArray(pos: Vector3, arr: Vector3[] | Vector4[]) {
+        for (const otherPos of arr) {
+            if (this.positionsAreEqual(pos, otherPos)) { return true; }
         }
         return false;
     }
 
-    onBeforeRender(){
-        if(this.parent.blocks && this.parent.floor){
-            let raycaster = RaycastHandler.getRaycaster();
+    public positionsAreEqual(a: Vector3, b: Vector3 | Vector4) {
+        return a.x === b.x && a.y === b.y && a.z === b.z;
+    }
+
+    public onBeforeRender() {
+        if (this.parent.blocks && this.parent.floor) {
+            const raycaster = RaycastHandler.getRaycaster();
             this.blocksIntersection = raycaster.intersectObject(this.parent.blocks);
             this.floorIntersection = raycaster.intersectObject(this.parent.floor);
-        }else{
+        } else {
             this.blocksIntersection = [];
             this.floorIntersection = [];
         }
+    }
+
+    public sendAlert(message: string) {
+        EventHandler.callEvent(EventHandler.Event.ALERT_MESSAGE_REQUEST, message);
+
     }
 }

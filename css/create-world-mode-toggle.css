@@ -4,10 +4,12 @@
 .create-world-mode-toggle{
     background-color: gold;
     border: solid 2px white;
+    color: black;
     border-bottom: none;
     padding: 10px;
     font-family: 'Inconsolata', sans-serif;
     font-size: 2vmin;
+    cursor: pointer;
 }
 .create-world-mode-toggle:last-child{
     border-bottom: solid 2px white;
@@ -16,7 +18,4 @@
 .create-world-toggle-enabled {
     background-color: slateblue;
     color: white;
-}
-.create-world-mode-toggle:hover{
-    cursor: pointer;
 }

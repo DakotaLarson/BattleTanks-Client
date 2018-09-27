@@ -1,14 +1,17 @@
 {
     "compilerOptions": {
         "target": "es6",
-        "module": "system",
+        "module": "commonjs",
         "sourceMap": true,
         "outDir": "build",
         "allowJs": true,
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true 
     },
     "include": [
-        "src/**/*",
-    ],
-    
+        "src/**/*"
+    ], 
 }

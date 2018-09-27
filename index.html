@@ -48,25 +48,25 @@
     <div class="menu-section options-menu" id="main-menu-opt">
         <div class='options-parent'>
             <span class="option-title">Forward</span>
-            <span class="option-value option-listening-value" id="option-value-forward">W</span>
+            <span class="option-value option-listening-value" id="option-value-forward"></span>
 
             <span class="option-title">Backward</span>
-            <span class="option-value option-listening-value" id="option-value-backward">S</span>
+            <span class="option-value option-listening-value" id="option-value-backward"></span>
 
             <span class="option-title">Rotate Left</span>
-            <span class="option-value option-listening-value" id="option-value-left">A</span>
+            <span class="option-value option-listening-value" id="option-value-left"></span>
 
             <span class="option-title">Rotate Right</span>
-            <span class="option-value option-listening-value" id="option-value-right">D</span>
+            <span class="option-value option-listening-value" id="option-value-right"></span>
 
             <span class="option-title">Shoot</span>
-            <span class="option-value option-listening-value" id="option-value-shoot">Mouse 0</span>
+            <span class="option-value option-listening-value" id="option-value-shoot"></span>
 
             <span class="option-title">Volume</span>
-            <input type="range" id="option-value-volume" class="option-value option-range-value" min="0" max="1" value="1" step="any"/>
+            <input type="range" id="option-value-volume" class="option-value option-range-value" min="0" max="1" step="any"/>
 
             <span class="option-title">Mouse Sensitivity</span>
-            <input type="range" id="option-value-mouse" class="option-value option-range-value" min="0" max="1" value="1" step="any"/>
+            <input type="range" id="option-value-mouse" class="option-value option-range-value" min="0" max="1" step="any"/>
 
             <span class="menu-selection" id="opt-opt-return">Return</span>
         </div>
@@ -102,6 +102,7 @@
     </div>
 </div>
 
+<!-- CONNECTION SCREEN -->
 <div class="menu connection-screen no-select">
     <div class="menu-section section-connecting">
         <span class="message">Connecting...</span><br/>
@@ -129,6 +130,12 @@
     </div>
 </div>
 
+<!-- ALERT MESSAGE -->
+<div class="alert-message-parent">
+    <div class="alert-message no-select"></div>
+</div>
+
+<!-- GUI -->
 <div class="gui no-select">
      
     <div class="debug-panel gui-element no-select">
@@ -140,9 +147,9 @@
 
     <div class="create-world-mode-toggle-parent gui-element no-select">
         <div class="create-world-mode-toggle no-select" id="gui-create-world-toggle-camera">Camera (C)</div>
-        <div class="create-world-mode-toggle no-select"id="gui-create-world-toggle-block">Block (B)</div>
-        <div class="create-world-mode-toggle no-select"id="gui-create-world-toggle-gamespawn">Game Spawn</div>
-        <div class="create-world-mode-toggle no-select"id="gui-create-world-toggle-initialspawn">Initial Spawn</div>
+        <div class="create-world-mode-toggle no-select" id="gui-create-world-toggle-block">Block (B)</div>
+        <div class="create-world-mode-toggle no-select" id="gui-create-world-toggle-gamespawn">Game Spawn</div>
+        <div class="create-world-mode-toggle no-select" id="gui-create-world-toggle-initialspawn">Initial Spawn</div>
     </div>
 
     <div class="gui-element no-select cooldown-bar-container">
@@ -153,6 +160,7 @@
     
 </div>
 
+<!-- GAME MENU -->
 <div class="menu game-menu no-select" id="game-menu-sp">
     <div class="game-menu-options">
         <span class="menu-selection" id="game-menu-sp-return-to-main">Return to Main Menu</span><br/>
@@ -166,10 +174,6 @@
         <span class="menu-selection" id="game-menu-mp-disconnect">Disconnect</span><br/>
         <span class="menu-selection" id="game-menu-mp-cancel">Cancel</span>
     </div>
-</div>
-
-<div class="alert-message-parent">
-    <div class="alert-message no-select"></div>
 </div>
 
 <canvas id="game-canvas"></canvas>

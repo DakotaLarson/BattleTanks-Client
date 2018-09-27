@@ -1,178 +1,185 @@
 import Component from "../component/ChildComponent";
+import DomEventHandler from "../DomEventHandler";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
-import DomEventHandler from '../DomEventHandler';
 
+export default class MultiplayerMenu extends Component {
 
-export default class MultiplayerMenu extends Component{
-    
-    element: HTMLElement;
+    public element: HTMLElement;
 
-    serverListElt: HTMLElement;
-    addServerBtn: HTMLElement;
-    joinServerBtn: HTMLElement;
-    removeServerBtn: HTMLElement;
-    cancelBtn: HTMLElement;
+    public serverListElt: HTMLElement;
+    public addServerBtn: HTMLElement;
+    public joinServerBtn: HTMLElement;
+    public removeServerBtn: HTMLElement;
+    public cancelBtn: HTMLElement;
 
-    servers: Array<any>;
+    public servers: any[] | undefined;
 
-    selectedElt: HTMLElement;
-    selectedIndex: number;
-    
-    constructor(mainMenu: HTMLElement){
+    public selectedElt: HTMLElement | undefined;
+    public selectedIndex: number | undefined;
+
+    constructor(mainMenu: HTMLElement) {
         super();
-        this.element = DomHandler.getElement('#main-menu-mp', mainMenu);
+        this.element = DomHandler.getElement("#main-menu-mp", mainMenu);
 
-        this.serverListElt = DomHandler.getElement('.server-list', this.element);
+        this.serverListElt = DomHandler.getElement(".server-list", this.element);
 
-        this.addServerBtn = DomHandler.getElement('#mp-opt-add-server', this.element);
-        this.joinServerBtn = DomHandler.getElement('#mp-opt-join-server', this.element);
-        this.removeServerBtn = DomHandler.getElement('#mp-opt-remove-server', this.element);
-        this.cancelBtn = DomHandler.getElement('#mp-opt-cancel', this.element);
+        this.addServerBtn = DomHandler.getElement("#mp-opt-add-server", this.element);
+        this.joinServerBtn = DomHandler.getElement("#mp-opt-join-server", this.element);
+        this.removeServerBtn = DomHandler.getElement("#mp-opt-remove-server", this.element);
+        this.cancelBtn = DomHandler.getElement("#mp-opt-cancel", this.element);
     }
 
-    enable(){
+    public enable() {
         this.servers = this.getServers();
 
         this.createMenuServerList(this.servers);
-        this.joinServerBtn.classList.add('disabled');
-        this.removeServerBtn.classList.add('disabled');
+        this.joinServerBtn.classList.add("disabled");
+        this.removeServerBtn.classList.add("disabled");
 
-        DomEventHandler.addListener(this, this.addServerBtn, 'click', this.handleAddServerClick)
-        DomEventHandler.addListener(this, this.joinServerBtn, 'click', this.handleJoinServerClick);
-        DomEventHandler.addListener(this, this.removeServerBtn, 'click', this.handleRemoveServerClick);
-        DomEventHandler.addListener(this, this.cancelBtn, 'click', this.handleCancelClick);
+        DomEventHandler.addListener(this, this.addServerBtn, "click", this.handleAddServerClick);
+        DomEventHandler.addListener(this, this.joinServerBtn, "click", this.handleJoinServerClick);
+        DomEventHandler.addListener(this, this.removeServerBtn, "click", this.handleRemoveServerClick);
+        DomEventHandler.addListener(this, this.cancelBtn, "click", this.handleCancelClick);
 
-        this.element.style.display = 'block';
+        this.element.style.display = "block";
     }
 
-    disable(){
-        this.joinServerBtn.classList.remove('disabled');
-        this.removeServerBtn.classList.remove('disabled');
+    public disable() {
+        this.joinServerBtn.classList.remove("disabled");
+        this.removeServerBtn.classList.remove("disabled");
 
-        DomEventHandler.removeListener(this, this.addServerBtn, 'click', this.handleAddServerClick)
-        DomEventHandler.removeListener(this, this.joinServerBtn, 'click', this.handleJoinServerClick);
-        DomEventHandler.removeListener(this, this.removeServerBtn, 'click', this.handleRemoveServerClick);
-        DomEventHandler.removeListener(this, this.cancelBtn, 'click', this.handleCancelClick);
+        DomEventHandler.removeListener(this, this.addServerBtn, "click", this.handleAddServerClick);
+        DomEventHandler.removeListener(this, this.joinServerBtn, "click", this.handleJoinServerClick);
+        DomEventHandler.removeListener(this, this.removeServerBtn, "click", this.handleRemoveServerClick);
+        DomEventHandler.removeListener(this, this.cancelBtn, "click", this.handleCancelClick);
 
-        while(this.serverListElt.firstChild){
+        while (this.serverListElt.firstChild) {
             this.serverListElt.removeChild(this.serverListElt.firstChild);
         }
 
         this.selectedElt = undefined;
         this.servers = undefined;
 
-        this.element.style.display = '';
+        this.element.style.display = "";
     }
 
-    //SERVER CLICK HANDLERS
+    // SERVER CLICK HANDLERS
 
-    handleServerClick(index: number, element: HTMLElement){
-        if(this.selectedElt){
-            if(this.selectedElt !== element){
-                this.selectedElt.classList.remove('server-opt-selected');
-                element.classList.add('server-opt-selected');
+    public handleServerClick(index: number, element: HTMLElement) {
+        if (this.selectedElt) {
+            if (this.selectedElt !== element) {
+                this.selectedElt.classList.remove("server-opt-selected");
+                element.classList.add("server-opt-selected");
                 this.selectedElt = element;
             }
-        }else{
-            element.classList.add('server-opt-selected');
+        } else {
+            element.classList.add("server-opt-selected");
             this.selectedElt = element;
         }
         this.selectedIndex = index;
-        this.joinServerBtn.classList.remove('disabled');
-        this.removeServerBtn.classList.remove('disabled');
+        this.joinServerBtn.classList.remove("disabled");
+        this.removeServerBtn.classList.remove("disabled");
     }
 
-    handleServerDblClick(index: number){
-        let address = this.servers[index].address;
-        EventHandler.callEvent(EventHandler.Event.MPMENU_JOIN_OPT_CLICK, address);
-    }
-    
-    //OPTION HANDLERS
-
-    handleAddServerClick(){
-        EventHandler.callEvent(EventHandler.Event.MPMENU_ADDSERVER_OPT_CLICK);
-    }
-
-    handleJoinServerClick(){
-        if(!this.joinServerBtn.classList.contains('disabled')){
-            let address = this.servers[this.selectedIndex].address;
+    public handleServerDblClick(index: number) {
+        if (this.servers) {
+            const address = this.servers[index].address;
             EventHandler.callEvent(EventHandler.Event.MPMENU_JOIN_OPT_CLICK, address);
         }
     }
 
-    handleRemoveServerClick(){
-        if(!this.removeServerBtn.classList.contains('disabled')){
-            let confirmation = window.confirm('Are you sure you want to remove this server?');
-            if(confirmation){
-                this.servers.splice(this.selectedIndex, 1);
-                this.updateMenuServerList(this.servers);
+    // OPTION HANDLERS
+
+    public handleAddServerClick() {
+        EventHandler.callEvent(EventHandler.Event.MPMENU_ADDSERVER_OPT_CLICK);
+    }
+
+    public handleJoinServerClick() {
+        if (this.servers && this.selectedIndex) {
+            if (!this.joinServerBtn.classList.contains("disabled")) {
+                const address = this.servers[this.selectedIndex].address;
+                EventHandler.callEvent(EventHandler.Event.MPMENU_JOIN_OPT_CLICK, address);
             }
-            localStorage.setItem('serverList', JSON.stringify(this.servers));
         }
     }
 
-    handleCancelClick(){
+    public handleRemoveServerClick() {
+        if (this.servers && this.selectedIndex) {
+            if (!this.removeServerBtn.classList.contains("disabled")) {
+                const confirmation = window.confirm("Are you sure you want to remove this server?");
+                if (confirmation) {
+                    this.servers.splice(this.selectedIndex, 1);
+                    this.updateMenuServerList(this.servers);
+                }
+                localStorage.setItem("serverList", JSON.stringify(this.servers));
+            }
+        }
+    }
+
+    public handleCancelClick() {
         EventHandler.callEvent(EventHandler.Event.MPMENU_CANCEL_OPT_CLICK);
     }
-    
-    getServers(){
-        let rawServerList = localStorage.getItem('serverList');
+
+    public getServers() {
+        const rawServerList = localStorage.getItem("serverList");
         let serverList;
-        if(rawServerList){
+        if (rawServerList) {
             serverList = JSON.parse(rawServerList);
-        }else{
+        } else {
             serverList = new Array({
-                name: 'Offical Server',
-                address: 'wss://battle-tanks-server.herokuapp.com'
+                name: "Offical Server",
+                address: "wss://battle-tanks-server.herokuapp.com",
             });
-            localStorage.setItem('serverList', JSON.stringify(serverList));
+            localStorage.setItem("serverList", JSON.stringify(serverList));
         }
         return serverList;
     }
 
-    createMenuServerList(servers: Array<any>){
-        for(let i = 0; i < servers.length; i ++){
-            let server = servers[i];
+    public createMenuServerList(servers?: any[]) {
+        if (servers) {
+            for (let i = 0; i < servers.length; i ++) {
+                const server = servers[i];
 
-            //parent
-            let serverOptParent = document.createElement('div');
-            serverOptParent.classList.add('server-opt-parent');
+                // parent
+                const serverOptParent = document.createElement("div");
+                serverOptParent.classList.add("server-opt-parent");
 
-            //name
-            let serverOptName = document.createElement('div');
-            serverOptName.classList.add('server-opt-name');
-            serverOptName.textContent = server.name;
-            serverOptParent.appendChild(serverOptName);
+                // name
+                const serverOptName = document.createElement("div");
+                serverOptName.classList.add("server-opt-name");
+                serverOptName.textContent = server.name;
+                serverOptParent.appendChild(serverOptName);
 
-            //address
-            let serverOptAddress = document.createElement('div');
-            serverOptAddress.classList.add('server-opt-address');
-            serverOptAddress.textContent = server.address;
-            serverOptParent.appendChild(serverOptAddress);
+                // address
+                const serverOptAddress = document.createElement("div");
+                serverOptAddress.classList.add("server-opt-address");
+                serverOptAddress.textContent = server.address;
+                serverOptParent.appendChild(serverOptAddress);
 
-            //ending break tag
-            if(i !== servers.length - 1){
-                let breakTag = document.createElement('br');
-                serverOptParent.appendChild(breakTag);
+                // ending break tag
+                if (i !== servers.length - 1) {
+                    const breakTag = document.createElement("br");
+                    serverOptParent.appendChild(breakTag);
+                }
+
+                this.serverListElt.appendChild(serverOptParent);
+                serverOptParent.addEventListener("click", () => {
+                    this.handleServerClick(i, serverOptParent);
+                });
+                serverOptParent.addEventListener("dblclick", () => {
+                    this.handleServerDblClick(i);
+                });
             }
-
-            this.serverListElt.appendChild(serverOptParent);
-            serverOptParent.addEventListener('click', () => {
-                this.handleServerClick(i, serverOptParent);
-            });
-            serverOptParent.addEventListener('dblclick', () => {
-                this.handleServerDblClick(i);
-            });
         }
     }
-    updateMenuServerList(servers: Array<any>){
-        while(this.serverListElt.firstChild){
+    public updateMenuServerList(servers?: any[]) {
+        while (this.serverListElt.firstChild) {
             this.serverListElt.removeChild(this.serverListElt.firstChild);
         }
         this.selectedElt = undefined;
         this.createMenuServerList(servers);
-        this.joinServerBtn.classList.add('disabled');
-        this.removeServerBtn.classList.add('disabled');
+        this.joinServerBtn.classList.add("disabled");
+        this.removeServerBtn.classList.add("disabled");
     }
 }

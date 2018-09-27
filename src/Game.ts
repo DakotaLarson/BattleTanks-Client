@@ -1,36 +1,35 @@
-import Component from './component/Component';
-import EventHandler from './EventHandler';
+import Component from "./component/Component";
+import EventHandler from "./EventHandler";
 
-import MainMenu from './main_menu/MainMenu';
-import ArenaHandler from './arena/ArenaHandler';
-import MultiplayerConnection from './MultiplayerConnection';
-import ConnectionScreen from './connection_screen/ConnectionScreen';
-import GameStatusHandler from './GameStatusHandler';
-import AlertMessageHandler from './alert_message/AlertMessageHandler';
-import ComponentDebugger from './component/ComponentDebugger';
-import Options from './Options';
+import AlertMessageHandler from "./alert_message/AlertMessageHandler";
+import ArenaHandler from "./arena/ArenaHandler";
+import ComponentDebugger from "./component/ComponentDebugger";
+import ConnectionScreen from "./connection_screen/ConnectionScreen";
+import GameStatusHandler from "./GameStatusHandler";
+import MainMenu from "./main_menu/MainMenu";
+import MultiplayerConnection from "./MultiplayerConnection";
+import Options from "./Options";
 
-class Game extends Component{
+class Game extends Component {
 
-    mainMenu: MainMenu;
-    connectionScreen: ConnectionScreen;
-    arenaHandler: ArenaHandler;
-    mpConnection: MultiplayerConnection;
-    gameStatusHandler: GameStatusHandler;
-    alertMessageHandler: AlertMessageHandler;
-    options: Options;
+    public mainMenu: MainMenu;
+    public connectionScreen: ConnectionScreen;
+    public arenaHandler: ArenaHandler;
+    public mpConnection: MultiplayerConnection | undefined;
+    public gameStatusHandler: GameStatusHandler;
+    public alertMessageHandler: AlertMessageHandler;
+    public options: Options;
 
-    constructor(){
+    constructor() {
         super();
         this.mainMenu = new MainMenu();
         this.connectionScreen = new ConnectionScreen();
         this.arenaHandler = new ArenaHandler();
-        this.mpConnection = undefined;
         this.gameStatusHandler = new GameStatusHandler();
         this.alertMessageHandler = new AlertMessageHandler();
         this.options = new Options();
     }
-    enable(){
+    public enable() {
         EventHandler.callEvent(EventHandler.Event.GAME_START);
 
         EventHandler.addListener(this, EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.loadSingleplayer);
@@ -43,26 +42,26 @@ class Game extends Component{
         EventHandler.addListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.disconnectFromMultiplayer);
         EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.disconnectFromMultiplayer);
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.disconnectFromMultiplayer);
-        
+
         this.attachComponent(this.options);
         this.attachChild(this.mainMenu);
         this.attachChild(this.alertMessageHandler);
         this.attachComponent(this.arenaHandler);
     }
 
-    update(delta: number){
+    public update(delta: number) {
         EventHandler.callEvent(EventHandler.Event.GAME_ANIMATION_UPDATE, delta);
     }
 
-    loadSingleplayer(){
+    public loadSingleplayer() {
         this.detachChild(this.mainMenu);
     }
 
-    unloadSingleplayer(){
+    public unloadSingleplayer() {
         this.attachChild(this.mainMenu);
     }
 
-    connectToMultiplayer(address: string){
+    public connectToMultiplayer(address: string) {
         this.detachChild(this.mainMenu);
         this.attachChild(this.connectionScreen);
         this.mpConnection = new MultiplayerConnection(address);
@@ -70,20 +69,20 @@ class Game extends Component{
         this.attachChild(this.gameStatusHandler);
     }
 
-    disconnectFromMultiplayer(){
+    public disconnectFromMultiplayer() {
         this.detachChild(this.connectionScreen);
-        this.detachChild(this.mpConnection);
+        this.detachChild(this.mpConnection as MultiplayerConnection);
         this.detachChild(this.gameStatusHandler);
         this.mpConnection = undefined;
-        this.attachChild(this.mainMenu)
+        this.attachChild(this.mainMenu);
     }
 }
 
 (() => {
 
-    const TICK_INTERVAL = 50; //20 ticks/second
+    const TICK_INTERVAL = 50; // 20 ticks/second
 
-    let game = new Game();
+    const game = new Game();
     game.enable();
 
     let prevTime = performance.now();
@@ -94,27 +93,27 @@ class Game extends Component{
     let debugComputeTime = 0;
     let debugFPSCount = 0;
 
-    let update = () => {
+    const update = () => {
         requestAnimationFrame(update);
-        let currentTime = performance.now();
-        if(currentTime - prevDebugTime > 1000){
+        const currentTime = performance.now();
+        if (currentTime - prevDebugTime > 1000) {
             outputDebugData();
             prevDebugTime = currentTime;
         }
 
         let computeAndRenderTime = currentTime;
 
-        let delta = (currentTime - prevTime) / 1000;
+        const delta = (currentTime - prevTime) / 1000;
 
-        let tickTime = currentTime - prevTickTime;
-        if(tickTime > TICK_INTERVAL){
+        const tickTime = currentTime - prevTickTime;
+        if (tickTime > TICK_INTERVAL) {
             EventHandler.callEvent(EventHandler.Event.GAME_TICK);
             prevTickTime = prevTickTime + TICK_INTERVAL;
         }
 
         game.update(delta);
 
-        let currentDebugTime = performance.now();
+        const currentDebugTime = performance.now();
         computeAndRenderTime = currentDebugTime - computeAndRenderTime;
         debugRenderTime += latestRenderTime;
         debugComputeTime += computeAndRenderTime - latestRenderTime;
@@ -123,24 +122,24 @@ class Game extends Component{
 
     };
     update();
-    EventHandler.addListener(this, EventHandler.Event.RENDERER_RENDER_COMPLETE, (time) => {
+    EventHandler.addListener(undefined, EventHandler.Event.RENDERER_RENDER_COMPLETE, (time) => {
         latestRenderTime = time;
     });
 
-    let outputDebugData = () => {
-         let idleTime = 1000 - debugRenderTime - debugComputeTime;
-         let debugData = {
+    const outputDebugData = () => {
+         const idleTime = 1000 - debugRenderTime - debugComputeTime;
+         const debugData = {
              fps: debugFPSCount,
              rendering: debugRenderTime,
              computation: debugComputeTime,
-             idle: idleTime
+             idle: idleTime,
          };
          EventHandler.callEvent(EventHandler.Event.GAME_DEBUG_OUTPUT, debugData);
-         debugRenderTime = debugComputeTime = debugFPSCount =0;
+         debugRenderTime = debugComputeTime = debugFPSCount = 0;
     };
 
-    EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, (event) => {
-        if(event.code === 'KeyP'){
+    EventHandler.addListener(undefined, EventHandler.Event.DOM_KEYUP, (event) => {
+        if (event.code === "KeyP") {
             ComponentDebugger.printTable();
         }
     }, EventHandler.Level.LOW);

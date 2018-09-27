@@ -1,57 +1,56 @@
 import Component from "./component/Component";
 import EventHandler from "./EventHandler";
 
+export default class Options extends Component {
 
-export default class Options extends Component{
-    
-    static options: any;
+    public static options: any;
 
-    constructor(){
+    constructor() {
         super();
-        let rawOptions = localStorage.getItem('userOptions');
-        if(rawOptions){
+        const rawOptions = localStorage.getItem("userOptions");
+        if (rawOptions) {
             Options.options = JSON.parse(rawOptions);
-        }else{
+        } else {
             Options.options = {
                 forward: {
-                    key: 'w',
-                    code: 'KeyW',
-                    isMouse: false
+                    key: "w",
+                    code: "KeyW",
+                    isMouse: false,
                 },
                 backward: {
-                    key: 's',
-                    code: 'KeyS',
-                    isMouse: false
+                    key: "s",
+                    code: "KeyS",
+                    isMouse: false,
                 },
                 left: {
-                    key: 'a',
-                    code: 'KeyA',
-                    isMouse: false
+                    key: "a",
+                    code: "KeyA",
+                    isMouse: false,
                 },
                 right: {
-                    key: 'd',
-                    code: 'KeyD',
-                    isMouse: false
+                    key: "d",
+                    code: "KeyD",
+                    isMouse: false,
                 },
                 shoot: {
                     key: 0,
                     code: 0,
-                    isMouse: true
+                    isMouse: true,
                 },
                 volume: 1,
-                mouseSensitivity: 1
+                mouseSensitivity: 1,
             };
-            localStorage.setItem('userOptions', JSON.stringify(Options.options));
+            localStorage.setItem("userOptions", JSON.stringify(Options.options));
         }
     }
 
-    //key = human readable
-    //code = more precise
-    enable(){
+    // key = human readable
+    // code = more precise
+    public enable() {
         EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
     }
 
-    onOptionsUpdate(data){
+    public onOptionsUpdate(data: any) {
         Options.options = data;
     }
 }

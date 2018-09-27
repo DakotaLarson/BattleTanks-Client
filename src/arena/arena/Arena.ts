@@ -1,43 +1,41 @@
-import Component from '../../component/ChildComponent';
-import EventHandler from '../../EventHandler';
-import { Vector3 } from 'three';
+import { Vector3, Vector4 } from "three";
+import Component from "../../component/ChildComponent";
+import EventHandler from "../../EventHandler";
 
+export default class Arena extends Component {
 
-export default class Arena extends Component{
+    public blockPositions: Vector3[];
+    public initialSpawnPositions: Vector4[];
+    public gameSpawnPositions: Vector4[];
 
-    blockLocations: Array<Vector3>;
-    initialSpawnLocations: Array<Vector3>;
-    gameSpawnLocations: Array<Vector3>;
-
-    constructor(){
+    constructor() {
         super();
 
-        this.blockLocations = [];
-        this.initialSpawnLocations = [];
-        this.gameSpawnLocations = [];
+        this.blockPositions = [];
+        this.initialSpawnPositions = [];
+        this.gameSpawnPositions = [];
     }
-
-    enable(){
-        EventHandler.addListener(this, EventHandler.Event.ARENA_BLOCKLOCATION_UPDATE, this.onBlockLocationUpdate);
+    public enable() {
+        EventHandler.addListener(this, EventHandler.Event.ARENA_BLOCKPOSITION_UPDATE, this.onBlockLocationUpdate);
         EventHandler.addListener(this, EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.onGameSpawnUpdate);
         EventHandler.addListener(this, EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.onInitialSpawnUpdate);
     }
 
-    disable(){
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_BLOCKLOCATION_UPDATE, this.onBlockLocationUpdate);
+    public disable() {
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_BLOCKPOSITION_UPDATE, this.onBlockLocationUpdate);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.onGameSpawnUpdate);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.onInitialSpawnUpdate);
     }
 
-    onBlockLocationUpdate(blockLocations: Array<Vector3>){
-        this.blockLocations = blockLocations;
+    public onBlockLocationUpdate(blockPositions: Vector3[]) {
+        this.blockPositions = blockPositions;
     }
 
-    onGameSpawnUpdate(gameSpawnLocations: Array<Vector3>){
-        this.gameSpawnLocations = gameSpawnLocations;
+    public onGameSpawnUpdate(gameSpawnPositions: Vector4[]) {
+        this.gameSpawnPositions = gameSpawnPositions;
     }
-    
-    onInitialSpawnUpdate(initialSpawnLocations: Array<Vector3>){
-        this.initialSpawnLocations = initialSpawnLocations;
+
+    public onInitialSpawnUpdate(initialSpawnPositions: Vector4[]) {
+        this.initialSpawnPositions = initialSpawnPositions;
     }
 }

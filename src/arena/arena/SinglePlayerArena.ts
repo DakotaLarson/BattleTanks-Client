@@ -1,17 +1,17 @@
-import Arena from './Arena';
+import Arena from "./Arena";
 
-export default class SingleplayerArena extends Arena{
+export default class SingleplayerArena extends Arena {
 
-    constructor(){
+    constructor() {
         super();
 
     }
 
-    enable(){
+    public enable() {
         super.enable();
     }
 
-    disable(){
+    public disable() {
         super.disable();
-    } 
+    }
 }

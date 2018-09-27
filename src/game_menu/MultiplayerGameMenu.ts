@@ -1,36 +1,36 @@
-import Component from '../component/ChildComponent';
-import DomHandler from '../DomHandler';
-import EventHandler from '../EventHandler';
+import Component from "../component/ChildComponent";
+import DomHandler from "../DomHandler";
+import EventHandler from "../EventHandler";
 
 export default class MultiplayerGameMenu extends Component {
 
-    element: HTMLElement;
-    cancelBtn: HTMLElement;
-    disconnectBtn: HTMLElement;
+    public element: HTMLElement;
+    public cancelBtn: HTMLElement;
+    public disconnectBtn: HTMLElement;
 
-    constructor(){
+    constructor() {
         super();
-        this.element = DomHandler.getElement('#game-menu-mp');
-        this.cancelBtn = DomHandler.getElement('#game-menu-mp-cancel', this.element);
+        this.element = DomHandler.getElement("#game-menu-mp");
+        this.cancelBtn = DomHandler.getElement("#game-menu-mp-cancel", this.element);
         this.disconnectBtn = DomHandler.getElement("#game-menu-mp-disconnect", this.element);
     }
 
-    enable(){
+    public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleClick);
 
-        this.element.style.display = 'block';
+        this.element.style.display = "block";
     }
 
-    disable(){
+    public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleClick);
 
-        this.element.style.display = '';
+        this.element.style.display = "";
     }
 
-    handleClick(event: MouseEvent){
-        if(event.target === this.cancelBtn){
+    public handleClick(event: MouseEvent) {
+        if (event.target === this.cancelBtn) {
             EventHandler.callEvent(EventHandler.Event.GAMEMENU_CLOSE_REQUEST);
-        }else if(event.target === this.disconnectBtn){
+        } else if (event.target === this.disconnectBtn) {
             EventHandler.callEvent(EventHandler.Event.MP_GAMEMENU_DISCONNECT);
         }
     }

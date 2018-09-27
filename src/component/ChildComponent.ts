@@ -1,12 +1,12 @@
-import Component from './Component';
+import Component from "./Component";
 
-export default abstract class ChildComponent extends Component{
+export default abstract class ChildComponent extends Component {
 
-    constructor(){
+    constructor() {
         super();
     }
 
-    abstract enable(): void;
-    abstract disable(): void;    
-    
+    public abstract enable(): void;
+    public abstract disable(): void;
+
 }

@@ -1,49 +1,49 @@
-import Component from '../../component/ChildComponent';
-import EventHandler from '../../EventHandler';
+import Component from "../../component/ChildComponent";
+import EventHandler from "../../EventHandler";
 
-export default class BlockCreationTool extends Component{
- 
-    eventToCall;
+export default class BlockCreationTool extends Component {
 
-    constructor(){
+    public eventToCall: any;
+
+    constructor() {
         super();
         this.eventToCall = undefined;
     }
 
-    enable(){
+    public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
     }
 
-    disable(){
+    public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseUp);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
     }
 
-    onMouseMove(){
-        if(this.eventToCall){
+    public onMouseMove() {
+        if (this.eventToCall) {
             EventHandler.callEvent(this.eventToCall);
         }
     }
 
-    onMouseDown(event: MouseEvent){
-        if(!this.eventToCall){
-            if(event.button === 0){
+    public onMouseDown(event: MouseEvent) {
+        if (!this.eventToCall) {
+            if (event.button === 0) {
                 this.eventToCall = EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY;
-            }else if(event.button === 2){
+            } else if (event.button === 2) {
                 this.eventToCall = EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY;
             }
-            EventHandler.callEvent(this.eventToCall)
+            EventHandler.callEvent(this.eventToCall);
         }
     }
 
-    onMouseUp(event: MouseEvent){
-        if(this.eventToCall){
-            if(this.eventToCall === EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY && event.button === 0 || this.eventToCall === EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY && event.button === 2){
+    public onMouseUp(event: MouseEvent) {
+        if (this.eventToCall) {
+            if (this.eventToCall === EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY && event.button === 0 || this.eventToCall === EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY && event.button === 2) {
                 this.eventToCall = undefined;
             }
         }
-    }   
+    }
 }
