@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, BoxGeometry, CylinderGeometry, DoubleSide, Geometry, Mesh, MeshLambertMaterial, PositionalAudio, Scene, Vector3} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BoxGeometry, CylinderGeometry, DoubleSide, Geometry, Mesh, MeshLambertMaterial, PositionalAudio, Scene, Vector3, Vector4} from "three";
 import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 
@@ -106,13 +106,14 @@ export default class ScenePlayerHandler extends Component {
         if (this.players.has(data.id)) {
             const playerObj = this.players.get(data.id);
             if (playerObj) {
+                const pos = new Vector3(data.pos.x, data.pos.y, data.pos.z);
                 const body = playerObj.body;
                 const head = playerObj.head;
 
-                head.position.copy(data.pos).add(this.playerOffset);
+                head.position.copy(pos).add(this.playerOffset);
                 head.rotation.y = data.headRot;
 
-                body.position.copy(data.pos).add(this.playerOffset);
+                body.position.copy(pos).add(this.playerOffset);
                 body.rotation.y = data.bodyRot;
             }
         }
@@ -132,7 +133,7 @@ export default class ScenePlayerHandler extends Component {
         }
     }
 
-    public addPlayer(id: number, pos: Vector3, isConnectedPlayer: boolean) {
+    public addPlayer(id: number, pos: Vector4, isConnectedPlayer: boolean) {
         const playerGeo = new Geometry();
         const playerHeadGeo = new Geometry();
 
@@ -181,11 +182,14 @@ export default class ScenePlayerHandler extends Component {
 
         playerGeo.merge(bodyGeo);
 
+        const bodyPos = new Vector3(pos.x, pos.y, pos.z);
+
         const bodyMesh = new Mesh(playerGeo, bodyMaterial);
-        bodyMesh.position.copy(pos).add(this.playerOffset);
+        bodyMesh.position.copy(bodyPos).add(this.playerOffset);
+        bodyMesh.rotation.y = pos.w;
 
         const headMesh = new Mesh(playerHeadGeo, headMaterial);
-        headMesh.position.copy(pos).add(this.playerOffset);
+        headMesh.position.copy(bodyPos).add(this.playerOffset);
 
         this.scene.add(bodyMesh, headMesh);
 

@@ -71,7 +71,7 @@ export default class MultiplayerArena extends Arena {
     }
 
     public onConnectedPlayerAddition(data: any) {
-        const player = new ConnectedPlayer(data.id, data.name, data.pos, data.bodyRot, data.headRot);
+        const player = new ConnectedPlayer(data.id, data.name, data.pos, data.headRot);
         this.connectedPlayers.set(data.id, player);
     }
 
@@ -90,14 +90,14 @@ export default class MultiplayerArena extends Arena {
     public onGameMenuOpen() {
         if (this.player) {
             this.detachChild(this.player);
-            this.gameMenuOpen = true;
         }
+        this.gameMenuOpen = true;
     }
 
     public onGameMenuClose() {
         if (this.player) {
             this.attachChild(this.player);
-            this.gameMenuOpen = false;
         }
+        this.gameMenuOpen = false;
     }
 }

@@ -1,10 +1,11 @@
-import {Vector3} from "three";
+import {Vector3, Vector4} from "three";
 import EventHandler from "./EventHandler";
 
 const decoder = new TextDecoder();
 
 const receiveArena = (data: string) => {
     const parsedData = JSON.parse(data);
+    parsedData.fromServer = true;
     EventHandler.callEvent(EventHandler.Event.ARENA_SCENE_UPDATE, parsedData);
 };
 
@@ -18,7 +19,7 @@ const receiveAlert = (message: string) => {
 
 const receivePlayerAdd = (data: string) => {
     const dataObj = JSON.parse(data);
-    const pos = new Vector3(dataObj.pos[0], dataObj.pos[1], dataObj.pos[2]);
+    const pos = new Vector4(dataObj.pos[0], dataObj.pos[1], dataObj.pos[2], dataObj.pos[3]);
     dataObj.pos = pos;
     EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_ADDITION, dataObj);
 };
@@ -46,7 +47,7 @@ const receivePlayerShoot = () => {
 
 const receiveConnectedPlayerAdd = (data: string) => {
     const playerData = JSON.parse(data);
-    const pos = new Vector3(playerData.pos[0], playerData.pos[1], playerData.pos[2]);
+    const pos = new Vector4(playerData.pos[0], playerData.pos[1], playerData.pos[2], playerData.pos[3]);
     playerData.pos = pos;
     EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, playerData);
 };

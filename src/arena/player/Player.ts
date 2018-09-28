@@ -1,4 +1,4 @@
-import { Plane, Ray, Vector3 } from "three";
+import { Plane, Ray, Vector3, Vector4 } from "three";
 import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Options from "../../Options";
@@ -23,12 +23,12 @@ export default class Player extends Component {
     public rotatingLeft: boolean;
     public rotatingRight: boolean;
 
-    constructor(id: number, pos: Vector3) {
+    constructor(id: number, pos: Vector4) {
         super();
         this.id = id;
 
-        this.position = pos;
-        this.bodyRotation = 0;
+        this.position = new Vector3(pos.x, pos.y, pos.z);
+        this.bodyRotation = pos.w;
         this.headRotation = 0;
 
         this.movingForward = false;

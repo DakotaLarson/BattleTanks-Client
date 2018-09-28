@@ -1,4 +1,4 @@
-import {AudioListener, BoxGeometry, BufferGeometry, Color, DirectionalLight, Float32BufferAttribute, Geometry, HemisphereLight, LineDashedMaterial, LineSegments, Mesh, MeshLambertMaterial, Object3D, PlaneGeometry, Scene, Vector3, Vector4} from "three";
+import {AudioListener, BoxGeometry, BufferGeometry, CircleGeometry, Color, DirectionalLight, Float32BufferAttribute, Geometry, HemisphereLight, LineDashedMaterial, LineSegments, Mesh, MeshLambertMaterial, Object3D, PlaneGeometry, Scene, Vector3, Vector4} from "three";
 
 import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
@@ -16,6 +16,9 @@ export default class SceneHandler extends Component {
     public lines: Mesh | undefined;
     public lights: Object3D[] | undefined;
     public blocks: Mesh | undefined;
+
+    public gameSpawnVisuals: Mesh | undefined;
+    public initialSpawnVisuals: Mesh | undefined;
 
     public scene: Scene;
 
@@ -90,6 +93,9 @@ export default class SceneHandler extends Component {
         this.scene.add(this.floor);
         this.scene.add(this.blocks as Mesh);
         this.scene.add.apply(this.scene, this.lights);
+        if (!data.fromServer) {
+            this.updateSpawnVisuals();
+        }
     }
 
     public onSaveGameRequest() {
@@ -113,6 +119,47 @@ export default class SceneHandler extends Component {
         anchor.click();
         document.body.removeChild(anchor);
         URL.revokeObjectURL(objectURL);
+    }
+
+    public updateSpawnVisuals() {
+        if (this.gameSpawnVisuals) {
+            this.scene.remove(this.gameSpawnVisuals);
+        }
+        if (this.initialSpawnVisuals) {
+            this.scene.remove(this.initialSpawnVisuals);
+        }
+        const masterGameSpawnGeo = new Geometry();
+        for (const pos of this.gameSpawnPositions) {
+            const geo = new CircleGeometry(0.5, 16);
+            geo.rotateX(-Math.PI / 2);
+            for (const vert of geo.vertices) {
+                vert.add(new Vector3(pos.x + 0.5, pos.y + 0.0001, pos.z + 0.5));
+            }
+            masterGameSpawnGeo.merge(geo);
+        }
+        const gameSpawnMat = new MeshLambertMaterial({
+            color: 0xffff00,
+        });
+        const gameSpawnMesh = new Mesh(masterGameSpawnGeo, gameSpawnMat);
+
+        const masterInitialSpawnGeo = new Geometry();
+        for (const pos of this.initialSpawnPositions) {
+            const geo = new CircleGeometry(0.5, 16);
+            geo.rotateX(-Math.PI / 2);
+            for (const vert of geo.vertices) {
+                vert.add(new Vector3(pos.x + 0.5, pos.y + 0.01, pos.z + 0.5));
+            }
+            masterInitialSpawnGeo.merge(geo);
+        }
+        const initialSpawnMat = new MeshLambertMaterial({
+            color: 0xff0000,
+        });
+        const initialSpawnMesh = new Mesh(masterInitialSpawnGeo, initialSpawnMat);
+
+        this.scene.add(gameSpawnMesh, initialSpawnMesh);
+
+        this.initialSpawnVisuals = initialSpawnMesh;
+        this.gameSpawnVisuals = gameSpawnMesh;
     }
 
     public createLines() {
@@ -216,7 +263,6 @@ export default class SceneHandler extends Component {
 
         if (this.blocks) {
             this.blocks.geometry = masterGeo;
-            // this.blocks.needsUpdate = true;
 
         } else {
             const material = new MeshLambertMaterial({color: 0x0077ef});

@@ -2,7 +2,7 @@ import Component from "../../../component/ChildComponent";
 import DomHandler from "../../../DomHandler";
 import EventHandler from "../../../EventHandler";
 
-import {PerspectiveCamera, Spherical} from "three";
+import {PerspectiveCamera, Spherical, Vector3} from "three";
 import CameraControls from "../CameraControls";
 
 export default class Camera extends Component {
@@ -30,7 +30,11 @@ export default class Camera extends Component {
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
 
-        this.attachControls();
+        if (!this.gameMenuOpen) {
+            this.attachControls();
+        }
+
+        this.onResize();
     }
 
     public disable() {
@@ -48,13 +52,22 @@ export default class Camera extends Component {
     }
 
     public onPlayerAddition(data: any) {
+        const pos = new Vector3(data.pos.x + 0.5, data.pos.y, data.pos.z + 0.5);
+        const rot = data.pos.w;
         if (!this.gameMenuOpen) {
             this.detachControls();
         }
 
         this.controls = new CameraControls(this.camera, true, false);
-        this.controls.target = data.pos.clone().addScalar(0.5).setY(0);
-        this.controls.spherical = new Spherical(25, 5 * Math.PI / 16, Math.PI);
+        this.controls.target = pos;
+        // orig: Math.PI
+
+        // todo check if this is necessary
+        if (rot < 0) {
+            this.controls.spherical = new Spherical(25, 5 * Math.PI / 16, rot - Math.PI);
+        } else {
+            this.controls.spherical = new Spherical(25, 5 * Math.PI / 16, rot + Math.PI);
+        }
         this.controls.update();
 
         if (!this.gameMenuOpen) {
@@ -83,7 +96,8 @@ export default class Camera extends Component {
     }
 
     public onPlayerMove(data: any) {
-        this.controls.target = data.pos.clone().addScalar(0.5).setY(0);
+        const pos = new Vector3(data.pos.x + 0.5, data.pos.y, data.pos.z + 0.5);
+        this.controls.target = pos;
         this.controls.spherical.theta = data.bodyRot + Math.PI;
         this.controls.update();
     }

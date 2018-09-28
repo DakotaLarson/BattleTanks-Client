@@ -80,6 +80,7 @@ export default class SceneSingleplayerToolHandler extends Component {
                 const rotation = RaycastHandler.getCameraRotationAboutY();
                 this.parent.initialSpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
                 this.sendAlert("Initial spawn created.");
+                this.parent.updateSpawnVisuals();
                 EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.parent.initialSpawnPositions);
             }
         }
@@ -92,6 +93,7 @@ export default class SceneSingleplayerToolHandler extends Component {
             const removed = this.removeInitialSpawnPosition(position);
             if (removed) {
                 this.sendAlert("Initial spawn removed.");
+                this.parent.updateSpawnVisuals();
                 EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.parent.initialSpawnPositions);
             } else {
                 this.sendAlert("That is not an initial spawn.");
@@ -112,6 +114,7 @@ export default class SceneSingleplayerToolHandler extends Component {
                 const rotation = RaycastHandler.getCameraRotationAboutY();
                 this.parent.gameSpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
                 this.sendAlert("Game spawn created.");
+                this.parent.updateSpawnVisuals();
                 EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.parent.gameSpawnPositions);
             }
         }
@@ -124,6 +127,7 @@ export default class SceneSingleplayerToolHandler extends Component {
             const removed = this.removeGameSpawnPosition(position);
             if (removed) {
                 this.sendAlert("Game spawn removed.");
+                this.parent.updateSpawnVisuals();
                 EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.parent.gameSpawnPositions);
             } else {
                 this.sendAlert("That is not a game spawn.");

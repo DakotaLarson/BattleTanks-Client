@@ -94,6 +94,7 @@ export default class ArenaHandler extends Component {
         this.attachChild(this.creationToolHandler);
         this.attachChild(this.singleplayerCamera);
 
+        worldData.fromServer = false;
         EventHandler.callEvent(EventHandler.Event.ARENA_SCENE_UPDATE, worldData);
 
         this.isSingleplayer = true;
