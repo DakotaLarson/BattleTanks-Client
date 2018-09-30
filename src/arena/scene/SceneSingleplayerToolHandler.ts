@@ -70,14 +70,16 @@ export default class SceneSingleplayerToolHandler extends Component {
 
     public onInitialSpawnPrimary() {
         if (this.floorIntersection.length) {
-            const position = this.floorIntersection[0].point.setY(0);
+            const origPosition = this.floorIntersection[0].point.setY(0);
+            const position = origPosition.clone().floor();
             position.floor();
             if (this.isPositionBlock(position)) {
                 this.sendAlert("Cannot create initial spawn (Block at position).");
             } else if (this.isPositionInitialSpawn(position)) {
                 this.sendAlert("That is already an initial spawn.");
             } else {
-                const rotation = RaycastHandler.getCameraRotationAboutY();
+                const rotation = this.getAngleToCamera(origPosition);
+                console.log(rotation);
                 this.parent.initialSpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
                 this.sendAlert("Initial spawn created.");
                 this.parent.updateSpawnVisuals();
@@ -103,15 +105,16 @@ export default class SceneSingleplayerToolHandler extends Component {
 
     public onGameSpawnPrimary() {
         if (this.floorIntersection.length) {
-            const position = this.floorIntersection[0].point.setY(0);
-            position.floor();
+            const origPostion = this.floorIntersection[0].point.setY(0);
+            const position = origPostion.clone().floor();
             if (this.isPositionBlock(position)) {
                 this.sendAlert("Cannot create game spawn (Block at position).");
 
             } else if (this.isPositionGameSpawn(position)) {
                 this.sendAlert("That is already a game spawn.");
             } else {
-                const rotation = RaycastHandler.getCameraRotationAboutY();
+                const rotation = this.getAngleToCamera(origPostion);
+                console.log(rotation);
                 this.parent.gameSpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
                 this.sendAlert("Game spawn created.");
                 this.parent.updateSpawnVisuals();
@@ -198,6 +201,16 @@ export default class SceneSingleplayerToolHandler extends Component {
 
     public sendAlert(message: string) {
         EventHandler.callEvent(EventHandler.Event.ALERT_MESSAGE_REQUEST, message);
+    }
 
+    private getAngleToCamera(pos: Vector3): number {
+        const centerPos = pos.clone().floor();
+        centerPos.x += 0.5;
+        centerPos.z += 0.5;
+
+        const xDiff = pos.x - centerPos.x;
+        const zDiff = pos.z - centerPos.z;
+
+        return Math.atan2(zDiff, xDiff);
     }
 }

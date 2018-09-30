@@ -1,4 +1,4 @@
-import {AudioListener, BoxGeometry, BufferGeometry, CircleGeometry, Color, DirectionalLight, Float32BufferAttribute, Geometry, HemisphereLight, LineDashedMaterial, LineSegments, Mesh, MeshLambertMaterial, Object3D, PlaneGeometry, Scene, Vector3, Vector4} from "three";
+import {AudioListener, BoxGeometry, BufferGeometry, CircleGeometry, Color, DirectionalLight, Float32BufferAttribute, Geometry, HemisphereLight, LineDashedMaterial, LineSegments, Mesh, MeshLambertMaterial, Object3D, PlaneGeometry, Scene, Texture, TextureLoader, Vector3, Vector4} from "three";
 
 import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
@@ -29,6 +29,8 @@ export default class SceneHandler extends Component {
     public sceneSingleplayerToolHandler: SceneSingleplayerToolHandler;
     public scenePlayerHandler: ScenePlayerHandler;
 
+    private spawnVisualTexture: Texture | undefined;
+
     constructor(audioListener: AudioListener) {
         super();
         this.blockPositions = [];
@@ -45,6 +47,10 @@ export default class SceneHandler extends Component {
         this.sceneSingleplayerToolHandler = new SceneSingleplayerToolHandler(this);
         this.scenePlayerHandler = new ScenePlayerHandler(this.scene, audioListener);
 
+        this.spawnVisualTexture = undefined;
+        new TextureLoader().load("/res/arrow.png", (texture) => {
+            this.spawnVisualTexture = texture;
+        });
     }
 
     public enable() {
@@ -128,32 +134,47 @@ export default class SceneHandler extends Component {
         if (this.initialSpawnVisuals) {
             this.scene.remove(this.initialSpawnVisuals);
         }
+
         const masterGameSpawnGeo = new Geometry();
+
         for (const pos of this.gameSpawnPositions) {
             const geo = new CircleGeometry(0.5, 16);
+
             geo.rotateX(-Math.PI / 2);
+            geo.rotateY(-pos.w - Math.PI / 2);
+
             for (const vert of geo.vertices) {
                 vert.add(new Vector3(pos.x + 0.5, pos.y + 0.0001, pos.z + 0.5));
             }
             masterGameSpawnGeo.merge(geo);
         }
+
         const gameSpawnMat = new MeshLambertMaterial({
+            map: this.spawnVisualTexture,
             color: 0xffff00,
         });
+
         const gameSpawnMesh = new Mesh(masterGameSpawnGeo, gameSpawnMat);
 
         const masterInitialSpawnGeo = new Geometry();
+
         for (const pos of this.initialSpawnPositions) {
             const geo = new CircleGeometry(0.5, 16);
+
             geo.rotateX(-Math.PI / 2);
+            geo.rotateY(-pos.w - Math.PI / 2);
+
             for (const vert of geo.vertices) {
                 vert.add(new Vector3(pos.x + 0.5, pos.y + 0.01, pos.z + 0.5));
             }
             masterInitialSpawnGeo.merge(geo);
         }
+
         const initialSpawnMat = new MeshLambertMaterial({
+            map: this.spawnVisualTexture,
             color: 0xff0000,
         });
+
         const initialSpawnMesh = new Mesh(masterInitialSpawnGeo, initialSpawnMat);
 
         this.scene.add(gameSpawnMesh, initialSpawnMesh);
@@ -295,6 +316,14 @@ export default class SceneHandler extends Component {
         }
         if (this.blockPositions) {
             this.blockPositions = [];
+        }
+        if (this.initialSpawnVisuals) {
+            this.scene.remove(this.initialSpawnVisuals);
+            this.initialSpawnVisuals = undefined;
+        }
+        if (this.gameSpawnVisuals) {
+            this.scene.remove(this.gameSpawnVisuals);
+            this.gameSpawnVisuals = undefined;
         }
         this.scenePlayerHandler.clearPlayers();
     }

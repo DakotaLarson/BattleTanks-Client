@@ -10,5 +10,9 @@
         "object-literal-sort-keys": false,
         "no-null-keyword": true
     },
-    "rulesDirectory": []
+    "linterOptions": {
+        "exclude": [
+            "./src/three/*"
+        ]
+    }
 }

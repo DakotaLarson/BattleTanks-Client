@@ -31,8 +31,8 @@ export default class RaycastHandler {
         return raycaster;
     }
 
-    public static getCameraRotationAboutY() {
-        return camera.rotation.y;
+    public static getCamera(): PerspectiveCamera {
+        return camera;
     }
 
 }
