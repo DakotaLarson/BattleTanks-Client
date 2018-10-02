@@ -11,17 +11,17 @@ const PLAYER_ROTATION_SPEED = 2;
 
 export default class Player extends Component {
 
-    public id: number;
-
     public position: Vector3;
 
     public bodyRotation: number;
     public headRotation: number;
 
-    public movingForward: boolean;
-    public movingBackward: boolean;
-    public rotatingLeft: boolean;
-    public rotatingRight: boolean;
+    public id: number;
+
+    private movingForward: boolean;
+    private movingBackward: boolean;
+    private rotatingLeft: boolean;
+    private rotatingRight: boolean;
 
     constructor(id: number, pos: Vector4) {
         super();
@@ -65,23 +65,23 @@ export default class Player extends Component {
 
     }
 
-    public onKeyDown(event: KeyboardEvent) {
+    private onKeyDown(event: KeyboardEvent) {
         this.onInputDown(event.code);
     }
 
-    public onKeyUp(event: KeyboardEvent) {
+    private onKeyUp(event: KeyboardEvent) {
        this.onInputUp(event.code);
     }
 
-    public onMouseDown(event: MouseEvent) {
+    private onMouseDown(event: MouseEvent) {
         this.onInputDown(event.button);
     }
 
-    public onMouseUp(event: MouseEvent) {
+    private onMouseUp(event: MouseEvent) {
         this.onInputUp(event.button);
     }
 
-    public onInputDown(code: string | number) {
+    private onInputDown(code: string | number) {
         if (code === Options.options.forward.code) {
             this.movingForward = true;
         } else if (code === Options.options.backward.code) {
@@ -95,7 +95,7 @@ export default class Player extends Component {
         }
     }
 
-    public onInputUp(code: string | number) {
+    private onInputUp(code: string | number) {
         if (code === Options.options.forward.code) {
             this.movingForward = false;
         } else if (code === Options.options.backward.code) {
@@ -107,7 +107,7 @@ export default class Player extends Component {
         }
     }
 
-    public onUpdate(delta: number) {
+    private onUpdate(delta: number) {
 
         let movementSpeed = 0;
         let rotationSpeed = 0;
@@ -154,11 +154,11 @@ export default class Player extends Component {
         EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVE, movementData);
     }
 
-    public onTick() {
+    private onTick() {
         PacketSender.sendPlayerMove(this.position, this.bodyRotation, this.headRotation);
     }
 
-    public computeTurretRotation() {
+    private computeTurretRotation() {
         const ray: Ray = RaycastHandler.getRaycaster().ray;
         const intersection = new Vector3();
         ray.intersectPlane(new Plane(new Vector3(0, 1, 0)), intersection);

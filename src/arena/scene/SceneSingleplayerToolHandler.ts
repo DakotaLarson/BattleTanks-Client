@@ -6,10 +6,11 @@ import SceneHandler from "./SceneHandler";
 
 export default class SceneSingleplayerToolHandler extends Component {
 
-    public parent: SceneHandler;
+    public blocksIntersection: Intersection[]; // TODO change to private when available
 
-    public blocksIntersection: Intersection[];
-    public floorIntersection: Intersection[];
+    private parent: SceneHandler;
+
+    private floorIntersection: Intersection[];
 
     constructor(sceneHandler: SceneHandler) {
         super();
@@ -44,7 +45,8 @@ export default class SceneSingleplayerToolHandler extends Component {
 
         EventHandler.removeListener(this, EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
     }
-    public onBCTPrimary() {
+
+    private onBCTPrimary() {
         if (this.floorIntersection.length) {
             const position = this.floorIntersection[0].point.setY(0);
             position.floor();
@@ -56,7 +58,7 @@ export default class SceneSingleplayerToolHandler extends Component {
         }
     }
 
-    public onBCTSecondary() {
+    private onBCTSecondary() {
         if (this.floorIntersection.length) {
             const position = this.floorIntersection[0].point.setY(0);
             position.floor();
@@ -68,7 +70,7 @@ export default class SceneSingleplayerToolHandler extends Component {
         }
     }
 
-    public onInitialSpawnPrimary() {
+    private onInitialSpawnPrimary() {
         if (this.floorIntersection.length) {
             const origPosition = this.floorIntersection[0].point.setY(0);
             const position = origPosition.clone().floor();
@@ -88,7 +90,7 @@ export default class SceneSingleplayerToolHandler extends Component {
         }
     }
 
-    public onInitialSpawnSecondary() {
+    private onInitialSpawnSecondary() {
         if (this.floorIntersection.length) {
             const position = this.floorIntersection[0].point.setY(0);
             position.floor();
@@ -103,7 +105,7 @@ export default class SceneSingleplayerToolHandler extends Component {
         }
     }
 
-    public onGameSpawnPrimary() {
+    private onGameSpawnPrimary() {
         if (this.floorIntersection.length) {
             const origPostion = this.floorIntersection[0].point.setY(0);
             const position = origPostion.clone().floor();
@@ -122,7 +124,7 @@ export default class SceneSingleplayerToolHandler extends Component {
         }
     }
 
-    public onGameSpawnSecondary() {
+    private onGameSpawnSecondary() {
         if (this.floorIntersection.length) {
             const position = this.floorIntersection[0].point.setY(0);
             position.floor();
@@ -137,31 +139,31 @@ export default class SceneSingleplayerToolHandler extends Component {
         }
     }
 
-    public isPositionBlock(pos: Vector3) {
+    private isPositionBlock(pos: Vector3) {
         return this.isPositionInArray(pos, this.parent.blockPositions);
     }
 
-    public isPositionGameSpawn(pos: Vector3) {
+    private isPositionGameSpawn(pos: Vector3) {
         return this.isPositionInArray(pos, this.parent.gameSpawnPositions);
     }
 
-    public isPositionInitialSpawn(pos: Vector3) {
+    private isPositionInitialSpawn(pos: Vector3) {
         return this.isPositionInArray(pos, this.parent.initialSpawnPositions);
     }
 
-    public removeBlockPosition(pos: Vector3) {
+    private removeBlockPosition(pos: Vector3) {
         return this.removePositionFromArray(pos, this.parent.blockPositions);
     }
 
-    public removeInitialSpawnPosition(pos: Vector3) {
+    private removeInitialSpawnPosition(pos: Vector3) {
         return this.removePositionFromArray(pos, this.parent.initialSpawnPositions);
     }
 
-    public removeGameSpawnPosition(pos: Vector3) {
+    private removeGameSpawnPosition(pos: Vector3) {
         return this.removePositionFromArray(pos, this.parent.gameSpawnPositions);
     }
 
-    public removePositionFromArray(pos: Vector3, arr: Vector3[] | Vector4[]) {
+    private removePositionFromArray(pos: Vector3, arr: Vector3[] | Vector4[]) {
         let spliceIndex = -1;
         for (let i = 0; i < arr.length; i ++) {
             if (this.positionsAreEqual(pos, arr[i])) {
@@ -176,18 +178,18 @@ export default class SceneSingleplayerToolHandler extends Component {
         return false;
     }
 
-    public isPositionInArray(pos: Vector3, arr: Vector3[] | Vector4[]) {
+    private isPositionInArray(pos: Vector3, arr: Vector3[] | Vector4[]) {
         for (const otherPos of arr) {
             if (this.positionsAreEqual(pos, otherPos)) { return true; }
         }
         return false;
     }
 
-    public positionsAreEqual(a: Vector3, b: Vector3 | Vector4) {
+    private positionsAreEqual(a: Vector3, b: Vector3 | Vector4) {
         return a.x === b.x && a.y === b.y && a.z === b.z;
     }
 
-    public onBeforeRender() {
+    private onBeforeRender() {
         if (this.parent.blocks && this.parent.floor) {
             const raycaster = RaycastHandler.getRaycaster();
             this.blocksIntersection = raycaster.intersectObject(this.parent.blocks);
@@ -198,7 +200,7 @@ export default class SceneSingleplayerToolHandler extends Component {
         }
     }
 
-    public sendAlert(message: string) {
+    private sendAlert(message: string) {
         EventHandler.callEvent(EventHandler.Event.ALERT_MESSAGE_REQUEST, message);
     }
 

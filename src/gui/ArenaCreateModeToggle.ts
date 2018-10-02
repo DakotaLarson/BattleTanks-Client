@@ -4,13 +4,13 @@ import EventHandler from "../EventHandler";
 
 export default class ArenaCreateModeToggle extends Component {
 
-    public parentElt: HTMLElement;
-    public cameraToggleElt: HTMLElement;
-    public blockToggleElt: HTMLElement;
-    public gamespawnToggleElt: HTMLElement;
-    public initialspawnToggleElt: HTMLElement;
+    private parentElt: HTMLElement;
+    private cameraToggleElt: HTMLElement;
+    private blockToggleElt: HTMLElement;
+    private gamespawnToggleElt: HTMLElement;
+    private initialspawnToggleElt: HTMLElement;
 
-    public mode: number;
+    private mode: number;
 
     constructor(gui: HTMLElement) {
         super();
@@ -49,7 +49,7 @@ export default class ArenaCreateModeToggle extends Component {
         this.parentElt.style.display = "none";
     }
 
-    public onClick(event: MouseEvent) {
+    private onClick(event: MouseEvent) {
         if (event.target === this.cameraToggleElt) {
             if (this.mode !== Mode.CAMERA) {
                 EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA);
@@ -69,7 +69,7 @@ export default class ArenaCreateModeToggle extends Component {
         }
     }
 
-    public onKeyDown(event: KeyboardEvent) {
+    private onKeyDown(event: KeyboardEvent) {
         if (event.code === "KeyB") {
             if (this.mode !== Mode.BLOCK) {
                 EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK);
@@ -81,27 +81,27 @@ export default class ArenaCreateModeToggle extends Component {
         }
     }
 
-    public onToggleCamera() {
+    private onToggleCamera() {
         this.mode = Mode.CAMERA;
         this.updateHTMLClasses();
     }
 
-    public onToggleBlock() {
+    private onToggleBlock() {
         this.mode = Mode.BLOCK;
         this.updateHTMLClasses();
     }
 
-    public onToggleGameSpawn() {
+    private onToggleGameSpawn() {
         this.mode = Mode.GAMESPAWN;
         this.updateHTMLClasses();
     }
 
-    public onToggleInitialSpawn() {
+    private onToggleInitialSpawn() {
         this.mode = Mode.INITIALSPAWN;
         this.updateHTMLClasses();
     }
 
-    public updateHTMLClasses() {
+    private updateHTMLClasses() {
         switch (this.mode) {
             case Mode.CAMERA:
                 this.cameraToggleElt.classList.add("create-world-toggle-enabled");

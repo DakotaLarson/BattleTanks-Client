@@ -4,10 +4,10 @@ import EventHandler from "../EventHandler";
 
 export default class SingleplayerMenu extends Component {
 
-    public element: HTMLElement;
-    public createBtn: HTMLElement;
-    public loadBtn: HTMLElement;
-    public cancelBtn: HTMLElement;
+    private element: HTMLElement;
+    private createBtn: HTMLElement;
+    private loadBtn: HTMLElement;
+    private cancelBtn: HTMLElement;
 
     constructor(mainMenu: HTMLElement) {
         super();
@@ -37,19 +37,19 @@ export default class SingleplayerMenu extends Component {
 
     // Click Handlers
 
-    public handleCreateOption(event: MouseEvent) {
+    private handleCreateOption(event: MouseEvent) {
         if (event.target === this.createBtn) {
             EventHandler.callEvent(EventHandler.Event.SPMENU_CREATE_OPT_CLICK);
         }
     }
 
-    public handleLoadOption(event: MouseEvent) {
+    private handleLoadOption(event: MouseEvent) {
         if (event.target === this.loadBtn) {
             EventHandler.callEvent(EventHandler.Event.SPMENU_LOAD_OPT_CLICK);
         }
     }
 
-    public handleCancelOption(event: MouseEvent) {
+    private handleCancelOption(event: MouseEvent) {
         if (event.target === this.cancelBtn) {
             EventHandler.callEvent(EventHandler.Event.SPMENU_CANCEL_OPT_CLICK);
         }

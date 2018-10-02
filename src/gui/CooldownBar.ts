@@ -4,13 +4,13 @@ import EventHandler from "../EventHandler";
 
 export default class CooldownBar extends ChildComponent {
 
-    public barContainer: HTMLElement;
-    public barParent: HTMLElement;
-    public bar: HTMLElement;
+    private barContainer: HTMLElement;
+    private barParent: HTMLElement;
+    private bar: HTMLElement;
 
-    public cooldownTime: number;
+    private cooldownTime: number;
 
-    public cooldownStartTime: number;
+    private cooldownStartTime: number;
 
     constructor(parentElt: HTMLElement, cooldownTime: number) {
         super();
@@ -37,12 +37,12 @@ export default class CooldownBar extends ChildComponent {
         this.barContainer.style.display = "";
     }
 
-    public onShoot() {
+    private onShoot() {
         this.setPercentage(0);
         this.cooldownStartTime = performance.now();
     }
 
-    public onUpdate() {
+    private onUpdate() {
         if (this.cooldownStartTime > -1) {
             const timeDiff = performance.now() - this.cooldownStartTime;
             let percentage = timeDiff / this.cooldownTime * 100;
@@ -54,7 +54,7 @@ export default class CooldownBar extends ChildComponent {
         }
     }
 
-    public setPercentage(percentage: number) {
+    private setPercentage(percentage: number) {
         this.bar.style.width = "" + percentage + "%";
     }
 }

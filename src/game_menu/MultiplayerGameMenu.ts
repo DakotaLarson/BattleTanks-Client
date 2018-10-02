@@ -4,9 +4,9 @@ import EventHandler from "../EventHandler";
 
 export default class MultiplayerGameMenu extends Component {
 
-    public element: HTMLElement;
-    public cancelBtn: HTMLElement;
-    public disconnectBtn: HTMLElement;
+    private element: HTMLElement;
+    private cancelBtn: HTMLElement;
+    private disconnectBtn: HTMLElement;
 
     constructor() {
         super();
@@ -27,7 +27,7 @@ export default class MultiplayerGameMenu extends Component {
         this.element.style.display = "";
     }
 
-    public handleClick(event: MouseEvent) {
+    private handleClick(event: MouseEvent) {
         if (event.target === this.cancelBtn) {
             EventHandler.callEvent(EventHandler.Event.GAMEMENU_CLOSE_REQUEST);
         } else if (event.target === this.disconnectBtn) {

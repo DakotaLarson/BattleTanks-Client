@@ -5,9 +5,9 @@ import DebugPanel from "./DebugPanel";
 
 export default class GUI extends Component {
 
-    public element: HTMLElement;
-    public debugPanel: DebugPanel;
-    public createWorldModeToggle: ArenaCreateModeToggle;
+    private element: HTMLElement;
+    private debugPanel: DebugPanel;
+    private createWorldModeToggle: ArenaCreateModeToggle;
 
     constructor() {
         super();

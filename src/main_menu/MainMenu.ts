@@ -12,14 +12,14 @@ import TopMenu from "./TopMenu";
 
 export default class MainMenu extends Component {
 
-    public element: HTMLElement;
-    public topMenu: TopMenu;
-    public spMenu: SingleplayerMenu;
-    public mpMenu: MultiplayerMenu;
-    public optMenu: OptionsMenu;
-    public createMenu: CreateWorldMenu;
-    public loadMenu: LoadWorldMenu;
-    public addServerMenu: AddServerMenu;
+    private element: HTMLElement;
+    private topMenu: TopMenu;
+    private spMenu: SingleplayerMenu;
+    private mpMenu: MultiplayerMenu;
+    private optMenu: OptionsMenu;
+    private createMenu: CreateWorldMenu;
+    private loadMenu: LoadWorldMenu;
+    private addServerMenu: AddServerMenu;
 
     constructor() {
         super();
@@ -98,71 +98,71 @@ export default class MainMenu extends Component {
     }
 
     // Top menu options
-    public handleTopSpOptClick() {
+    private handleTopSpOptClick() {
         this.detachChild(this.topMenu);
         this.attachChild(this.spMenu);
     }
 
-    public handleTopMpOptClick() {
+    private handleTopMpOptClick() {
         this.detachChild(this.topMenu);
         this.attachChild(this.mpMenu);
     }
 
-    public handleTopOptOptClick() {
+    private handleTopOptOptClick() {
         this.detachChild(this.topMenu);
         this.attachChild(this.optMenu);
     }
 
     // Singleplayer Option Handlers
-    public handleSpLoadOptClick() {
+    private handleSpLoadOptClick() {
         this.detachChild(this.spMenu);
         this.attachChild(this.loadMenu);
     }
 
-    public handleSpCancelOptClick() {
+    private handleSpCancelOptClick() {
         this.detachChild(this.spMenu);
         this.attachChild(this.topMenu);
     }
 
-    public handleSpCreateOptClick() {
+    private handleSpCreateOptClick() {
         this.detachChild(this.spMenu);
         this.attachChild(this.createMenu);
     }
 
     // Multiplayer Option Handlers
-    public handleMpAddServerOptClick() {
+    private handleMpAddServerOptClick() {
         this.detachChild(this.mpMenu);
         this.attachChild(this.addServerMenu);
     }
 
-    public handleMpJoinOptClick() {
+    private handleMpJoinOptClick() {
         this.detachChild(this.mpMenu);
     }
 
-    public handleMpCancelOptClick() {
+    private handleMpCancelOptClick() {
         this.detachChild(this.mpMenu);
         this.attachChild(this.topMenu);
     }
 
     // Options Option Handlers
-    public handleOptCancelOptClick() {
+    private handleOptCancelOptClick() {
         this.detachChild(this.optMenu);
         this.attachChild(this.topMenu);
     }
 
     // create world menu
-    public handleCreateWorldCancelClick() {
+    private handleCreateWorldCancelClick() {
         this.detachChild(this.createMenu);
         this.attachChild(this.spMenu);
     }
 
     // load world menu
-    public handleLoadWorldCancelClick() {
+    private handleLoadWorldCancelClick() {
         this.detachChild(this.loadMenu);
         this.attachChild(this.spMenu);
     }
 
-    public handleAddServerClick() {
+    private handleAddServerClick() {
         this.detachChild(this.addServerMenu);
         this.attachChild(this.mpMenu);
     }

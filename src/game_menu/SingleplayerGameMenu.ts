@@ -4,10 +4,10 @@ import EventHandler from "../EventHandler";
 
 export default class SinglePlayerGameMenu extends Component {
 
-    public element: HTMLElement;
-    public cancelBtn: HTMLElement;
-    public saveBtn: HTMLElement;
-    public returnBtn: HTMLElement;
+    private element: HTMLElement;
+    private cancelBtn: HTMLElement;
+    private saveBtn: HTMLElement;
+    private returnBtn: HTMLElement;
 
     constructor() {
         super();
@@ -29,7 +29,7 @@ export default class SinglePlayerGameMenu extends Component {
         this.element.style.display = "";
     }
 
-    public handleClick(event: MouseEvent) {
+    private handleClick(event: MouseEvent) {
         if (event.target === this.cancelBtn) {
             EventHandler.callEvent(EventHandler.Event.GAMEMENU_CLOSE_REQUEST);
         } else if (event.target === this.saveBtn) {

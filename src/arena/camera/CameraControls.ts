@@ -16,13 +16,14 @@ enum ButtonState {
 
 export default class CameraControls extends Component {
 
-    public camera: PerspectiveCamera;
     public target: Vector3;
     public spherical: Spherical;
-    public state: number;
 
-    public zoomOnly: boolean;
-    public listenForArenaUpdate: boolean;
+    private camera: PerspectiveCamera;
+    private state: number;
+
+    private zoomOnly: boolean;
+    private listenForArenaUpdate: boolean;
 
     constructor(camera: PerspectiveCamera, zoomOnly: boolean, listenForArenaUpdate: boolean) {
         super();
@@ -63,7 +64,14 @@ export default class CameraControls extends Component {
         }
     }
 
-    public onMouseDown(event: MouseEvent) {
+    public update() {
+        // @ts-ignore Incorrect assumption of void return type
+        this.camera.position.setFromSpherical(this.spherical.makeSafe());
+        this.camera.position.add(this.target);
+        this.camera.lookAt(this.target);
+    }
+
+    private onMouseDown(event: MouseEvent) {
         if (this.state === -1) {
             switch (event.button) {
                 case 0:
@@ -83,11 +91,11 @@ export default class CameraControls extends Component {
         }
     }
 
-    public onMouseUp() {
+    private onMouseUp() {
         this.state = -1;
     }
 
-    public onMouseMove(event: MouseEvent) {
+    private onMouseMove(event: MouseEvent) {
         if (this.state === -1) { return; }
         switch (this.state) {
             case ButtonState.PRIMARY:
@@ -102,18 +110,18 @@ export default class CameraControls extends Component {
         }
     }
 
-    public onWheel(event: MouseWheelEvent) {
+    private onWheel(event: MouseWheelEvent) {
         this.handleZoom(event.deltaY, true);
     }
 
-    public handleRotation = (deltaX: number, deltaY: number) => {
+    private handleRotation = (deltaX: number, deltaY: number) => {
          this.spherical.theta += deltaX * Math.PI / 180 / 3;
          this.spherical.phi += deltaY * Math.PI / 180 / 5;
          this.spherical.phi = Math.min(Math.PI / 2 - Math.PI / 24, this.spherical.phi);
          this.update();
     }
 
-    public handlePan = (deltaX: number, deltaY: number) => {
+    private handlePan = (deltaX: number, deltaY: number) => {
         const offset = new Vector3();
         const position = this.camera.position;
         offset.copy(position).sub(this.target);
@@ -136,7 +144,7 @@ export default class CameraControls extends Component {
         this.update();
     }
 
-    public handleZoom(deltaY: number, isScroll: boolean) {
+    private handleZoom(deltaY: number, isScroll: boolean) {
         if (isScroll) {
             if (deltaY > 0) {
                 this.spherical.radius = Math.min(this.spherical.radius + 2, 100);
@@ -149,14 +157,7 @@ export default class CameraControls extends Component {
         this.update();
     }
 
-    public update() {
-        // @ts-ignore Incorrect assumption of void return type
-        this.camera.position.setFromSpherical(this.spherical.makeSafe());
-        this.camera.position.add(this.target);
-        this.camera.lookAt(this.target);
-    }
-
-    public onArenaSceneUpdate(data: any) {
+    private onArenaSceneUpdate(data: any) {
         this.target = new Vector3(data.width / 2, 0, data.height / 2);
         this.spherical = new Spherical(25, Math.PI / 4, Math.PI / 3);
         this.update();

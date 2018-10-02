@@ -7,10 +7,10 @@ import CameraControls from "../CameraControls";
 
 export default class Camera extends Component {
 
-    public camera: PerspectiveCamera;
-    public controls: CameraControls;
+    private camera: PerspectiveCamera;
+    private controls: CameraControls;
 
-    public gameMenuOpen: boolean;
+    private gameMenuOpen: boolean;
 
     constructor(camera: PerspectiveCamera) {
         super();
@@ -51,7 +51,7 @@ export default class Camera extends Component {
         this.gameMenuOpen = false;
     }
 
-    public onPlayerAddition(data: any) {
+    private onPlayerAddition(data: any) {
         const pos = new Vector3(data.pos.x + 0.5, data.pos.y, data.pos.z + 0.5);
         const rot = data.pos.w;
         if (!this.gameMenuOpen) {
@@ -75,7 +75,7 @@ export default class Camera extends Component {
         }
     }
 
-    public onPlayerRemoval() {
+    private onPlayerRemoval() {
         if (!this.gameMenuOpen) {
             this.detachControls();
         }
@@ -95,34 +95,34 @@ export default class Camera extends Component {
 
     }
 
-    public onPlayerMove(data: any) {
+    private onPlayerMove(data: any) {
         const pos = new Vector3(data.pos.x + 0.5, data.pos.y, data.pos.z + 0.5);
         this.controls.target = pos;
         this.controls.spherical.theta = data.bodyRot + Math.PI;
         this.controls.update();
     }
 
-    public onResize() {
+    private onResize() {
         const dimensions = DomHandler.getDisplayDimensions();
         this.camera.aspect = dimensions.width / dimensions.height;
         this.camera.updateProjectionMatrix();
     }
 
-    public onGameMenuOpen() {
+    private onGameMenuOpen() {
         this.gameMenuOpen = true;
         this.detachControls();
     }
 
-    public onGameMenuClose() {
+    private onGameMenuClose() {
         this.gameMenuOpen = false;
         this.attachControls();
     }
 
-    public attachControls() {
+    private attachControls() {
         this.attachChild(this.controls);
     }
 
-    public detachControls() {
+    private detachControls() {
         this.detachChild(this.controls);
     }
 }

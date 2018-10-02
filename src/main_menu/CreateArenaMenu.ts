@@ -6,13 +6,13 @@ const MAX_DIMENSION = 100;
 
 export default class CreateWorldMenu extends Component {
 
-    public element: HTMLElement;
-    public titleElt: HTMLInputElement;
-    public widthElt: HTMLInputElement;
-    public heightElt: HTMLInputElement;
-    public createElt: HTMLElement;
-    public cancelElt: HTMLElement;
-    public errorElt: HTMLElement;
+    private element: HTMLElement;
+    private titleElt: HTMLInputElement;
+    private widthElt: HTMLInputElement;
+    private heightElt: HTMLInputElement;
+    private createElt: HTMLElement;
+    private cancelElt: HTMLElement;
+    private errorElt: HTMLElement;
 
     constructor(mainMenu: HTMLElement) {
         super();
@@ -45,7 +45,7 @@ export default class CreateWorldMenu extends Component {
         this.element.style.display = "none";
     }
 
-    public onCreateClick(event: MouseEvent) {
+    private onCreateClick(event: MouseEvent) {
         if (event.target === this.createElt) {
             const titleValue = this.titleElt.value.trim();
             const widthValue = Number(this.widthElt.value);
@@ -68,7 +68,7 @@ export default class CreateWorldMenu extends Component {
         }
     }
 
-    public onCancelClick(event: MouseEvent) {
+    private onCancelClick(event: MouseEvent) {
         if (event.target === this.cancelElt) {
             EventHandler.callEvent(EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK);
         }

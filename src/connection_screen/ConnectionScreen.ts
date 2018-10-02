@@ -10,16 +10,16 @@ import WaitingScreen from "./WaitingScreen";
 
 export default class ConnectionScreen extends Component {
 
-    public element: HTMLElement;
+    private element: HTMLElement;
 
-    public connectedScreen: ConnectedScreen;
-    public connectingScreen: ConnectingScreen;
-    public disconnectedScreen: DisconnectedScreen;
-    public finishingScreen: FinishingScreen;
-    public waitingScreen: WaitingScreen;
+    private connectedScreen: ConnectedScreen;
+    private connectingScreen: ConnectingScreen;
+    private disconnectedScreen: DisconnectedScreen;
+    private finishingScreen: FinishingScreen;
+    private waitingScreen: WaitingScreen;
 
-    public hidden: boolean;
-    public activeScreen: Component | undefined;
+    private hidden: boolean;
+    private activeScreen: Component | undefined;
 
     constructor() {
         super();
@@ -62,28 +62,28 @@ export default class ConnectionScreen extends Component {
         this.element.style.display = "";
     }
 
-    public onConnectionOpen() {
+    private onConnectionOpen() {
         this.showScreen(this.connectedScreen);
     }
 
-    public onConnectionClose(event: CloseEvent) {
+    private onConnectionClose(event: CloseEvent) {
         console.log("Disconnected: " + event.code);
         this.showScreen(this.disconnectedScreen);
     }
 
-    public onWaitingGameStatus() {
+    private onWaitingGameStatus() {
         this.showScreen(this.waitingScreen);
     }
 
-    public onFinishingGameStatus() {
+    private onFinishingGameStatus() {
         this.showScreen(this.finishingScreen);
     }
 
-    public onOtherGameStatus() {
+    private onOtherGameStatus() {
         this.hide();
     }
 
-    public showScreen(screen: Component) {
+    private showScreen(screen: Component) {
         if (this.hidden) {
             this.show();
         }
@@ -99,7 +99,7 @@ export default class ConnectionScreen extends Component {
         }
     }
 
-    public hide() {
+    private hide() {
         if (this.activeScreen) {
             this.detachChild(this.activeScreen);
             this.activeScreen = undefined;
@@ -108,7 +108,7 @@ export default class ConnectionScreen extends Component {
         this.hidden = true;
     }
 
-    public show() {
+    private show() {
         this.element.style.display = "flex";
         this.hidden = false;
     }

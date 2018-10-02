@@ -3,11 +3,12 @@ import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
 export default class DebugPanel extends Component {
-    public element: HTMLElement;
-    public debugFPSElement: HTMLElement;
-    public debugRenderingElement: HTMLElement;
-    public debugComputationElement: HTMLElement;
-    public debugIdleElement: HTMLElement;
+
+    private element: HTMLElement;
+    private debugFPSElement: HTMLElement;
+    private debugRenderingElement: HTMLElement;
+    private debugComputationElement: HTMLElement;
+    private debugIdleElement: HTMLElement;
 
     constructor(guiElement: HTMLElement) {
         super();
@@ -29,7 +30,7 @@ export default class DebugPanel extends Component {
         this.element.style.display = "";
     }
 
-    public handleDebugOutput(data: any) {
+    private handleDebugOutput(data: any) {
         const renderingPercent = Math.round(data.rendering / 10);
         const renderingMS = Math.round(data.rendering);
         const computationPercent = Math.round(data.computation / 10);

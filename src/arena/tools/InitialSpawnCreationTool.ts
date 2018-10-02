@@ -15,7 +15,7 @@ export default class InitialSpawnCreationTool extends Component {
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
     }
 
-    public onMouseUp(event: MouseEvent) {
+    private onMouseUp(event: MouseEvent) {
         if (event.button === 0) {
             EventHandler.callEvent(EventHandler.Event.INITIALSPAWN_CREATION_TOOL_PRIMARY);
         } else if (event.button === 2) {

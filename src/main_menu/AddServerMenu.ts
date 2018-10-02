@@ -4,13 +4,13 @@ import EventHandler from "../EventHandler";
 
 export default class AddServerMenu extends Component {
 
-    public element: HTMLElement;
+    private element: HTMLElement;
 
-    public nameInputElt: HTMLInputElement;
-    public addressInputElt: HTMLInputElement;
+    private nameInputElt: HTMLInputElement;
+    private addressInputElt: HTMLInputElement;
 
-    public cancelBtn: HTMLElement;
-    public saveBtn: HTMLElement;
+    private cancelBtn: HTMLElement;
+    private saveBtn: HTMLElement;
 
     constructor(mainMenu: HTMLElement) {
         super();
@@ -44,7 +44,7 @@ export default class AddServerMenu extends Component {
     }
 
     // Click Handlers
-    public handleSaveOptClick(event: MouseEvent) {
+    private handleSaveOptClick(event: MouseEvent) {
         if (event.target === this.saveBtn) {
             const name = this.nameInputElt.value;
             const address = this.addressInputElt.value;
@@ -57,13 +57,13 @@ export default class AddServerMenu extends Component {
         }
     }
 
-    public handleCancelOptionClick(event: MouseEvent) {
+    private handleCancelOptionClick(event: MouseEvent) {
         if (event.target === this.cancelBtn) {
             EventHandler.callEvent(EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK);
         }
     }
 
-    public saveServer(name: string, address: string) {
+    private saveServer(name: string, address: string) {
         const rawServerList = localStorage.getItem("serverList");
         let serverList;
         if (rawServerList) {

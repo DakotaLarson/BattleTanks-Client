@@ -18,27 +18,27 @@ import CreationToolHandler from "./tools/CreationToolHandler";
 
 export default class ArenaHandler extends Component {
 
-    public sceneHandler: SceneHandler;
-    public renderer: Renderer;
+    private sceneHandler: SceneHandler;
+    private renderer: Renderer;
 
-    public singleplayerArena: SingleplayerArena;
-    public multiplayerArena: MultiplayerArena;
+    private singleplayerArena: SingleplayerArena;
+    private multiplayerArena: MultiplayerArena;
 
-    public creationToolHandler: CreationToolHandler;
+    private creationToolHandler: CreationToolHandler;
 
-    public singleplayerGUI: SingleplayerGUI;
-    public multiplayerGUI: MultiplayerGUI;
+    private singleplayerGUI: SingleplayerGUI;
+    private multiplayerGUI: MultiplayerGUI;
 
-    public singleplayerGameMenu: SingleplayerGameMenu;
-    public multiplayerGameMenu: MultiplayerGameMenu;
+    private singleplayerGameMenu: SingleplayerGameMenu;
+    private multiplayerGameMenu: MultiplayerGameMenu;
 
-    public singleplayerCamera: SingleplayerCamera;
-    public multiplayerCamera: MultiplayerCamera;
+    private singleplayerCamera: SingleplayerCamera;
+    private multiplayerCamera: MultiplayerCamera;
 
-    public audioHandler: AudioHandler;
+    private audioHandler: AudioHandler;
 
-    public isSingleplayer: boolean;
-    public gameMenuEnabled: boolean;
+    private isSingleplayer: boolean;
+    private gameMenuEnabled: boolean;
 
     constructor() {
         super();
@@ -67,7 +67,7 @@ export default class ArenaHandler extends Component {
         this.singleplayerCamera = new SingleplayerCamera(perspectiveCamera);
         this.multiplayerCamera = new MultiplayerCamera(perspectiveCamera);
 
-        this.audioHandler = new AudioHandler(perspectiveCamera, audioListener);
+        this.audioHandler = new AudioHandler(audioListener);
 
         this.isSingleplayer = false;
         this.gameMenuEnabled = false;
@@ -86,7 +86,7 @@ export default class ArenaHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.detachMultiplayerArena);
     }
 
-    public attachSingleplayerArena(worldData: any) {
+    private attachSingleplayerArena(worldData: any) {
         this.attachArena();
 
         this.attachChild(this.singleplayerArena);
@@ -100,7 +100,7 @@ export default class ArenaHandler extends Component {
         this.isSingleplayer = true;
     }
 
-    public detachSingleplayerArena() {
+    private detachSingleplayerArena() {
         this.detachArena();
 
         this.detachChild(this.singleplayerArena);
@@ -109,7 +109,7 @@ export default class ArenaHandler extends Component {
         this.detachChild(this.singleplayerCamera);
     }
 
-    public attachMultiplayerArena() {
+    private attachMultiplayerArena() {
         this.attachArena();
 
         this.attachChild(this.multiplayerArena);
@@ -120,7 +120,7 @@ export default class ArenaHandler extends Component {
         this.isSingleplayer = false;
     }
 
-    public detachMultiplayerArena() {
+    private detachMultiplayerArena() {
         this.detachArena();
 
         this.detachChild(this.multiplayerArena);
@@ -129,7 +129,7 @@ export default class ArenaHandler extends Component {
         this.detachChild(this.audioHandler);
     }
 
-    public attachArena() {
+    private attachArena() {
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenuFromEvent);
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
@@ -138,7 +138,7 @@ export default class ArenaHandler extends Component {
         this.attachChild(this.renderer);
     }
 
-    public detachArena() {
+    private detachArena() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenuFromEvent);
         EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
@@ -151,7 +151,7 @@ export default class ArenaHandler extends Component {
         }
     }
 
-    public onKeyDown(event: KeyboardEvent) {
+    private onKeyDown(event: KeyboardEvent) {
         if (event.code === "Escape") {
             if (this.gameMenuEnabled) {
                 this.closeGameMenu(true);
@@ -161,17 +161,17 @@ export default class ArenaHandler extends Component {
         }
     }
 
-    public onBlur() {
+    private onBlur() {
         if (!this.gameMenuEnabled) {
             this.openGameMenu();
         }
     }
 
-    public closeGameMenuFromEvent() {
+    private closeGameMenuFromEvent() {
         this.closeGameMenu(true);
     }
 
-    public closeGameMenu(callEvent: boolean) {
+    private closeGameMenu(callEvent: boolean) {
         if (this.isSingleplayer) {
             this.detachChild(this.singleplayerGameMenu);
         } else {
@@ -184,7 +184,7 @@ export default class ArenaHandler extends Component {
         this.gameMenuEnabled = false;
     }
 
-    public openGameMenu() {
+    private openGameMenu() {
         if (this.isSingleplayer) {
             this.attachChild(this.singleplayerGameMenu);
         } else {

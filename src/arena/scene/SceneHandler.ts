@@ -71,162 +71,8 @@ export default class SceneHandler extends Component {
         this.clearScene();
     }
 
-    public onSceneUpdate(data: any) {
-        this.title = data.title;
-        this.width = data.width + 2;
-        this.height = data.height + 2;
-
-        this.clearScene();
-
-        this.floor = this.createFloor();
-        this.lines = this.createLines();
-        this.lights = this.createLights();
-
-        const positions = this.parsePositionData(data.blockPositions);
-
-        CollisionHandler.updateBlockPositions(positions);
-
-        this.gameSpawnPositions = this.parseRotatedPositionData(data.gameSpawnPositions) || [];
-        this.initialSpawnPositions = this.parseRotatedPositionData(data.initialSpawnPositions) || [];
-
-        EventHandler.callEvent(EventHandler.Event.ARENA_BLOCKPOSITION_UPDATE, this.blockPositions);
-        EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.initialSpawnPositions);
-        EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.gameSpawnPositions);
-
-        this.updateBlocks(positions);
-
-        this.scene.add(this.lines as Mesh);
-        this.scene.add(this.floor);
-        this.scene.add(this.blocks as Mesh);
-        this.scene.add.apply(this.scene, this.lights);
-        if (!data.fromServer) {
-            this.updateSpawnVisuals();
-        }
-    }
-
-    public onSaveGameRequest() {
-        const blockData = this.generatePositionData(this.blockPositions);
-        const gameSpawnData = this.generatePositionData(this.gameSpawnPositions);
-        const initialSpawnData = this.generatePositionData(this.initialSpawnPositions);
-        const saveObject = {
-            title: this.title,
-            width: this.width - 2,
-            height: this.height - 2,
-            blockPositions: blockData,
-            gameSpawnPositions: gameSpawnData,
-            initialSpawnPositions: initialSpawnData,
-        };
-        const blob = new Blob([JSON.stringify(saveObject)], {type : "application/json"});
-        const objectURL = URL.createObjectURL(blob);
-        const anchor = document.createElement("a");
-        anchor.download = saveObject.title + ".json";
-        anchor.href = objectURL;
-        document.body.appendChild(anchor);
-        anchor.click();
-        document.body.removeChild(anchor);
-        URL.revokeObjectURL(objectURL);
-    }
-
-    public updateSpawnVisuals() {
-        if (this.gameSpawnVisuals) {
-            this.scene.remove(this.gameSpawnVisuals);
-        }
-        if (this.initialSpawnVisuals) {
-            this.scene.remove(this.initialSpawnVisuals);
-        }
-
-        const masterGameSpawnGeo = new Geometry();
-
-        for (const pos of this.gameSpawnPositions) {
-            const geo = new CircleGeometry(0.5, 16);
-
-            geo.rotateX(-Math.PI / 2);
-            geo.rotateY(-pos.w - Math.PI / 2);
-
-            for (const vert of geo.vertices) {
-                vert.add(new Vector3(pos.x + 0.5, pos.y + 0.0001, pos.z + 0.5));
-            }
-            masterGameSpawnGeo.merge(geo);
-        }
-
-        const gameSpawnMat = new MeshLambertMaterial({
-            map: this.spawnVisualTexture,
-            color: 0xffff00,
-        });
-
-        const gameSpawnMesh = new Mesh(masterGameSpawnGeo, gameSpawnMat);
-
-        const masterInitialSpawnGeo = new Geometry();
-
-        for (const pos of this.initialSpawnPositions) {
-            const geo = new CircleGeometry(0.5, 16);
-
-            geo.rotateX(-Math.PI / 2);
-            geo.rotateY(-pos.w - Math.PI / 2);
-
-            for (const vert of geo.vertices) {
-                vert.add(new Vector3(pos.x + 0.5, pos.y + 0.01, pos.z + 0.5));
-            }
-            masterInitialSpawnGeo.merge(geo);
-        }
-
-        const initialSpawnMat = new MeshLambertMaterial({
-            map: this.spawnVisualTexture,
-            color: 0xff0000,
-        });
-
-        const initialSpawnMesh = new Mesh(masterInitialSpawnGeo, initialSpawnMat);
-
-        this.scene.add(gameSpawnMesh, initialSpawnMesh);
-
-        this.initialSpawnVisuals = initialSpawnMesh;
-        this.gameSpawnVisuals = gameSpawnMesh;
-    }
-
-    public createLines() {
-        const diff = 0.3125;
-        const geo = new BufferGeometry();
-        const positions = [];
-        for (let i = 2; i < this.width - 1; i ++) {
-            positions.push(i, 0.0001, diff);
-            positions.push(i, 0.0001, this.height + diff - 1);
-        }
-        for (let i = 2; i < this.height - 1; i ++) {
-            positions.push(diff, 0.0001, i);
-            positions.push(this.width + diff - 1, 0.0001, i);
-        }
-        geo.addAttribute("position", new Float32BufferAttribute(positions, 3));
-        // @ts-ignore Type check error incorrect.
-        const lineSegments = new LineSegments(geo, new LineDashedMaterial({
-            color: 0x000000,
-            dashSize: 0.375,
-            gapSize: 0.125,
-        }));
-        lineSegments.computeLineDistances();
-        return lineSegments;
-    }
-
-    public createLights() {
-        const hemiLight = new HemisphereLight( 0xffffff, 0xffffff, 0.6 );
-        hemiLight.color.setHSL(0.6, 1, 0.6);
-        hemiLight.groundColor.setHSL(0.095, 1, 0.75);
-        hemiLight.position.copy(this.getCenter().setY(50));
-
-        const dirLight = new DirectionalLight( 0xffffff, 1 );
-        dirLight.color.setHSL( 0.1, 1, 0.95 );
-        dirLight.position.set(45, 30, 25);
-        dirLight.target.position.copy(this.getCenter());
-        return [dirLight, dirLight.target, hemiLight];
-    }
-
-    public createFloor() {
-        const geometry = new PlaneGeometry(this.width, this.height);
-        const material = new MeshLambertMaterial({color: 0x2e3334});
-        const floor = new Mesh(geometry, material);
-        floor.rotation.x -= Math.PI / 2;
-        floor.position.copy(this.getCenter());
-        floor.receiveShadow = true;
-        return floor;
+    public getScene() {
+        return this.scene;
     }
 
     public updateBlocks(positions: Vector3[] | undefined) {
@@ -297,7 +143,165 @@ export default class SceneHandler extends Component {
         }
     }
 
-    public clearScene() {
+    public updateSpawnVisuals() {
+        if (this.gameSpawnVisuals) {
+            this.scene.remove(this.gameSpawnVisuals);
+        }
+        if (this.initialSpawnVisuals) {
+            this.scene.remove(this.initialSpawnVisuals);
+        }
+
+        const masterGameSpawnGeo = new Geometry();
+
+        for (const pos of this.gameSpawnPositions) {
+            const geo = new CircleGeometry(0.5, 16);
+
+            geo.rotateX(-Math.PI / 2);
+            geo.rotateY(-pos.w - Math.PI / 2);
+
+            for (const vert of geo.vertices) {
+                vert.add(new Vector3(pos.x + 0.5, pos.y + 0.0001, pos.z + 0.5));
+            }
+            masterGameSpawnGeo.merge(geo);
+        }
+
+        const gameSpawnMat = new MeshLambertMaterial({
+            map: this.spawnVisualTexture,
+            color: 0xffff00,
+        });
+
+        const gameSpawnMesh = new Mesh(masterGameSpawnGeo, gameSpawnMat);
+
+        const masterInitialSpawnGeo = new Geometry();
+
+        for (const pos of this.initialSpawnPositions) {
+            const geo = new CircleGeometry(0.5, 16);
+
+            geo.rotateX(-Math.PI / 2);
+            geo.rotateY(-pos.w - Math.PI / 2);
+
+            for (const vert of geo.vertices) {
+                vert.add(new Vector3(pos.x + 0.5, pos.y + 0.01, pos.z + 0.5));
+            }
+            masterInitialSpawnGeo.merge(geo);
+        }
+
+        const initialSpawnMat = new MeshLambertMaterial({
+            map: this.spawnVisualTexture,
+            color: 0xff0000,
+        });
+
+        const initialSpawnMesh = new Mesh(masterInitialSpawnGeo, initialSpawnMat);
+
+        this.scene.add(gameSpawnMesh, initialSpawnMesh);
+
+        this.initialSpawnVisuals = initialSpawnMesh;
+        this.gameSpawnVisuals = gameSpawnMesh;
+    }
+
+    private onSceneUpdate(data: any) {
+        this.title = data.title;
+        this.width = data.width + 2;
+        this.height = data.height + 2;
+
+        this.clearScene();
+
+        this.floor = this.createFloor();
+        this.lines = this.createLines();
+        this.lights = this.createLights();
+
+        const positions = this.parsePositionData(data.blockPositions);
+
+        CollisionHandler.updateBlockPositions(positions);
+
+        this.gameSpawnPositions = this.parseRotatedPositionData(data.gameSpawnPositions) || [];
+        this.initialSpawnPositions = this.parseRotatedPositionData(data.initialSpawnPositions) || [];
+
+        EventHandler.callEvent(EventHandler.Event.ARENA_BLOCKPOSITION_UPDATE, this.blockPositions);
+        EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.initialSpawnPositions);
+        EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.gameSpawnPositions);
+
+        this.updateBlocks(positions);
+
+        this.scene.add(this.lines as Mesh);
+        this.scene.add(this.floor);
+        this.scene.add(this.blocks as Mesh);
+        this.scene.add.apply(this.scene, this.lights);
+        if (!data.fromServer) {
+            this.updateSpawnVisuals();
+        }
+    }
+
+    private onSaveGameRequest() {
+        const blockData = this.generatePositionData(this.blockPositions);
+        const gameSpawnData = this.generatePositionData(this.gameSpawnPositions);
+        const initialSpawnData = this.generatePositionData(this.initialSpawnPositions);
+        const saveObject = {
+            title: this.title,
+            width: this.width - 2,
+            height: this.height - 2,
+            blockPositions: blockData,
+            gameSpawnPositions: gameSpawnData,
+            initialSpawnPositions: initialSpawnData,
+        };
+        const blob = new Blob([JSON.stringify(saveObject)], {type : "application/json"});
+        const objectURL = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.download = saveObject.title + ".json";
+        anchor.href = objectURL;
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+        URL.revokeObjectURL(objectURL);
+    }
+
+    private createLines() {
+        const diff = 0.3125;
+        const geo = new BufferGeometry();
+        const positions = [];
+        for (let i = 2; i < this.width - 1; i ++) {
+            positions.push(i, 0.0001, diff);
+            positions.push(i, 0.0001, this.height + diff - 1);
+        }
+        for (let i = 2; i < this.height - 1; i ++) {
+            positions.push(diff, 0.0001, i);
+            positions.push(this.width + diff - 1, 0.0001, i);
+        }
+        geo.addAttribute("position", new Float32BufferAttribute(positions, 3));
+        // @ts-ignore Type check error incorrect.
+        const lineSegments = new LineSegments(geo, new LineDashedMaterial({
+            color: 0x000000,
+            dashSize: 0.375,
+            gapSize: 0.125,
+        }));
+        lineSegments.computeLineDistances();
+        return lineSegments;
+    }
+
+    private createLights() {
+        const hemiLight = new HemisphereLight( 0xffffff, 0xffffff, 0.6 );
+        hemiLight.color.setHSL(0.6, 1, 0.6);
+        hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+        hemiLight.position.copy(this.getCenter().setY(50));
+
+        const dirLight = new DirectionalLight( 0xffffff, 1 );
+        dirLight.color.setHSL( 0.1, 1, 0.95 );
+        dirLight.position.set(45, 30, 25);
+        dirLight.target.position.copy(this.getCenter());
+        return [dirLight, dirLight.target, hemiLight];
+    }
+
+    private createFloor() {
+        const geometry = new PlaneGeometry(this.width, this.height);
+        const material = new MeshLambertMaterial({color: 0x2e3334});
+        const floor = new Mesh(geometry, material);
+        floor.rotation.x -= Math.PI / 2;
+        floor.position.copy(this.getCenter());
+        floor.receiveShadow = true;
+        return floor;
+    }
+
+    private clearScene() {
         if (this.floor) {
             this.scene.remove(this.floor);
             this.floor = undefined;
@@ -328,15 +332,11 @@ export default class SceneHandler extends Component {
         this.scenePlayerHandler.clearPlayers();
     }
 
-    public getScene() {
-        return this.scene;
-    }
-
-    public getCenter() {
+    private getCenter() {
         return new Vector3(this.width / 2, 0, this.height / 2);
     }
 
-    public generatePositionData(data: Vector3[] | Vector4[]): number[] {
+    private generatePositionData(data: Vector3[] | Vector4[]): number[] {
         const positionCount = data.length;
         const output = [];
         for (let i = 0; i < positionCount; i ++) {
@@ -349,7 +349,7 @@ export default class SceneHandler extends Component {
         return output;
     }
 
-    public parsePositionData(data: any): Vector3[] | undefined {
+    private parsePositionData(data: any): Vector3[] | undefined {
         if (data) {
             const dataCount = data.length;
             if (dataCount % 3 === 0) {
@@ -367,7 +367,7 @@ export default class SceneHandler extends Component {
         return undefined;
     }
 
-    public parseRotatedPositionData(data: any): Vector4[] {
+    private parseRotatedPositionData(data: any): Vector4[] {
         if (data) {
             const dataCount = data.length;
             if (dataCount % 4 === 0) {

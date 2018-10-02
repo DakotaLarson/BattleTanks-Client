@@ -6,9 +6,9 @@ import CameraControls from "../CameraControls";
 
 export default class Camera extends Component {
 
-    public camera: PerspectiveCamera;
-    public controlsEnabled: boolean;
-    public controls: CameraControls;
+    private camera: PerspectiveCamera;
+    private controlsEnabled: boolean;
+    private controls: CameraControls;
 
     constructor(camera: PerspectiveCamera) {
         super();
@@ -48,43 +48,43 @@ export default class Camera extends Component {
         this.detachControls(true);
     }
 
-    public onResize() {
+    private onResize() {
         const dimensions = DomHandler.getDisplayDimensions();
         this.camera.aspect = dimensions.width / dimensions.height;
         this.camera.updateProjectionMatrix();
     }
 
-    public onGameMenuOpen() {
+    private onGameMenuOpen() {
         if (this.controlsEnabled) {
             this.detachControls(false);
         }
     }
 
-    public onGameMenuClose() {
+    private onGameMenuClose() {
         if (this.controlsEnabled) {
             this.attachControls(false);
         }
     }
 
-    public attachControls(updateStatus: boolean) {
+    private attachControls(updateStatus: boolean) {
         this.attachChild(this.controls);
         if (updateStatus) {
             this.controlsEnabled = true;
         }
     }
 
-    public detachControls(updateStatus: boolean) {
+    private detachControls(updateStatus: boolean) {
         this.detachChild(this.controls);
         if (updateStatus) {
             this.controlsEnabled = false;
         }
     }
 
-    public handleToggleToCamera() {
+    private handleToggleToCamera() {
         this.attachControls(true);
     }
 
-    public handleToggleToOther() {
+    private handleToggleToOther() {
         this.detachControls(true);
     }
 }

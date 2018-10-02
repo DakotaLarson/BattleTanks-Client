@@ -6,10 +6,10 @@ import InitialSpawnCreationTool from "./InitialSpawnCreationTool";
 
 export default class CreationToolHandler extends Component {
 
-    public blockCreationTool: BlockCreationTool;
-    public gameSpawnCreationTool: GameSpawnCreationTool;
-    public initialSpawnCreationTool: InitialSpawnCreationTool;
-    public mode: number;
+    private blockCreationTool: BlockCreationTool;
+    private gameSpawnCreationTool: GameSpawnCreationTool;
+    private initialSpawnCreationTool: InitialSpawnCreationTool;
+    private mode: number;
 
     constructor() {
         super();
@@ -39,7 +39,7 @@ export default class CreationToolHandler extends Component {
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.handleToggleToInitialSpawn);
     }
 
-    public onGameMenuOpen() {
+    private onGameMenuOpen() {
         if (this.mode === Mode.BLOCK) {
             this.detachChild(this.blockCreationTool);
         } else if (this.mode === Mode.GAMESPAWN) {
@@ -49,7 +49,7 @@ export default class CreationToolHandler extends Component {
         }
     }
 
-    public onGameMenuClose() {
+    private onGameMenuClose() {
         if (this.mode === Mode.BLOCK) {
             this.attachChild(this.blockCreationTool);
         } else if (this.mode === Mode.GAMESPAWN) {
@@ -59,30 +59,30 @@ export default class CreationToolHandler extends Component {
         }
     }
 
-    public handleToggleToCamera() {
+    private handleToggleToCamera() {
         this.removeTool();
         this.mode = Mode.CAMERA;
     }
 
-    public handleToggleToBlock() {
+    private handleToggleToBlock() {
         this.removeTool();
         this.attachChild(this.blockCreationTool);
         this.mode = Mode.BLOCK;
     }
 
-    public handleToggleToGameSpawn() {
+    private handleToggleToGameSpawn() {
         this.removeTool();
         this.attachChild(this.gameSpawnCreationTool);
         this.mode = Mode.GAMESPAWN;
     }
 
-    public handleToggleToInitialSpawn() {
+    private handleToggleToInitialSpawn() {
         this.removeTool();
         this.attachChild(this.initialSpawnCreationTool);
         this.mode = Mode.INITIALSPAWN;
     }
 
-    public removeTool() {
+    private removeTool() {
         switch (this.mode) {
             case Mode.BLOCK:
                 this.detachChild(this.blockCreationTool);

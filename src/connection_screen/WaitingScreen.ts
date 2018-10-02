@@ -4,8 +4,8 @@ import EventHandler from "../EventHandler";
 
 export default class WaitingScreen extends Component {
 
-    public element: HTMLElement;
-    public disconnectElt: HTMLElement;
+    private element: HTMLElement;
+    private disconnectElt: HTMLElement;
 
     constructor(parent: HTMLElement) {
         super();
@@ -24,7 +24,7 @@ export default class WaitingScreen extends Component {
         this.element.style.display = "";
     }
 
-    public onDisconnect(event: MouseEvent) {
+    private onDisconnect(event: MouseEvent) {
         if (event.target === this.disconnectElt) {
             EventHandler.callEvent(EventHandler.Event.CONNECTION_SCREEN_DISCONNECT);
         }

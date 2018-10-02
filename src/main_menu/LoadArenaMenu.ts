@@ -5,14 +5,14 @@ import EventHandler from "../EventHandler";
 
 export default class LoadArenaMenu extends Component {
 
-    public element: HTMLElement;
-    public loadElt: HTMLElement;
-    public cancelElt: HTMLElement;
-    public errorElt: HTMLElement;
-    public fileNameElt: HTMLElement;
-    public fileInputElt: HTMLInputElement;
     public fileInputParentElt: HTMLElement;
-    public arena: any;
+    private element: HTMLElement;
+    private loadElt: HTMLElement;
+    private cancelElt: HTMLElement;
+    private errorElt: HTMLElement;
+    private fileNameElt: HTMLElement;
+    private fileInputElt: HTMLInputElement;
+    private arena: any;
 
     constructor(mainMenu: HTMLElement) {
         super();
@@ -48,7 +48,7 @@ export default class LoadArenaMenu extends Component {
         this.element.style.display = "none";
     }
 
-    public onLoadClick(event: MouseEvent) {
+    private onLoadClick(event: MouseEvent) {
         if (event.target === this.loadElt) {
             if (this.arena) {
                 // call event
@@ -59,13 +59,13 @@ export default class LoadArenaMenu extends Component {
         }
     }
 
-    public onCancelClick(event: MouseEvent) {
+    private onCancelClick(event: MouseEvent) {
         if (event.target === this.cancelElt) {
             EventHandler.callEvent(EventHandler.Event.LOADWORLDMENU_CANCEL_OPT_CLICK);
         }
     }
 
-    public onFileChange() {
+    private onFileChange() {
         const files = this.fileInputElt.files;
         if (files && files.length === 1) {
             const file = files[0];
@@ -80,7 +80,7 @@ export default class LoadArenaMenu extends Component {
         }
     }
 
-    public parseFile(file: File) {
+    private parseFile(file: File) {
         return new Promise((resolve, reject) => {
             const fr = new FileReader();
             fr.onload = (event: ProgressEvent) => {
@@ -104,6 +104,5 @@ export default class LoadArenaMenu extends Component {
             };
             fr.readAsText(file);
         });
-
     }
 }

@@ -3,7 +3,7 @@ import EventHandler from "../../EventHandler";
 
 export default class BlockCreationTool extends Component {
 
-    public eventToCall: any;
+    private eventToCall: any;
 
     constructor() {
         super();
@@ -22,13 +22,13 @@ export default class BlockCreationTool extends Component {
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
     }
 
-    public onMouseMove() {
+    private onMouseMove() {
         if (this.eventToCall) {
             EventHandler.callEvent(this.eventToCall);
         }
     }
 
-    public onMouseDown(event: MouseEvent) {
+    private onMouseDown(event: MouseEvent) {
         if (!this.eventToCall) {
             if (event.button === 0) {
                 this.eventToCall = EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY;
@@ -39,7 +39,7 @@ export default class BlockCreationTool extends Component {
         }
     }
 
-    public onMouseUp(event: MouseEvent) {
+    private onMouseUp(event: MouseEvent) {
         if (this.eventToCall) {
             if (this.eventToCall === EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY && event.button === 0 || this.eventToCall === EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY && event.button === 2) {
                 this.eventToCall = undefined;

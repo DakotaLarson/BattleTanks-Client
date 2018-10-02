@@ -9,21 +9,21 @@ interface IPlayerObj {
 
 export default class ScenePlayerHandler extends Component {
 
-    public scene: Scene;
-    public players: Map<number, IPlayerObj>;
+    private scene: Scene;
+    private players: Map<number, IPlayerObj>;
 
-    public playerBodyWidth: number;
-    public playerBodyHeight: number;
-    public playerBodyDepth: number;
+    private playerBodyWidth: number;
+    private playerBodyHeight: number;
+    private playerBodyDepth: number;
 
-    public audioListener: AudioListener;
+    private audioListener: AudioListener;
 
-    public shootSoundBuffer: AudioBuffer | undefined;
-    public invalidShootSoundBuffer: AudioBuffer | undefined;
+    private shootSoundBuffer: AudioBuffer | undefined;
+    private invalidShootSoundBuffer: AudioBuffer | undefined;
 
-    public controlledPlayerId: number;
+    private controlledPlayerId: number;
 
-    public playerOffset: Vector3;
+    private playerOffset: Vector3;
 
     constructor(scene: Scene, audioListener: AudioListener) {
         super();
@@ -94,15 +94,15 @@ export default class ScenePlayerHandler extends Component {
         }
     }
 
-    public onPlayerAddition(data: any) {
+    private onPlayerAddition(data: any) {
         this.addPlayer(data.id, data.pos, false);
     }
 
-    public onConnectedPlayerJoin(data: any) {
+    private onConnectedPlayerJoin(data: any) {
         this.addPlayer(data.id, data.pos, true);
     }
 
-    public onPlayerMove(data: any) {
+    private onPlayerMove(data: any) {
         if (this.players.has(data.id)) {
             const playerObj = this.players.get(data.id);
             if (playerObj) {
@@ -119,7 +119,7 @@ export default class ScenePlayerHandler extends Component {
         }
     }
 
-    public removePlayer(id: number) {
+    private removePlayer(id: number) {
         if (this.players.has(id)) {
             const obj = this.players.get(id);
             if (obj) {
@@ -133,7 +133,7 @@ export default class ScenePlayerHandler extends Component {
         }
     }
 
-    public addPlayer(id: number, pos: Vector4, isConnectedPlayer: boolean) {
+    private addPlayer(id: number, pos: Vector4, isConnectedPlayer: boolean) {
         const playerGeo = new Geometry();
         const playerHeadGeo = new Geometry();
 
@@ -205,7 +205,7 @@ export default class ScenePlayerHandler extends Component {
         }
     }
 
-    public onShoot(playerId?: number) {
+    private onShoot(playerId?: number) {
         if (!playerId) {
             playerId = this.controlledPlayerId;
         }
@@ -227,7 +227,7 @@ export default class ScenePlayerHandler extends Component {
         }
     }
 
-    public onShootInvalid() {
+    private onShootInvalid() {
         if (this.controlledPlayerId > -1) {
             const player = this.players.get(this.controlledPlayerId);
             if (player) {

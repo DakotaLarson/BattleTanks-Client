@@ -4,12 +4,12 @@ import EventHandler from "../EventHandler";
 
 export default class FinishingScreen extends Component {
 
-    public element: HTMLElement;
-    public disconnectElt: HTMLElement;
-    public messageElt: HTMLElement;
+    private element: HTMLElement;
+    private disconnectElt: HTMLElement;
+    private messageElt: HTMLElement;
 
-    public statsElt: HTMLElement;
-    public winnerElt: HTMLElement;
+    private statsElt: HTMLElement;
+    private winnerElt: HTMLElement;
 
     constructor(parent: HTMLElement) {
         super();
@@ -39,13 +39,13 @@ export default class FinishingScreen extends Component {
         this.winnerElt.textContent = "";
     }
 
-    public onDisconnect(event: MouseEvent) {
+    private onDisconnect(event: MouseEvent) {
         if (event.target === this.disconnectElt) {
             EventHandler.callEvent(EventHandler.Event.CONNECTION_SCREEN_DISCONNECT);
         }
     }
 
-    public onMatchStatsRecv(stats: any) {
+    private onMatchStatsRecv(stats: any) {
         const winner = stats.winner;
 
         this.messageElt.textContent = "Match Complete!";

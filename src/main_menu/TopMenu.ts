@@ -4,10 +4,10 @@ import EventHandler from "../EventHandler";
 
 export default class TopMenu extends Component {
 
-    public element: HTMLElement;
-    public spBtn: HTMLElement;
-    public mpBtn: HTMLElement;
-    public optBtn: HTMLElement;
+    private element: HTMLElement;
+    private spBtn: HTMLElement;
+    private mpBtn: HTMLElement;
+    private optBtn: HTMLElement;
 
     constructor(mainMenu: HTMLElement) {
     super();
@@ -36,19 +36,19 @@ export default class TopMenu extends Component {
     }
 
     // Click Handlers
-    public handleSPOption(event: MouseEvent) {
+    private handleSPOption(event: MouseEvent) {
         if (event.target === this.spBtn) {
             EventHandler.callEvent(EventHandler.Event.TOPMENU_SP_OPT_CLICK);
         }
     }
 
-    public handleMPOption(event: MouseEvent) {
+    private handleMPOption(event: MouseEvent) {
         if (event.target === this.mpBtn) {
             EventHandler.callEvent(EventHandler.Event.TOPMENU_MP_OPT_CLICK);
         }
     }
 
-    public handleOptOption(event: MouseEvent) {
+    private handleOptOption(event: MouseEvent) {
         if (event.target === this.optBtn) {
             EventHandler.callEvent(EventHandler.Event.TOPMENU_OPT_OPT_CLICK);
         }

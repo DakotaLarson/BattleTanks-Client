@@ -5,18 +5,18 @@ import EventHandler from "../EventHandler";
 
 export default class OptionsMenu extends Component {
 
-    public element: HTMLElement;
-    public returnBtn: HTMLElement;
+    private element: HTMLElement;
+    private returnBtn: HTMLElement;
 
-    public forwardValueElt: HTMLElement;
-    public backwardValueElt: HTMLElement;
-    public leftValueElt: HTMLElement;
-    public rightValueElt: HTMLElement;
-    public shootValueElt: HTMLElement;
-    public volumeValueElt: HTMLInputElement;
-    public mouseValueElt: HTMLInputElement;
+    private forwardValueElt: HTMLElement;
+    private backwardValueElt: HTMLElement;
+    private leftValueElt: HTMLElement;
+    private rightValueElt: HTMLElement;
+    private shootValueElt: HTMLElement;
+    private volumeValueElt: HTMLInputElement;
+    private mouseValueElt: HTMLInputElement;
 
-    public isListening: boolean;
+    private isListening: boolean;
 
     constructor(mainMenu: HTMLElement) {
         super();
@@ -68,7 +68,7 @@ export default class OptionsMenu extends Component {
         this.element.style.display = "";
     }
 
-    public handleForwardClick(event: MouseEvent) {
+    private handleForwardClick(event: MouseEvent) {
         if (event.target === this.forwardValueElt) {
             if (!this.isListening) {
                 this.listenForInput(this.forwardValueElt).then((data) => {
@@ -78,7 +78,7 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    public handleBackwardClick(event: MouseEvent) {
+    private handleBackwardClick(event: MouseEvent) {
         if (event.target === this.backwardValueElt) {
             if (!this.isListening) {
                 this.listenForInput(this.backwardValueElt).then((data) => {
@@ -88,7 +88,7 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    public handleLeftClick(event: MouseEvent) {
+    private handleLeftClick(event: MouseEvent) {
         if (event.target === this.leftValueElt) {
             if (!this.isListening) {
                 this.listenForInput(this.leftValueElt).then((data) => {
@@ -98,7 +98,7 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    public handleRightClick(event: MouseEvent) {
+    private handleRightClick(event: MouseEvent) {
         if (event.target === this.rightValueElt) {
             if (!this.isListening) {
                 this.listenForInput(this.rightValueElt).then((data) => {
@@ -108,7 +108,7 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    public handleShootClick(event: MouseEvent) {
+    private handleShootClick(event: MouseEvent) {
         if (event.target === this.shootValueElt) {
             if (!this.isListening) {
                 this.listenForInput(this.shootValueElt).then((data) => {
@@ -118,7 +118,7 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    public handleReturnClick(event: MouseEvent) {
+    private handleReturnClick(event: MouseEvent) {
         if (event.target === this.returnBtn) {
             if (!this.isListening) {
                 EventHandler.callEvent(EventHandler.Event.OPTMENU_RETURN_OPT_CLICK);
@@ -126,19 +126,19 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    public handleVolumeChange() {
+    private handleVolumeChange() {
         const value = Number(this.volumeValueElt.value);
         this.saveChange("volume", value);
     }
 
-    public handleMouseChange() {
+    private handleMouseChange() {
         const value = Number(this.mouseValueElt.value);
         this.saveChange("mouseSensitivity", value);
     }
 
     // key = human readable
     // code = more precise
-    public listenForInput(element: HTMLElement) {
+    private listenForInput(element: HTMLElement) {
         return new Promise((resolve) => {
 
             element.textContent = "Listening...";
@@ -183,7 +183,7 @@ export default class OptionsMenu extends Component {
         });
     }
 
-    public loadValuesFromStorage() {
+    private loadValuesFromStorage() {
         const rawOptions = localStorage.getItem("userOptions");
         if (rawOptions) {
             const options = JSON.parse(rawOptions);
@@ -214,7 +214,7 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    public saveChange(attribute: string, data: any) {
+    private saveChange(attribute: string, data: any) {
         const rawOptions = localStorage.getItem("userOptions");
         if (rawOptions) {
             const storedOptions = JSON.parse(rawOptions);

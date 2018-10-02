@@ -12,13 +12,13 @@ import Options from "./Options";
 
 class Game extends Component {
 
-    public mainMenu: MainMenu;
-    public connectionScreen: ConnectionScreen;
-    public arenaHandler: ArenaHandler;
-    public mpConnection: MultiplayerConnection | undefined;
-    public gameStatusHandler: GameStatusHandler;
-    public alertMessageHandler: AlertMessageHandler;
-    public options: Options;
+    private mainMenu: MainMenu;
+    private connectionScreen: ConnectionScreen;
+    private arenaHandler: ArenaHandler;
+    private mpConnection: MultiplayerConnection | undefined;
+    private gameStatusHandler: GameStatusHandler;
+    private alertMessageHandler: AlertMessageHandler;
+    private options: Options;
 
     constructor() {
         super();
@@ -53,15 +53,15 @@ class Game extends Component {
         EventHandler.callEvent(EventHandler.Event.GAME_ANIMATION_UPDATE, delta);
     }
 
-    public loadSingleplayer() {
+    private loadSingleplayer() {
         this.detachChild(this.mainMenu);
     }
 
-    public unloadSingleplayer() {
+    private unloadSingleplayer() {
         this.attachChild(this.mainMenu);
     }
 
-    public connectToMultiplayer(address: string) {
+    private connectToMultiplayer(address: string) {
         this.detachChild(this.mainMenu);
         this.attachChild(this.connectionScreen);
         this.mpConnection = new MultiplayerConnection(address);
@@ -69,7 +69,7 @@ class Game extends Component {
         this.attachChild(this.gameStatusHandler);
     }
 
-    public disconnectFromMultiplayer() {
+    private disconnectFromMultiplayer() {
         this.detachChild(this.connectionScreen);
         this.detachChild(this.mpConnection as MultiplayerConnection);
         this.detachChild(this.gameStatusHandler);

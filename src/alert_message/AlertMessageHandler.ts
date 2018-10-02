@@ -4,9 +4,9 @@ import EventHandler from "../EventHandler";
 
 export default class AlertMessageHandler extends Component {
 
-    public parentElt: HTMLElement;
-    public alertElt: HTMLElement;
-    public taskId: number;
+    private parentElt: HTMLElement;
+    private alertElt: HTMLElement;
+    private taskId: number;
 
     constructor() {
         super();
@@ -24,7 +24,7 @@ export default class AlertMessageHandler extends Component {
         EventHandler.removeListener(this, EventHandler.Event.ALERT_MESSAGE_REQUEST, this.onAlertRequest);
     }
 
-    public onAlertRequest(message: string) {
+    private onAlertRequest(message: string) {
         if (this.taskId === -1) {
             this.alertElt.textContent = message;
             this.parentElt.style.opacity = "1";

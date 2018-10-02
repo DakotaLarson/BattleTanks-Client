@@ -5,9 +5,9 @@ import Arena from "./Arena";
 
 export default class MultiplayerArena extends Arena {
 
-    public player: Player | undefined;
-    public connectedPlayers: Map<number, ConnectedPlayer>;
-    public gameMenuOpen: boolean;
+    private player: Player | undefined;
+    private connectedPlayers: Map<number, ConnectedPlayer>;
+    private gameMenuOpen: boolean;
 
     constructor() {
         super();
@@ -29,7 +29,7 @@ export default class MultiplayerArena extends Arena {
 
         EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, this.onConnectedPlayerAddition);
         EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, this.onConnectedPlayerMove);
-
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_REMOVAL, this.onConnectedPlayerRemoval);
     }
 
     public disable() {
@@ -43,26 +43,27 @@ export default class MultiplayerArena extends Arena {
 
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, this.onConnectedPlayerAddition);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, this.onConnectedPlayerMove);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_REMOVAL, this.onConnectedPlayerRemoval);
 
         this.gameMenuOpen = false;
         this.connectedPlayers.clear();
     }
 
-    public onPlayerAddition(data: any) {
+    private onPlayerAddition(data: any) {
         this.player = new Player(data.id, data.pos);
         if (!this.gameMenuOpen) {
             this.attachChild(this.player);
         }
     }
 
-    public onPlayerRemoval() {
+    private onPlayerRemoval() {
         if (!this.gameMenuOpen) {
             this.detachChild(this.player as Player);
         }
         this.player = undefined;
     }
 
-    public onPlayerMove(data: any) {
+    private onPlayerMove(data: any) {
         if (data.fromServer && this.player) {
             this.player.position = data.pos;
             this.player.bodyRotation = data.bodyRot;
@@ -70,12 +71,12 @@ export default class MultiplayerArena extends Arena {
         }
     }
 
-    public onConnectedPlayerAddition(data: any) {
+    private onConnectedPlayerAddition(data: any) {
         const player = new ConnectedPlayer(data.id, data.name, data.pos, data.headRot);
         this.connectedPlayers.set(data.id, player);
     }
 
-    public onConnectedPlayerMove(data: any) {
+    private onConnectedPlayerMove(data: any) {
         const player = this.connectedPlayers.get(data.id);
         if (player) {
             player.updatePosition(data.pos, data.bodyRot, data.headRot);
@@ -83,18 +84,18 @@ export default class MultiplayerArena extends Arena {
         }
     }
 
-    public onConnectedPlayerRemoval(id: number) {
+    private onConnectedPlayerRemoval(id: number) {
         this.connectedPlayers.delete(id);
     }
 
-    public onGameMenuOpen() {
+    private onGameMenuOpen() {
         if (this.player) {
             this.detachChild(this.player);
         }
         this.gameMenuOpen = true;
     }
 
-    public onGameMenuClose() {
+    private onGameMenuClose() {
         if (this.player) {
             this.attachChild(this.player);
         }

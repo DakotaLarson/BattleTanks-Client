@@ -6,9 +6,10 @@ import DebugPanel from "./DebugPanel";
 
 export default class GUI extends Component {
 
-    public element: HTMLElement;
-    public debugPanel: DebugPanel;
+    private element: HTMLElement;
+    private debugPanel: DebugPanel;
     private cooldownBar: CooldownBar | undefined;
+
     constructor() {
         super();
         this.element = DomHandler.getElement(".gui");
@@ -34,12 +35,12 @@ export default class GUI extends Component {
         this.element.style.display = "";
     }
 
-    public onCooldownTimeReception(time: number) {
+    private onCooldownTimeReception(time: number) {
         this.cooldownBar = new CooldownBar(this.element, time);
         this.attachChild(this.cooldownBar);
     }
 
-    public onFinish() {
+    private onFinish() {
         this.detachChild(this.cooldownBar as CooldownBar);
         this.cooldownBar = undefined;
     }
