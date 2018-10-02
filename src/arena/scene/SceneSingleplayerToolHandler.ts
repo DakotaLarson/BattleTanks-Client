@@ -114,7 +114,6 @@ export default class SceneSingleplayerToolHandler extends Component {
                 this.sendAlert("That is already a game spawn.");
             } else {
                 const rotation = this.getAngleToCamera(origPostion);
-                console.log(rotation);
                 this.parent.gameSpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
                 this.sendAlert("Game spawn created.");
                 this.parent.updateSpawnVisuals();

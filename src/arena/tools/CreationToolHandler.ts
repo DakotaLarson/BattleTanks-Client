@@ -42,12 +42,20 @@ export default class CreationToolHandler extends Component {
     public onGameMenuOpen() {
         if (this.mode === Mode.BLOCK) {
             this.detachChild(this.blockCreationTool);
+        } else if (this.mode === Mode.GAMESPAWN) {
+            this.detachChild(this.gameSpawnCreationTool);
+        } else if (this.mode === Mode.INITIALSPAWN) {
+            this.detachChild(this.initialSpawnCreationTool);
         }
     }
 
     public onGameMenuClose() {
         if (this.mode === Mode.BLOCK) {
             this.attachChild(this.blockCreationTool);
+        } else if (this.mode === Mode.GAMESPAWN) {
+            this.attachChild(this.gameSpawnCreationTool);
+        } else if (this.mode === Mode.INITIALSPAWN) {
+            this.attachChild(this.initialSpawnCreationTool);
         }
     }
 
