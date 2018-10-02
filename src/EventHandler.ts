@@ -223,6 +223,9 @@ export default class EventHandler {
         }
     }
     public static callEvent(event: Event, argument?: any) {
+
+        const callbacks = [];
+
         // LOW
         if (lowListeners.has(event)) {
             const eventListeners = lowListeners.get(event);
@@ -231,7 +234,7 @@ export default class EventHandler {
                 const context = listener.context;
                 const callback = listener.callback;
 
-                callback.call(context, argument);
+                callbacks.push([context, callback]);
             }
         }
         // MEDIUM
@@ -243,7 +246,7 @@ export default class EventHandler {
                 const context = listener.context;
                 const callback = listener.callback;
 
-                callback.call(context, argument);
+                callbacks.push([context, callback]);
             }
         }
         // HIGH
@@ -254,8 +257,11 @@ export default class EventHandler {
                 const context = listener.context;
                 const callback = listener.callback;
 
-                callback.call(context, argument);
+                callbacks.push([context, callback]);
             }
+        }
+        for (const callbackArr of callbacks) {
+            callbackArr[1].call(callbackArr[0], argument);
         }
     }
     static get Event() {
