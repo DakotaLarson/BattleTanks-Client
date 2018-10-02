@@ -1,5 +1,4 @@
 import Component from "../component/ChildComponent";
-import DomEventHandler from "../DomEventHandler";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
@@ -16,16 +15,18 @@ export default class WaitingScreen extends Component {
     }
 
     public enable() {
-        DomEventHandler.addListener(this, this.disconnectElt, "click", this.onDisconnect);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onDisconnect);
         this.element.style.display = "block";
     }
 
     public disable() {
-        DomEventHandler.removeListener(this, this.disconnectElt, "click", this.onDisconnect);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onDisconnect);
         this.element.style.display = "";
     }
 
-    public onDisconnect() {
-        EventHandler.callEvent(EventHandler.Event.CONNECTION_SCREEN_DISCONNECT);
+    public onDisconnect(event: MouseEvent) {
+        if (event.target === this.disconnectElt) {
+            EventHandler.callEvent(EventHandler.Event.CONNECTION_SCREEN_DISCONNECT);
+        }
     }
 }

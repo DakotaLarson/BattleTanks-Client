@@ -1,5 +1,4 @@
 import Component from "../component/ChildComponent";
-import DomEventHandler from "../DomEventHandler";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
@@ -27,16 +26,16 @@ export default class CreateWorldMenu extends Component {
     }
 
     public enable() {
-        DomEventHandler.addListener(this, this.createElt, "click", this.onCreateClick);
-        DomEventHandler.addListener(this, this.cancelElt, "click", this.onCancelClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCancelClick);
 
         this.element.style.display = "block";
         this.titleElt.focus();
     }
 
     public disable() {
-        DomEventHandler.removeListener(this, this.createElt, "click", this.onCreateClick);
-        DomEventHandler.removeListener(this, this.cancelElt, "click", this.onCancelClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCancelClick);
 
         this.titleElt.value = "";
         this.heightElt.value = "";
@@ -46,28 +45,32 @@ export default class CreateWorldMenu extends Component {
         this.element.style.display = "none";
     }
 
-    public onCreateClick() {
-        const titleValue = this.titleElt.value.trim();
-        const widthValue = Number(this.widthElt.value);
-        const heightValue = Number(this.heightElt.value);
+    public onCreateClick(event: MouseEvent) {
+        if (event.target === this.createElt) {
+            const titleValue = this.titleElt.value.trim();
+            const widthValue = Number(this.widthElt.value);
+            const heightValue = Number(this.heightElt.value);
 
-        if (titleValue.length === 0) {
-            this.errorElt.textContent = "Missing Title";
-        } else if (isNaN(widthValue) || isNaN(heightValue) || widthValue < 1 || heightValue < 1) {
-            this.errorElt.textContent = "Invalid arena dimensions";
-        } else if (widthValue > MAX_DIMENSION || heightValue > MAX_DIMENSION) {
-            this.errorElt.textContent = "Arena dimensions cannot be greater than " + MAX_DIMENSION;
-        } else {
-            this.errorElt.textContent = "";
-            EventHandler.callEvent(EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, {
-                title: titleValue,
-                width: widthValue,
-                height: heightValue,
-            });
+            if (titleValue.length === 0) {
+                this.errorElt.textContent = "Missing Title";
+            } else if (isNaN(widthValue) || isNaN(heightValue) || widthValue < 1 || heightValue < 1) {
+                this.errorElt.textContent = "Invalid arena dimensions";
+            } else if (widthValue > MAX_DIMENSION || heightValue > MAX_DIMENSION) {
+                this.errorElt.textContent = "Arena dimensions cannot be greater than " + MAX_DIMENSION;
+            } else {
+                this.errorElt.textContent = "";
+                EventHandler.callEvent(EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, {
+                    title: titleValue,
+                    width: widthValue,
+                    height: heightValue,
+                });
+            }
         }
     }
 
-    public onCancelClick() {
-        EventHandler.callEvent(EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK);
+    public onCancelClick(event: MouseEvent) {
+        if (event.target === this.cancelElt) {
+            EventHandler.callEvent(EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK);
+        }
     }
 }

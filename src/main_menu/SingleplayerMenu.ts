@@ -1,5 +1,4 @@
 import Component from "../component/ChildComponent";
-import DomEventHandler from "../DomEventHandler";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
@@ -22,30 +21,37 @@ export default class SingleplayerMenu extends Component {
     }
 
     public enable() {
-        DomEventHandler.addListener(this, this.createBtn, "click", this.handleCreateOption);
-        DomEventHandler.addListener(this, this.loadBtn, "click", this.handleLoadOption);
-        DomEventHandler.addListener(this, this.cancelBtn, "click", this.handleCancelOption);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleCancelOption);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleCreateOption);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleLoadOption);
+
         this.element.style.display = "block";
     }
 
     public disable() {
-        DomEventHandler.removeListener(this, this.createBtn, "click", this.handleCreateOption);
-        DomEventHandler.removeListener(this, this.loadBtn, "click", this.handleLoadOption);
-        DomEventHandler.removeListener(this, this.cancelBtn, "click", this.handleCancelOption);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleCancelOption);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleCreateOption);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleLoadOption);
         this.element.style.display = "";
     }
 
     // Click Handlers
 
-    public handleCreateOption() {
-        EventHandler.callEvent(EventHandler.Event.SPMENU_CREATE_OPT_CLICK);
+    public handleCreateOption(event: MouseEvent) {
+        if (event.target === this.createBtn) {
+            EventHandler.callEvent(EventHandler.Event.SPMENU_CREATE_OPT_CLICK);
+        }
     }
 
-    public handleLoadOption() {
-        EventHandler.callEvent(EventHandler.Event.SPMENU_LOAD_OPT_CLICK);
+    public handleLoadOption(event: MouseEvent) {
+        if (event.target === this.loadBtn) {
+            EventHandler.callEvent(EventHandler.Event.SPMENU_LOAD_OPT_CLICK);
+        }
     }
 
-    public handleCancelOption() {
-        EventHandler.callEvent(EventHandler.Event.SPMENU_CANCEL_OPT_CLICK);
+    public handleCancelOption(event: MouseEvent) {
+        if (event.target === this.cancelBtn) {
+            EventHandler.callEvent(EventHandler.Event.SPMENU_CANCEL_OPT_CLICK);
+        }
     }
 }

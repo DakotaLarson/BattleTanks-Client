@@ -39,74 +39,90 @@ export default class OptionsMenu extends Component {
     }
 
     public enable() {
-        DomEventHandler.addListener(this, this.forwardValueElt, "click", this.handleForwardClick);
-        DomEventHandler.addListener(this, this.backwardValueElt, "click", this.handleBackwardClick);
-        DomEventHandler.addListener(this, this.leftValueElt, "click", this.handleLeftClick);
-        DomEventHandler.addListener(this, this.rightValueElt, "click", this.handleRightClick);
-        DomEventHandler.addListener(this, this.shootValueElt, "click", this.handleShootClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleBackwardClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleForwardClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleLeftClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleRightClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleReturnClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleShootClick);
 
         DomEventHandler.addListener(this, this.volumeValueElt, "change", this.handleVolumeChange);
         DomEventHandler.addListener(this, this.mouseValueElt, "change", this.handleMouseChange);
-
-        DomEventHandler.addListener(this, this.returnBtn, "click", this.handleReturnClick);
 
         this.element.style.display = "block";
     }
 
     public disable() {
-        DomEventHandler.removeListener(this, this.forwardValueElt, "click", this.handleForwardClick);
-        DomEventHandler.removeListener(this, this.backwardValueElt, "click", this.handleBackwardClick);
-        DomEventHandler.removeListener(this, this.leftValueElt, "click", this.handleLeftClick);
-        DomEventHandler.removeListener(this, this.rightValueElt, "click", this.handleRightClick);
-        DomEventHandler.removeListener(this, this.shootValueElt, "click", this.handleShootClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleBackwardClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleForwardClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleLeftClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleRightClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleReturnClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleShootClick);
 
         DomEventHandler.removeListener(this, this.volumeValueElt, "change", this.handleVolumeChange);
         DomEventHandler.removeListener(this, this.mouseValueElt, "change", this.handleMouseChange);
-
-        DomEventHandler.removeListener(this, this.returnBtn, "click", this.handleReturnClick);
 
         this.isListening = false;
 
         this.element.style.display = "";
     }
 
-    public handleForwardClick() {
-        if (!this.isListening) {
-            this.listenForInput(this.forwardValueElt).then((data) => {
-                this.saveChange("forward", data);
-            });
+    public handleForwardClick(event: MouseEvent) {
+        if (event.target === this.forwardValueElt) {
+            if (!this.isListening) {
+                this.listenForInput(this.forwardValueElt).then((data) => {
+                    this.saveChange("forward", data);
+                });
+            }
         }
     }
 
-    public handleBackwardClick() {
-        if (!this.isListening) {
-            this.listenForInput(this.backwardValueElt).then((data) => {
-                this.saveChange("backward", data);
-            });
+    public handleBackwardClick(event: MouseEvent) {
+        if (event.target === this.backwardValueElt) {
+            if (!this.isListening) {
+                this.listenForInput(this.backwardValueElt).then((data) => {
+                    this.saveChange("backward", data);
+                });
+            }
         }
     }
 
-    public handleLeftClick() {
-        if (!this.isListening) {
-            this.listenForInput(this.leftValueElt).then((data) => {
-                this.saveChange("left", data);
-            });
+    public handleLeftClick(event: MouseEvent) {
+        if (event.target === this.leftValueElt) {
+            if (!this.isListening) {
+                this.listenForInput(this.leftValueElt).then((data) => {
+                    this.saveChange("left", data);
+                });
+            }
         }
     }
 
-    public handleRightClick() {
-        if (!this.isListening) {
-            this.listenForInput(this.rightValueElt).then((data) => {
-                this.saveChange("right", data);
-            });
+    public handleRightClick(event: MouseEvent) {
+        if (event.target === this.rightValueElt) {
+            if (!this.isListening) {
+                this.listenForInput(this.rightValueElt).then((data) => {
+                    this.saveChange("right", data);
+                });
+            }
         }
     }
 
-    public handleShootClick() {
-        if (!this.isListening) {
-            this.listenForInput(this.shootValueElt).then((data) => {
-                this.saveChange("shoot", data);
-            });
+    public handleShootClick(event: MouseEvent) {
+        if (event.target === this.shootValueElt) {
+            if (!this.isListening) {
+                this.listenForInput(this.shootValueElt).then((data) => {
+                    this.saveChange("shoot", data);
+                });
+            }
+        }
+    }
+
+    public handleReturnClick(event: MouseEvent) {
+        if (event.target === this.returnBtn) {
+            if (!this.isListening) {
+                EventHandler.callEvent(EventHandler.Event.OPTMENU_RETURN_OPT_CLICK);
+            }
         }
     }
 
@@ -118,12 +134,6 @@ export default class OptionsMenu extends Component {
     public handleMouseChange() {
         const value = Number(this.mouseValueElt.value);
         this.saveChange("mouseSensitivity", value);
-    }
-
-    public handleReturnClick() {
-        if (!this.isListening) {
-            EventHandler.callEvent(EventHandler.Event.OPTMENU_RETURN_OPT_CLICK);
-        }
     }
 
     // key = human readable

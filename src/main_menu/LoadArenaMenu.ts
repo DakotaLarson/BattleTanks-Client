@@ -28,16 +28,16 @@ export default class LoadArenaMenu extends Component {
     }
 
     public enable() {
-        DomEventHandler.addListener(this, this.loadElt, "click", this.onLoadClick);
-        DomEventHandler.addListener(this, this.cancelElt, "click", this.onCancelClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this. onLoadClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this. onCancelClick);
         DomEventHandler.addListener(this, this.fileInputElt, "change", this.onFileChange);
 
         this.element.style.display = "block";
     }
 
     public disable() {
-        DomEventHandler.removeListener(this, this.loadElt, "click", this.onLoadClick);
-        DomEventHandler.removeListener(this, this.cancelElt, "click", this.onCancelClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this. onLoadClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this. onCancelClick);
         DomEventHandler.removeListener(this, this.fileInputElt, "change", this.onFileChange);
 
         this.errorElt.textContent = "";
@@ -48,17 +48,21 @@ export default class LoadArenaMenu extends Component {
         this.element.style.display = "none";
     }
 
-    public onLoadClick() {
-        if (this.arena) {
-            // call event
-            EventHandler.callEvent(EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.arena);
-        } else {
-            this.errorElt.textContent = "No File selected";
+    public onLoadClick(event: MouseEvent) {
+        if (event.target === this.loadElt) {
+            if (this.arena) {
+                // call event
+                EventHandler.callEvent(EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.arena);
+            } else {
+                this.errorElt.textContent = "No File selected";
+            }
         }
     }
 
-    public onCancelClick() {
-        EventHandler.callEvent(EventHandler.Event.LOADWORLDMENU_CANCEL_OPT_CLICK);
+    public onCancelClick(event: MouseEvent) {
+        if (event.target === this.cancelElt) {
+            EventHandler.callEvent(EventHandler.Event.LOADWORLDMENU_CANCEL_OPT_CLICK);
+        }
     }
 
     public onFileChange() {

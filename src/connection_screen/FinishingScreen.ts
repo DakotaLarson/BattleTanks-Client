@@ -1,5 +1,4 @@
 import Component from "../component/ChildComponent";
-import DomEventHandler from "../DomEventHandler";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
@@ -24,13 +23,13 @@ export default class FinishingScreen extends Component {
     }
 
     public enable() {
-        DomEventHandler.addListener(this, this.disconnectElt, "click", this.onDisconnect);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onDisconnect);
         EventHandler.addListener(this, EventHandler.Event.MATCH_STATISTICS_RECEPTION, this.onMatchStatsRecv);
         this.element.style.display = "block";
     }
 
     public disable() {
-        DomEventHandler.removeListener(this, this.disconnectElt, "click", this.onDisconnect);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onDisconnect);
         this.element.style.display = "";
         EventHandler.removeListener(this, EventHandler.Event.MATCH_STATISTICS_RECEPTION, this.onMatchStatsRecv);
 
@@ -40,8 +39,10 @@ export default class FinishingScreen extends Component {
         this.winnerElt.textContent = "";
     }
 
-    public onDisconnect() {
-        EventHandler.callEvent(EventHandler.Event.CONNECTION_SCREEN_DISCONNECT);
+    public onDisconnect(event: MouseEvent) {
+        if (event.target === this.disconnectElt) {
+            EventHandler.callEvent(EventHandler.Event.CONNECTION_SCREEN_DISCONNECT);
+        }
     }
 
     public onMatchStatsRecv(stats: any) {

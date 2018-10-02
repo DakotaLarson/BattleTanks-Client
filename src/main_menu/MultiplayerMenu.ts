@@ -1,5 +1,4 @@
 import Component from "../component/ChildComponent";
-import DomEventHandler from "../DomEventHandler";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
@@ -37,10 +36,10 @@ export default class MultiplayerMenu extends Component {
         this.joinServerBtn.classList.add("disabled");
         this.removeServerBtn.classList.add("disabled");
 
-        DomEventHandler.addListener(this, this.addServerBtn, "click", this.handleAddServerClick);
-        DomEventHandler.addListener(this, this.joinServerBtn, "click", this.handleJoinServerClick);
-        DomEventHandler.addListener(this, this.removeServerBtn, "click", this.handleRemoveServerClick);
-        DomEventHandler.addListener(this, this.cancelBtn, "click", this.handleCancelClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleAddServerClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleCancelClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleJoinServerClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleRemoveServerClick);
 
         this.element.style.display = "block";
     }
@@ -49,10 +48,10 @@ export default class MultiplayerMenu extends Component {
         this.joinServerBtn.classList.remove("disabled");
         this.removeServerBtn.classList.remove("disabled");
 
-        DomEventHandler.removeListener(this, this.addServerBtn, "click", this.handleAddServerClick);
-        DomEventHandler.removeListener(this, this.joinServerBtn, "click", this.handleJoinServerClick);
-        DomEventHandler.removeListener(this, this.removeServerBtn, "click", this.handleRemoveServerClick);
-        DomEventHandler.removeListener(this, this.cancelBtn, "click", this.handleCancelClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleAddServerClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleCancelClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleJoinServerClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleRemoveServerClick);
 
         while (this.serverListElt.firstChild) {
             this.serverListElt.removeChild(this.serverListElt.firstChild);
@@ -91,34 +90,42 @@ export default class MultiplayerMenu extends Component {
 
     // OPTION HANDLERS
 
-    public handleAddServerClick() {
-        EventHandler.callEvent(EventHandler.Event.MPMENU_ADDSERVER_OPT_CLICK);
-    }
-
-    public handleJoinServerClick() {
-        if (this.servers && this.selectedIndex) {
-            if (!this.joinServerBtn.classList.contains("disabled")) {
-                const address = this.servers[this.selectedIndex].address;
-                EventHandler.callEvent(EventHandler.Event.MPMENU_JOIN_OPT_CLICK, address);
-            }
+    public handleAddServerClick(event: MouseEvent) {
+        if (event.target === this.addServerBtn) {
+            EventHandler.callEvent(EventHandler.Event.MPMENU_ADDSERVER_OPT_CLICK);
         }
     }
 
-    public handleRemoveServerClick() {
-        if (this.servers && this.selectedIndex) {
-            if (!this.removeServerBtn.classList.contains("disabled")) {
-                const confirmation = window.confirm("Are you sure you want to remove this server?");
-                if (confirmation) {
-                    this.servers.splice(this.selectedIndex, 1);
-                    this.updateMenuServerList(this.servers);
+    public handleJoinServerClick(event: MouseEvent) {
+        if (event.target === this.joinServerBtn) {
+            if (this.servers && this.selectedIndex) {
+                if (!this.joinServerBtn.classList.contains("disabled")) {
+                    const address = this.servers[this.selectedIndex].address;
+                    EventHandler.callEvent(EventHandler.Event.MPMENU_JOIN_OPT_CLICK, address);
                 }
-                localStorage.setItem("serverList", JSON.stringify(this.servers));
             }
         }
     }
 
-    public handleCancelClick() {
-        EventHandler.callEvent(EventHandler.Event.MPMENU_CANCEL_OPT_CLICK);
+    public handleRemoveServerClick(event: MouseEvent) {
+        if (event.target === this.removeServerBtn) {
+            if (this.servers && this.selectedIndex) {
+                if (!this.removeServerBtn.classList.contains("disabled")) {
+                    const confirmation = window.confirm("Are you sure you want to remove this server?");
+                    if (confirmation) {
+                        this.servers.splice(this.selectedIndex, 1);
+                        this.updateMenuServerList(this.servers);
+                    }
+                    localStorage.setItem("serverList", JSON.stringify(this.servers));
+                }
+            }
+        }
+    }
+
+    public handleCancelClick(event: MouseEvent) {
+        if (event.target === this.cancelBtn) {
+            EventHandler.callEvent(EventHandler.Event.MPMENU_CANCEL_OPT_CLICK);
+        }
     }
 
     public getServers() {

@@ -1,5 +1,4 @@
 import Component from "../component/ChildComponent";
-import DomEventHandler from "../DomEventHandler";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
@@ -30,8 +29,8 @@ export default class AddServerMenu extends Component {
         this.nameInputElt.value = "";
         this.addressInputElt.value = "";
 
-        DomEventHandler.addListener(this, this.saveBtn, "click", this.handleSaveOptClick);
-        DomEventHandler.addListener(this, this.cancelBtn, "click", this.handleCancelOptionClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleCancelOptionClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleSaveOptClick);
 
         this.element.style.display = "block";
 
@@ -39,26 +38,29 @@ export default class AddServerMenu extends Component {
     }
 
     public disable() {
-        DomEventHandler.removeListener(this, this.saveBtn, "click", this.handleSaveOptClick );
-        DomEventHandler.removeListener(this, this.cancelBtn, "click", this.handleCancelOptionClick);
-
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleCancelOptionClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleSaveOptClick);
         this.element.style.display = "";
     }
 
     // Click Handlers
-    public handleSaveOptClick() {
-        const name = this.nameInputElt.value;
-        const address = this.addressInputElt.value;
-        if (name.length && address.length) {
-            this.saveServer(name, address);
-            EventHandler.callEvent(EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK);
-        } else {
-            EventHandler.callEvent(EventHandler.Event.ALERT_MESSAGE_REQUEST, "Please fill out all fields.");
+    public handleSaveOptClick(event: MouseEvent) {
+        if (event.target === this.saveBtn) {
+            const name = this.nameInputElt.value;
+            const address = this.addressInputElt.value;
+            if (name.length && address.length) {
+                this.saveServer(name, address);
+                EventHandler.callEvent(EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK);
+            } else {
+                EventHandler.callEvent(EventHandler.Event.ALERT_MESSAGE_REQUEST, "Please fill out all fields.");
+            }
         }
     }
 
-    public handleCancelOptionClick() {
-        EventHandler.callEvent(EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK);
+    public handleCancelOptionClick(event: MouseEvent) {
+        if (event.target === this.cancelBtn) {
+            EventHandler.callEvent(EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK);
+        }
     }
 
     public saveServer(name: string, address: string) {
