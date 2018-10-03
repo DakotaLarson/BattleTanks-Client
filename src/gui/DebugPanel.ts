@@ -21,16 +21,16 @@ export default class DebugPanel extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.GAME_DEBUG_OUTPUT, this.handleDebugOutput);
+        EventHandler.addListener(this, EventHandler.Event.GAME_DEBUG_OUTPUT, this.onDebugOutput);
         this.element.style.display = "inline-block";
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.GAME_DEBUG_OUTPUT, this.handleDebugOutput);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_DEBUG_OUTPUT, this.onDebugOutput);
         this.element.style.display = "";
     }
 
-    private handleDebugOutput(data: any) {
+    private onDebugOutput(data: any) {
         const renderingPercent = Math.round(data.rendering / 10);
         const renderingMS = Math.round(data.rendering);
         const computationPercent = Math.round(data.computation / 10);

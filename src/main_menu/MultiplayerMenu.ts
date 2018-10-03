@@ -36,10 +36,10 @@ export default class MultiplayerMenu extends Component {
         this.joinServerBtn.classList.add("disabled");
         this.removeServerBtn.classList.add("disabled");
 
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleAddServerClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleCancelClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleJoinServerClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleRemoveServerClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onAddServerClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCancelClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onJoinServerClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onRemoveServerClick);
 
         this.element.style.display = "block";
     }
@@ -48,10 +48,10 @@ export default class MultiplayerMenu extends Component {
         this.joinServerBtn.classList.remove("disabled");
         this.removeServerBtn.classList.remove("disabled");
 
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleAddServerClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleCancelClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleJoinServerClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleRemoveServerClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onAddServerClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCancelClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onJoinServerClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onRemoveServerClick);
 
         while (this.serverListElt.firstChild) {
             this.serverListElt.removeChild(this.serverListElt.firstChild);
@@ -65,7 +65,7 @@ export default class MultiplayerMenu extends Component {
 
     // SERVER CLICK HANDLERS
 
-    private handleServerClick(index: number, element: HTMLElement) {
+    private onServerClick(index: number, element: HTMLElement) {
         if (this.selectedElt) {
             if (this.selectedElt !== element) {
                 this.selectedElt.classList.remove("server-opt-selected");
@@ -81,7 +81,7 @@ export default class MultiplayerMenu extends Component {
         this.removeServerBtn.classList.remove("disabled");
     }
 
-    private handleServerDblClick(index: number) {
+    private onServerDblClick(index: number) {
         if (this.servers) {
             const address = this.servers[index].address;
             EventHandler.callEvent(EventHandler.Event.MPMENU_JOIN_OPT_CLICK, address);
@@ -90,13 +90,13 @@ export default class MultiplayerMenu extends Component {
 
     // OPTION HANDLERS
 
-    private handleAddServerClick(event: MouseEvent) {
+    private onAddServerClick(event: MouseEvent) {
         if (event.target === this.addServerBtn) {
             EventHandler.callEvent(EventHandler.Event.MPMENU_ADDSERVER_OPT_CLICK);
         }
     }
 
-    private handleJoinServerClick(event: MouseEvent) {
+    private onJoinServerClick(event: MouseEvent) {
         if (event.target === this.joinServerBtn) {
             if (this.servers && this.selectedIndex) {
                 if (!this.joinServerBtn.classList.contains("disabled")) {
@@ -107,7 +107,7 @@ export default class MultiplayerMenu extends Component {
         }
     }
 
-    private handleRemoveServerClick(event: MouseEvent) {
+    private onRemoveServerClick(event: MouseEvent) {
         if (event.target === this.removeServerBtn) {
             if (this.servers && this.selectedIndex) {
                 if (!this.removeServerBtn.classList.contains("disabled")) {
@@ -122,7 +122,7 @@ export default class MultiplayerMenu extends Component {
         }
     }
 
-    private handleCancelClick(event: MouseEvent) {
+    private onCancelClick(event: MouseEvent) {
         if (event.target === this.cancelBtn) {
             EventHandler.callEvent(EventHandler.Event.MPMENU_CANCEL_OPT_CLICK);
         }
@@ -172,10 +172,10 @@ export default class MultiplayerMenu extends Component {
 
                 this.serverListElt.appendChild(serverOptParent);
                 serverOptParent.addEventListener("click", () => {
-                    this.handleServerClick(i, serverOptParent);
+                    this.onServerClick(i, serverOptParent);
                 });
                 serverOptParent.addEventListener("dblclick", () => {
-                    this.handleServerDblClick(i);
+                    this.onServerDblClick(i);
                 });
             }
         }

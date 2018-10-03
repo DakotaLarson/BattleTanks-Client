@@ -19,17 +19,17 @@ export default class Renderer extends Component {
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.scene = scene;
         this.camera = camera;
-        this.handleResize();
+        this.onResize();
 
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_RESIZE, this.handleResize, EventHandler.Level.LOW);
+        EventHandler.addListener(this, EventHandler.Event.DOM_RESIZE, this.onResize, EventHandler.Level.LOW);
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.render, EventHandler.Level.LOW);
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_RESIZE, this.handleResize, EventHandler.Level.LOW);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_RESIZE, this.onResize, EventHandler.Level.LOW);
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.render, EventHandler.Level.LOW);
     }
 
@@ -41,7 +41,7 @@ export default class Renderer extends Component {
         EventHandler.callEvent(EventHandler.Event.RENDERER_RENDER_COMPLETE, time);
     }
 
-    public handleResize() {
+    public onResize() {
         const dimensions = DomHandler.getDisplayDimensions();
         this.renderer.setSize(dimensions.width, dimensions.height);
     }

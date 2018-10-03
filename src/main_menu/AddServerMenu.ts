@@ -29,8 +29,8 @@ export default class AddServerMenu extends Component {
         this.nameInputElt.value = "";
         this.addressInputElt.value = "";
 
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleCancelOptionClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleSaveOptClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCancelOptionClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onSaveOptClick);
 
         this.element.style.display = "block";
 
@@ -38,13 +38,13 @@ export default class AddServerMenu extends Component {
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleCancelOptionClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleSaveOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCancelOptionClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onSaveOptClick);
         this.element.style.display = "";
     }
 
     // Click Handlers
-    private handleSaveOptClick(event: MouseEvent) {
+    private onSaveOptClick(event: MouseEvent) {
         if (event.target === this.saveBtn) {
             const name = this.nameInputElt.value;
             const address = this.addressInputElt.value;
@@ -57,7 +57,7 @@ export default class AddServerMenu extends Component {
         }
     }
 
-    private handleCancelOptionClick(event: MouseEvent) {
+    private onCancelOptionClick(event: MouseEvent) {
         if (event.target === this.cancelBtn) {
             EventHandler.callEvent(EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK);
         }

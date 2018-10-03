@@ -99,29 +99,29 @@ export default class CameraControls extends Component {
         if (this.state === -1) { return; }
         switch (this.state) {
             case ButtonState.PRIMARY:
-                this.handleRotation(event.movementX, event.movementY);
+                this.onRotation(event.movementX, event.movementY);
                 break;
             case ButtonState.SECONDARY:
-                this.handlePan(event.movementX, event.movementY);
+                this.onPan(event.movementX, event.movementY);
                 break;
             case ButtonState.TERTIARY:
-                this.handleZoom(event.movementY, false);
+                this.onZoom(event.movementY, false);
                 break;
         }
     }
 
     private onWheel(event: MouseWheelEvent) {
-        this.handleZoom(event.deltaY, true);
+        this.onZoom(event.deltaY, true);
     }
 
-    private handleRotation = (deltaX: number, deltaY: number) => {
+    private onRotation = (deltaX: number, deltaY: number) => {
          this.spherical.theta += deltaX * Math.PI / 180 / 3;
          this.spherical.phi += deltaY * Math.PI / 180 / 5;
          this.spherical.phi = Math.min(Math.PI / 2 - Math.PI / 24, this.spherical.phi);
          this.update();
     }
 
-    private handlePan = (deltaX: number, deltaY: number) => {
+    private onPan = (deltaX: number, deltaY: number) => {
         const offset = new Vector3();
         const position = this.camera.position;
         offset.copy(position).sub(this.target);
@@ -144,7 +144,7 @@ export default class CameraControls extends Component {
         this.update();
     }
 
-    private handleZoom(deltaY: number, isScroll: boolean) {
+    private onZoom(deltaY: number, isScroll: boolean) {
         if (isScroll) {
             if (deltaY > 0) {
                 this.spherical.radius = Math.min(this.spherical.radius + 2, 100);

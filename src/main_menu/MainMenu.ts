@@ -35,32 +35,32 @@ export default class MainMenu extends Component {
     public enable() {
 
         // TOP MENU
-        EventHandler.addListener(this, EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.handleTopSpOptClick);
-        EventHandler.addListener(this, EventHandler.Event.TOPMENU_MP_OPT_CLICK, this.handleTopMpOptClick);
-        EventHandler.addListener(this, EventHandler.Event.TOPMENU_OPT_OPT_CLICK, this.handleTopOptOptClick);
+        EventHandler.addListener(this, EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.onTopSpOptClick);
+        EventHandler.addListener(this, EventHandler.Event.TOPMENU_MP_OPT_CLICK, this.onTopMpOptClick);
+        EventHandler.addListener(this, EventHandler.Event.TOPMENU_OPT_OPT_CLICK, this.onTopOptOptClick);
 
         // SP MENU
-        EventHandler.addListener(this, EventHandler.Event.SPMENU_LOAD_OPT_CLICK, this.handleSpLoadOptClick);
-        EventHandler.addListener(this, EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.handleSpCancelOptClick);
-        EventHandler.addListener(this, EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
+        EventHandler.addListener(this, EventHandler.Event.SPMENU_LOAD_OPT_CLICK, this.onSpLoadOptClick);
+        EventHandler.addListener(this, EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.onSpCancelOptClick);
+        EventHandler.addListener(this, EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.onSpCreateOptClick);
 
         // MP MENU
-        EventHandler.addListener(this, EventHandler.Event.MPMENU_ADDSERVER_OPT_CLICK, this.handleMpAddServerOptClick);
-        EventHandler.addListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.handleMpJoinOptClick);
-        EventHandler.addListener(this, EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.handleMpCancelOptClick);
+        EventHandler.addListener(this, EventHandler.Event.MPMENU_ADDSERVER_OPT_CLICK, this.onMpAddServerOptClick);
+        EventHandler.addListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.onMpJoinOptClick);
+        EventHandler.addListener(this, EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.onMpCancelOptClick);
 
         // OPT MENU
-        EventHandler.addListener(this, EventHandler.Event.OPTMENU_RETURN_OPT_CLICK, this.handleOptCancelOptClick);
+        EventHandler.addListener(this, EventHandler.Event.OPTMENU_RETURN_OPT_CLICK, this.onOptCancelOptClick);
 
         // CREATE WORLD MENU
-        EventHandler.addListener(this, EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.handleCreateWorldCancelClick);
+        EventHandler.addListener(this, EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.onCreateWorldCancelClick);
 
         // LOAD WORLD MENU
-        EventHandler.addListener(this, EventHandler.Event.LOADWORLDMENU_CANCEL_OPT_CLICK, this.handleLoadWorldCancelClick);
+        EventHandler.addListener(this, EventHandler.Event.LOADWORLDMENU_CANCEL_OPT_CLICK, this.onLoadWorldCancelClick);
 
         // ADD SERVER MENU
-        EventHandler.addListener(this, EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK, this.handleAddServerClick);
-        EventHandler.addListener(this, EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK, this.handleAddServerClick);
+        EventHandler.addListener(this, EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK, this.onAddServerClick);
+        EventHandler.addListener(this, EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK, this.onAddServerClick);
 
         this.attachChild(this.topMenu);
 
@@ -70,99 +70,99 @@ export default class MainMenu extends Component {
     public disable() {
 
         // TOP MENU
-        EventHandler.removeListener(this, EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.handleTopSpOptClick);
-        EventHandler.removeListener(this, EventHandler.Event.TOPMENU_MP_OPT_CLICK, this.handleTopMpOptClick);
-        EventHandler.removeListener(this, EventHandler.Event.TOPMENU_OPT_OPT_CLICK, this.handleTopOptOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.onTopSpOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.TOPMENU_MP_OPT_CLICK, this.onTopMpOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.TOPMENU_OPT_OPT_CLICK, this.onTopOptOptClick);
 
         // SP MENU
-        EventHandler.removeListener(this, EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.handleSpCreateOptClick);
-        EventHandler.removeListener(this, EventHandler.Event.SPMENU_LOAD_OPT_CLICK, this.handleSpLoadOptClick);
-        EventHandler.removeListener(this, EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.handleSpCancelOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.onSpCreateOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.SPMENU_LOAD_OPT_CLICK, this.onSpLoadOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.onSpCancelOptClick);
 
         // MP MENU
-        EventHandler.removeListener(this, EventHandler.Event.MPMENU_ADDSERVER_OPT_CLICK, this.handleMpAddServerOptClick);
-        EventHandler.removeListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.handleMpJoinOptClick);
-        EventHandler.removeListener(this, EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.handleMpCancelOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.MPMENU_ADDSERVER_OPT_CLICK, this.onMpAddServerOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.onMpJoinOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.onMpCancelOptClick);
 
         // OPT MENU
-        EventHandler.removeListener(this, EventHandler.Event.OPTMENU_RETURN_OPT_CLICK, this.handleOptCancelOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.OPTMENU_RETURN_OPT_CLICK, this.onOptCancelOptClick);
 
         // SPCREATE MENU
-        EventHandler.removeListener(this, EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.handleCreateWorldCancelClick);
+        EventHandler.removeListener(this, EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.onCreateWorldCancelClick);
 
         // ADD SERVER MENU
-        EventHandler.removeListener(this, EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK, this.handleAddServerClick);
-        EventHandler.removeListener(this, EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK, this.handleAddServerClick);
+        EventHandler.removeListener(this, EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK, this.onAddServerClick);
+        EventHandler.removeListener(this, EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK, this.onAddServerClick);
 
         this.element.style.display = "";
     }
 
     // Top menu options
-    private handleTopSpOptClick() {
+    private onTopSpOptClick() {
         this.detachChild(this.topMenu);
         this.attachChild(this.spMenu);
     }
 
-    private handleTopMpOptClick() {
+    private onTopMpOptClick() {
         this.detachChild(this.topMenu);
         this.attachChild(this.mpMenu);
     }
 
-    private handleTopOptOptClick() {
+    private onTopOptOptClick() {
         this.detachChild(this.topMenu);
         this.attachChild(this.optMenu);
     }
 
     // Singleplayer Option Handlers
-    private handleSpLoadOptClick() {
+    private onSpLoadOptClick() {
         this.detachChild(this.spMenu);
         this.attachChild(this.loadMenu);
     }
 
-    private handleSpCancelOptClick() {
+    private onSpCancelOptClick() {
         this.detachChild(this.spMenu);
         this.attachChild(this.topMenu);
     }
 
-    private handleSpCreateOptClick() {
+    private onSpCreateOptClick() {
         this.detachChild(this.spMenu);
         this.attachChild(this.createMenu);
     }
 
     // Multiplayer Option Handlers
-    private handleMpAddServerOptClick() {
+    private onMpAddServerOptClick() {
         this.detachChild(this.mpMenu);
         this.attachChild(this.addServerMenu);
     }
 
-    private handleMpJoinOptClick() {
+    private onMpJoinOptClick() {
         this.detachChild(this.mpMenu);
     }
 
-    private handleMpCancelOptClick() {
+    private onMpCancelOptClick() {
         this.detachChild(this.mpMenu);
         this.attachChild(this.topMenu);
     }
 
     // Options Option Handlers
-    private handleOptCancelOptClick() {
+    private onOptCancelOptClick() {
         this.detachChild(this.optMenu);
         this.attachChild(this.topMenu);
     }
 
     // create world menu
-    private handleCreateWorldCancelClick() {
+    private onCreateWorldCancelClick() {
         this.detachChild(this.createMenu);
         this.attachChild(this.spMenu);
     }
 
     // load world menu
-    private handleLoadWorldCancelClick() {
+    private onLoadWorldCancelClick() {
         this.detachChild(this.loadMenu);
         this.attachChild(this.spMenu);
     }
 
-    private handleAddServerClick() {
+    private onAddServerClick() {
         this.detachChild(this.addServerMenu);
         this.attachChild(this.mpMenu);
     }

@@ -16,18 +16,18 @@ export default class MultiplayerGameMenu extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
 
         this.element.style.display = "block";
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
 
         this.element.style.display = "";
     }
 
-    private handleClick(event: MouseEvent) {
+    private onClick(event: MouseEvent) {
         if (event.target === this.cancelBtn) {
             EventHandler.callEvent(EventHandler.Event.GAMEMENU_CLOSE_REQUEST);
         } else if (event.target === this.disconnectBtn) {

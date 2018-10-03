@@ -20,35 +20,35 @@ export default class TopMenu extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleSPOption);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleMPOption);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleOptOption);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onSPOption);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onMPOption);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onOptOption);
 
         this.element.style.display = "block";
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleSPOption);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleMPOption);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleOptOption);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onSPOption);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onMPOption);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onOptOption);
 
         this.element.style.display = "";
     }
 
     // Click Handlers
-    private handleSPOption(event: MouseEvent) {
+    private onSPOption(event: MouseEvent) {
         if (event.target === this.spBtn) {
             EventHandler.callEvent(EventHandler.Event.TOPMENU_SP_OPT_CLICK);
         }
     }
 
-    private handleMPOption(event: MouseEvent) {
+    private onMPOption(event: MouseEvent) {
         if (event.target === this.mpBtn) {
             EventHandler.callEvent(EventHandler.Event.TOPMENU_MP_OPT_CLICK);
         }
     }
 
-    private handleOptOption(event: MouseEvent) {
+    private onOptOption(event: MouseEvent) {
         if (event.target === this.optBtn) {
             EventHandler.callEvent(EventHandler.Event.TOPMENU_OPT_OPT_CLICK);
         }

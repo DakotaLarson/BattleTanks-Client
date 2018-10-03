@@ -39,36 +39,36 @@ export default class OptionsMenu extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleBackwardClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleForwardClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleLeftClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleRightClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleReturnClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.handleShootClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onBackwardClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onForwardClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onLeftClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onRightClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onShootClick);
 
-        DomEventHandler.addListener(this, this.volumeValueElt, "change", this.handleVolumeChange);
-        DomEventHandler.addListener(this, this.mouseValueElt, "change", this.handleMouseChange);
+        DomEventHandler.addListener(this, this.volumeValueElt, "change", this.onVolumeChange);
+        DomEventHandler.addListener(this, this.mouseValueElt, "change", this.onMouseChange);
 
         this.element.style.display = "block";
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleBackwardClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleForwardClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleLeftClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleRightClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleReturnClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.handleShootClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onBackwardClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onForwardClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onLeftClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onRightClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onShootClick);
 
-        DomEventHandler.removeListener(this, this.volumeValueElt, "change", this.handleVolumeChange);
-        DomEventHandler.removeListener(this, this.mouseValueElt, "change", this.handleMouseChange);
+        DomEventHandler.removeListener(this, this.volumeValueElt, "change", this.onVolumeChange);
+        DomEventHandler.removeListener(this, this.mouseValueElt, "change", this.onMouseChange);
 
         this.isListening = false;
 
         this.element.style.display = "";
     }
 
-    private handleForwardClick(event: MouseEvent) {
+    private onForwardClick(event: MouseEvent) {
         if (event.target === this.forwardValueElt) {
             if (!this.isListening) {
                 this.listenForInput(this.forwardValueElt).then((data) => {
@@ -78,7 +78,7 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    private handleBackwardClick(event: MouseEvent) {
+    private onBackwardClick(event: MouseEvent) {
         if (event.target === this.backwardValueElt) {
             if (!this.isListening) {
                 this.listenForInput(this.backwardValueElt).then((data) => {
@@ -88,7 +88,7 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    private handleLeftClick(event: MouseEvent) {
+    private onLeftClick(event: MouseEvent) {
         if (event.target === this.leftValueElt) {
             if (!this.isListening) {
                 this.listenForInput(this.leftValueElt).then((data) => {
@@ -98,7 +98,7 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    private handleRightClick(event: MouseEvent) {
+    private onRightClick(event: MouseEvent) {
         if (event.target === this.rightValueElt) {
             if (!this.isListening) {
                 this.listenForInput(this.rightValueElt).then((data) => {
@@ -108,7 +108,7 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    private handleShootClick(event: MouseEvent) {
+    private onShootClick(event: MouseEvent) {
         if (event.target === this.shootValueElt) {
             if (!this.isListening) {
                 this.listenForInput(this.shootValueElt).then((data) => {
@@ -118,7 +118,7 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    private handleReturnClick(event: MouseEvent) {
+    private onReturnClick(event: MouseEvent) {
         if (event.target === this.returnBtn) {
             if (!this.isListening) {
                 EventHandler.callEvent(EventHandler.Event.OPTMENU_RETURN_OPT_CLICK);
@@ -126,12 +126,12 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    private handleVolumeChange() {
+    private onVolumeChange() {
         const value = Number(this.volumeValueElt.value);
         this.saveChange("volume", value);
     }
 
-    private handleMouseChange() {
+    private onMouseChange() {
         const value = Number(this.mouseValueElt.value);
         this.saveChange("mouseSensitivity", value);
     }
