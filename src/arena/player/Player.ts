@@ -13,10 +13,13 @@ export default class Player extends Component {
 
     public position: Vector3;
 
+    public id: number;
+
     public bodyRotation: number;
     public headRotation: number;
 
-    public id: number;
+    private movementVelocity: number;
+    private rotationVelocity: number;
 
     private movingForward: boolean;
     private movingBackward: boolean;
@@ -36,6 +39,9 @@ export default class Player extends Component {
 
         this.rotatingLeft = false;
         this.rotatingRight = false;
+
+        this.movementVelocity = 0;
+        this.rotationVelocity = 0;
     }
 
     public enable() {
@@ -49,7 +55,7 @@ export default class Player extends Component {
 
         EventHandler.addListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
-        PacketSender.sendPlayerMove(this.position, this.bodyRotation, this.headRotation);
+        PacketSender.sendPlayerMove(this.position, this.movementVelocity, this.rotationVelocity, this.bodyRotation, this.headRotation);
     }
 
     public disable() {
@@ -109,26 +115,39 @@ export default class Player extends Component {
 
     private onUpdate(delta: number) {
 
-        let movementSpeed = 0;
-        let rotationSpeed = 0;
+        const multiplier = 10;
+
+        // Velocity always trends towards 0 with this calculation.
+        this.movementVelocity -= this.movementVelocity * 10 * delta;
+        this.rotationVelocity -= this.rotationVelocity * 10 * delta;
 
         if (this.movingForward && !this.movingBackward) {
-            movementSpeed = PLAYER_MOVEMENT_SPEED;
+            this.movementVelocity += PLAYER_MOVEMENT_SPEED * delta * multiplier;
         } else if (this.movingBackward && !this.movingForward) {
-            movementSpeed = -PLAYER_MOVEMENT_SPEED;
+            this.movementVelocity -= PLAYER_MOVEMENT_SPEED * delta * multiplier;
         }
 
         if (this.rotatingLeft && !this.rotatingRight) {
-            rotationSpeed = PLAYER_ROTATION_SPEED;
+            this.rotationVelocity += PLAYER_ROTATION_SPEED * delta * multiplier;
         } else if (this.rotatingRight && !this.rotatingLeft) {
-            rotationSpeed = -PLAYER_ROTATION_SPEED;
+            this.rotationVelocity -=  PLAYER_ROTATION_SPEED * delta * multiplier;
         }
 
-        const potentialRotation = (this.bodyRotation + delta * rotationSpeed);
+        const moving = this.movingForward && this.movingBackward && this.rotatingLeft && this.rotatingRight;
+
+        if (!moving && Math.abs(this.movementVelocity) < 0.005) {
+            this.movementVelocity = 0;
+        }
+
+        if (!moving && Math.abs(this.rotationVelocity) < 0.005) {
+            this.rotationVelocity = 0;
+        }
+
+        const potentialRotation = (this.bodyRotation + delta * this.rotationVelocity);
 
         const potentialPosition = this.position.clone();
-        potentialPosition.x += delta * movementSpeed * Math.sin(potentialRotation),
-        potentialPosition.z += delta * movementSpeed * Math.cos(potentialRotation);
+        potentialPosition.x += delta * this.movementVelocity * Math.sin(potentialRotation),
+        potentialPosition.z += delta * this.movementVelocity * Math.cos(potentialRotation);
 
         const collisionCorrection = CollisionHandler.getCollision(potentialPosition.clone(), potentialRotation);
 
@@ -155,7 +174,7 @@ export default class Player extends Component {
     }
 
     private onTick() {
-        PacketSender.sendPlayerMove(this.position, this.bodyRotation, this.headRotation);
+        PacketSender.sendPlayerMove(this.position, this.movementVelocity, this.rotationVelocity, this.bodyRotation, this.headRotation);
     }
 
     private computeTurretRotation() {

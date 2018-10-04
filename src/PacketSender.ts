@@ -96,8 +96,8 @@ export default class PacketSender {
         send(data as ArrayBuffer);
     }
 
-    public static sendPlayerMove(pos: Vector3, bodyRot: number, headRot: number) {
-        const dataArr = [pos.x, pos.y, pos.z, bodyRot, headRot];
+    public static sendPlayerMove(pos: Vector3, movementVelocity: number, rotationVelocity: number, bodyRot: number, headRot: number) {
+        const dataArr = [pos.x, pos.y, pos.z, movementVelocity, rotationVelocity, bodyRot, headRot];
         const data = constructData(Packet.PLAYER_MOVE, dataArr, DataType.FLOAT_ARRAY);
         send(data as ArrayBuffer);
     }
