@@ -18,12 +18,12 @@ export default class AudioHandler extends Component {
 
         const audioLoader = new AudioLoader();
         // @ts-ignore Disregard extra arguments.
-        audioLoader.load("audio/win.wav", (buffer: AudioBuffer) => {
+        audioLoader.load(location.pathname + "audio/win.wav", (buffer: AudioBuffer) => {
             this.winAudioBuffer = buffer;
         });
 
         // @ts-ignore Disregard extra arguments.
-        audioLoader.load("audio/lose.wav", (buffer: AudioBuffer) => {
+        audioLoader.load(location.pathname + "audio/lose.wav", (buffer: AudioBuffer) => {
             this.loseAudioBuffer = buffer;
         });
     }

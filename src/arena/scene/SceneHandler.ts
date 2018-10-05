@@ -48,7 +48,7 @@ export default class SceneHandler extends Component {
         this.scenePlayerHandler = new ScenePlayerHandler(this.scene, audioListener);
 
         this.spawnVisualTexture = undefined;
-        new TextureLoader().load("/res/arrow.png", (texture) => {
+        new TextureLoader().load(location.pathname + "res/arrow.png", (texture) => {
             this.spawnVisualTexture = texture;
         });
     }
