@@ -60,11 +60,15 @@ const receiveConnectedPlayerRemove = (data: string) => {
 const receiveConnectedPlayerMove = (data: any) => {
     const playerId = data.header;
     const pos = new Vector3(data.body[0], data.body[1], data.body[2]);
-    const bodyRot = data.body[3];
-    const headRot = data.body[4];
+    const movementVelocity = data.body[3];
+    const rotationVelocity = data.body[4];
+    const bodyRot = data.body[5];
+    const headRot = data.body[6];
     EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, {
         id: playerId,
         pos,
+        movementVelocity,
+        rotationVelocity,
         bodyRot,
         headRot,
     });

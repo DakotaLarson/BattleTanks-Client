@@ -47,6 +47,7 @@ export default class MultiplayerArena extends Arena {
 
         this.gameMenuOpen = false;
         this.connectedPlayers.clear();
+        this.player = undefined;
     }
 
     private onPlayerAddition(data: any) {
@@ -74,18 +75,24 @@ export default class MultiplayerArena extends Arena {
     private onConnectedPlayerAddition(data: any) {
         const player = new ConnectedPlayer(data.id, data.name, data.pos, data.headRot);
         this.connectedPlayers.set(data.id, player);
+        this.attachChild(player);
     }
 
     private onConnectedPlayerMove(data: any) {
-        const player = this.connectedPlayers.get(data.id);
-        if (player) {
-            player.updatePosition(data.pos, data.bodyRot, data.headRot);
-
+        if (!data.interpolated) {
+            const player = this.connectedPlayers.get(data.id);
+            if (player) {
+                player.updatePosition(data.pos, data.movementVelocity, data.rotationVelocity, data.bodyRot, data.headRot);
+            }
         }
     }
 
     private onConnectedPlayerRemoval(id: number) {
+        const player = this.connectedPlayers.get(id);
         this.connectedPlayers.delete(id);
+        if (player) {
+            this.detachChild(player);
+        }
     }
 
     private onGameMenuOpen() {

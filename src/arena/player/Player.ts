@@ -55,6 +55,10 @@ export default class Player extends Component {
 
         EventHandler.addListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
+        this.movementVelocity = 0;
+        this.rotationVelocity = 0;
+        this.movingForward = this.movingBackward = this.rotatingLeft = this.rotatingRight = false;
+
         PacketSender.sendPlayerMove(this.position, this.movementVelocity, this.rotationVelocity, this.bodyRotation, this.headRotation);
     }
 

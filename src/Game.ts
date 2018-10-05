@@ -22,12 +22,12 @@ class Game extends Component {
 
     constructor() {
         super();
+        this.options = new Options();
         this.mainMenu = new MainMenu();
         this.connectionScreen = new ConnectionScreen();
         this.arenaHandler = new ArenaHandler();
         this.gameStatusHandler = new GameStatusHandler();
         this.alertMessageHandler = new AlertMessageHandler();
-        this.options = new Options();
     }
     public enable() {
         EventHandler.callEvent(EventHandler.Event.GAME_START);
