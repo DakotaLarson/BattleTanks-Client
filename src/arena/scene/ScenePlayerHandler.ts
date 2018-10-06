@@ -6,7 +6,7 @@ import Globals from "../../Globals";
 interface IPlayerObj {
     body: Mesh;
     head: Mesh;
-    nameplate: Mesh;
+    nameplate?: Mesh;
 }
 
 export default class ScenePlayerHandler extends Component {
@@ -99,7 +99,10 @@ export default class ScenePlayerHandler extends Component {
         let playerValue = playerValues.next();
         while (!playerValue.done) {
             const playerObj = playerValue.value;
-            this.scene.remove(playerObj.body, playerObj.head, playerObj.nameplate);
+            this.scene.remove(playerObj.body, playerObj.head);
+            if (playerObj.nameplate) {
+                this.scene.remove(playerObj.nameplate);
+            }
 
             playerValue = playerValues.next();
         }
@@ -129,11 +132,13 @@ export default class ScenePlayerHandler extends Component {
                 body.position.copy(pos).add(this.playerOffset);
                 body.rotation.y = data.bodyRot;
 
-                const nameplatePos = nameplate.position;
-                nameplatePos.copy(pos).add(this.playerOffset);
+                if (nameplate) {
+                    const nameplatePos = nameplate.position;
+                    nameplatePos.copy(pos).add(this.playerOffset);
 
-                const cameraPos = this.camera.position;
-                nameplate.lookAt(cameraPos);
+                    const cameraPos = this.camera.position;
+                    nameplate.lookAt(cameraPos);
+                }
             }
         }
     }
@@ -144,7 +149,9 @@ export default class ScenePlayerHandler extends Component {
             if (obj) {
                 this.scene.remove(obj.body);
                 this.scene.remove(obj.head);
-                this.scene.remove(obj.nameplate);
+                if (obj.nameplate) {
+                    this.scene.remove(obj.nameplate);
+                }
                 this.players.delete(id);
                 if (this.controlledPlayerId === id) {
                     this.controlledPlayerId = -1;
@@ -211,16 +218,27 @@ export default class ScenePlayerHandler extends Component {
         const headMesh = new Mesh(playerHeadGeo, headMaterial);
         headMesh.position.copy(bodyPos).add(this.playerOffset);
 
-        const nameplateMesh = this.generateNameplate(name);
-        nameplateMesh.position.copy(bodyPos).add(this.playerOffset);
+        this.scene.add(bodyMesh, headMesh);
 
-        this.scene.add(bodyMesh, headMesh, nameplateMesh);
+        let playerObj: IPlayerObj;
 
-        const playerObj: IPlayerObj = {
-            body: bodyMesh,
-            head: headMesh,
-            nameplate: nameplateMesh,
-        };
+        if (isConnectedPlayer) {
+            const nameplateMesh = this.generateNameplate(name);
+            nameplateMesh.position.copy(bodyPos).add(this.playerOffset);
+
+            this.scene.add(nameplateMesh);
+
+            playerObj = {
+                body: bodyMesh,
+                head: headMesh,
+                nameplate: nameplateMesh,
+            };
+        } else {
+            playerObj = {
+                body: bodyMesh,
+                head: headMesh,
+            };
+        }
 
         this.players.set(id, playerObj);
 
