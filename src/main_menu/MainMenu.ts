@@ -59,8 +59,8 @@ export default class MainMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.LOADWORLDMENU_CANCEL_OPT_CLICK, this.onLoadWorldCancelClick);
 
         // ADD SERVER MENU
-        EventHandler.addListener(this, EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK, this.onAddServerClick);
-        EventHandler.addListener(this, EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK, this.onAddServerClick);
+        EventHandler.addListener(this, EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK, this.onAddServerCancel);
+        EventHandler.addListener(this, EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK, this.onAddServerSave);
 
         this.attachChild(this.topMenu);
 
@@ -91,8 +91,8 @@ export default class MainMenu extends Component {
         EventHandler.removeListener(this, EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.onCreateWorldCancelClick);
 
         // ADD SERVER MENU
-        EventHandler.removeListener(this, EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK, this.onAddServerClick);
-        EventHandler.removeListener(this, EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK, this.onAddServerClick);
+        EventHandler.removeListener(this, EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK, this.onAddServerCancel);
+        EventHandler.removeListener(this, EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK, this.onAddServerSave);
 
         this.element.style.display = "";
     }
@@ -101,69 +101,108 @@ export default class MainMenu extends Component {
     private onTopSpOptClick() {
         this.detachChild(this.topMenu);
         this.attachChild(this.spMenu);
+        this.playSelect();
     }
 
     private onTopMpOptClick() {
         this.detachChild(this.topMenu);
         this.attachChild(this.mpMenu);
+        this.playSelect();
     }
 
     private onTopOptOptClick() {
         this.detachChild(this.topMenu);
         this.attachChild(this.optMenu);
+        this.playSelect();
     }
 
     // Singleplayer Option Handlers
     private onSpLoadOptClick() {
         this.detachChild(this.spMenu);
         this.attachChild(this.loadMenu);
+        this.playSelect();
     }
 
     private onSpCancelOptClick() {
         this.detachChild(this.spMenu);
         this.attachChild(this.topMenu);
+        this.playReturn();
     }
 
     private onSpCreateOptClick() {
         this.detachChild(this.spMenu);
         this.attachChild(this.createMenu);
+        this.playSelect();
     }
 
     // Multiplayer Option Handlers
     private onMpAddServerOptClick() {
         this.detachChild(this.mpMenu);
         this.attachChild(this.addServerMenu);
+        this.playSelect();
     }
 
     private onMpJoinOptClick() {
         this.detachChild(this.mpMenu);
+        this.playValidate();
     }
 
     private onMpCancelOptClick() {
         this.detachChild(this.mpMenu);
         this.attachChild(this.topMenu);
+        this.playReturn();
     }
 
     // Options Option Handlers
     private onOptCancelOptClick() {
         this.detachChild(this.optMenu);
         this.attachChild(this.topMenu);
+        this.playSelect();
     }
 
     // create world menu
     private onCreateWorldCancelClick() {
         this.detachChild(this.createMenu);
         this.attachChild(this.spMenu);
+        this.playReturn();
     }
 
     // load world menu
     private onLoadWorldCancelClick() {
         this.detachChild(this.loadMenu);
         this.attachChild(this.spMenu);
+        this.playReturn();
     }
 
-    private onAddServerClick() {
+    private onAddServerCancel() {
         this.detachChild(this.addServerMenu);
         this.attachChild(this.mpMenu);
+        this.playReturn();
+    }
+
+    private onAddServerSave() {
+        this.detachChild(this.addServerMenu);
+        this.attachChild(this.mpMenu);
+        this.playValidate();
+    }
+
+    private playReturn() {
+        const audio = new Audio(location.pathname + "audio/menu-back.wav");
+        audio.play();
+    }
+
+    private playSelect() {
+        const audio = new Audio(location.pathname + "audio/menu-select.wav");
+        audio.play();
+    }
+
+    private playValidate() {
+        const audio = new Audio(location.pathname + "audio/menu-validate.wav");
+        audio.play();
+    }
+
+    private playHover() {
+        const audio = new Audio(location.pathname + "audio/menu-hover.wav");
+        audio.play();
     }
 }

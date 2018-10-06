@@ -5,6 +5,7 @@ import Component from "../component/Component";
 import EventHandler from "../EventHandler";
 import MultiplayerGameMenu from "../game_menu/MultiplayerGameMenu";
 import SingleplayerGameMenu from "../game_menu/SingleplayerGameMenu";
+import Globals from "../Globals";
 import MultiplayerGUI from "../gui/MultiplayerGUI";
 import SingleplayerGUI from "../gui/SingleplayerGUI";
 import RaycastHandler from "../RaycastHandler";
@@ -44,6 +45,8 @@ export default class ArenaHandler extends Component {
         super();
 
         const perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+        Globals.setGlobal(Globals.Global.CAMERA, perspectiveCamera);
+
         const audioListener = new AudioListener();
         perspectiveCamera.add(audioListener);
 

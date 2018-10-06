@@ -19,19 +19,15 @@ export default class GameStatusHandler extends Component {
     public onGameStatusUpdate(status: number) {
         switch (status) {
             case GameStatus.WAITING:
-                console.log("Waiting GameStatus");
                 EventHandler.callEvent(EventHandler.Event.GAME_STATUS_WAITING);
                 break;
             case GameStatus.PREPARING:
-                console.log("Preparing GameStatus");
                 EventHandler.callEvent(EventHandler.Event.GAME_STATUS_PREPARING);
                 break;
             case GameStatus.RUNNING:
-                console.log("Running GameStatus");
                 EventHandler.callEvent(EventHandler.Event.GAME_STATUS_RUNNING);
                 break;
             case GameStatus.FINISHING:
-                console.log("Finishing GameStatus");
                 EventHandler.callEvent(EventHandler.Event.GAME_STATUS_FINISHING);
                 break;
         }

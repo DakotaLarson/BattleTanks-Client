@@ -15,7 +15,7 @@ export default class MultiplayerMenu extends Component {
     private servers: any[] | undefined;
 
     private selectedElt: HTMLElement | undefined;
-    private selectedIndex: number | undefined;
+    private selectedIndex: number;
 
     constructor(mainMenu: HTMLElement) {
         super();
@@ -27,6 +27,8 @@ export default class MultiplayerMenu extends Component {
         this.joinServerBtn = DomHandler.getElement("#mp-opt-join-server", this.element);
         this.removeServerBtn = DomHandler.getElement("#mp-opt-remove-server", this.element);
         this.cancelBtn = DomHandler.getElement("#mp-opt-cancel", this.element);
+
+        this.selectedIndex = -1;
     }
 
     public enable() {
@@ -98,7 +100,7 @@ export default class MultiplayerMenu extends Component {
 
     private onJoinServerClick(event: MouseEvent) {
         if (event.target === this.joinServerBtn) {
-            if (this.servers && this.selectedIndex) {
+            if (this.servers && this.selectedIndex !== -1) {
                 if (!this.joinServerBtn.classList.contains("disabled")) {
                     const address = this.servers[this.selectedIndex].address;
                     EventHandler.callEvent(EventHandler.Event.MPMENU_JOIN_OPT_CLICK, address);
@@ -109,7 +111,7 @@ export default class MultiplayerMenu extends Component {
 
     private onRemoveServerClick(event: MouseEvent) {
         if (event.target === this.removeServerBtn) {
-            if (this.servers && this.selectedIndex) {
+            if (this.servers && this.selectedIndex !== -1) {
                 if (!this.removeServerBtn.classList.contains("disabled")) {
                     const confirmation = window.confirm("Are you sure you want to remove this server?");
                     if (confirmation) {

@@ -1,6 +1,7 @@
 import Component from "./component/ChildComponent";
 import DomEventHandler from "./DomEventHandler";
 import EventHandler from "./EventHandler";
+import Globals from "./Globals";
 import PacketReceiver from "./PacketReceiver";
 import PacketSender from "./PacketSender";
 
@@ -49,7 +50,9 @@ export default class MultiplayerConnection extends Component {
     public initHandshake() {
         const num = Math.floor(Math.random() * 1000);
         EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_OPEN);
-        PacketSender.sendPlayerJoin("Guest " + num);
+        const name = "Guest " + num;
+        Globals.setGlobal(Globals.Global.PLAYER_NAME, name);
+        PacketSender.sendPlayerJoin(name);
     }
 
     public onClose(event: any) {

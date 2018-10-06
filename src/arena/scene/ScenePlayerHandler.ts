@@ -1,15 +1,19 @@
-import { AudioBuffer, AudioListener, AudioLoader, BoxGeometry, CylinderGeometry, DoubleSide, Geometry, Mesh, MeshLambertMaterial, PositionalAudio, Scene, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BoxGeometry, CylinderGeometry, DoubleSide, Font, FontLoader, Geometry, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, Scene, ShapeBufferGeometry, Vector3, Vector4} from "three";
 import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
+import Globals from "../../Globals";
 
 interface IPlayerObj {
     body: Mesh;
     head: Mesh;
+    nameplate: Mesh;
 }
 
 export default class ScenePlayerHandler extends Component {
 
     private scene: Scene;
+    private camera: PerspectiveCamera;
+
     private players: Map<number, IPlayerObj>;
 
     private playerBodyWidth: number;
@@ -21,6 +25,8 @@ export default class ScenePlayerHandler extends Component {
     private shootSoundBuffer: AudioBuffer | undefined;
     private invalidShootSoundBuffer: AudioBuffer | undefined;
 
+    private font: Font | undefined;
+
     private controlledPlayerId: number;
 
     private playerOffset: Vector3;
@@ -30,7 +36,7 @@ export default class ScenePlayerHandler extends Component {
         this.players = new Map();
 
         this.scene = scene;
-
+        this.camera = Globals.getGlobal(Globals.Global.CAMERA);
         this.audioListener = audioListener;
 
         const audioLoader = new AudioLoader();
@@ -43,6 +49,11 @@ export default class ScenePlayerHandler extends Component {
         // @ts-ignore Disregard additional arguments
         audioLoader.load(location.pathname + "audio/shoot-invalid.wav", (buffer: AudioBuffer) => {
             this.invalidShootSoundBuffer = buffer;
+        });
+
+        const fontLoader = new FontLoader();
+        fontLoader.load(location.pathname + "res/font/no_continue.json", (font: Font) => {
+            this.font = font;
         });
 
         this.playerBodyWidth = 1;
@@ -88,18 +99,19 @@ export default class ScenePlayerHandler extends Component {
         let playerValue = playerValues.next();
         while (!playerValue.done) {
             const playerObj = playerValue.value;
-            this.scene.remove(playerObj.body, playerObj.head);
+            this.scene.remove(playerObj.body, playerObj.head, playerObj.nameplate);
 
             playerValue = playerValues.next();
         }
     }
 
     private onPlayerAddition(data: any) {
-        this.addPlayer(data.id, data.pos, false);
+        const name = Globals.getGlobal(Globals.Global.PLAYER_NAME);
+        this.addPlayer(data.id, data.pos, name, false);
     }
 
     private onConnectedPlayerJoin(data: any) {
-        this.addPlayer(data.id, data.pos, true);
+        this.addPlayer(data.id, data.pos, data.name, true);
     }
 
     private onPlayerMove(data: any) {
@@ -109,12 +121,19 @@ export default class ScenePlayerHandler extends Component {
                 const pos = new Vector3(data.pos.x, data.pos.y, data.pos.z);
                 const body = playerObj.body;
                 const head = playerObj.head;
+                const nameplate = playerObj.nameplate;
 
                 head.position.copy(pos).add(this.playerOffset);
                 head.rotation.y = data.headRot;
 
                 body.position.copy(pos).add(this.playerOffset);
                 body.rotation.y = data.bodyRot;
+
+                const nameplatePos = nameplate.position;
+                nameplatePos.copy(pos).add(this.playerOffset);
+
+                const cameraPos = this.camera.position;
+                nameplate.lookAt(cameraPos);
             }
         }
     }
@@ -125,6 +144,7 @@ export default class ScenePlayerHandler extends Component {
             if (obj) {
                 this.scene.remove(obj.body);
                 this.scene.remove(obj.head);
+                this.scene.remove(obj.nameplate);
                 this.players.delete(id);
                 if (this.controlledPlayerId === id) {
                     this.controlledPlayerId = -1;
@@ -133,7 +153,7 @@ export default class ScenePlayerHandler extends Component {
         }
     }
 
-    private addPlayer(id: number, pos: Vector4, isConnectedPlayer: boolean) {
+    private addPlayer(id: number, pos: Vector4, name: string, isConnectedPlayer: boolean) {
         const playerGeo = new Geometry();
         const playerHeadGeo = new Geometry();
 
@@ -191,11 +211,15 @@ export default class ScenePlayerHandler extends Component {
         const headMesh = new Mesh(playerHeadGeo, headMaterial);
         headMesh.position.copy(bodyPos).add(this.playerOffset);
 
-        this.scene.add(bodyMesh, headMesh);
+        const nameplateMesh = this.generateNameplate(name);
+        nameplateMesh.position.copy(bodyPos).add(this.playerOffset);
+
+        this.scene.add(bodyMesh, headMesh, nameplateMesh);
 
         const playerObj: IPlayerObj = {
             body: bodyMesh,
             head: headMesh,
+            nameplate: nameplateMesh,
         };
 
         this.players.set(id, playerObj);
@@ -245,6 +269,28 @@ export default class ScenePlayerHandler extends Component {
                 audio.setBuffer(this.invalidShootSoundBuffer as AudioBuffer);
                 audio.play();
             }
+        }
+    }
+
+    private generateNameplate(name: string) {
+        if (this.font) {
+            // @ts-ignore Types specification is not remotely correct.
+            const shapes = this.font.generateShapes(name, 0.1);
+
+            const geometry = new ShapeBufferGeometry(shapes);
+            geometry.computeBoundingBox();
+            const xMid = - 0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+            geometry.translate(xMid, 0.75, 0);
+
+            const material = new MeshBasicMaterial({
+                color: 0xffffff,
+                side: DoubleSide,
+            });
+
+            const mesh = new Mesh(geometry, material);
+            return mesh;
+        } else {
+            throw new Error("Font is not loaded");
         }
     }
 }
