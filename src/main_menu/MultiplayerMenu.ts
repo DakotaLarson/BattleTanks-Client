@@ -152,7 +152,7 @@ export default class MultiplayerMenu extends Component {
 
                 // parent
                 const serverOptParent = document.createElement("div");
-                serverOptParent.classList.add("server-opt-parent");
+                serverOptParent.classList.add("server-opt-parent", "opt-title");
 
                 // name
                 const serverOptName = document.createElement("div");

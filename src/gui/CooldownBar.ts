@@ -12,19 +12,19 @@ export default class CooldownBar extends ChildComponent {
 
     private cooldownStartTime: number;
 
-    constructor(parentElt: HTMLElement, cooldownTime: number) {
+    constructor(parentElt: HTMLElement) {
         super();
 
         this.barContainer = DomHandler.getElement(".cooldown-bar-container", parentElt);
         this.barParent = DomHandler.getElement("#cooldown-parent", this.barContainer);
         this.bar = DomHandler.getElement(".cooldown-bar", this.barParent);
 
-        this.cooldownTime = cooldownTime * 1000;
-
+        this.cooldownTime = 1000;
         this.cooldownStartTime = -1;
     }
 
     public enable() {
+        EventHandler.addListener(this, EventHandler.Event.COOLDOWN_TIME_RECEPTION, this.onTimeReception);
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT, this.onShoot);
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
         this.barContainer.style.display = "block";
@@ -32,9 +32,17 @@ export default class CooldownBar extends ChildComponent {
     }
 
     public disable() {
+        EventHandler.removeListener(this, EventHandler.Event.COOLDOWN_TIME_RECEPTION, this.onTimeReception);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT, this.onShoot);
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
         this.barContainer.style.display = "";
+    }
+
+    private onTimeReception(time: number) {
+        console.log("fdsa");
+        this.cooldownTime = time * 1000;
+
+        this.cooldownStartTime = -1;
     }
 
     private onShoot() {

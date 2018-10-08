@@ -51,7 +51,6 @@ export default class ArenaHandler extends Component {
         perspectiveCamera.add(audioListener);
 
         RaycastHandler.init();
-        RaycastHandler.updateCamera(perspectiveCamera);
 
         this.sceneHandler = new SceneHandler(audioListener);
         this.renderer = new Renderer(this.sceneHandler.getScene(), perspectiveCamera);

@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, BoxGeometry, CylinderGeometry, DoubleSide, Font, FontLoader, Geometry, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, Scene, ShapeBufferGeometry, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BoxGeometry, CylinderGeometry, DoubleSide, Font, FontLoader, Geometry, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, Scene, Shape, ShapeBufferGeometry, ShapeGeometry, Vector3, Vector4} from "three";
 import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
@@ -7,6 +7,7 @@ interface IPlayerObj {
     body: Mesh;
     head: Mesh;
     nameplate?: Mesh;
+    healthBar?: Group;
 }
 
 export default class ScenePlayerHandler extends Component {
@@ -79,6 +80,8 @@ export default class ScenePlayerHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT_INVALID, this.onShootInvalid);
         EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_SHOOT, this.onShoot);
 
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_HEALTH_CHANGE, this.onHealthChange);
+
     }
 
     public disable() {
@@ -92,6 +95,10 @@ export default class ScenePlayerHandler extends Component {
 
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT, this.onShoot);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT_INVALID, this.onShootInvalid);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_SHOOT, this.onShoot);
+
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_HEALTH_CHANGE, this.onHealthChange);
+
     }
 
     public clearPlayers() {
@@ -102,6 +109,9 @@ export default class ScenePlayerHandler extends Component {
             this.scene.remove(playerObj.body, playerObj.head);
             if (playerObj.nameplate) {
                 this.scene.remove(playerObj.nameplate);
+            }
+            if (playerObj.healthBar) {
+                this.scene.remove(playerObj.healthBar);
             }
 
             playerValue = playerValues.next();
@@ -118,44 +128,52 @@ export default class ScenePlayerHandler extends Component {
     }
 
     private onPlayerMove(data: any) {
-        if (this.players.has(data.id)) {
-            const playerObj = this.players.get(data.id);
-            if (playerObj) {
-                const pos = new Vector3(data.pos.x, data.pos.y, data.pos.z);
-                const body = playerObj.body;
-                const head = playerObj.head;
-                const nameplate = playerObj.nameplate;
+        const playerObj = this.players.get(data.id);
+        if (playerObj) {
+            const pos = new Vector3(data.pos.x, data.pos.y, data.pos.z);
+            const body = playerObj.body;
+            const head = playerObj.head;
+            const nameplate = playerObj.nameplate;
+            const healthBar = playerObj.healthBar;
 
-                head.position.copy(pos).add(this.playerOffset);
-                head.rotation.y = data.headRot;
+            head.position.copy(pos).add(this.playerOffset);
+            head.rotation.y = data.headRot;
 
-                body.position.copy(pos).add(this.playerOffset);
-                body.rotation.y = data.bodyRot;
+            body.position.copy(pos).add(this.playerOffset);
+            body.rotation.y = data.bodyRot;
 
-                if (nameplate) {
-                    const nameplatePos = nameplate.position;
-                    nameplatePos.copy(pos).add(this.playerOffset);
+            const cameraPos = this.camera.position;
 
-                    const cameraPos = this.camera.position;
-                    nameplate.lookAt(cameraPos);
-                }
+            if (nameplate) {
+                const nameplatePos = nameplate.position;
+                nameplatePos.copy(pos).add(this.playerOffset).add(new Vector3(0, 0.75, 0));
+
+                nameplate.lookAt(cameraPos);
+            }
+            if (healthBar) {
+                const healthBarPos = healthBar.position;
+                healthBarPos.copy(pos).add(this.playerOffset).add(new Vector3(0, 0.65, 0));
+
+                healthBar.lookAt(cameraPos);
             }
         }
     }
 
     private removePlayer(id: number) {
-        if (this.players.has(id)) {
-            const obj = this.players.get(id);
-            if (obj) {
-                this.scene.remove(obj.body);
-                this.scene.remove(obj.head);
-                if (obj.nameplate) {
-                    this.scene.remove(obj.nameplate);
-                }
-                this.players.delete(id);
-                if (this.controlledPlayerId === id) {
-                    this.controlledPlayerId = -1;
-                }
+        const obj = this.players.get(id);
+        if (obj) {
+            this.scene.remove(obj.body);
+            this.scene.remove(obj.head);
+            if (obj.nameplate) {
+                this.scene.remove(obj.nameplate);
+            }
+
+            if (obj.healthBar) {
+                this.scene.remove(obj.healthBar);
+            }
+            this.players.delete(id);
+            if (this.controlledPlayerId === id) {
+                this.controlledPlayerId = -1;
             }
         }
     }
@@ -224,14 +242,20 @@ export default class ScenePlayerHandler extends Component {
 
         if (isConnectedPlayer) {
             const nameplateMesh = this.generateNameplate(name);
-            nameplateMesh.position.copy(bodyPos).add(this.playerOffset);
+            nameplateMesh.position.copy(bodyPos).add(this.playerOffset).add(new Vector3(0, 0.75, 0));
 
             this.scene.add(nameplateMesh);
+
+            const healthBar = this.generateHealthBar(1);
+            healthBar.position.copy(bodyPos).add(this.playerOffset).add(new Vector3(0, 0.65, 0));
+
+            this.scene.add(healthBar);
 
             playerObj = {
                 body: bodyMesh,
                 head: headMesh,
                 nameplate: nameplateMesh,
+                healthBar,
             };
         } else {
             playerObj = {
@@ -290,6 +314,25 @@ export default class ScenePlayerHandler extends Component {
         }
     }
 
+    private onHealthChange(data: any) {
+        const playerObj = this.players.get(data.id);
+        if (playerObj) {
+            let healthBar = playerObj.healthBar;
+            if (healthBar) {
+                this.scene.remove(healthBar);
+            }
+
+            healthBar = this.generateHealthBar(data.health);
+
+            healthBar.position.copy(playerObj.body.position).add(new Vector3(0, 0.65, 0));
+
+            healthBar.lookAt(this.camera.position);
+
+            this.scene.add(healthBar);
+            playerObj.healthBar = healthBar;
+        }
+    }
+
     private generateNameplate(name: string) {
         if (this.font) {
             // @ts-ignore Types specification is not remotely correct.
@@ -298,11 +341,10 @@ export default class ScenePlayerHandler extends Component {
             const geometry = new ShapeBufferGeometry(shapes);
             geometry.computeBoundingBox();
             const xMid = - 0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
-            geometry.translate(xMid, 0.75, 0);
+            geometry.translate(xMid, 0, 0);
 
             const material = new MeshBasicMaterial({
                 color: 0xffffff,
-                side: DoubleSide,
             });
 
             const mesh = new Mesh(geometry, material);
@@ -310,5 +352,48 @@ export default class ScenePlayerHandler extends Component {
         } else {
             throw new Error("Font is not loaded");
         }
+    }
+
+    private generateHealthBar(health: number) {
+        const containerShape = new Shape();
+        const barShape = new Shape();
+
+        const fullWidth = 0.75;
+        const fullHeight = 0.0625;
+
+        containerShape.moveTo(0, 0);
+        containerShape.lineTo(0, fullHeight);
+        containerShape.lineTo(fullWidth, fullHeight);
+        containerShape.lineTo(fullWidth, 0);
+        containerShape.lineTo(0, 0);
+
+        barShape.moveTo(0, 0);
+        barShape.lineTo(0, fullHeight);
+        barShape.lineTo(fullWidth * health, fullHeight);
+        barShape.lineTo(fullWidth * health, 0);
+        barShape.lineTo(0, 0);
+
+        const containerGeo = new ShapeBufferGeometry(containerShape);
+        const barGeo = new ShapeBufferGeometry(barShape);
+
+        containerGeo.translate(-0.75 / 2, 0, 0);
+        barGeo.translate(-0.75 / 2, 0, 0.01);
+
+        const containerMaterial = new MeshBasicMaterial({
+            color: 0x000000,
+        });
+
+        const barMaterial = new MeshBasicMaterial({
+            color: 0x00ff00,
+        });
+
+        const containerMesh = new Mesh(containerGeo, containerMaterial);
+        const barMesh = new Mesh(barGeo, barMaterial);
+
+        const group = new Group();
+
+        group.add(containerMesh, barMesh);
+
+        return group;
     }
 }

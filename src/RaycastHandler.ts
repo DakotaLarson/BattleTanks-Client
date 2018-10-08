@@ -1,6 +1,7 @@
 import {PerspectiveCamera, Raycaster} from "three";
 import DomHandler from "./DomHandler";
 import EventHandler from "./EventHandler";
+import Globals from "./Globals";
 
 const raycaster: Raycaster = new Raycaster();
 let camera: PerspectiveCamera;
@@ -19,20 +20,12 @@ export default class RaycastHandler {
         }
     }
 
-    public static updateCamera(cam: PerspectiveCamera) {
-        camera = cam;
-    }
-
     public static init() {
+        camera = Globals.getGlobal(Globals.Global.CAMERA);
         EventHandler.addListener(undefined, EventHandler.Event.RENDERER_RENDER_PREPARE, RaycastHandler.updateMouseCoords, EventHandler.Level.LOW);
     }
 
     public static getRaycaster() {
         return raycaster;
     }
-
-    public static getCamera(): PerspectiveCamera {
-        return camera;
-    }
-
 }

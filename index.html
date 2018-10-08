@@ -36,6 +36,10 @@
     </div>
     <!-- MULTIPLAYER MENU -->
     <div class="menu-section" id="main-menu-mp">
+        <div>
+            <span class="opt-title">Username: </span>
+            <input id="mp-name" class="menu-text-input" maxlength="32" size="16">
+        </div>
         <div class="server-list"></div>
         <div class="server-action-parent">
             <span class="menu-selection" id="mp-opt-add-server">Add Server</span>
@@ -157,6 +161,12 @@
             <div class="cooldown-bar"></div>
         </div>
     </div>
+
+    <div class="gui-element no-select health-bar-container">
+        <div class="health-bar-parent" id="health-parent">
+            <div class="health-bar"></div>
+        </div>
+    </div>
     
 </div>
 
@@ -178,9 +188,9 @@
 
 <canvas id="game-canvas"></canvas>
 
-</body>
 <script src="./polyfill/encoding.js"></script>
 <script src="./polyfill/encoding-indexes.js"></script>
+<script src="./polyfill/keyboard.js"></script>
 <script src="./systemjs/system.js"></script>
 <script>
     SystemJS.config({
@@ -195,5 +205,6 @@
     });
     SystemJS.import('./build/Game.js');
 </script>
+</body>
 </html>
 <!--https://discord.gg/kGcw5M6-->

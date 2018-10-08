@@ -2,9 +2,12 @@
 .main-menu{
     background: radial-gradient(#303030, #101010);
 }
+.main-menu .opt-title{
+    font-size: 4vmin;
+}
 .main-menu .main-menu-title{
     font-size: 15vmin;
-    margin: 5vmin 0 10vmin 0;
+    margin: 5vmin 0 7.5vmin 0;
     display: inline-block;
     color: #ffffff
 }
@@ -81,9 +84,6 @@
 .main-menu .server-opt-name,
 .main-menu .server-opt-address{
     margin-bottom: 1vmin;
-}
-.main-menu .server-opt-name{
-    font-size: 4vmin;
 }
 
 .main-menu .server-opt-address{

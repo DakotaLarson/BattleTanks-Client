@@ -39,6 +39,12 @@ export default class Renderer extends Component {
         this.renderer.render(this.scene, this.camera);
         time = performance.now() - time;
         EventHandler.callEvent(EventHandler.Event.RENDERER_RENDER_COMPLETE, time);
+        // console.log(this.renderer.info);
+
+        // info.memory.geometries
+        // info.memory.textures
+        // info.render.calls
+        // info.render.triangles
     }
 
     public onResize() {

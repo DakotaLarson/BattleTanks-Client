@@ -10,14 +10,19 @@
     position: absolute;
 }
 
-.gui .cooldown-bar-container{
+.gui .cooldown-bar-container,
+.gui .health-bar-container{
     text-align: center;
-    position: absolute;
     width: 100%;
     bottom: 2.5vh;
 }
 
-.gui .cooldown-bar-parent{
+.gui .cooldown-bar-container{
+    bottom: 5.5vh;
+}
+
+.gui .cooldown-bar-parent,
+.gui .health-bar-parent{
     box-sizing: border-box;
     display: inline-block;
     width: 33vw;
@@ -26,7 +31,14 @@
     border: solid 1px #ffffff;
 }
 
-.gui .cooldown-bar{
+
+
+.gui .cooldown-bar,
+.gui .health-bar{
     height: 100%;
     background-color: green;
+}
+
+.gui .health-bar{
+    background-color: red;
 }

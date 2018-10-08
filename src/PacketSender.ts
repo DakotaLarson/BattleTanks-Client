@@ -25,13 +25,15 @@ const constructData = (header: Packet, body: any, dataType: DataType) => {
 
     switch (dataType) {
         case DataType.NUMBER:
-            buffer = new ArrayBuffer(3);
+            buffer = new ArrayBuffer(8);
 
             arr = new Uint8Array(buffer);
 
             arr[0] = header;
             arr[1] = dataType;
-            arr[2] = body;
+
+            arr = new Float32Array(buffer, 4);
+            arr.set(body);
 
             break;
         case DataType.STRING:

@@ -45,6 +45,10 @@ const receivePlayerShoot = () => {
     EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_SHOOT);
 };
 
+const receivePlayerHealth = (health: number) => {
+    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_HEALTH_CHANGE, health);
+};
+
 const receiveConnectedPlayerAdd = (data: string) => {
     const playerData = JSON.parse(data);
     const pos = new Vector4(playerData.pos[0], playerData.pos[1], playerData.pos[2], playerData.pos[3]);
@@ -78,6 +82,15 @@ const receiveConnectedPlayerShoot = (id: number) => {
     EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_SHOOT, id);
 };
 
+const receiveConnectedPlayerHealth = (data: any) => {
+    const playerId = data.header;
+    const health = data.body[0];
+    EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_HEALTH_CHANGE, {
+        id: playerId,
+        health,
+    });
+};
+
 const receiveMatchStatistics = (rawStats: string) => {
     const statistics = JSON.parse(rawStats);
     EventHandler.callEvent(EventHandler.Event.MATCH_STATISTICS_RECEPTION, statistics);
@@ -89,6 +102,7 @@ const receiveAudio = (value: number) => {
 
 const receiveCooldownTime = (time: number) => {
     EventHandler.callEvent(EventHandler.Event.COOLDOWN_TIME_RECEPTION, time);
+    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_HEALTH_CHANGE, time);
 };
 
 const handlers: any[] = new Array();
@@ -103,11 +117,13 @@ handlers.push(receivePlayerMove);
 handlers.push(receivePlayerRemove);
 handlers.push(receivePlayerShootInvalid);
 handlers.push(receivePlayerShoot);
+handlers.push(receivePlayerHealth);
 
 handlers.push(receiveConnectedPlayerAdd);
 handlers.push(receiveConnectedPlayerMove);
 handlers.push(receiveConnectedPlayerRemove);
 handlers.push(receiveConnectedPlayerShoot);
+handlers.push(receiveConnectedPlayerHealth);
 
 handlers.push(receiveMatchStatistics);
 
@@ -131,7 +147,7 @@ export default class PacketReceiver {
         let body;
         switch (headerArr[1]) {
             case DataType.NUMBER:
-                body = new Uint8Array(message.slice(2, 3))[0];
+                body = new Float32Array(message.slice(4))[0];
                 break;
             case DataType.STRING:
                 body = decoder.decode(new Uint8Array(message.slice(2)));
