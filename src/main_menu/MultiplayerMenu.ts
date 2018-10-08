@@ -1,6 +1,7 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
+import Globals from "../Globals";
 
 export default class MultiplayerMenu extends Component {
 
@@ -11,6 +12,7 @@ export default class MultiplayerMenu extends Component {
     private joinServerBtn: HTMLElement;
     private removeServerBtn: HTMLElement;
     private cancelBtn: HTMLElement;
+    private nameInputElt: HTMLInputElement;
 
     private servers: any[] | undefined;
 
@@ -28,6 +30,8 @@ export default class MultiplayerMenu extends Component {
         this.removeServerBtn = DomHandler.getElement("#mp-opt-remove-server", this.element);
         this.cancelBtn = DomHandler.getElement("#mp-opt-cancel", this.element);
 
+        this.nameInputElt = DomHandler.getElement("#mp-name") as HTMLInputElement;
+
         this.selectedIndex = -1;
     }
 
@@ -37,6 +41,14 @@ export default class MultiplayerMenu extends Component {
         this.createMenuServerList(this.servers);
         this.joinServerBtn.classList.add("disabled");
         this.removeServerBtn.classList.add("disabled");
+
+        const ign = localStorage.getItem("ign");
+        if (!ign) {
+            this.updateGuestName();
+        } else {
+            Globals.setGlobal(Globals.Global.PLAYER_NAME, ign);
+            this.nameInputElt.value = ign;
+        }
 
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onAddServerClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCancelClick);
@@ -86,7 +98,7 @@ export default class MultiplayerMenu extends Component {
     private onServerDblClick(index: number) {
         if (this.servers) {
             const address = this.servers[index].address;
-            EventHandler.callEvent(EventHandler.Event.MPMENU_JOIN_OPT_CLICK, address);
+            this.joinServer(address);
         }
     }
 
@@ -103,7 +115,7 @@ export default class MultiplayerMenu extends Component {
             if (this.servers && this.selectedIndex !== -1) {
                 if (!this.joinServerBtn.classList.contains("disabled")) {
                     const address = this.servers[this.selectedIndex].address;
-                    EventHandler.callEvent(EventHandler.Event.MPMENU_JOIN_OPT_CLICK, address);
+                    this.joinServer(address);
                 }
             }
         }
@@ -190,5 +202,24 @@ export default class MultiplayerMenu extends Component {
         this.createMenuServerList(servers);
         this.joinServerBtn.classList.add("disabled");
         this.removeServerBtn.classList.add("disabled");
+    }
+
+    private joinServer(address: string) {
+        const name = this.nameInputElt.value.trim();
+        if (!name) {
+            this.updateGuestName();
+            localStorage.removeItem("ign");
+        } else {
+            Globals.setGlobal(Globals.Global.PLAYER_NAME, name);
+            localStorage.setItem("ign", name);
+        }
+        EventHandler.callEvent(EventHandler.Event.MPMENU_JOIN_OPT_CLICK, address);
+    }
+
+    private updateGuestName() {
+        const num = Math.floor(Math.random() * 1000);
+        const ign = "Guest " + num;
+        Globals.setGlobal(Globals.Global.PLAYER_NAME, ign);
+        this.nameInputElt.value = ign;
     }
 }

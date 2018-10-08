@@ -39,7 +39,6 @@ export default class CooldownBar extends ChildComponent {
     }
 
     private onTimeReception(time: number) {
-        console.log("fdsa");
         this.cooldownTime = time * 1000;
 
         this.cooldownStartTime = -1;

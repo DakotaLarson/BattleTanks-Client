@@ -48,10 +48,8 @@ export default class MultiplayerConnection extends Component {
     }
 
     public initHandshake() {
-        const num = Math.floor(Math.random() * 1000);
         EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_OPEN);
-        const name = "Guest " + num;
-        Globals.setGlobal(Globals.Global.PLAYER_NAME, name);
+        const name = Globals.getGlobal(Globals.Global.PLAYER_NAME);
         PacketSender.sendPlayerJoin(name);
     }
 
