@@ -25,12 +25,12 @@ export default class Renderer extends Component {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_RESIZE, this.onResize, EventHandler.Level.LOW);
-        EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.render, EventHandler.Level.LOW);
+        EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.render, EventHandler.Level.HIGH);
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_RESIZE, this.onResize, EventHandler.Level.LOW);
-        EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.render, EventHandler.Level.LOW);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.render, EventHandler.Level.HIGH);
     }
 
     public render() {

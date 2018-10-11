@@ -105,6 +105,21 @@ const receiveCooldownTime = (time: number) => {
     EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_HEALTH_CHANGE, time);
 };
 
+const receiveProjecileLaunch = (data: number[]) => {
+    EventHandler.callEvent(EventHandler.Event.ARENA_PROJECTILE_LAUNCH, {
+        position: new Vector3(data[0], data[1], data[2]),
+        velocity: new Vector3(Math.sin(data[3]), 0, Math.cos(data[3])),
+        id: data[4],
+    });
+};
+
+const receiveProjectileMove = (data: number[]) => {
+    EventHandler.callEvent(EventHandler.Event.ARENA_PROJECTILE_MOVE, {
+        position: new Vector3(data[0], data[1], data[2]),
+        id: data[3],
+    });
+};
+
 const handlers: any[] = new Array();
 handlers.push(receiveArena);
 
@@ -130,6 +145,9 @@ handlers.push(receiveMatchStatistics);
 handlers.push(receiveAudio);
 
 handlers.push(receiveCooldownTime);
+
+handlers.push(receiveProjecileLaunch);
+handlers.push(receiveProjectileMove);
 
 enum DataType {
     NUMBER,
