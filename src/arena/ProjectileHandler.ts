@@ -29,13 +29,17 @@ export default class ProjectileHandler extends ChildComponent {
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.ARENA_PROJECTILE_LAUNCH, this.onLaunch);
         EventHandler.addListener(this, EventHandler.Event.ARENA_PROJECTILE_MOVE, this.onMove);
-        // EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PROJECTILE_REMOVAL, this.onRemoval);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PROJECTILE_CLEAR, this.onClear);
+        EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PROJECTILE_LAUNCH, this.onLaunch);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PROJECTILE_MOVE, this.onMove);
-        // EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PROJECTILE_REMOVAL, this.onRemoval);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PROJECTILE_CLEAR, this.onClear);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
     }
 
     private onLaunch(data: any) {
@@ -57,11 +61,32 @@ export default class ProjectileHandler extends ChildComponent {
         }
     }
 
+    private onRemoval(projId: number) {
+        const proj = this.projectiles.get(projId);
+        if (proj) {
+            this.scene.remove(proj.mesh);
+            this.projectiles.delete(projId);
+        }
+    }
+
+    private onClear() {
+        const iterator = this.projectiles.values();
+        let next = iterator.next();
+        while (!next.done) {
+            this.scene.remove(next.value.mesh);
+            next = iterator.next();
+        }
+        this.projectiles.clear();
+    }
+
     private onUpdate(delta: number) {
-        // for (const data of this.projectiles) {
-        //     const mesh = data.mesh;
-        //     const velocity = data.velocity as Vector3;
-        //     mesh.position.add(velocity.clone().multiplyScalar(delta * ProjectileHandler.projectileSpeed));
-        // }
+        const iterator = this.projectiles.values();
+        let next = iterator.next();
+        while (!next.done) {
+            const mesh = next.value.mesh;
+            const velocity = next.value.velocity as Vector3;
+            mesh.position.add(velocity.clone().multiplyScalar(delta * ProjectileHandler.projectileSpeed));
+            next = iterator.next();
+        }
     }
 }

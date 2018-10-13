@@ -80,9 +80,9 @@ export default class CollisionHandler {
     private static getPlayerCorners(pos: Vector3, rot: number, offsetX: number, offsetZ: number) {
         const otherCorners = [];
 
+        // Order of corners doesn't matter.
         otherCorners.push(CollisionHandler.getCorner(pos, rot, -offsetX, -offsetZ));
         otherCorners.push(CollisionHandler.getCorner(pos, rot, offsetX, -offsetZ));
-
         otherCorners.push(CollisionHandler.getCorner(pos, rot, offsetX, offsetZ));
         otherCorners.push(CollisionHandler.getCorner(pos, rot, -offsetX, offsetZ));
 
@@ -92,6 +92,7 @@ export default class CollisionHandler {
     private static getBlockCorners(pos: Vector3) {
         const blockCornerPositions = [];
 
+        // Order of corners doesn't matter.
         blockCornerPositions.push(pos.clone());
         blockCornerPositions.push(pos.clone().add(new Vector3(0, 0, 1)));
         blockCornerPositions.push(pos.clone().add(new Vector3(1, 0, 1)));

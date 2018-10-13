@@ -120,6 +120,14 @@ const receiveProjectileMove = (data: number[]) => {
     });
 };
 
+const receiveProjectileRemoval = (projId: number) => {
+    EventHandler.callEvent(EventHandler.Event.ARENA_PROJECTILE_REMOVAL, projId);
+};
+
+const receiveProjectileClear = () => {
+    EventHandler.callEvent(EventHandler.Event.ARENA_PROJECTILE_CLEAR);
+};
+
 const handlers: any[] = new Array();
 handlers.push(receiveArena);
 
@@ -148,6 +156,8 @@ handlers.push(receiveCooldownTime);
 
 handlers.push(receiveProjecileLaunch);
 handlers.push(receiveProjectileMove);
+handlers.push(receiveProjectileRemoval);
+handlers.push(receiveProjectileClear);
 
 enum DataType {
     NUMBER,
