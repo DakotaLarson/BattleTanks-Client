@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, BoxGeometry, CylinderGeometry, DoubleSide, Font, FontLoader, Geometry, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, Scene, Shape, ShapeBufferGeometry, ShapeGeometry, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BoxGeometry, CylinderGeometry, DoubleSide, Font, FontLoader, Geometry, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, Scene, Shape, ShapeBufferGeometry, Vector3, Vector4} from "three";
 import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
@@ -184,7 +184,7 @@ export default class ScenePlayerHandler extends Component {
 
         const bodyGeo = new BoxGeometry(this.playerBodyWidth, this.playerBodyHeight, this.playerBodyDepth);
         const headGeo = new BoxGeometry(0.5, 0.35, 0.5);
-        const turretGeo = new CylinderGeometry(0.0625, 0.0625, 0.75, 8, 1, true);
+        const turretGeo = new CylinderGeometry(0.0625, 0.0625, 0.75, 16, 1, true);
         turretGeo.rotateX(Math.PI / 2);
 
         let bodyMaterial: MeshLambertMaterial;
@@ -202,11 +202,11 @@ export default class ScenePlayerHandler extends Component {
 
         } else {
             bodyMaterial = new MeshLambertMaterial({
-                color: 0x1ace14,
+                color: 0x32004a,
             });
 
             headMaterial = new MeshLambertMaterial({
-                color: 0x1ace14,
+                color: 0x32004a,
                 side: DoubleSide,
             });
 
@@ -235,6 +235,7 @@ export default class ScenePlayerHandler extends Component {
 
         const headMesh = new Mesh(playerHeadGeo, headMaterial);
         headMesh.position.copy(bodyPos).add(this.playerOffset);
+        headMesh.rotation.y = pos.w;
 
         this.scene.add(bodyMesh, headMesh);
 

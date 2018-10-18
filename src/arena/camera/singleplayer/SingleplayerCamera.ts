@@ -1,83 +1,38 @@
-import { PerspectiveCamera } from "three";
-import Component from "../../../component/ChildComponent";
-import DomHandler from "../../../DomHandler";
+import { PerspectiveCamera, Spherical, Vector3 } from "three";
 import EventHandler from "../../../EventHandler";
-import CameraControls from "../CameraControls";
+import Camera from "../Camera";
 
-export default class Camera extends Component {
-
-    private camera: PerspectiveCamera;
-    private controlsEnabled: boolean;
-    private controls: CameraControls;
+export default class SingleplayerCamera extends Camera {
 
     constructor(camera: PerspectiveCamera) {
-        super();
-        this.camera = camera;
-        this.controlsEnabled = true;
-
-        this.controls = new CameraControls(camera, false, true);
+        super(camera);
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_RESIZE, this.onResize, EventHandler.Level.LOW);
-
-        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
-
+        super.enable();
+        this.controls.zoomOnly = false;
         EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.onToggleToOther);
         EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN, this.onToggleToOther);
         EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.onToggleToOther);
 
         EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.onToggleToCamera);
 
+        EventHandler.addListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
+
         this.attachControls(true);
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_RESIZE, this.onResize, EventHandler.Level.LOW);
-
-        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
-
+        super.disable();
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.onToggleToOther);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN, this.onToggleToOther);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.onToggleToOther);
 
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.onToggleToCamera);
 
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
+
         this.detachControls(true);
-    }
-
-    private onResize() {
-        const dimensions = DomHandler.getDisplayDimensions();
-        this.camera.aspect = dimensions.width / dimensions.height;
-        this.camera.updateProjectionMatrix();
-    }
-
-    private onGameMenuOpen() {
-        if (this.controlsEnabled) {
-            this.detachControls(false);
-        }
-    }
-
-    private onGameMenuClose() {
-        if (this.controlsEnabled) {
-            this.attachControls(false);
-        }
-    }
-
-    private attachControls(updateStatus: boolean) {
-        this.attachChild(this.controls);
-        if (updateStatus) {
-            this.controlsEnabled = true;
-        }
-    }
-
-    private detachControls(updateStatus: boolean) {
-        this.detachChild(this.controls);
-        if (updateStatus) {
-            this.controlsEnabled = false;
-        }
     }
 
     private onToggleToCamera() {
@@ -86,5 +41,17 @@ export default class Camera extends Component {
 
     private onToggleToOther() {
         this.detachControls(true);
+    }
+
+    private onArenaSceneUpdate(data: any) {
+        this.followingTarget = new Vector3(data.width / 2, 0, data.height / 2);
+
+        this.followingSpherical = new Spherical(25, Math.PI / 4, Math.PI / 3);
+        this.followingSpherical.makeSafe();
+
+        this.camera.position.setFromSpherical(this.followingSpherical);
+        this.camera.position.add(this.followingTarget);
+
+        this.camera.lookAt(this.followingTarget);
     }
 }

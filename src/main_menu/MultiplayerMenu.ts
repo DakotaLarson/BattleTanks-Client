@@ -178,12 +178,6 @@ export default class MultiplayerMenu extends Component {
                 serverOptAddress.textContent = server.address;
                 serverOptParent.appendChild(serverOptAddress);
 
-                // ending break tag
-                if (i !== servers.length - 1) {
-                    const breakTag = document.createElement("br");
-                    serverOptParent.appendChild(breakTag);
-                }
-
                 this.serverListElt.appendChild(serverOptParent);
                 serverOptParent.addEventListener("click", () => {
                     this.onServerClick(i, serverOptParent);

@@ -1,13 +1,14 @@
 import { Plane, Ray, Vector3, Vector4 } from "three";
 import Component from "../../component/ChildComponent";
+import DomHandler from "../../DomHandler";
 import EventHandler from "../../EventHandler";
 import Options from "../../Options";
 import PacketSender from "../../PacketSender";
 import RaycastHandler from "../../RaycastHandler";
 import CollisionHandler from "../CollisionHandler";
 
-const PLAYER_MOVEMENT_SPEED = 3;
-const PLAYER_ROTATION_SPEED = 2;
+const PLAYER_MOVEMENT_SPEED = 1.75;
+const PLAYER_ROTATION_SPEED = 1.25;
 
 export default class Player extends Component {
 
@@ -17,6 +18,8 @@ export default class Player extends Component {
 
     public bodyRotation: number;
     public headRotation: number;
+
+    private useIntersection = true;
 
     private movementVelocity: number;
     private rotationVelocity: number;
@@ -32,7 +35,7 @@ export default class Player extends Component {
 
         this.position = new Vector3(pos.x, pos.y, pos.z);
         this.bodyRotation = pos.w;
-        this.headRotation = 0;
+        this.headRotation = pos.w;
 
         this.movingForward = false;
         this.movingBackward = false;
@@ -51,15 +54,24 @@ export default class Player extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
 
+        if (!this.useIntersection) {
+            EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
+        }
+
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
 
         EventHandler.addListener(this, EventHandler.Event.GAME_TICK, this.onTick);
+
+        EventHandler.addListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
 
         this.movementVelocity = 0;
         this.rotationVelocity = 0;
         this.movingForward = this.movingBackward = this.rotatingLeft = this.rotatingRight = false;
 
         PacketSender.sendPlayerMove(this.position, this.movementVelocity, this.rotationVelocity, this.bodyRotation, this.headRotation);
+        if (!this.useIntersection && !DomHandler.hasPointerLock()) {
+            DomHandler.requestPointerLock();
+        }
     }
 
     public disable() {
@@ -68,11 +80,15 @@ export default class Player extends Component {
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
+        if (!this.useIntersection) {
+            EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
+        }
 
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
 
         EventHandler.removeListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
+        EventHandler.removeListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
     }
 
     private onKeyDown(event: KeyboardEvent) {
@@ -91,7 +107,15 @@ export default class Player extends Component {
         this.onInputUp(event.button);
     }
 
+    private onMouseMove(event: MouseEvent) {
+        this.headRotation -= event.movementX / 365;
+    }
+
     private onInputDown(code: string | number) {
+        if (!this.useIntersection && !DomHandler.hasPointerLock()) {
+            DomHandler.requestPointerLock();
+        }
+
         if (code === Options.options.forward.code) {
             this.movingForward = true;
         } else if (code === Options.options.backward.code) {
@@ -121,7 +145,7 @@ export default class Player extends Component {
 
         const multiplier = 10;
 
-        // Velocity always trends towards 0 with this calculation.
+        // Velocity always goes to 0 with this calculation.
         this.movementVelocity -= this.movementVelocity * 10 * delta;
         this.rotationVelocity -= this.rotationVelocity * 10 * delta;
 
@@ -147,7 +171,8 @@ export default class Player extends Component {
             this.rotationVelocity = 0;
         }
 
-        const potentialRotation = (this.bodyRotation + delta * this.rotationVelocity);
+        const rotationDiff = delta * this.rotationVelocity;
+        const potentialRotation = (this.bodyRotation + rotationDiff);
 
         const potentialPosition = this.position.clone();
         potentialPosition.x += delta * this.movementVelocity * Math.sin(potentialRotation),
@@ -155,11 +180,14 @@ export default class Player extends Component {
 
         const collisionCorrection = CollisionHandler.getCollision(potentialPosition.clone(), potentialRotation);
 
-        this.computeTurretRotation();
+        if (this.useIntersection) {
+            this.computeTurretRotation();
+        }
 
         if (collisionCorrection) {
             potentialPosition.sub(collisionCorrection);
             this.bodyRotation = potentialRotation;
+            this.headRotation += rotationDiff;
             this.position.copy(potentialPosition);
         } else {
             this.bodyRotation = potentialRotation;
@@ -184,7 +212,7 @@ export default class Player extends Component {
     private computeTurretRotation() {
         const ray: Ray = RaycastHandler.getRaycaster().ray;
         const intersection = new Vector3();
-        ray.intersectPlane(new Plane(new Vector3(0, 1, 0)), intersection);
+        ray.intersectPlane(new Plane(new Vector3(0, 1, 0), 0.75), intersection);
         if (intersection) {
             const slope = (this.position.x - intersection.x) / (this.position.z - intersection.z);
 
@@ -194,6 +222,17 @@ export default class Player extends Component {
                 angle += Math.PI;
             }
             this.headRotation = angle;
+        }
+    }
+
+    private onCameraToggle() {
+        this.useIntersection = !this.useIntersection;
+        if (this.useIntersection) {
+            EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
+            DomHandler.exitPointerLock();
+        } else {
+            EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
+            DomHandler.requestPointerLock();
         }
     }
 }

@@ -47,7 +47,7 @@ export default class ArenaHandler extends Component {
     constructor() {
         super();
 
-        const perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
         Globals.setGlobal(Globals.Global.CAMERA, perspectiveCamera);
 
         const audioListener = new AudioListener();
@@ -139,18 +139,20 @@ export default class ArenaHandler extends Component {
     }
 
     private attachArena() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+        EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenuFromEvent);
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
+        EventHandler.addListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE, this.onBlur);
 
         this.attachChild(this.sceneHandler);
         this.attachChild(this.renderer);
     }
 
     private detachArena() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenuFromEvent);
         EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE, this.onBlur);
 
         this.detachChild(this.sceneHandler);
         this.detachChild(this.renderer);
@@ -160,7 +162,7 @@ export default class ArenaHandler extends Component {
         }
     }
 
-    private onKeyDown(event: KeyboardEvent) {
+    private onKeyUp(event: KeyboardEvent) {
         if (event.code === "Escape") {
             if (this.gameMenuEnabled) {
                 this.closeGameMenu(true);

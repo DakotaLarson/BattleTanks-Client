@@ -13,7 +13,7 @@ export default class SceneHandler extends Component {
     public height: number;
 
     public floor: Mesh | undefined;
-    public lines: Mesh | undefined;
+    public lines: LineSegments | undefined;
     public lights: Object3D[] | undefined;
     public blocks: Mesh | undefined;
 
@@ -223,7 +223,7 @@ export default class SceneHandler extends Component {
 
         this.updateBlocks(positions);
 
-        this.scene.add(this.lines as Mesh);
+        this.scene.add(this.lines as LineSegments);
         this.scene.add(this.floor);
         this.scene.add(this.blocks as Mesh);
         this.scene.add.apply(this.scene, this.lights);

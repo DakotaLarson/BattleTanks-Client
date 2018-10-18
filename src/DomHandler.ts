@@ -1,12 +1,18 @@
 import EventHandler from "./EventHandler";
 
+const gameCanvas = document.querySelector("#game-canvas") as HTMLElement;
+
 export default class DomHandler {
     public static getDisplayDimensions() {
         return displayDimensions;
     }
 
     public static requestPointerLock() {
-        document.body.requestPointerLock();
+        if (gameCanvas) {
+            gameCanvas.requestPointerLock();
+        } else {
+            document.body.requestPointerLock();
+        }
     }
 
     public static exitPointerLock() {
@@ -15,7 +21,7 @@ export default class DomHandler {
     }
 
     public static hasPointerLock() {
-        return document.pointerLockElement !== undefined;
+        return document.pointerLockElement !== null;
     }
 
     public static getElement(query: string, parent?: HTMLElement): HTMLElement {
