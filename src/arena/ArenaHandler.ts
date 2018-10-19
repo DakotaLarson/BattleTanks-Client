@@ -47,6 +47,8 @@ export default class ArenaHandler extends Component {
     constructor() {
         super();
 
+        Globals.setGlobal(Globals.Global.CAMERA_IS_FOLLOWING, true);
+
         const perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
         Globals.setGlobal(Globals.Global.CAMERA, perspectiveCamera);
 

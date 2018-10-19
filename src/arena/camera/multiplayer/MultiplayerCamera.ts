@@ -1,42 +1,42 @@
 import {PerspectiveCamera, Vector3} from "three";
 import EventHandler from "../../../EventHandler";
+import Globals from "../../../Globals";
 import Camera from "../Camera";
 import CameraToggleHandler from "../CameraToggleHandler";
 
 export default class MultiplayerCamera extends Camera {
 
     private cameraToggleHandler: CameraToggleHandler;
-    private usingFollowingCamera: boolean;
 
     constructor(camera: PerspectiveCamera) {
         super(camera);
 
         this.cameraToggleHandler = new CameraToggleHandler();
-        this.usingFollowingCamera = true;
     }
 
     public enable() {
         super.enable();
         this.controls.zoomOnly = true;
 
-        EventHandler.addListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
-
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
+
+        EventHandler.addListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
     }
 
     public disable() {
         super.disable();
-        EventHandler.removeListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
 
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
+
+        EventHandler.removeListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
     }
 
     private moveCamera(pos: Vector3, bodyRot: number, headRot: number) {
-        if (this.usingFollowingCamera) {
+        if (this.usingFollowingCamera()) {
             const spherical = this.controls.setFromPlayer(bodyRot);
 
             this.followingSpherical = spherical;
@@ -59,7 +59,9 @@ export default class MultiplayerCamera extends Camera {
         const pos = new Vector3(data.pos.x + 0.5, data.pos.y, data.pos.z + 0.5);
         const rot = data.pos.w;
 
-        this.attachControls(true);
+        if (this.usingFollowingCamera()) {
+            this.attachControls(true);
+        }
         this.attachChild(this.cameraToggleHandler);
 
         this.moveCamera(pos, rot, rot);
@@ -76,7 +78,15 @@ export default class MultiplayerCamera extends Camera {
         this.moveCamera(pos, data.bodyRot, data.headRot);
     }
 
+    private usingFollowingCamera() {
+        return Globals.getGlobal(Globals.Global.CAMERA_IS_FOLLOWING);
+    }
+
     private onCameraToggle() {
-        this.usingFollowingCamera = !this.usingFollowingCamera;
+        if (this.usingFollowingCamera()) {
+            this.attachControls(true);
+        } else {
+             this.detachControls(true);
+        }
     }
 }

@@ -2,6 +2,7 @@ import { Plane, Ray, Vector3, Vector4 } from "three";
 import Component from "../../component/ChildComponent";
 import DomHandler from "../../DomHandler";
 import EventHandler from "../../EventHandler";
+import Globals from "../../Globals";
 import Options from "../../Options";
 import PacketSender from "../../PacketSender";
 import RaycastHandler from "../../RaycastHandler";
@@ -18,8 +19,6 @@ export default class Player extends Component {
 
     public bodyRotation: number;
     public headRotation: number;
-
-    private useIntersection = true;
 
     private movementVelocity: number;
     private rotationVelocity: number;
@@ -54,7 +53,7 @@ export default class Player extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
 
-        if (!this.useIntersection) {
+        if (!this.cameraIsFollowing()) {
             EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
         }
 
@@ -69,7 +68,7 @@ export default class Player extends Component {
         this.movingForward = this.movingBackward = this.rotatingLeft = this.rotatingRight = false;
 
         PacketSender.sendPlayerMove(this.position, this.movementVelocity, this.rotationVelocity, this.bodyRotation, this.headRotation);
-        if (!this.useIntersection && !DomHandler.hasPointerLock()) {
+        if (!this.cameraIsFollowing() && !DomHandler.hasPointerLock()) {
             DomHandler.requestPointerLock();
         }
     }
@@ -80,7 +79,7 @@ export default class Player extends Component {
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
-        if (!this.useIntersection) {
+        if (!this.cameraIsFollowing()) {
             EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
         }
 
@@ -112,7 +111,7 @@ export default class Player extends Component {
     }
 
     private onInputDown(code: string | number) {
-        if (!this.useIntersection && !DomHandler.hasPointerLock()) {
+        if (!this.cameraIsFollowing() && !DomHandler.hasPointerLock()) {
             DomHandler.requestPointerLock();
         }
 
@@ -180,7 +179,7 @@ export default class Player extends Component {
 
         const collisionCorrection = CollisionHandler.getCollision(potentialPosition.clone(), potentialRotation);
 
-        if (this.useIntersection) {
+        if (this.cameraIsFollowing()) {
             this.computeTurretRotation();
         }
 
@@ -226,13 +225,16 @@ export default class Player extends Component {
     }
 
     private onCameraToggle() {
-        this.useIntersection = !this.useIntersection;
-        if (this.useIntersection) {
+        if (this.cameraIsFollowing()) {
             EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
             DomHandler.exitPointerLock();
         } else {
             EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
             DomHandler.requestPointerLock();
         }
+    }
+
+    private cameraIsFollowing() {
+        return Globals.getGlobal(Globals.Global.CAMERA_IS_FOLLOWING);
     }
 }
