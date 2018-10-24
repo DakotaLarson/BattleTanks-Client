@@ -102,7 +102,6 @@ const receiveAudio = (value: number) => {
 
 const receiveCooldownTime = (time: number) => {
     EventHandler.callEvent(EventHandler.Event.COOLDOWN_TIME_RECEPTION, time);
-    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_HEALTH_CHANGE, time);
 };
 
 const receiveProjecileLaunch = (data: number[]) => {
