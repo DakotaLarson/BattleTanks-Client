@@ -2,6 +2,7 @@ import { AudioBuffer, AudioListener, AudioLoader, BoxGeometry, CylinderGeometry,
 import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
+import Options from "../../Options";
 
 interface IPlayerObj {
     body: Mesh;
@@ -119,7 +120,7 @@ export default class ScenePlayerHandler extends Component {
     }
 
     private onPlayerAddition(data: any) {
-        const name = Globals.getGlobal(Globals.Global.PLAYER_NAME);
+        const name = Options.options.username;
         this.addPlayer(data.id, data.pos, name, false);
     }
 

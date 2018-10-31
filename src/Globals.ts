@@ -1,6 +1,4 @@
 enum Global {
-    PLAYER_NAME,
-
     CAMERA,
     CAMERA_IS_FOLLOWING,
 }
