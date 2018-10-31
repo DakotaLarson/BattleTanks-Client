@@ -13,8 +13,11 @@ export default class OptionsMenu extends Component {
     private leftValueElt: HTMLElement;
     private rightValueElt: HTMLElement;
     private shootValueElt: HTMLElement;
+
     private volumeValueElt: HTMLInputElement;
     private mouseValueElt: HTMLInputElement;
+
+    private usernameElt: HTMLInputElement;
 
     private isListening: boolean;
 
@@ -30,6 +33,8 @@ export default class OptionsMenu extends Component {
 
         this.volumeValueElt = DomHandler.getElement("#option-value-volume", this.element) as HTMLInputElement;
         this.mouseValueElt = DomHandler.getElement("#option-value-mouse", this.element) as HTMLInputElement;
+
+        this.usernameElt = DomHandler.getElement("#option-value-username", this.element) as HTMLInputElement;
 
         this.returnBtn = DomHandler.getElement("#opt-opt-return", this.element);
 
@@ -49,6 +54,8 @@ export default class OptionsMenu extends Component {
         DomEventHandler.addListener(this, this.volumeValueElt, "change", this.onVolumeChange);
         DomEventHandler.addListener(this, this.mouseValueElt, "change", this.onMouseChange);
 
+        DomEventHandler.addListener(this, this.usernameElt, "change", this.onUsernameChange);
+
         this.element.style.display = "block";
     }
 
@@ -62,6 +69,8 @@ export default class OptionsMenu extends Component {
 
         DomEventHandler.removeListener(this, this.volumeValueElt, "change", this.onVolumeChange);
         DomEventHandler.removeListener(this, this.mouseValueElt, "change", this.onMouseChange);
+
+        DomEventHandler.removeListener(this, this.usernameElt, "change", this.onUsernameChange);
 
         this.isListening = false;
 
@@ -136,6 +145,15 @@ export default class OptionsMenu extends Component {
         this.saveChange("mouseSensitivity", value);
     }
 
+    private onUsernameChange() {
+        let value = this.usernameElt.value;
+        if (!value) {
+            value = "Guest";
+            this.usernameElt.value = "Guest";
+        }
+        this.saveChange("username", value);
+    }
+
     // key = human readable
     // code = more precise
     private listenForInput(element: HTMLElement) {
@@ -200,6 +218,10 @@ export default class OptionsMenu extends Component {
                 element.value = "" + value;
             };
 
+            const setTextValue = (value: string, element: HTMLInputElement) => {
+                element.value = value ? value : "";
+            };
+
             setOption("forward", this.forwardValueElt);
             setOption("backward", this.backwardValueElt);
             setOption("left", this.leftValueElt);
@@ -208,6 +230,8 @@ export default class OptionsMenu extends Component {
 
             setRangeValue(options.volume, this.volumeValueElt);
             setRangeValue(options.mouseSensitivity, this.mouseValueElt);
+
+            setTextValue(options.username, this.usernameElt);
 
         } else {
             console.warn("No options to read from. Were they deleted?");

@@ -2,10 +2,12 @@ import Component from "../component/Component";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
+import ChildComponent from "../component/ChildComponent";
 import AddServerMenu from "./AddServerMenu";
 import CreateWorldMenu from "./CreateArenaMenu";
 import LoadWorldMenu from "./LoadArenaMenu";
 import MultiplayerMenu from "./MultiplayerMenu";
+import OptionsDropdown from "./OptionsDropdown";
 import OptionsMenu from "./OptionsMenu";
 import SingleplayerMenu from "./SingleplayerMenu";
 import TopMenu from "./TopMenu";
@@ -13,6 +15,7 @@ import TopMenu from "./TopMenu";
 export default class MainMenu extends Component {
 
     private element: HTMLElement;
+
     private topMenu: TopMenu;
     private spMenu: SingleplayerMenu;
     private mpMenu: MultiplayerMenu;
@@ -21,9 +24,14 @@ export default class MainMenu extends Component {
     private loadMenu: LoadWorldMenu;
     private addServerMenu: AddServerMenu;
 
+    private optionsDropdown: OptionsDropdown;
+
+    private attachedCmp: ChildComponent | undefined;
+
     constructor() {
         super();
         this.element = DomHandler.getElement(".main-menu");
+
         this.topMenu = new TopMenu(this.element);
         this.spMenu = new SingleplayerMenu(this.element);
         this.mpMenu = new MultiplayerMenu(this.element);
@@ -31,6 +39,8 @@ export default class MainMenu extends Component {
         this.createMenu = new CreateWorldMenu(this.element);
         this.loadMenu = new LoadWorldMenu(this.element);
         this.addServerMenu = new AddServerMenu(this.element);
+
+        this.optionsDropdown = new OptionsDropdown(this.element);
     }
     public enable() {
 
@@ -62,7 +72,9 @@ export default class MainMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK, this.onAddServerCancel);
         EventHandler.addListener(this, EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK, this.onAddServerSave);
 
-        this.attachChild(this.topMenu);
+        this.attach(this.topMenu);
+
+        this.attachChild(this.optionsDropdown);
 
         this.element.style.display = "block";
     }
@@ -94,96 +106,95 @@ export default class MainMenu extends Component {
         EventHandler.removeListener(this, EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK, this.onAddServerCancel);
         EventHandler.removeListener(this, EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK, this.onAddServerSave);
 
+        this.detachChild(this.optionsDropdown);
+
         this.element.style.display = "";
     }
 
     // Top menu options
     private onTopSpOptClick() {
-        this.detachChild(this.topMenu);
-        this.attachChild(this.spMenu);
+        this.attach(this.spMenu);
         this.playSelect();
     }
 
     private onTopMpOptClick() {
-        this.detachChild(this.topMenu);
-        this.attachChild(this.mpMenu);
+        this.attach(this.mpMenu);
         this.playSelect();
     }
 
     private onTopOptOptClick() {
-        this.detachChild(this.topMenu);
-        this.attachChild(this.optMenu);
+        this.attach(this.optMenu);
         this.playSelect();
     }
 
     // Singleplayer Option Handlers
     private onSpLoadOptClick() {
-        this.detachChild(this.spMenu);
-        this.attachChild(this.loadMenu);
+        this.attach(this.loadMenu);
         this.playSelect();
     }
 
     private onSpCancelOptClick() {
-        this.detachChild(this.spMenu);
-        this.attachChild(this.topMenu);
+        this.attach(this.topMenu);
         this.playReturn();
     }
 
     private onSpCreateOptClick() {
-        this.detachChild(this.spMenu);
-        this.attachChild(this.createMenu);
+        this.attach(this.createMenu);
         this.playSelect();
     }
 
     // Multiplayer Option Handlers
     private onMpAddServerOptClick() {
-        this.detachChild(this.mpMenu);
-        this.attachChild(this.addServerMenu);
+        this.attach(this.addServerMenu);
         this.playSelect();
     }
 
     private onMpJoinOptClick() {
         this.detachChild(this.mpMenu);
+        this.attachedCmp = undefined;
         this.playValidate();
     }
 
     private onMpCancelOptClick() {
-        this.detachChild(this.mpMenu);
-        this.attachChild(this.topMenu);
+        this.attach(this.topMenu);
         this.playReturn();
     }
 
     // Options Option Handlers
     private onOptCancelOptClick() {
-        this.detachChild(this.optMenu);
-        this.attachChild(this.topMenu);
+        this.attach(this.topMenu);
         this.playSelect();
     }
 
     // create world menu
     private onCreateWorldCancelClick() {
-        this.detachChild(this.createMenu);
-        this.attachChild(this.spMenu);
+        this.attach(this.spMenu);
         this.playReturn();
     }
 
     // load world menu
     private onLoadWorldCancelClick() {
-        this.detachChild(this.loadMenu);
-        this.attachChild(this.spMenu);
+        this.attach(this.spMenu);
         this.playReturn();
     }
 
     private onAddServerCancel() {
-        this.detachChild(this.addServerMenu);
-        this.attachChild(this.mpMenu);
+        this.attach(this.mpMenu);
         this.playReturn();
     }
 
     private onAddServerSave() {
-        this.detachChild(this.addServerMenu);
-        this.attachChild(this.mpMenu);
+        this.attach(this.mpMenu);
         this.playValidate();
+    }
+
+    private attach(cmp: ChildComponent) {
+        if (this.attachedCmp) {
+            this.detachChild(this.attachedCmp);
+        }
+
+        this.attachChild(cmp);
+        this.attachedCmp = cmp;
     }
 
     private playReturn() {

@@ -7,22 +7,18 @@ export default class TopMenu extends Component {
     private element: HTMLElement;
     private spBtn: HTMLElement;
     private mpBtn: HTMLElement;
-    private optBtn: HTMLElement;
 
     constructor(mainMenu: HTMLElement) {
-    super();
-    this.element = DomHandler.getElement("#main-menu-top", mainMenu);
+        super();
+        this.element = DomHandler.getElement("#main-menu-top", mainMenu);
 
-        // Buttons
-    this.spBtn = DomHandler.getElement("#top-opt-sp", mainMenu);
-    this.mpBtn = DomHandler.getElement("#top-opt-mp", mainMenu);
-    this.optBtn = DomHandler.getElement("#top-opt-opt", mainMenu);
+        this.spBtn = DomHandler.getElement("#top-opt-sp", this.element);
+        this.mpBtn = DomHandler.getElement("#top-opt-mp", this.element);
     }
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onSPOption);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onMPOption);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onOptOption);
 
         this.element.style.display = "block";
     }
@@ -30,7 +26,6 @@ export default class TopMenu extends Component {
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onSPOption);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onMPOption);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onOptOption);
 
         this.element.style.display = "";
     }
@@ -45,12 +40,6 @@ export default class TopMenu extends Component {
     private onMPOption(event: MouseEvent) {
         if (event.target === this.mpBtn) {
             EventHandler.callEvent(EventHandler.Event.TOPMENU_MP_OPT_CLICK);
-        }
-    }
-
-    private onOptOption(event: MouseEvent) {
-        if (event.target === this.optBtn) {
-            EventHandler.callEvent(EventHandler.Event.TOPMENU_OPT_OPT_CLICK);
         }
     }
 }

@@ -1,0 +1,35 @@
+.options-dropdown {
+    position: absolute;
+    right: 1vmin;
+    top: 1vmin;
+    display: inline-block;
+    font-size: 2vmin;
+}
+
+.options-dropdown .options-dropdown-header {
+    border: solid 1px transparent;
+    padding: 1vmin;
+}
+
+.options-dropdown .options-dropdown-header--enabled {
+    border-color: #d0d0d0;
+}
+
+.options-dropdown .options-dropdown-header:hover {
+    border-color: #d0d0d0;
+    cursor: pointer;
+}
+
+.options-dropdown .arrow-down {
+    border-left: 0.75vmin solid transparent;
+    border-right: 0.75vmin solid transparent;
+    border-top: 0.75vmin solid #d0d0d0;
+    display: inline-block;
+    position: relative;
+    top: -0.25vmin;
+}
+
+.options-dropdown .options-dropdown-list {
+    visibility: hidden;
+    background-color: black;
+}

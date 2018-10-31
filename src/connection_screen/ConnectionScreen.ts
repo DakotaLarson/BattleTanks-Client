@@ -72,7 +72,8 @@ export default class ConnectionScreen extends Component {
     }
 
     private onWaitingGameStatus() {
-        this.showScreen(this.waitingScreen);
+        // this.showScreen(this.waitingScreen);
+        this.hide();
     }
 
     private onFinishingGameStatus() {

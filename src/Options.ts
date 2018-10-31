@@ -39,6 +39,7 @@ export default class Options extends Component {
                 },
                 volume: 1,
                 mouseSensitivity: 1,
+                username: "Guest",
             };
             localStorage.setItem("userOptions", JSON.stringify(Options.options));
         }

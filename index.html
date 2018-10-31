@@ -17,16 +17,25 @@
     <link rel="stylesheet" type="text/css" href="./css/create-world-mode-toggle.css"/>
     <link rel="stylesheet" type="text/css" href="./css/alert-message.css"/>
     <link rel="stylesheet" type="text/css" href="./css/options.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/options-dropdown.css"/>
 
 </head>
 <body>
 <div class="menu main-menu no-select">
+    <div class="options-dropdown">
+        <div class="options-dropdown-header">
+                <span id="options-dropdown-username"></span>
+                <span class="arrow-down"></span>
+        </div>
+        <div class="options-dropdown-list">
+            <span class="menu-selection" id="options-dropdown-option--options">Options</span>
+        </div>
+    </div>
     <span class="main-menu-title">Battle Tanks</span><br/>
     <!-- TOP MENU -->
     <div class="menu-section" id="main-menu-top">
         <span class="menu-selection" id="top-opt-mp">Play</span><br/>
         <span class="menu-selection" id="top-opt-sp">Create Arena</span><br/>
-        <span class="menu-selection" id="top-opt-opt">Options</span>
     </div>
     <!-- SINGLEPLAYER MENU -->
     <div class="menu-section" id="main-menu-sp">
@@ -50,6 +59,8 @@
     </div>
     <!-- OPTIONS MENU -->
     <div class="menu-section options-menu" id="main-menu-opt">
+
+        <input id="option-value-username" class="menu-text-input" maxlength="32" size="16" placeholder="Username"><br/>
         <div class='options-parent'>
             <span class="option-title">Forward</span>
             <span class="option-value option-listening-value" id="option-value-forward"></span>
@@ -105,6 +116,7 @@
         <span class="menu-selection" id="add-server-opt-cancel">Cancel</span>
     </div>
 </div>
+
 
 <!-- CONNECTION SCREEN -->
 <div class="menu connection-screen no-select">
