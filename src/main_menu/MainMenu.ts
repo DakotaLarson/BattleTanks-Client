@@ -212,8 +212,8 @@ export default class MainMenu extends Component {
         audio.play();
     }
 
-    private playHover() {
-        const audio = new Audio(location.pathname + "audio/menu-hover.wav");
-        audio.play();
-    }
+    // private playHover() {
+    //     const audio = new Audio(location.pathname + "audio/menu-hover.wav");
+    //     audio.play();
+    // }
 }
