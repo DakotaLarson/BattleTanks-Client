@@ -25,7 +25,10 @@ export default class GUI extends Component {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onRunning);
-        EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_FINISHING, this.onFinish);
+        EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_WAITING, this.onNotRunning);
+        EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_STARTING, this.onNotRunning);
+
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_SPECTATING, this.onNotRunning);
 
         this.attachChild(this.debugPanel);
 
@@ -34,7 +37,8 @@ export default class GUI extends Component {
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onRunning);
-        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_FINISHING, this.onFinish);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_WAITING, this.onNotRunning);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_STARTING, this.onNotRunning);
 
         this.detachChild(this.debugPanel);
 
@@ -44,10 +48,9 @@ export default class GUI extends Component {
     private onRunning() {
         this.attachChild(this.cooldownBar);
         this.attachChild(this.healthBar);
-
     }
 
-    private onFinish() {
+    private onNotRunning() {
         this.detachChild(this.cooldownBar);
         this.detachChild(this.healthBar);
     }

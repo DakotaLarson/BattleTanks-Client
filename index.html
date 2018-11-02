@@ -121,23 +121,19 @@
         <span class="menu-selection option-disconnect">Disconnect</span>
     </div>
     <div class="menu-section section-disconnected">
-        <span class="message">Disconnected.</span><br/>
+        <span class="message">Disconnected</span><br/>
         <span class="menu-selection option-disconnect">Disconnect</span>
     </div>
     <div class="menu-section section-connected">
-        <span class="message">Connected.</span><br/>
+        <span class="message">Connected</span><br/>
         <span class="menu-selection option-disconnect">Disconnect</span>
     </div>
     <div class="menu-section section-waiting">
-        <span class="message">Waiting for match to start.</span><br/>
+        <span class="message">Waiting for match to start...</span><br/>
         <span class="menu-selection option-disconnect">Disconnect</span>
     </div>
-    <div class="menu-section section-finishing">
-        <span class="message">Last match finishing up.</span><br/>
-        <div class="stats-parent">
-            <span class="stats-value">Winner: <span id="stats-winner"></span></span>
-            <br/>
-        </div>
+    <div class="menu-section section-starting">
+        <span class="message">Next match starting up...</span><br/>
         <span class="menu-selection option-disconnect">Disconnect</span>
     </div>
 </div>
@@ -162,6 +158,8 @@
         <div class="create-world-mode-toggle no-select" id="gui-create-world-toggle-block">Block (B)</div>
         <div class="create-world-mode-toggle no-select" id="gui-create-world-toggle-gamespawn">Game Spawn</div>
         <div class="create-world-mode-toggle no-select" id="gui-create-world-toggle-initialspawn">Initial Spawn</div>
+        <div class="create-world-mode-toggle no-select" id="gui-create-world-toggle-team-a-spawn">Team A Spawn</div>
+        <div class="create-world-mode-toggle no-select" id="gui-create-world-toggle-team-b-spawn">Team B Spawn</div>
     </div>
 
     <div class="gui-element no-select cooldown-bar-container">

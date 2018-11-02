@@ -8,26 +8,31 @@ import SceneSingleplayerToolHandler from "./SceneSingleplayerToolHandler";
 
 export default class SceneHandler extends Component {
 
-    public title: string | undefined;
-    public width: number;
-    public height: number;
-
-    public floor: Mesh | undefined;
-    public lines: LineSegments | undefined;
-    public lights: Object3D[] | undefined;
-    public blocks: Mesh | undefined;
-
-    public gameSpawnVisuals: Mesh | undefined;
-    public initialSpawnVisuals: Mesh | undefined;
-
-    public scene: Scene;
-
     public blockPositions: Vector3[];
     public initialSpawnPositions: Vector4[];
     public gameSpawnPositions: Vector4[];
+    public teamASpawnPositions: Vector4[];
+    public teamBSpawnPositions: Vector4[];
 
-    public sceneSingleplayerToolHandler: SceneSingleplayerToolHandler;
-    public scenePlayerHandler: ScenePlayerHandler;
+    public floor: Mesh | undefined;
+    public blocks: Mesh | undefined;
+
+    private scene: Scene;
+
+    private title: string | undefined;
+    private width: number;
+    private height: number;
+
+    private lines: LineSegments | undefined;
+    private lights: Object3D[] | undefined;
+
+    private gameSpawnVisuals: Mesh | undefined;
+    private initialSpawnVisuals: Mesh | undefined;
+    private teamASpawnVisuals: Mesh | undefined;
+    private teamBSpawnVisuals: Mesh | undefined;
+
+    private scenePlayerHandler: ScenePlayerHandler;
+    private sceneSingleplayerToolHandler: SceneSingleplayerToolHandler;
 
     private spawnVisualTexture: Texture | undefined;
 
@@ -40,6 +45,8 @@ export default class SceneHandler extends Component {
 
         this.initialSpawnPositions = [];
         this.gameSpawnPositions = [];
+        this.teamASpawnPositions = [];
+        this.teamBSpawnPositions = [];
 
         this.scene = new Scene();
         this.scene.background = new Color(0x1e1e20);
@@ -150,31 +157,30 @@ export default class SceneHandler extends Component {
         if (this.initialSpawnVisuals) {
             this.scene.remove(this.initialSpawnVisuals);
         }
-
-        const masterGameSpawnGeo = new Geometry();
-
-        for (const pos of this.gameSpawnPositions) {
-            const geo = new CircleGeometry(0.5, 16);
-
-            geo.rotateX(-Math.PI / 2);
-            geo.rotateY(-pos.w - Math.PI / 2);
-
-            for (const vert of geo.vertices) {
-                vert.add(new Vector3(pos.x + 0.5, pos.y + 0.0001, pos.z + 0.5));
-            }
-            masterGameSpawnGeo.merge(geo);
+        if (this.teamASpawnVisuals) {
+            this.scene.remove(this.teamASpawnVisuals);
+        }
+        if (this.teamBSpawnVisuals) {
+            this.scene.remove(this.teamBSpawnVisuals);
         }
 
-        const gameSpawnMat = new MeshLambertMaterial({
-            map: this.spawnVisualTexture,
-            color: 0xffff00,
-        });
+        const gameSpawnMesh = this.createRotatedPositionsVisualMesh(this.gameSpawnPositions, 0xffff00);
+        const initialSpawnMesh = this.createRotatedPositionsVisualMesh(this.initialSpawnPositions, 0xff0000);
+        const teamASpawnMesh = this.createRotatedPositionsVisualMesh(this.teamASpawnPositions, 0x742389);
+        const teamBSpawnMesh = this.createRotatedPositionsVisualMesh(this.teamBSpawnPositions, 0x432879);
 
-        const gameSpawnMesh = new Mesh(masterGameSpawnGeo, gameSpawnMat);
+        this.scene.add(gameSpawnMesh, initialSpawnMesh, teamASpawnMesh, teamBSpawnMesh);
 
-        const masterInitialSpawnGeo = new Geometry();
+        this.initialSpawnVisuals = initialSpawnMesh;
+        this.gameSpawnVisuals = gameSpawnMesh;
+        this.teamASpawnVisuals = teamASpawnMesh;
+        this.teamBSpawnVisuals = teamBSpawnMesh;
+    }
 
-        for (const pos of this.initialSpawnPositions) {
+    private createRotatedPositionsVisualMesh(positions: Vector4[], color: number) {
+        const masterGeo = new Geometry();
+
+        for (const pos of positions) {
             const geo = new CircleGeometry(0.5, 16);
 
             geo.rotateX(-Math.PI / 2);
@@ -183,20 +189,15 @@ export default class SceneHandler extends Component {
             for (const vert of geo.vertices) {
                 vert.add(new Vector3(pos.x + 0.5, pos.y + 0.01, pos.z + 0.5));
             }
-            masterInitialSpawnGeo.merge(geo);
+            masterGeo.merge(geo);
         }
 
-        const initialSpawnMat = new MeshLambertMaterial({
+        const material = new MeshLambertMaterial({
             map: this.spawnVisualTexture,
-            color: 0xff0000,
+            color,
         });
 
-        const initialSpawnMesh = new Mesh(masterInitialSpawnGeo, initialSpawnMat);
-
-        this.scene.add(gameSpawnMesh, initialSpawnMesh);
-
-        this.initialSpawnVisuals = initialSpawnMesh;
-        this.gameSpawnVisuals = gameSpawnMesh;
+        return new Mesh(masterGeo, material);
     }
 
     private onSceneUpdate(data: any) {
@@ -216,10 +217,8 @@ export default class SceneHandler extends Component {
 
         this.gameSpawnPositions = this.parseRotatedPositionData(data.gameSpawnPositions) || [];
         this.initialSpawnPositions = this.parseRotatedPositionData(data.initialSpawnPositions) || [];
-
-        EventHandler.callEvent(EventHandler.Event.ARENA_BLOCKPOSITION_UPDATE, this.blockPositions);
-        EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.initialSpawnPositions);
-        EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.gameSpawnPositions);
+        this.teamASpawnPositions = this.parseRotatedPositionData(data.teamASpawnPositions) || [];
+        this.teamBSpawnPositions = this.parseRotatedPositionData(data.teamBSpawnPositions) || [];
 
         this.updateBlocks(positions);
 
@@ -236,6 +235,9 @@ export default class SceneHandler extends Component {
         const blockData = this.generatePositionData(this.blockPositions);
         const gameSpawnData = this.generatePositionData(this.gameSpawnPositions);
         const initialSpawnData = this.generatePositionData(this.initialSpawnPositions);
+        const teamASpawnData = this.generatePositionData(this.teamASpawnPositions);
+        const teamBSpawnData = this.generatePositionData(this.teamBSpawnPositions);
+
         const saveObject = {
             title: this.title,
             width: this.width - 2,
@@ -243,6 +245,8 @@ export default class SceneHandler extends Component {
             blockPositions: blockData,
             gameSpawnPositions: gameSpawnData,
             initialSpawnPositions: initialSpawnData,
+            teamASpawnPositions: teamASpawnData,
+            teamBSpawnPositions: teamBSpawnData,
         };
         const blob = new Blob([JSON.stringify(saveObject)], {type : "application/json"});
         const objectURL = URL.createObjectURL(blob);
@@ -268,7 +272,6 @@ export default class SceneHandler extends Component {
             positions.push(this.width + diff - 1, 0.0001, i);
         }
         geo.addAttribute("position", new Float32BufferAttribute(positions, 3));
-        // @ts-ignore Type check error incorrect.
         const lineSegments = new LineSegments(geo, new LineDashedMaterial({
             color: 0x000000,
             dashSize: 0.375,

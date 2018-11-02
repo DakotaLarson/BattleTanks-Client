@@ -1,4 +1,4 @@
-import { PerspectiveCamera, Spherical, Vector3 } from "three";
+import { PerspectiveCamera} from "three";
 import EventHandler from "../../../EventHandler";
 import Camera from "../Camera";
 
@@ -14,6 +14,8 @@ export default class SingleplayerCamera extends Camera {
         EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.onToggleToOther);
         EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN, this.onToggleToOther);
         EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.onToggleToOther);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_TEAM_A, this.onToggleToOther);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_TEAM_B, this.onToggleToOther);
 
         EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.onToggleToCamera);
 
@@ -27,6 +29,8 @@ export default class SingleplayerCamera extends Camera {
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.onToggleToOther);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN, this.onToggleToOther);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.onToggleToOther);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_TEAM_A, this.onToggleToOther);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_TEAM_B, this.onToggleToOther);
 
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.onToggleToCamera);
 
@@ -41,17 +45,5 @@ export default class SingleplayerCamera extends Camera {
 
     private onToggleToOther() {
         this.detachControls(true);
-    }
-
-    private onArenaSceneUpdate(data: any) {
-        this.followingTarget = new Vector3(data.width / 2, 0, data.height / 2);
-
-        this.followingSpherical = new Spherical(25, Math.PI / 4, Math.PI / 3);
-        this.followingSpherical.makeSafe();
-
-        this.camera.position.setFromSpherical(this.followingSpherical);
-        this.camera.position.add(this.followingTarget);
-
-        this.camera.lookAt(this.followingTarget);
     }
 }

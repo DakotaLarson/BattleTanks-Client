@@ -32,6 +32,7 @@ export default class CameraControls extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
         EventHandler.addListener(this, EventHandler.Event.DOM_WHEEL, this.onWheel);
+        EventHandler.callEvent(EventHandler.Event.CAMERA_CONTROLS_UPDATE, this.spherical);
     }
 
     public disable() {
@@ -44,6 +45,10 @@ export default class CameraControls extends Component {
     public setFromPlayer(rot: number) {
         this.spherical.theta = rot + Math.PI;
         return this.spherical;
+    }
+
+    public reset() {
+        this.spherical = new Spherical(25, Math.PI / 4, Math.PI / 3);
     }
 
     private onMouseDown(event: MouseEvent) {

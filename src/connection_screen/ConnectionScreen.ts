@@ -1,25 +1,25 @@
-import Component from "../component/ChildComponent";
+import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
 import ConnectedScreen from "./ConnectedScreen";
 import ConnectingScreen from "./ConnectingScreen";
 import DisconnectedScreen from "./DisconnectedScreen";
-import FinishingScreen from "./FinishingScreen";
+import StartingScreen from "./StartingScreen";
 import WaitingScreen from "./WaitingScreen";
 
-export default class ConnectionScreen extends Component {
+export default class ConnectionScreen extends ChildComponent {
 
     private element: HTMLElement;
 
     private connectedScreen: ConnectedScreen;
     private connectingScreen: ConnectingScreen;
     private disconnectedScreen: DisconnectedScreen;
-    private finishingScreen: FinishingScreen;
     private waitingScreen: WaitingScreen;
+    private startingScreen: StartingScreen;
 
     private hidden: boolean;
-    private activeScreen: Component | undefined;
+    private activeScreen: ChildComponent | undefined;
 
     constructor() {
         super();
@@ -28,8 +28,8 @@ export default class ConnectionScreen extends Component {
         this.connectedScreen = new ConnectedScreen(this.element);
         this.connectingScreen = new ConnectingScreen(this.element);
         this.disconnectedScreen = new DisconnectedScreen(this.element);
-        this.finishingScreen = new FinishingScreen(this.element);
         this.waitingScreen = new WaitingScreen(this.element);
+        this.startingScreen = new StartingScreen(this.element);
 
         this.hidden = false;
         this.activeScreen = undefined;
@@ -41,9 +41,8 @@ export default class ConnectionScreen extends Component {
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.onConnectionClose);
 
         EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_WAITING, this.onWaitingGameStatus);
-        EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_PREPARING, this.onOtherGameStatus);
-        EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onOtherGameStatus);
-        EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_FINISHING, this.onFinishingGameStatus);
+        EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_STARTING, this.onStartingGameStatus);
+        EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onRunningGameStatus);
 
         this.element.style.display = "flex";
         this.showScreen(this.connectingScreen);
@@ -55,9 +54,8 @@ export default class ConnectionScreen extends Component {
         EventHandler.removeListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.onConnectionClose);
 
         EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_WAITING, this.onWaitingGameStatus);
-        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_PREPARING, this.onOtherGameStatus);
-        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onOtherGameStatus);
-        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_FINISHING, this.onFinishingGameStatus);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_STARTING, this.onStartingGameStatus);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onRunningGameStatus);
 
         this.element.style.display = "";
     }
@@ -72,19 +70,18 @@ export default class ConnectionScreen extends Component {
     }
 
     private onWaitingGameStatus() {
-        // this.showScreen(this.waitingScreen);
+        this.showScreen(this.waitingScreen);
+    }
+
+    private onStartingGameStatus() {
+        this.showScreen(this.startingScreen);
+    }
+
+    private onRunningGameStatus() {
         this.hide();
     }
 
-    private onFinishingGameStatus() {
-        this.showScreen(this.finishingScreen);
-    }
-
-    private onOtherGameStatus() {
-        this.hide();
-    }
-
-    private showScreen(screen: Component) {
+    private showScreen(screen: ChildComponent) {
         if (this.hidden) {
             this.show();
         }

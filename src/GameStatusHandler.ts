@@ -21,14 +21,11 @@ export default class GameStatusHandler extends Component {
             case GameStatus.WAITING:
                 EventHandler.callEvent(EventHandler.Event.GAME_STATUS_WAITING);
                 break;
-            case GameStatus.PREPARING:
-                EventHandler.callEvent(EventHandler.Event.GAME_STATUS_PREPARING);
+            case GameStatus.STARTING:
+                EventHandler.callEvent(EventHandler.Event.GAME_STATUS_STARTING);
                 break;
             case GameStatus.RUNNING:
                 EventHandler.callEvent(EventHandler.Event.GAME_STATUS_RUNNING);
-                break;
-            case GameStatus.FINISHING:
-                EventHandler.callEvent(EventHandler.Event.GAME_STATUS_FINISHING);
                 break;
         }
     }
@@ -36,7 +33,6 @@ export default class GameStatusHandler extends Component {
 
 enum GameStatus {
     WAITING,
-    PREPARING,
+    STARTING,
     RUNNING,
-    FINISHING,
 }

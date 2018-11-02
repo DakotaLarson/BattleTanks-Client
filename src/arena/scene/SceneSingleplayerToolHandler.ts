@@ -30,18 +30,24 @@ export default class SceneSingleplayerToolHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.GAMESPAWN_CREATION_TOOL_PRIMARY, this.onGameSpawnPrimary);
         EventHandler.addListener(this, EventHandler.Event.GAMESPAWN_CREATION_TOOL_SECONDARY, this.onGameSpawnSecondary);
 
+        EventHandler.addListener(this, EventHandler.Event.TEAMSPAWN_CREATION_TOOL_PRIMARY, this.onTeamSpawnPrimary);
+        EventHandler.addListener(this, EventHandler.Event.TEAMSPAWN_CREATION_TOOL_SECONDARY, this.onTeamSpawnSecondary);
+
         EventHandler.addListener(this, EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
     }
 
     public disable() {
-        EventHandler.addListener(this, EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.onBCTPrimary);
-        EventHandler.addListener(this, EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.onBCTSecondary);
+        EventHandler.removeListener(this, EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.onBCTPrimary);
+        EventHandler.removeListener(this, EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.onBCTSecondary);
 
-        EventHandler.addListener(this, EventHandler.Event.INITIALSPAWN_CREATION_TOOL_PRIMARY, this.onInitialSpawnPrimary);
-        EventHandler.addListener(this, EventHandler.Event.INITIALSPAWN_CREATION_TOOL_SECONDARY, this.onInitialSpawnSecondary);
+        EventHandler.removeListener(this, EventHandler.Event.INITIALSPAWN_CREATION_TOOL_PRIMARY, this.onInitialSpawnPrimary);
+        EventHandler.removeListener(this, EventHandler.Event.INITIALSPAWN_CREATION_TOOL_SECONDARY, this.onInitialSpawnSecondary);
 
-        EventHandler.addListener(this, EventHandler.Event.GAMESPAWN_CREATION_TOOL_PRIMARY, this.onGameSpawnPrimary);
-        EventHandler.addListener(this, EventHandler.Event.GAMESPAWN_CREATION_TOOL_SECONDARY, this.onGameSpawnSecondary);
+        EventHandler.removeListener(this, EventHandler.Event.GAMESPAWN_CREATION_TOOL_PRIMARY, this.onGameSpawnPrimary);
+        EventHandler.removeListener(this, EventHandler.Event.GAMESPAWN_CREATION_TOOL_SECONDARY, this.onGameSpawnSecondary);
+
+        EventHandler.removeListener(this, EventHandler.Event.TEAMSPAWN_CREATION_TOOL_PRIMARY, this.onTeamSpawnPrimary);
+        EventHandler.removeListener(this, EventHandler.Event.TEAMSPAWN_CREATION_TOOL_SECONDARY, this.onTeamSpawnSecondary);
 
         EventHandler.removeListener(this, EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
     }
@@ -65,7 +71,6 @@ export default class SceneSingleplayerToolHandler extends Component {
             if (!this.isPositionBlock(position)) {
                 this.parent.blockPositions.push(position);
                 this.parent.updateBlocks(this.parent.blockPositions);
-                EventHandler.callEvent(EventHandler.Event.ARENA_BLOCKPOSITION_UPDATE, this.parent.blockPositions);
             }
         }
     }
@@ -77,7 +82,6 @@ export default class SceneSingleplayerToolHandler extends Component {
             const removed = this.removeBlockPosition(position);
             if (removed) {
                 this.parent.updateBlocks(this.parent.blockPositions);
-                EventHandler.callEvent(EventHandler.Event.ARENA_BLOCKPOSITION_UPDATE, this.parent.blockPositions);
             }
         }
     }
@@ -96,7 +100,6 @@ export default class SceneSingleplayerToolHandler extends Component {
                 this.parent.initialSpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
                 this.sendAlert("Initial spawn created.");
                 this.parent.updateSpawnVisuals();
-                EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.parent.initialSpawnPositions);
             }
         }
     }
@@ -109,7 +112,6 @@ export default class SceneSingleplayerToolHandler extends Component {
             if (removed) {
                 this.sendAlert("Initial spawn removed.");
                 this.parent.updateSpawnVisuals();
-                EventHandler.callEvent(EventHandler.Event.ARENA_INITIALSPAWN_UPDATE, this.parent.initialSpawnPositions);
             } else {
                 this.sendAlert("That is not an initial spawn.");
             }
@@ -130,7 +132,6 @@ export default class SceneSingleplayerToolHandler extends Component {
                 this.parent.gameSpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
                 this.sendAlert("Game spawn created.");
                 this.parent.updateSpawnVisuals();
-                EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.parent.gameSpawnPositions);
             }
         }
     }
@@ -143,9 +144,46 @@ export default class SceneSingleplayerToolHandler extends Component {
             if (removed) {
                 this.sendAlert("Game spawn removed.");
                 this.parent.updateSpawnVisuals();
-                EventHandler.callEvent(EventHandler.Event.ARENA_GAMESPAWN_UPDATE, this.parent.gameSpawnPositions);
             } else {
                 this.sendAlert("That is not a game spawn.");
+            }
+        }
+    }
+
+    private onTeamSpawnPrimary(team: number) {
+        if (this.floorIntersection.length) {
+            const origPostion = this.floorIntersection[0].point.setY(0);
+            const position = origPostion.clone().floor();
+            if (this.isPositionBlock(position)) {
+                this.sendAlert("Cannot create team spawn (Block at position).");
+
+            } else if (this.isPositionTeamSpawn(position, team)) {
+                this.sendAlert("That is already a team spawn.");
+            } else {
+                const rotation = this.getSpawnRotationAngle(origPostion);
+
+                if (team === 0) {
+                    this.parent.teamASpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
+                } else if (team === 1) {
+                    this.parent.teamBSpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
+                }
+
+                this.sendAlert("Team spawn created.");
+                this.parent.updateSpawnVisuals();
+            }
+        }
+    }
+
+    private onTeamSpawnSecondary(team: number) {
+        if (this.floorIntersection.length) {
+            const position = this.floorIntersection[0].point.setY(0);
+            position.floor();
+            const removed = this.removeTeamSpawnPosition(position, team);
+            if (removed) {
+                this.sendAlert("Team spawn removed.");
+                this.parent.updateSpawnVisuals();
+            } else {
+                this.sendAlert("That is not a team spawn.");
             }
         }
     }
@@ -162,6 +200,16 @@ export default class SceneSingleplayerToolHandler extends Component {
         return this.isPositionInArray(pos, this.parent.initialSpawnPositions);
     }
 
+    private isPositionTeamSpawn(pos: Vector3, team: number) {
+        if (team === 0) {
+            return this.isPositionInArray(pos, this.parent.teamASpawnPositions);
+        } else if (team === 1) {
+            return this.isPositionInArray(pos, this.parent.teamBSpawnPositions);
+        } else {
+            throw new Error("Team not identifiable");
+        }
+    }
+
     private removeBlockPosition(pos: Vector3) {
         return this.removePositionFromArray(pos, this.parent.blockPositions);
     }
@@ -172,6 +220,16 @@ export default class SceneSingleplayerToolHandler extends Component {
 
     private removeGameSpawnPosition(pos: Vector3) {
         return this.removePositionFromArray(pos, this.parent.gameSpawnPositions);
+    }
+
+    private removeTeamSpawnPosition(pos: Vector3, team: number) {
+        if (team === 0) {
+            return this.removePositionFromArray(pos, this.parent.teamASpawnPositions);
+        } else if (team === 1) {
+            return this.removePositionFromArray(pos, this.parent.teamBSpawnPositions);
+        } else {
+            throw new Error("Team not identifiable");
+        }
     }
 
     private removePositionFromArray(pos: Vector3, arr: Vector3[] | Vector4[]) {

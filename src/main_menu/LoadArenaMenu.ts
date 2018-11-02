@@ -42,6 +42,7 @@ export default class LoadArenaMenu extends Component {
 
         this.errorElt.textContent = "";
         this.fileNameElt.textContent = "";
+        this.fileInputElt.value = "";
 
         this.arena = undefined;
 

@@ -7,25 +7,25 @@ export default class GUI extends Component {
 
     private element: HTMLElement;
     private debugPanel: DebugPanel;
-    private createWorldModeToggle: ArenaCreateModeToggle;
+    private arenaCreateModeToggle: ArenaCreateModeToggle;
 
     constructor() {
         super();
         this.element = DomHandler.getElement(".gui");
         this.debugPanel = new DebugPanel(this.element);
-        this.createWorldModeToggle = new ArenaCreateModeToggle(this.element);
+        this.arenaCreateModeToggle = new ArenaCreateModeToggle(this.element);
     }
 
     public enable() {
         this.attachChild(this.debugPanel);
-        this.attachChild(this.createWorldModeToggle);
+        this.attachChild(this.arenaCreateModeToggle);
 
         this.element.style.display = "block";
     }
 
     public disable() {
         this.detachChild(this.debugPanel);
-        this.detachChild(this.createWorldModeToggle);
+        this.detachChild(this.arenaCreateModeToggle);
 
         this.element.style.display = "";
     }

@@ -8,6 +8,8 @@ export default class MultiplayerCamera extends Camera {
 
     private cameraToggleHandler: CameraToggleHandler;
 
+    private isSpectating = false;
+
     constructor(camera: PerspectiveCamera) {
         super(camera);
 
@@ -17,12 +19,17 @@ export default class MultiplayerCamera extends Camera {
     public enable() {
         super.enable();
         this.controls.zoomOnly = true;
+        this.controls.reset();
 
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
 
         EventHandler.addListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
+
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_SPECTATING, this.onSpectating);
+        this.controls.reset();
+
     }
 
     public disable() {
@@ -33,6 +40,19 @@ export default class MultiplayerCamera extends Camera {
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
 
         EventHandler.removeListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
+
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_SPECTATING, this.onSpectating);
+
+        if (this.isSpectating) {
+            EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_SPECTATING, this.onSpectating);
+            this.isSpectating = false;
+        }
+    }
+
+    protected onArenaSceneUpdate(data: any) {
+        super.onArenaSceneUpdate(data);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
+        this.isSpectating = false;
     }
 
     private moveCamera(pos: Vector3, bodyRot: number, headRot: number) {
@@ -88,5 +108,12 @@ export default class MultiplayerCamera extends Camera {
         } else {
              this.detachControls(true);
         }
+    }
+
+    private onSpectating() {
+        EventHandler.addListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
+        this.isSpectating = true;
+        this.controls.zoomOnly = false;
+        this.attachControls(true);
     }
 }

@@ -9,6 +9,8 @@ export default class ArenaCreateModeToggle extends Component {
     private blockToggleElt: HTMLElement;
     private gamespawnToggleElt: HTMLElement;
     private initialspawnToggleElt: HTMLElement;
+    private teamASpawnToggleElt: HTMLElement;
+    private teamBSpawnToggleElt: HTMLElement;
 
     private mode: number;
 
@@ -19,6 +21,8 @@ export default class ArenaCreateModeToggle extends Component {
         this.blockToggleElt = DomHandler.getElement("#gui-create-world-toggle-block", this.parentElt);
         this.gamespawnToggleElt = DomHandler.getElement("#gui-create-world-toggle-gamespawn", this.parentElt);
         this.initialspawnToggleElt = DomHandler.getElement("#gui-create-world-toggle-initialspawn", this.parentElt);
+        this.teamASpawnToggleElt = DomHandler.getElement("#gui-create-world-toggle-team-a-spawn", this.parentElt);
+        this.teamBSpawnToggleElt = DomHandler.getElement("#gui-create-world-toggle-team-b-spawn", this.parentElt);
 
         this.mode = Mode.CAMERA;
 
@@ -26,10 +30,13 @@ export default class ArenaCreateModeToggle extends Component {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+
         EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.onToggleBlock);
         EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.onToggleCamera);
         EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN, this.onToggleGameSpawn);
         EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.onToggleInitialSpawn);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_TEAM_A, this.onToggleTeamA);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_TEAM_B, this.onToggleTeamB);
 
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
 
@@ -40,10 +47,14 @@ export default class ArenaCreateModeToggle extends Component {
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.onToggleBlock);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.onToggleCamera);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN, this.onToggleGameSpawn);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN, this.onToggleInitialSpawn);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_TEAM_A, this.onToggleTeamA);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_TEAM_B, this.onToggleTeamB);
+
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
 
         this.parentElt.style.display = "none";
@@ -59,12 +70,20 @@ export default class ArenaCreateModeToggle extends Component {
                 EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK);
             }
         } else if (event.target === this.gamespawnToggleElt) {
-            if (this.mode !== Mode.GAMESPAWN) {
+            if (this.mode !== Mode.GAME_SPAWN) {
                 EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN);
             }
         } else if (event.target === this.initialspawnToggleElt) {
-            if (this.mode !== Mode.INITIALSPAWN) {
+            if (this.mode !== Mode.INITIAL_SPAWN) {
                 EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN);
+            }
+        } else if (event.target === this.teamASpawnToggleElt) {
+            if (this.mode !== Mode.TEAM_A_SPAWN) {
+                EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_TEAM_A);
+            }
+        } else if (event.target === this.teamBSpawnToggleElt) {
+            if (this.mode !== Mode.TEAM_B_SPAWN) {
+                EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_TEAM_B);
             }
         }
     }
@@ -92,12 +111,22 @@ export default class ArenaCreateModeToggle extends Component {
     }
 
     private onToggleGameSpawn() {
-        this.mode = Mode.GAMESPAWN;
+        this.mode = Mode.GAME_SPAWN;
         this.updateHTMLClasses();
     }
 
     private onToggleInitialSpawn() {
-        this.mode = Mode.INITIALSPAWN;
+        this.mode = Mode.INITIAL_SPAWN;
+        this.updateHTMLClasses();
+    }
+
+    private onToggleTeamA() {
+        this.mode = Mode.TEAM_A_SPAWN;
+        this.updateHTMLClasses();
+    }
+
+    private onToggleTeamB() {
+        this.mode = Mode.TEAM_B_SPAWN;
         this.updateHTMLClasses();
     }
 
@@ -109,6 +138,8 @@ export default class ArenaCreateModeToggle extends Component {
                 this.blockToggleElt.classList.remove("create-world-toggle-enabled");
                 this.gamespawnToggleElt.classList.remove("create-world-toggle-enabled");
                 this.initialspawnToggleElt.classList.remove("create-world-toggle-enabled");
+                this.teamASpawnToggleElt.classList.remove("create-world-toggle-enabled");
+                this.teamBSpawnToggleElt.classList.remove("create-world-toggle-enabled");
                 break;
             case Mode.BLOCK:
                 this.blockToggleElt.classList.add("create-world-toggle-enabled");
@@ -116,20 +147,45 @@ export default class ArenaCreateModeToggle extends Component {
                 this.cameraToggleElt.classList.remove("create-world-toggle-enabled");
                 this.gamespawnToggleElt.classList.remove("create-world-toggle-enabled");
                 this.initialspawnToggleElt.classList.remove("create-world-toggle-enabled");
+                this.teamASpawnToggleElt.classList.remove("create-world-toggle-enabled");
+                this.teamBSpawnToggleElt.classList.remove("create-world-toggle-enabled");
                 break;
-            case Mode.GAMESPAWN:
+            case Mode.GAME_SPAWN:
                 this.gamespawnToggleElt.classList.add("create-world-toggle-enabled");
 
                 this.cameraToggleElt.classList.remove("create-world-toggle-enabled");
                 this.blockToggleElt.classList.remove("create-world-toggle-enabled");
                 this.initialspawnToggleElt.classList.remove("create-world-toggle-enabled");
+                this.teamASpawnToggleElt.classList.remove("create-world-toggle-enabled");
+                this.teamBSpawnToggleElt.classList.remove("create-world-toggle-enabled");
                 break;
-            case Mode.INITIALSPAWN:
+            case Mode.INITIAL_SPAWN:
                 this.initialspawnToggleElt.classList.add("create-world-toggle-enabled");
 
                 this.cameraToggleElt.classList.remove("create-world-toggle-enabled");
                 this.gamespawnToggleElt.classList.remove("create-world-toggle-enabled");
                 this.blockToggleElt.classList.remove("create-world-toggle-enabled");
+                this.teamASpawnToggleElt.classList.remove("create-world-toggle-enabled");
+                this.teamBSpawnToggleElt.classList.remove("create-world-toggle-enabled");
+                break;
+
+            case Mode.TEAM_A_SPAWN:
+                this.teamASpawnToggleElt.classList.add("create-world-toggle-enabled");
+
+                this.cameraToggleElt.classList.remove("create-world-toggle-enabled");
+                this.gamespawnToggleElt.classList.remove("create-world-toggle-enabled");
+                this.blockToggleElt.classList.remove("create-world-toggle-enabled");
+                this.teamBSpawnToggleElt.classList.remove("create-world-toggle-enabled");
+                this.initialspawnToggleElt.classList.remove("create-world-toggle-enabled");
+                break;
+            case Mode.TEAM_B_SPAWN:
+                this.teamBSpawnToggleElt.classList.add("create-world-toggle-enabled");
+
+                this.cameraToggleElt.classList.remove("create-world-toggle-enabled");
+                this.gamespawnToggleElt.classList.remove("create-world-toggle-enabled");
+                this.blockToggleElt.classList.remove("create-world-toggle-enabled");
+                this.teamASpawnToggleElt.classList.remove("create-world-toggle-enabled");
+                this.initialspawnToggleElt.classList.remove("create-world-toggle-enabled");
                 break;
         }
     }
@@ -138,6 +194,8 @@ export default class ArenaCreateModeToggle extends Component {
 enum Mode {
     CAMERA,
     BLOCK,
-    GAMESPAWN,
-    INITIALSPAWN,
+    GAME_SPAWN,
+    INITIAL_SPAWN,
+    TEAM_A_SPAWN,
+    TEAM_B_SPAWN,
 }
