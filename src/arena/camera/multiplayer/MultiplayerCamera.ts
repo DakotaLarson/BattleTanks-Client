@@ -88,9 +88,7 @@ export default class MultiplayerCamera extends Camera {
     }
 
     private onPlayerRemoval() {
-
         this.controls.zoomOnly = false;
-
     }
 
     private onPlayerMove(data: any) {

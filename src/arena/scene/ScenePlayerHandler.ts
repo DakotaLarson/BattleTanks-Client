@@ -65,7 +65,6 @@ export default class ScenePlayerHandler extends Component {
         this.controlledPlayerId = -1;
 
         this.playerOffset = new Vector3(0.5, this.playerBodyHeight / 2, 0.5);
-
     }
 
     public enable() {
@@ -82,7 +81,6 @@ export default class ScenePlayerHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_SHOOT, this.onShoot);
 
         EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_HEALTH_CHANGE, this.onHealthChange);
-
     }
 
     public disable() {
@@ -99,7 +97,6 @@ export default class ScenePlayerHandler extends Component {
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_SHOOT, this.onShoot);
 
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_HEALTH_CHANGE, this.onHealthChange);
-
     }
 
     public clearPlayers() {
