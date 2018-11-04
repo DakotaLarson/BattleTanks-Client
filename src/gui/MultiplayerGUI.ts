@@ -24,10 +24,10 @@ export default class GUI extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onRunning);
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onNotRunning);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
 
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_SPECTATING, this.onNotRunning);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_SPECTATING, this.onPlayerRemoval);
 
         this.attachChild(this.debugPanel);
 
@@ -35,20 +35,22 @@ export default class GUI extends Component {
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onRunning);
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onNotRunning);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
+
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_SPECTATING, this.onPlayerRemoval);
 
         this.detachChild(this.debugPanel);
 
         this.element.style.display = "";
     }
 
-    private onRunning() {
+    private onPlayerAddition() {
         this.attachChild(this.cooldownBar);
         this.attachChild(this.healthBar);
     }
 
-    private onNotRunning() {
+    private onPlayerRemoval() {
         this.detachChild(this.cooldownBar);
         this.detachChild(this.healthBar);
     }
