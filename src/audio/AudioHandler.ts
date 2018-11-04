@@ -1,9 +1,9 @@
-import {Audio as Three_Audio} from "three";
+import {Audio as ThreeAudio} from "three";
 import { AudioBuffer, AudioListener, AudioLoader} from "three";
-import Audio from "../audio/Audio";
 import Component from "../component/ChildComponent";
 import EventHandler from "../EventHandler";
 import Options from "../Options";
+import AudioType from "./AudioType";
 
 export default class AudioHandler extends Component {
 
@@ -26,6 +26,14 @@ export default class AudioHandler extends Component {
         audioLoader.load(location.pathname + "audio/lose.wav", (buffer: AudioBuffer) => {
             this.loseAudioBuffer = buffer;
         });
+
+        /* tslint:disable */
+        new Audio(location.pathname + "audio/menu-select.wav");
+        new Audio(location.pathname + "audio/menu-back.wav");
+        new Audio(location.pathname + "audio/menu-validate.wav");
+        new Audio(location.pathname + "audio/menu-hover.wav");
+        /* tslint:enable */
+
     }
 
     public enable() {
@@ -36,27 +44,41 @@ export default class AudioHandler extends Component {
         EventHandler.removeListener(this, EventHandler.Event.AUDIO_REQUEST, this.onAudioRequest);
     }
 
-    private onAudioRequest(audio: Audio) {
-        switch (audio) {
-            case Audio.WIN:
-                if (this.winAudioBuffer) {
-                    this.playBuffer(this.winAudioBuffer);
-
-                }
-                break;
-            case Audio.LOSE:
-                if (this.loseAudioBuffer) {
-                    this.playBuffer(this.loseAudioBuffer);
-                }
-                break;
+    private onAudioRequest(audio: AudioType) {
+        if (Options.options.volume) {
+            switch (audio) {
+                case AudioType.WIN:
+                    this.playBuffer(this.winAudioBuffer as AudioBuffer);
+                    break;
+                case AudioType.LOSE:
+                    this.playBuffer(this.loseAudioBuffer as AudioBuffer);
+                    break;
+                case AudioType.MENU_SELECT:
+                    this.playElement(location.pathname + "audio/menu-select.wav");
+                    break;
+                case AudioType.MENU_RETURN:
+                    this.playElement(location.pathname + "audio/menu-back.wav");
+                    break;
+                case AudioType.MENU_VALIDATE:
+                    this.playElement(location.pathname + "audio/menu-validate.wav");
+                    break;
+                case AudioType.MENU_HOVER:
+                    this.playElement(location.pathname + "audio/menu-hover.wav");
+                    break;
+            }
         }
     }
 
     private playBuffer(buffer: AudioBuffer) {
-        const audio = new Three_Audio(this.audioListener);
-
+        const audio = new ThreeAudio(this.audioListener);
         audio.setVolume(Options.options.volume);
         audio.setBuffer(buffer);
+        audio.play();
+    }
+
+    private playElement(path: string) {
+        const audio = new Audio(path);
+        audio.volume = Options.options.volume;
         audio.play();
     }
 }

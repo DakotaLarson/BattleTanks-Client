@@ -93,6 +93,8 @@ export default class ArenaHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.detachMultiplayerArena);
         EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.detachMultiplayerArena);
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.detachMultiplayerArena);
+
+        this.attachChild(this.audioHandler);
     }
 
     private attachSingleplayerArena(worldData: any) {
@@ -124,7 +126,6 @@ export default class ArenaHandler extends Component {
         this.attachChild(this.multiplayerArena);
         this.attachChild(this.multiplayerGUI);
         this.attachChild(this.multiplayerCamera);
-        this.attachChild(this.audioHandler);
         this.attachChild(this.projectileHandler);
 
         this.isSingleplayer = false;
@@ -136,7 +137,6 @@ export default class ArenaHandler extends Component {
         this.detachChild(this.multiplayerArena);
         this.detachChild(this.multiplayerGUI);
         this.detachChild(this.multiplayerCamera);
-        this.detachChild(this.audioHandler);
         this.detachChild(this.projectileHandler);
     }
 

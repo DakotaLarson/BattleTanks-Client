@@ -275,41 +275,13 @@ export default class ScenePlayerHandler extends Component {
             playerId = this.controlledPlayerId;
         }
         const player = this.players.get(playerId);
-        if (player) {
-            const head = player.head;
-
-            const audio = new PositionalAudio(this.audioListener);
-
-            head.add(audio);
-
-            audio.onEnded = () => {
-                audio.isPlaying = false;
-                head.remove(audio);
-            };
-
-            audio.setBuffer(this.shootSoundBuffer as AudioBuffer);
-            audio.play();
-        }
+        this.playSound(player as IPlayerObj, this.shootSoundBuffer as AudioBuffer);
     }
 
     private onShootInvalid() {
         if (this.controlledPlayerId > -1) {
             const player = this.players.get(this.controlledPlayerId);
-            if (player) {
-                const head = player.head;
-
-                const audio = new PositionalAudio(this.audioListener);
-
-                head.add(audio);
-
-                audio.onEnded = () => {
-                audio.isPlaying = false;
-                head.remove(audio);
-            };
-
-                audio.setBuffer(this.invalidShootSoundBuffer as AudioBuffer);
-                audio.play();
-            }
+            this.playSound(player as IPlayerObj, this.invalidShootSoundBuffer as AudioBuffer);
         }
     }
 
@@ -394,5 +366,26 @@ export default class ScenePlayerHandler extends Component {
         group.add(containerMesh, barMesh);
 
         return group;
+    }
+
+    private playSound(player: IPlayerObj, buffer: AudioBuffer) {
+
+        const volume = Options.options.volume;
+        if (volume) {
+            const head = player.head;
+
+            const audio = new PositionalAudio(this.audioListener);
+            audio.setVolume(volume);
+
+            head.add(audio);
+
+            audio.onEnded = () => {
+                audio.isPlaying = false;
+                head.remove(audio);
+            };
+
+            audio.setBuffer(buffer);
+            audio.play();
+        }
     }
 }

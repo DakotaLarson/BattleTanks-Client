@@ -2,6 +2,7 @@ import Component from "../component/Component";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
+import AudioType from "../audio/AudioType";
 import ChildComponent from "../component/ChildComponent";
 import AddServerMenu from "./AddServerMenu";
 import CreateWorldMenu from "./CreateArenaMenu";
@@ -198,18 +199,15 @@ export default class MainMenu extends Component {
     }
 
     private playReturn() {
-        const audio = new Audio(location.pathname + "audio/menu-back.wav");
-        audio.play();
+        EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, AudioType.MENU_RETURN);
     }
 
     private playSelect() {
-        const audio = new Audio(location.pathname + "audio/menu-select.wav");
-        audio.play();
+        EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, AudioType.MENU_SELECT);
     }
 
     private playValidate() {
-        const audio = new Audio(location.pathname + "audio/menu-validate.wav");
-        audio.play();
+        EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, AudioType.MENU_VALIDATE);
     }
 
     // private playHover() {
