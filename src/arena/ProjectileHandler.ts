@@ -4,7 +4,7 @@ import EventHandler from "../EventHandler";
 
 export default class ProjectileHandler extends ChildComponent {
 
-    private static projectileSpeed = 5;
+    private static projectileSpeed = 10;
 
     private projGeo: SphereGeometry;
     private projMat: MeshLambertMaterial;

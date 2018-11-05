@@ -1,7 +1,6 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
-import CooldownBar from "./CooldownBar";
 import DebugPanel from "./DebugPanel";
 import HealthBar from "./HealthBar";
 
@@ -9,7 +8,7 @@ export default class GUI extends Component {
 
     private element: HTMLElement;
     private debugPanel: DebugPanel;
-    private cooldownBar: CooldownBar;
+    // private cooldownBar: CooldownBar;
     private healthBar: HealthBar;
 
     constructor() {
@@ -18,7 +17,7 @@ export default class GUI extends Component {
 
         this.debugPanel = new DebugPanel(this.element);
 
-        this.cooldownBar = new CooldownBar(this.element);
+        // this.cooldownBar = new CooldownBar(this.element);
 
         this.healthBar = new HealthBar(this.element);
     }
@@ -46,12 +45,12 @@ export default class GUI extends Component {
     }
 
     private onPlayerAddition() {
-        this.attachChild(this.cooldownBar);
+        // this.attachChild(this.cooldownBar);
         this.attachChild(this.healthBar);
     }
 
     private onPlayerRemoval() {
-        this.detachChild(this.cooldownBar);
+        // this.detachChild(this.cooldownBar);
         this.detachChild(this.healthBar);
     }
 }

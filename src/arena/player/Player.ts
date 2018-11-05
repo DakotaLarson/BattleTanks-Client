@@ -8,8 +8,8 @@ import PacketSender from "../../PacketSender";
 import RaycastHandler from "../../RaycastHandler";
 import CollisionHandler from "../CollisionHandler";
 
-const PLAYER_MOVEMENT_SPEED = 1.75;
-const PLAYER_ROTATION_SPEED = 1.25;
+const PLAYER_MOVEMENT_SPEED = 3;
+const PLAYER_ROTATION_SPEED = 2;
 
 export default class Player extends Component {
 
