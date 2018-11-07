@@ -20,7 +20,7 @@ export default class CameraControls extends Component {
     constructor() {
         super();
 
-        this.spherical = new Spherical(25, Math.PI / 4, Math.PI / 3);
+        this.spherical = new Spherical(8, Math.PI / 4, Math.PI / 3);
 
         this.state = -1;
 
@@ -48,7 +48,7 @@ export default class CameraControls extends Component {
     }
 
     public reset() {
-        this.spherical = new Spherical(25, Math.PI / 4, Math.PI / 3);
+        this.spherical = new Spherical(8, Math.PI / 4, Math.PI / 3);
     }
 
     public resetPhi() {

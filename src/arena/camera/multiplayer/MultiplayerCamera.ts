@@ -113,7 +113,6 @@ export default class MultiplayerCamera extends Camera {
         EventHandler.addListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
         this.isSpectating = true;
         this.updateContols();
-        console.log("spec");
     }
 
     private onGameMenuOpen() {

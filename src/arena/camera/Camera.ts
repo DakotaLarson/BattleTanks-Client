@@ -50,7 +50,7 @@ export default class Camera extends ChildComponent {
     protected onArenaSceneUpdate(data: any) {
         this.followingTarget = new Vector3(data.width / 2, 0, data.height / 2);
 
-        this.followingSpherical = new Spherical(25, Math.PI / 4, Math.PI / 3);
+        this.followingSpherical = new Spherical(8, Math.PI / 4, Math.PI / 3);
         this.followingSpherical.makeSafe();
 
         this.camera.position.setFromSpherical(this.followingSpherical);
