@@ -89,6 +89,7 @@ export default class MultiplayerCamera extends Camera {
 
         this.playerAttached = true;
         this.isSpectating = false;
+        this.controls.resetPhi();
         this.updateContols();
 
         this.moveCamera(pos, rot, rot);

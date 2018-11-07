@@ -51,6 +51,10 @@ export default class CameraControls extends Component {
         this.spherical = new Spherical(25, Math.PI / 4, Math.PI / 3);
     }
 
+    public resetPhi() {
+        this.spherical.phi = Math.PI / 4;
+    }
+
     private onMouseDown(event: MouseEvent) {
         if (this.state === -1) {
             switch (event.button) {
