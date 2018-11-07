@@ -9,7 +9,8 @@
     font-size: 15vmin;
     margin: 5vmin 0 7.5vmin 0;
     display: inline-block;
-    color: #ffffff
+    color: #ffffff;
+    font-weight: normal;
 }
 .main-menu .menu-input{
     outline: none;

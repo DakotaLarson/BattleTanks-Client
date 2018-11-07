@@ -332,6 +332,14 @@ export default class SceneHandler extends Component {
             this.scene.remove(this.gameSpawnVisuals);
             this.gameSpawnVisuals = undefined;
         }
+        if (this.teamASpawnVisuals) {
+            this.scene.remove(this.teamASpawnVisuals);
+            this.teamASpawnVisuals = undefined;
+        }
+        if (this.teamBSpawnVisuals) {
+            this.scene.remove(this.teamBSpawnVisuals);
+            this.teamBSpawnVisuals = undefined;
+        }
         this.scenePlayerHandler.clearPlayers();
     }
 
