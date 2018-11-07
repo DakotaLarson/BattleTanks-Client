@@ -4,8 +4,11 @@ import Camera from "../Camera";
 
 export default class SingleplayerCamera extends Camera {
 
+    private usingTools: boolean;
+
     constructor(camera: PerspectiveCamera) {
         super(camera);
+        this.usingTools = false;
     }
 
     public enable() {
@@ -21,7 +24,11 @@ export default class SingleplayerCamera extends Camera {
 
         EventHandler.addListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
 
-        this.attachControls(true);
+        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
+        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
+
+        this.usingTools = false;
+        this.attachChild(this.controls);
     }
 
     public disable() {
@@ -36,14 +43,31 @@ export default class SingleplayerCamera extends Camera {
 
         EventHandler.removeListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
 
-        this.detachControls(true);
+        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
+        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
+
+        this.detachChild(this.controls);
     }
 
     private onToggleToCamera() {
-        this.attachControls(true);
+        this.usingTools = false;
+        this.attachChild(this.controls);
     }
 
     private onToggleToOther() {
-        this.detachControls(true);
+        this.usingTools = true;
+        this.detachChild(this.controls);
+    }
+
+    private onGameMenuOpen() {
+        if (!this.usingTools) {
+            this.detachChild(this.controls);
+        }
+    }
+
+    private onGameMenuClose() {
+        if (!this.usingTools) {
+            this.attachChild(this.controls);
+        }
     }
 }

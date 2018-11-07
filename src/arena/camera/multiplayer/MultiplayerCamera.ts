@@ -8,27 +8,39 @@ export default class MultiplayerCamera extends Camera {
 
     private cameraToggleHandler: CameraToggleHandler;
 
-    private isSpectating = false;
+    private isSpectating: boolean;
+    private menuOpen: boolean;
+    private playerAttached: boolean;
 
     constructor(camera: PerspectiveCamera) {
         super(camera);
+
+        this.isSpectating = false;
+        this.menuOpen = false;
+        this.playerAttached = false;
 
         this.cameraToggleHandler = new CameraToggleHandler();
     }
 
     public enable() {
         super.enable();
-        this.controls.zoomOnly = true;
+
         this.controls.reset();
+
+        this.isSpectating = false;
+        this.menuOpen = false;
+        this.playerAttached = false;
 
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
 
-        EventHandler.addListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
-
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_SPECTATING, this.onSpectating);
-        this.controls.reset();
+
+        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
+        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
+
+        EventHandler.addListener(this, EventHandler.Event.CAMERA_TOGGLE, this.updateContols);
 
     }
 
@@ -39,20 +51,16 @@ export default class MultiplayerCamera extends Camera {
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
 
-        EventHandler.removeListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
-
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_SPECTATING, this.onSpectating);
 
-        if (this.isSpectating) {
-            EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_SPECTATING, this.onSpectating);
-            this.isSpectating = false;
-        }
-    }
+        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
+        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
 
-    protected onArenaSceneUpdate(data: any) {
-        super.onArenaSceneUpdate(data);
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
-        this.isSpectating = false;
+        EventHandler.removeListener(this, EventHandler.Event.CAMERA_TOGGLE, this.updateContols);
+
+        if (this.isSpectating) {
+            EventHandler.removeListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
+        }
     }
 
     private moveCamera(pos: Vector3, bodyRot: number, headRot: number) {
@@ -79,16 +87,16 @@ export default class MultiplayerCamera extends Camera {
         const pos = new Vector3(data.pos.x + 0.5, data.pos.y, data.pos.z + 0.5);
         const rot = data.pos.w;
 
-        if (this.usingFollowingCamera()) {
-            this.attachControls(true);
-        }
-        this.attachChild(this.cameraToggleHandler);
+        this.playerAttached = true;
+        this.isSpectating = false;
+        this.updateContols();
 
         this.moveCamera(pos, rot, rot);
     }
 
     private onPlayerRemoval() {
-        this.controls.zoomOnly = false;
+        this.playerAttached = false;
+        this.isSpectating = true;
     }
 
     private onPlayerMove(data: any) {
@@ -100,18 +108,46 @@ export default class MultiplayerCamera extends Camera {
         return Globals.getGlobal(Globals.Global.CAMERA_IS_FOLLOWING);
     }
 
-    private onCameraToggle() {
-        if (this.usingFollowingCamera()) {
-            this.attachControls(true);
-        } else {
-             this.detachControls(true);
-        }
-    }
-
     private onSpectating() {
         EventHandler.addListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
         this.isSpectating = true;
-        this.controls.zoomOnly = false;
-        this.attachControls(true);
+        this.updateContols();
+        console.log("spec");
+    }
+
+    private onGameMenuOpen() {
+        this.menuOpen = true;
+        this.updateContols();
+    }
+
+    private onGameMenuClose() {
+        this.menuOpen = false;
+        this.updateContols();
+    }
+
+    private updateContols() {
+        if (!this.menuOpen) {
+            if (this.playerAttached || this.isSpectating) {
+                if (this.isSpectating) {
+                    this.controls.zoomOnly = false;
+                    this.attachChild(this.controls);
+                    this.detachChild(this.cameraToggleHandler);
+                } else {
+                    if (this.usingFollowingCamera()) {
+                        this.controls.zoomOnly = true;
+                        this.attachChild(this.controls);
+                    } else {
+                        this.detachChild(this.controls);
+                    }
+                    this.attachChild(this.cameraToggleHandler);
+                }
+            } else {
+                this.detachChild(this.controls);
+                this.detachChild(this.cameraToggleHandler);
+            }
+        } else {
+            this.detachChild(this.controls);
+            this.detachChild(this.cameraToggleHandler);
+        }
     }
 }

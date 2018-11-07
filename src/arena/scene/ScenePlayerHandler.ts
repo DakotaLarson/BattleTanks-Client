@@ -72,7 +72,7 @@ export default class ScenePlayerHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.removePlayer);
         EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
 
-        EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, this.onConnectedPlayerJoin);
+        EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, this.onConnectedPlayerAddition);
         EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_REMOVAL, this.removePlayer);
         EventHandler.addListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, this.onPlayerMove);
 
@@ -88,7 +88,7 @@ export default class ScenePlayerHandler extends Component {
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.removePlayer);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
 
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, this.onConnectedPlayerJoin);
+        EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, this.onConnectedPlayerAddition);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_REMOVAL, this.removePlayer);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, this.onPlayerMove);
 
@@ -118,11 +118,11 @@ export default class ScenePlayerHandler extends Component {
 
     private onPlayerAddition(data: any) {
         const name = Options.options.username;
-        this.addPlayer(data.id, data.pos, name, false);
+        this.addPlayer(data.id, data.pos, name, data.color, false);
     }
 
-    private onConnectedPlayerJoin(data: any) {
-        this.addPlayer(data.id, data.pos, data.name, true);
+    private onConnectedPlayerAddition(data: any) {
+        this.addPlayer(data.id, data.pos, data.name, data.color, true);
     }
 
     private onPlayerMove(data: any) {
@@ -176,7 +176,7 @@ export default class ScenePlayerHandler extends Component {
         }
     }
 
-    private addPlayer(id: number, pos: Vector4, name: string, isConnectedPlayer: boolean) {
+    private addPlayer(id: number, pos: Vector4, name: string, color: number, isConnectedPlayer: boolean) {
         const playerGeo = new Geometry();
         const playerHeadGeo = new Geometry();
 
@@ -185,30 +185,14 @@ export default class ScenePlayerHandler extends Component {
         const turretGeo = new CylinderGeometry(0.0625, 0.0625, 0.75, 16, 1, true);
         turretGeo.rotateX(Math.PI / 2);
 
-        let bodyMaterial: MeshLambertMaterial;
-        let headMaterial: MeshLambertMaterial;
+        const bodyMaterial = new MeshLambertMaterial({
+            color,
+        });
 
-        if (isConnectedPlayer) {
-            bodyMaterial = new MeshLambertMaterial({
-                color: 0xce141a,
-            });
-
-            headMaterial = new MeshLambertMaterial({
-                color: 0xce141a,
-                side: DoubleSide,
-            });
-
-        } else {
-            bodyMaterial = new MeshLambertMaterial({
-                color: 0x32004a,
-            });
-
-            headMaterial = new MeshLambertMaterial({
-                color: 0x32004a,
-                side: DoubleSide,
-            });
-
-        }
+        const headMaterial = new MeshLambertMaterial({
+            color,
+            side: DoubleSide,
+        });
 
         const headOffset = new Vector3(0, this.playerBodyHeight / 2 + 0.35 / 2, 0);
         const turretOffset = new Vector3(0, this.playerBodyHeight / 2 + 0.35 / 2, 0.25);

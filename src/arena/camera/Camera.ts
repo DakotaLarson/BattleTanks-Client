@@ -12,8 +12,6 @@ export default class Camera extends ChildComponent {
     protected followingSpherical: Spherical;
     protected followingTarget: Vector3;
 
-    protected controlsEnabled: boolean;
-
     constructor(camera: PerspectiveCamera) {
         super();
         this.camera = camera;
@@ -22,14 +20,10 @@ export default class Camera extends ChildComponent {
         this.followingSpherical = new Spherical(25, Math.PI / 4, Math.PI / 3);
         this.followingTarget = new Vector3();
 
-        this.controlsEnabled = false;
     }
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_RESIZE, this.onResize, EventHandler.Level.LOW);
-
-        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
 
         EventHandler.addListener(this, EventHandler.Event.CAMERA_CONTROLS_UPDATE, this.onControlsUpdate);
 
@@ -39,26 +33,9 @@ export default class Camera extends ChildComponent {
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_RESIZE, this.onResize, EventHandler.Level.LOW);
 
-        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
-
         EventHandler.removeListener(this, EventHandler.Event.CAMERA_CONTROLS_UPDATE, this.onControlsUpdate);
 
         EventHandler.removeListener(this, EventHandler.Event.CAMERA_PAN, this.onPan);
-    }
-
-    protected attachControls(updateStatus: boolean) {
-        this.attachChild(this.controls);
-        if (updateStatus) {
-            this.controlsEnabled = true;
-        }
-    }
-
-    protected detachControls(updateStatus: boolean) {
-        this.detachChild(this.controls);
-        if (updateStatus) {
-            this.controlsEnabled = false;
-        }
     }
 
     protected onControlsUpdate(spherical: Spherical) {
@@ -115,17 +92,5 @@ export default class Camera extends ChildComponent {
         const dimensions = DomHandler.getDisplayDimensions();
         this.camera.aspect = dimensions.width / dimensions.height;
         this.camera.updateProjectionMatrix();
-    }
-
-    private onGameMenuOpen() {
-        if (this.controlsEnabled) {
-            this.detachControls(false);
-        }
-    }
-
-    private onGameMenuClose() {
-        if (this.controlsEnabled) {
-            this.attachControls(false);
-        }
     }
 }
