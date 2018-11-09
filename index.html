@@ -205,7 +205,7 @@
 <script src="./polyfill/keyboard.js"></script>
 <script src="./systemjs/system.js"></script>
 <script>
-    SystemJS.config({
+    const config = {
         map: {
             three: './node_modules/three/build/three.js'
         },
@@ -214,7 +214,20 @@
                 defaultExtension: 'js'
             }
         } 
-    });
+    }
+
+    const host = location.hostname;
+
+    const gaeHostnames = ["battletanks.app", "appspot.com"];
+
+    for (const hostname of gaeHostnames) {
+        if (host.includes(hostname)) {
+            config.map.three = "./three/three.js";
+            break;
+        }
+    }
+
+    SystemJS.config(config);
     SystemJS.import('./build/Game.js');
 </script>
 </body>
