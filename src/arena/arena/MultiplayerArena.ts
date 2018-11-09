@@ -51,6 +51,10 @@ export default class MultiplayerArena extends Arena {
     }
 
     private onPlayerAddition(data: any) {
+        if (this.player) {
+            console.warn("Attempting to attach player when one already exists");
+            this.detachChild(this.player);
+        }
         this.player = new Player(data.id, data.pos);
         if (!this.gameMenuOpen) {
             this.attachChild(this.player);
@@ -73,6 +77,10 @@ export default class MultiplayerArena extends Arena {
     }
 
     private onConnectedPlayerAddition(data: any) {
+        if (this.connectedPlayers.has(data.id)) {
+            console.warn("Attempting to attach connected player when one with the same id exists");
+            this.detachChild(this.connectedPlayers.get(data.id) as ConnectedPlayer);
+        }
         const player = new ConnectedPlayer(data.id, data.name, data.pos, data.headRot);
         this.connectedPlayers.set(data.id, player);
         this.attachChild(player);
