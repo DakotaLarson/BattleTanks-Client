@@ -42,3 +42,25 @@
 .gui .health-bar{
     background-color: red;
 }
+
+.gui .ammo-display-container {
+    bottom: 2.5vmin;
+    right: 2.5vmin;
+    height: 10vmin;
+    width: 10vmin;
+}
+
+.gui .ammo-count {
+    font-size: 5vmin;
+    position: absolute;
+    color: #ffffff;
+    text-align: center;
+    width: 100%;
+    text-align: center;
+    line-height: 10vmin;
+    vertical-align: center;
+}
+
+.gui svg {
+    transform: rotate(-90deg);
+}

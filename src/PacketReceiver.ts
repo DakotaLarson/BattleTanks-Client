@@ -53,6 +53,14 @@ const receivePlayerSpectating = () => {
     EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_SPECTATING);
 };
 
+const receivePlayerAmmoStatus = (data: number[]) => {
+    const dataObj = {
+        ammoCount: data[0],
+        reloadPercentage: data[1],
+    };
+    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_AMMO_STATUS, dataObj);
+};
+
 const receiveConnectedPlayerAdd = (data: string) => {
     const playerData = JSON.parse(data);
     const pos = new Vector4(playerData.pos[0], playerData.pos[1], playerData.pos[2], playerData.pos[3]);
@@ -145,6 +153,7 @@ handlers.push(receivePlayerShootInvalid);
 handlers.push(receivePlayerShoot);
 handlers.push(receivePlayerHealth);
 handlers.push(receivePlayerSpectating);
+handlers.push(receivePlayerAmmoStatus);
 
 handlers.push(receiveConnectedPlayerAdd);
 handlers.push(receiveConnectedPlayerMove);

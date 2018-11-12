@@ -28,6 +28,8 @@ export default class Player extends Component {
     private rotatingLeft: boolean;
     private rotatingRight: boolean;
 
+    private movingLastFrame: boolean;
+
     constructor(id: number, pos: Vector4) {
         super();
         this.id = id;
@@ -41,6 +43,8 @@ export default class Player extends Component {
 
         this.rotatingLeft = false;
         this.rotatingRight = false;
+
+        this.movingLastFrame = false;
 
         this.movementVelocity = 0;
         this.rotationVelocity = 0;
@@ -65,7 +69,14 @@ export default class Player extends Component {
 
         this.movementVelocity = 0;
         this.rotationVelocity = 0;
-        this.movingForward = this.movingBackward = this.rotatingLeft = this.rotatingRight = false;
+
+        this.movingForward = false;
+        this.movingBackward = false;
+
+        this.rotatingLeft = false;
+        this.rotatingRight = false;
+
+        this.movingLastFrame = false;
 
         PacketSender.sendPlayerMove(this.position, this.movementVelocity, this.rotationVelocity, this.bodyRotation, this.headRotation);
         if (!this.cameraIsFollowing() && !DomHandler.hasPointerLock()) {
@@ -88,6 +99,9 @@ export default class Player extends Component {
         EventHandler.removeListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
         EventHandler.removeListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
+
+        PacketSender.sendReloadMoveToggle(false);
+        this.movingLastFrame = false;
     }
 
     private onKeyDown(event: KeyboardEvent) {
@@ -200,6 +214,13 @@ export default class Player extends Component {
             headRot: this.headRotation,
             fromServer: false,
         };
+
+        const movingThisFrame = this.movingForward || this.movingBackward;
+
+        if (movingThisFrame !== this.movingLastFrame) {
+            PacketSender.sendReloadMoveToggle(movingThisFrame);
+            this.movingLastFrame = movingThisFrame;
+        }
 
         EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVE, movementData);
     }
