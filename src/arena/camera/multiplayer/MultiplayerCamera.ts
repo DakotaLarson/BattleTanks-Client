@@ -98,6 +98,7 @@ export default class MultiplayerCamera extends Camera {
     private onPlayerRemoval() {
         this.playerAttached = false;
         this.isSpectating = true;
+        this.updateContols();
     }
 
     private onPlayerMove(data: any) {
