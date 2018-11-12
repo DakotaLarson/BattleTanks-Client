@@ -139,6 +139,8 @@ export default class Player extends Component {
             this.rotatingRight = true;
         } else if (code === Options.options.shoot.code) {
             PacketSender.sendPlayerShoot();
+        } else if (code === Options.options.reload.code) {
+            PacketSender.sendReloadRequest();
         }
     }
 

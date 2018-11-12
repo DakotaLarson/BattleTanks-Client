@@ -114,6 +114,7 @@ export default class PacketSender {
     }
 
     public static sendReloadRequest() {
+        console.log("sent");
         const data = constructData(Packet.RELOAD_REQUEST, undefined, DataType.HEADER_ONLY);
         send(data);
     }

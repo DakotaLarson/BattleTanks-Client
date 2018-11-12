@@ -11,38 +11,64 @@ export default class Options extends Component {
         if (rawOptions) {
             Options.options = JSON.parse(rawOptions);
         } else {
-            Options.options = {
-                forward: {
-                    key: "w",
-                    code: "KeyW",
-                    isMouse: false,
-                },
-                backward: {
-                    key: "s",
-                    code: "KeyS",
-                    isMouse: false,
-                },
-                left: {
-                    key: "a",
-                    code: "KeyA",
-                    isMouse: false,
-                },
-                right: {
-                    key: "d",
-                    code: "KeyD",
-                    isMouse: false,
-                },
-                shoot: {
-                    key: 0,
-                    code: 0,
-                    isMouse: true,
-                },
-                volume: 1,
-                mouseSensitivity: 1,
-                username: "Guest",
-            };
-            localStorage.setItem("userOptions", JSON.stringify(Options.options));
+            Options.options = {};
         }
+        if (!Options.options.forward) {
+            Options.options.forward = {
+                key: "w",
+                code: "KeyW",
+                isMouse: false,
+            };
+        }
+        if (!Options.options.backward) {
+            Options.options.backward = {
+                key: "s",
+                code: "KeyS",
+                isMouse: false,
+            };
+        }
+        if (!Options.options.left) {
+            Options.options.left = {
+                key: "a",
+                code: "KeyA",
+                isMouse: false,
+            };
+        }
+        if (!Options.options.right) {
+            Options.options.right = {
+                key: "d",
+                code: "KeyD",
+                isMouse: false,
+            };
+        }
+        if (!Options.options.shoot) {
+            Options.options.shoot = {
+                key: 0,
+                code: 0,
+                isMouse: true,
+            };
+        }
+        if (!Options.options.reload) {
+            Options.options.reload = {
+                key: "r",
+                code: "KeyR",
+                isMouse: false,
+            };
+        }
+
+        if (!Options.options.volume) {
+            Options.options.volume = 0.5;
+        }
+
+        if (!Options.options.mouseSensitivity) {
+            Options.options.mouseSensitivity = 0.5;
+        }
+
+        if (!Options.options.username) {
+            Options.options.username = "Guest";
+        }
+
+        localStorage.setItem("userOptions", JSON.stringify(Options.options));
     }
 
     // key = human readable
