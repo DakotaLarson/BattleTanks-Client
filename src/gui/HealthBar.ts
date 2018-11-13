@@ -17,13 +17,13 @@ export default class HealthBar extends ChildComponent {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_HEALTH_CHANGE, this.onHealthChange);
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_HEALTH_CHANGE, this.onHealthChange);
         this.healthContainer.style.display = "block";
         this.setPercentage(100);
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_HEALTH_CHANGE, this.onHealthChange);
+        EventHandler.removeListener(this, EventHandler.Event.PLAYER_HEALTH_CHANGE, this.onHealthChange);
         this.healthContainer.style.display = "";
     }
 

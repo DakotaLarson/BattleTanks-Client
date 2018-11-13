@@ -21,7 +21,7 @@ const receivePlayerAdd = (data: string) => {
     const dataObj = JSON.parse(data);
     const pos = new Vector4(dataObj.pos[0], dataObj.pos[1], dataObj.pos[2], dataObj.pos[3]);
     dataObj.pos = pos;
-    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_ADDITION, dataObj);
+    EventHandler.callEvent(EventHandler.Event.PLAYER_ADDITION, dataObj);
 };
 
 const receivePlayerMove = (data: string) => {
@@ -29,28 +29,28 @@ const receivePlayerMove = (data: string) => {
     const pos = new Vector3(dataObj.pos[0], dataObj.pos[1], dataObj.pos[2]);
     dataObj.pos = pos;
     dataObj.fromServer = true;
-    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVE, dataObj);
+    EventHandler.callEvent(EventHandler.Event.PLAYER_MOVE, dataObj);
 };
 
 const receivePlayerRemove = (data: string) => {
     const id = JSON.parse(data).id;
-    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_REMOVAL, id);
+    EventHandler.callEvent(EventHandler.Event.PLAYER_REMOVAL, id);
 };
 
 const receivePlayerShootInvalid = () => {
-    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_SHOOT_INVALID);
+    EventHandler.callEvent(EventHandler.Event.PLAYER_SHOOT_INVALID);
 };
 
 const receivePlayerShoot = () => {
-    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_SHOOT);
+    EventHandler.callEvent(EventHandler.Event.PLAYER_SHOOT);
 };
 
 const receivePlayerHealth = (health: number) => {
-    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_HEALTH_CHANGE, health);
+    EventHandler.callEvent(EventHandler.Event.PLAYER_HEALTH_CHANGE, health);
 };
 
 const receivePlayerSpectating = () => {
-    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_SPECTATING);
+    EventHandler.callEvent(EventHandler.Event.PLAYER_SPECTATING);
 };
 
 const receivePlayerAmmoStatus = (data: number[]) => {
@@ -58,19 +58,19 @@ const receivePlayerAmmoStatus = (data: number[]) => {
         ammoCount: data[0],
         reloadPercentage: data[1],
     };
-    EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_AMMO_STATUS, dataObj);
+    EventHandler.callEvent(EventHandler.Event.PLAYER_AMMO_STATUS, dataObj);
 };
 
 const receiveConnectedPlayerAdd = (data: string) => {
     const playerData = JSON.parse(data);
     const pos = new Vector4(playerData.pos[0], playerData.pos[1], playerData.pos[2], playerData.pos[3]);
     playerData.pos = pos;
-    EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_ADDITION, playerData);
+    EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_ADDITION, playerData);
 };
 
 const receiveConnectedPlayerRemove = (data: string) => {
     const playerId = JSON.parse(data).id;
-    EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_REMOVAL, playerId);
+    EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_REMOVAL, playerId);
 };
 
 const receiveConnectedPlayerMove = (data: any) => {
@@ -80,7 +80,7 @@ const receiveConnectedPlayerMove = (data: any) => {
     const rotationVelocity = data.body[4];
     const bodyRot = data.body[5];
     const headRot = data.body[6];
-    EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, {
+    EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_MOVE, {
         id: playerId,
         pos,
         movementVelocity,
@@ -91,13 +91,13 @@ const receiveConnectedPlayerMove = (data: any) => {
 };
 
 const receiveConnectedPlayerShoot = (id: number) => {
-    EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_SHOOT, id);
+    EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_SHOOT, id);
 };
 
 const receiveConnectedPlayerHealth = (data: any) => {
     const playerId = data.header;
     const health = data.body[0];
-    EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_HEALTH_CHANGE, {
+    EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_HEALTH_CHANGE, {
         id: playerId,
         health,
     });
@@ -117,7 +117,7 @@ const receiveCooldownTime = (time: number) => {
 };
 
 const receiveProjecileLaunch = (data: number[]) => {
-    EventHandler.callEvent(EventHandler.Event.ARENA_PROJECTILE_LAUNCH, {
+    EventHandler.callEvent(EventHandler.Event.PROJECTILE_LAUNCH, {
         position: new Vector3(data[0], data[1], data[2]),
         velocity: new Vector3(Math.sin(data[3]), 0, Math.cos(data[3])),
         id: data[4],
@@ -125,18 +125,18 @@ const receiveProjecileLaunch = (data: number[]) => {
 };
 
 const receiveProjectileMove = (data: number[]) => {
-    EventHandler.callEvent(EventHandler.Event.ARENA_PROJECTILE_MOVE, {
+    EventHandler.callEvent(EventHandler.Event.PROJECTILE_MOVE, {
         position: new Vector3(data[0], data[1], data[2]),
         id: data[3],
     });
 };
 
 const receiveProjectileRemoval = (projId: number) => {
-    EventHandler.callEvent(EventHandler.Event.ARENA_PROJECTILE_REMOVAL, projId);
+    EventHandler.callEvent(EventHandler.Event.PROJECTILE_REMOVAL, projId);
 };
 
 const receiveProjectileClear = () => {
-    EventHandler.callEvent(EventHandler.Event.ARENA_PROJECTILE_CLEAR);
+    EventHandler.callEvent(EventHandler.Event.PROJECTILE_CLEAR);
 };
 
 const handlers: any[] = new Array();
@@ -175,7 +175,6 @@ handlers.push(receiveProjectileClear);
 enum DataType {
     NUMBER,
     STRING,
-    INT_ARRAY,
     FLOAT_ARRAY,
     FLOAT_ARRAY_INT_HEADER,
     HEADER_ONLY,
@@ -192,9 +191,6 @@ export default class PacketReceiver {
                 break;
             case DataType.STRING:
                 body = decoder.decode(new Uint8Array(message.slice(2)));
-                break;
-            case DataType.INT_ARRAY:
-                body = new Uint8Array(message.slice(2));
                 break;
             case DataType.FLOAT_ARRAY:
                 body = new Float32Array(message.slice(4));

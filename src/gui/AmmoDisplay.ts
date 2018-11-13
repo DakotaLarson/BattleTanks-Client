@@ -26,7 +26,7 @@ export default class AmmoDisplay extends ChildComponent {
 
     public enable() {
 
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_AMMO_STATUS, this.onAmmoStatusChange);
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_AMMO_STATUS, this.onAmmoStatusChange);
         this.container.style.display = "block";
 
         this.ammoCount = 0;
@@ -35,7 +35,7 @@ export default class AmmoDisplay extends ChildComponent {
     }
 
     public disable() {
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_AMMO_STATUS, this.onAmmoStatusChange);
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_AMMO_STATUS, this.onAmmoStatusChange);
         this.container.style.display = "";
     }
 

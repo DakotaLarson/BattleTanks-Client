@@ -27,18 +27,18 @@ export default class ProjectileHandler extends ChildComponent {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PROJECTILE_LAUNCH, this.onLaunch);
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PROJECTILE_MOVE, this.onMove);
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PROJECTILE_REMOVAL, this.onRemoval);
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PROJECTILE_CLEAR, this.onClear);
+        EventHandler.addListener(this, EventHandler.Event.PROJECTILE_LAUNCH, this.onLaunch);
+        EventHandler.addListener(this, EventHandler.Event.PROJECTILE_MOVE, this.onMove);
+        EventHandler.addListener(this, EventHandler.Event.PROJECTILE_REMOVAL, this.onRemoval);
+        EventHandler.addListener(this, EventHandler.Event.PROJECTILE_CLEAR, this.onClear);
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PROJECTILE_LAUNCH, this.onLaunch);
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PROJECTILE_MOVE, this.onMove);
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PROJECTILE_REMOVAL, this.onRemoval);
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PROJECTILE_CLEAR, this.onClear);
+        EventHandler.removeListener(this, EventHandler.Event.PROJECTILE_LAUNCH, this.onLaunch);
+        EventHandler.removeListener(this, EventHandler.Event.PROJECTILE_MOVE, this.onMove);
+        EventHandler.removeListener(this, EventHandler.Event.PROJECTILE_REMOVAL, this.onRemoval);
+        EventHandler.removeListener(this, EventHandler.Event.PROJECTILE_CLEAR, this.onClear);
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
     }
 

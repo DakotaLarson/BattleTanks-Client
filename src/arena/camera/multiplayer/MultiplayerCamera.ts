@@ -31,11 +31,11 @@ export default class MultiplayerCamera extends Camera {
         this.menuOpen = false;
         this.playerAttached = false;
 
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_ADDITION, this.onPlayerAddition);
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_REMOVAL, this.onPlayerRemoval);
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_MOVE, this.onPlayerMove);
 
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_SPECTATING, this.onSpectating);
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_SPECTATING, this.onSpectating);
 
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
@@ -47,11 +47,11 @@ export default class MultiplayerCamera extends Camera {
     public disable() {
         super.disable();
 
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_MOVE, this.onPlayerMove);
+        EventHandler.removeListener(this, EventHandler.Event.PLAYER_ADDITION, this.onPlayerAddition);
+        EventHandler.removeListener(this, EventHandler.Event.PLAYER_REMOVAL, this.onPlayerRemoval);
+        EventHandler.removeListener(this, EventHandler.Event.PLAYER_MOVE, this.onPlayerMove);
 
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_SPECTATING, this.onSpectating);
+        EventHandler.removeListener(this, EventHandler.Event.PLAYER_SPECTATING, this.onSpectating);
 
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);

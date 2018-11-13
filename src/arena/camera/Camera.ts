@@ -23,7 +23,7 @@ export default class Camera extends ChildComponent {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_RESIZE, this.onResize, EventHandler.Level.LOW);
+        EventHandler.addListener(this, EventHandler.Event.DOM_RESIZE, this.onResize);
 
         EventHandler.addListener(this, EventHandler.Event.CAMERA_CONTROLS_UPDATE, this.onControlsUpdate);
 
@@ -31,7 +31,7 @@ export default class Camera extends ChildComponent {
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_RESIZE, this.onResize, EventHandler.Level.LOW);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_RESIZE, this.onResize);
 
         EventHandler.removeListener(this, EventHandler.Event.CAMERA_CONTROLS_UPDATE, this.onControlsUpdate);
 

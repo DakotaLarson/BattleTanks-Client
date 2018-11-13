@@ -224,7 +224,7 @@ export default class Player extends Component {
             this.movingLastFrame = movingThisFrame;
         }
 
-        EventHandler.callEvent(EventHandler.Event.ARENA_PLAYER_MOVE, movementData);
+        EventHandler.callEvent(EventHandler.Event.PLAYER_MOVE, movementData);
     }
 
     private onTick() {

@@ -24,10 +24,10 @@ export default class GUI extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_ADDITION, this.onPlayerAddition);
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_REMOVAL, this.onPlayerRemoval);
 
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_SPECTATING, this.onPlayerRemoval);
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_SPECTATING, this.onPlayerRemoval);
 
         this.attachChild(this.debugPanel);
 
@@ -35,10 +35,10 @@ export default class GUI extends Component {
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_ADDITION, this.onPlayerAddition);
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_REMOVAL, this.onPlayerRemoval);
+        EventHandler.removeListener(this, EventHandler.Event.PLAYER_ADDITION, this.onPlayerAddition);
+        EventHandler.removeListener(this, EventHandler.Event.PLAYER_REMOVAL, this.onPlayerRemoval);
 
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_SPECTATING, this.onPlayerRemoval);
+        EventHandler.removeListener(this, EventHandler.Event.PLAYER_SPECTATING, this.onPlayerRemoval);
 
         this.detachChild(this.debugPanel);
 

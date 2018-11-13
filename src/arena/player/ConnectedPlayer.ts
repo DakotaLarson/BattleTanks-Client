@@ -73,6 +73,6 @@ export default class ConnectedPlayer extends ChildComponent {
             interpolated: true,
         };
 
-        EventHandler.callEvent(EventHandler.Event.ARENA_CONNECTED_PLAYER_MOVE, movementData);
+        EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_MOVE, movementData);
     }
 }

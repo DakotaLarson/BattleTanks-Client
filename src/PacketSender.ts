@@ -11,7 +11,6 @@ enum Packet {
 enum DataType {
     NUMBER,
     STRING,
-    INT_ARRAY,
     FLOAT_ARRAY,
     HEADER_ONLY,
 }
@@ -47,17 +46,6 @@ const constructData = (header: Packet, body: any, dataType: DataType) => {
             arr[0] = header;
             arr[1] = dataType;
             arr.set(encodedBody, 2);
-
-            break;
-        case DataType.INT_ARRAY:
-            const intArr = new Uint8Array(body);
-
-            buffer = new ArrayBuffer(intArr.length + 2);
-
-            arr = new Uint8Array(buffer);
-            arr[0] = header;
-            arr[1] = dataType;
-            arr.set(intArr, 2);
 
             break;
         case DataType.FLOAT_ARRAY:

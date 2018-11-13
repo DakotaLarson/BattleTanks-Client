@@ -25,7 +25,7 @@ export default class CooldownBar extends ChildComponent {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.COOLDOWN_TIME_RECEPTION, this.onTimeReception);
-        EventHandler.addListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT, this.onShoot);
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_SHOOT, this.onShoot);
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
         this.barContainer.style.display = "block";
         this.setPercentage(100);
@@ -33,7 +33,7 @@ export default class CooldownBar extends ChildComponent {
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.COOLDOWN_TIME_RECEPTION, this.onTimeReception);
-        EventHandler.removeListener(this, EventHandler.Event.ARENA_PLAYER_SHOOT, this.onShoot);
+        EventHandler.removeListener(this, EventHandler.Event.PLAYER_SHOOT, this.onShoot);
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
         this.barContainer.style.display = "";
     }
