@@ -79,4 +79,5 @@
 
 .gui .killfeed-message {
     height: 2.5vmin;
+    transition: opacity 0.5s ease;
 }

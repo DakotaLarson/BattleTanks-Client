@@ -21,6 +21,10 @@ export default class Killfeed extends ChildComponent {
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.KILLFEED_UPDATE, this.onUpdate);
+
+        while (this.container.firstChild) {
+            this.container.removeChild(this.container.firstChild);
+        }
         this.container.style.display = "";
     }
 
@@ -44,7 +48,22 @@ export default class Killfeed extends ChildComponent {
 
     private addMessage(element: HTMLElement) {
 
+        let removePreviousMessages = true;
+        for (const child of this.container.children) {
+            if ((child as HTMLElement).style.opacity !== "0") {
+                removePreviousMessages = false;
+            }
+        }
+        if (removePreviousMessages) {
+            while (this.container.firstChild) {
+                this.container.removeChild(this.container.firstChild as Node);
+            }
+        }
+
         this.container.appendChild(element);
+        setTimeout(() => {
+            element.style.opacity = "0";
+        }, 5000);
 
         while (this.container.childElementCount > Killfeed.MAX_MESSAGES) {
             this.container.removeChild(this.container.firstChild as Node);
