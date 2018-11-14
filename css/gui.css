@@ -64,3 +64,19 @@
 .gui svg {
     transform: rotate(-90deg);
 }
+
+.gui .killfeed-container {
+    width:  25vw;
+    max-height: 25vh;
+    right: 2.5vmin;
+    top: 2.5vmin;
+    color:  white;
+    font-size: 2vmin;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.gui .killfeed-message {
+    height: 2.5vmin;
+}

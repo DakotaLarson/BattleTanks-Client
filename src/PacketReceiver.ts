@@ -32,9 +32,14 @@ const receivePlayerMove = (data: string) => {
     EventHandler.callEvent(EventHandler.Event.PLAYER_MOVE, dataObj);
 };
 
-const receivePlayerRemove = (data: string) => {
-    const id = JSON.parse(data).id;
-    EventHandler.callEvent(EventHandler.Event.PLAYER_REMOVAL, id);
+const receivePlayerRemove = (data: number[]) => {
+    const id = data[0];
+    const involvedId = data[1];
+    const dataObj = {
+        id,
+        involvedId,
+    };
+    EventHandler.callEvent(EventHandler.Event.PLAYER_REMOVAL, dataObj);
 };
 
 const receivePlayerShootInvalid = () => {
@@ -68,9 +73,14 @@ const receiveConnectedPlayerAdd = (data: string) => {
     EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_ADDITION, playerData);
 };
 
-const receiveConnectedPlayerRemove = (data: string) => {
-    const playerId = JSON.parse(data).id;
-    EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_REMOVAL, playerId);
+const receiveConnectedPlayerRemove = (data: number[]) => {
+    const id = data[0];
+    const involvedId = data[1];
+    const dataObj = {
+        id,
+        involvedId,
+    };
+    EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_REMOVAL, dataObj);
 };
 
 const receiveConnectedPlayerMove = (data: any) => {

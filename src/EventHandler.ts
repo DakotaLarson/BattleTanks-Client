@@ -150,6 +150,9 @@ enum Event {
     CAMERA_TOGGLE,
     CAMERA_CONTROLS_UPDATE,
     CAMERA_PAN,
+
+    // KILLFEED
+    KILLFEED_UPDATE,
 }
 
 enum Level {

@@ -4,6 +4,7 @@ import EventHandler from "../EventHandler";
 import AmmoDisplay from "./AmmoDisplay";
 import DebugPanel from "./DebugPanel";
 import HealthBar from "./HealthBar";
+import Killfeed from "./Killfeed";
 
 export default class GUI extends Component {
 
@@ -11,16 +12,16 @@ export default class GUI extends Component {
     private debugPanel: DebugPanel;
     private healthBar: HealthBar;
     private ammoDisplay: AmmoDisplay;
+    private killfeed: Killfeed;
 
     constructor() {
         super();
         this.element = DomHandler.getElement(".gui");
 
         this.debugPanel = new DebugPanel(this.element);
-
         this.ammoDisplay = new AmmoDisplay(this.element);
-
         this.healthBar = new HealthBar(this.element);
+        this.killfeed = new Killfeed(this.element);
     }
 
     public enable() {
@@ -30,6 +31,7 @@ export default class GUI extends Component {
         EventHandler.addListener(this, EventHandler.Event.PLAYER_SPECTATING, this.onPlayerRemoval);
 
         this.attachChild(this.debugPanel);
+        this.attachChild(this.killfeed);
 
         this.element.style.display = "block";
     }
@@ -41,6 +43,7 @@ export default class GUI extends Component {
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_SPECTATING, this.onPlayerRemoval);
 
         this.detachChild(this.debugPanel);
+        this.detachChild(this.killfeed);
 
         this.element.style.display = "";
     }

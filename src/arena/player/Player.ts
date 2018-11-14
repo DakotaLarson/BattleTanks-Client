@@ -17,6 +17,8 @@ export default class Player extends Component {
 
     public id: number;
 
+    public color: number;
+
     public bodyRotation: number;
     public headRotation: number;
 
@@ -30,13 +32,15 @@ export default class Player extends Component {
 
     private movingLastFrame: boolean;
 
-    constructor(id: number, pos: Vector4) {
+    constructor(id: number, color: number, pos: Vector4 ) {
         super();
         this.id = id;
 
         this.position = new Vector3(pos.x, pos.y, pos.z);
         this.bodyRotation = pos.w;
         this.headRotation = pos.w;
+
+        this.color = color;
 
         this.movingForward = false;
         this.movingBackward = false;

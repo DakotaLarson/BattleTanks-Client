@@ -157,8 +157,8 @@ export default class ScenePlayerHandler extends Component {
         }
     }
 
-    private removePlayer(id: number) {
-        const obj = this.players.get(id);
+    private removePlayer(data: any) {
+        const obj = this.players.get(data.id);
         if (obj) {
             this.scene.remove(obj.body);
             this.scene.remove(obj.head);
@@ -169,8 +169,8 @@ export default class ScenePlayerHandler extends Component {
             if (obj.healthBar) {
                 this.scene.remove(obj.healthBar);
             }
-            this.players.delete(id);
-            if (this.controlledPlayerId === id) {
+            this.players.delete(data.id);
+            if (this.controlledPlayerId === data.id) {
                 this.controlledPlayerId = -1;
             }
         }

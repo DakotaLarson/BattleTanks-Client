@@ -13,42 +13,42 @@ export default class Options extends Component {
         } else {
             Options.options = {};
         }
-        if (!Options.options.forward) {
+        if (!("forward" in Options.options)) {
             Options.options.forward = {
                 key: "w",
                 code: "KeyW",
                 isMouse: false,
             };
         }
-        if (!Options.options.backward) {
+        if (!("backward" in Options.options)) {
             Options.options.backward = {
                 key: "s",
                 code: "KeyS",
                 isMouse: false,
             };
         }
-        if (!Options.options.left) {
+        if (!("left" in Options.options)) {
             Options.options.left = {
                 key: "a",
                 code: "KeyA",
                 isMouse: false,
             };
         }
-        if (!Options.options.right) {
+        if (!("right" in Options.options)) {
             Options.options.right = {
                 key: "d",
                 code: "KeyD",
                 isMouse: false,
             };
         }
-        if (!Options.options.shoot) {
+        if (!("shoot" in Options.options)) {
             Options.options.shoot = {
                 key: 0,
                 code: 0,
                 isMouse: true,
             };
         }
-        if (!Options.options.reload) {
+        if (!("reload" in Options.options)) {
             Options.options.reload = {
                 key: "r",
                 code: "KeyR",
@@ -56,19 +56,19 @@ export default class Options extends Component {
             };
         }
 
-        if (!Options.options.volume) {
+        if (!("volume" in Options.options)) {
             Options.options.volume = 0.5;
         }
 
-        if (!Options.options.mouseSensitivity) {
+        if (!("mouseSensitivity" in Options.options)) {
             Options.options.mouseSensitivity = 0.5;
         }
+
+        localStorage.setItem("userOptions", JSON.stringify(Options.options));
 
         if (!Options.options.username) {
             Options.options.username = "Guest";
         }
-
-        localStorage.setItem("userOptions", JSON.stringify(Options.options));
     }
 
     // key = human readable

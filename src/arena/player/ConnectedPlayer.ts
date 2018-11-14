@@ -5,10 +5,11 @@ import CollisionHandler from "../CollisionHandler";
 
 export default class ConnectedPlayer extends ChildComponent {
 
-    private id: number;
+    public name: string;
 
-    private name: string;
+    public id: number;
 
+    public color: number;
     private position: Vector3;
 
     private movementVelocity: number;
@@ -17,11 +18,14 @@ export default class ConnectedPlayer extends ChildComponent {
     private bodyRotation: number;
     private headRotation: number;
 
-    constructor(id: number, name: string, pos: Vector4, headRot: number) {
+    constructor(id: number, name: string, color: number, pos: Vector4, headRot: number) {
         super();
 
         this.id = id;
         this.name = name;
+
+        this.color = color;
+
         this.position = new Vector3(pos.x, pos.y, pos.z);
 
         this.movementVelocity = 0;

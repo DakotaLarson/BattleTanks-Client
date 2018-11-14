@@ -1,4 +1,6 @@
 import EventHandler from "../../EventHandler";
+import Globals from "../../Globals";
+import Options from "../../Options";
 import ConnectedPlayer from "../player/ConnectedPlayer";
 import Player from "../player/Player";
 import Arena from "./Arena";
@@ -55,13 +57,14 @@ export default class MultiplayerArena extends Arena {
             console.warn("Attempting to attach player when one already exists");
             this.detachChild(this.player);
         }
-        this.player = new Player(data.id, data.pos);
+        this.player = new Player(data.id, data.color, data.pos);
         if (!this.gameMenuOpen) {
             this.attachChild(this.player);
         }
     }
 
-    private onPlayerRemoval() {
+    private onPlayerRemoval(data: any) {
+        this.updateKillfeed(data.id, data.involvedId);
         if (!this.gameMenuOpen) {
             this.detachChild(this.player as Player);
         }
@@ -81,7 +84,7 @@ export default class MultiplayerArena extends Arena {
             console.warn("Attempting to attach connected player when one with the same id exists");
             this.detachChild(this.connectedPlayers.get(data.id) as ConnectedPlayer);
         }
-        const player = new ConnectedPlayer(data.id, data.name, data.pos, data.headRot);
+        const player = new ConnectedPlayer(data.id, data.name, data.color, data.pos, data.headRot);
         this.connectedPlayers.set(data.id, player);
         this.attachChild(player);
     }
@@ -95,9 +98,10 @@ export default class MultiplayerArena extends Arena {
         }
     }
 
-    private onConnectedPlayerRemoval(id: number) {
-        const player = this.connectedPlayers.get(id);
-        this.connectedPlayers.delete(id);
+    private onConnectedPlayerRemoval(data: any) {
+        const player = this.connectedPlayers.get(data.id);
+        this.updateKillfeed(data.id, data.involvedId);
+        this.connectedPlayers.delete(data.id);
         if (player) {
             this.detachChild(player);
         }
@@ -115,5 +119,54 @@ export default class MultiplayerArena extends Arena {
             this.attachChild(this.player);
         }
         this.gameMenuOpen = false;
+    }
+
+    private updateKillfeed(id: number, involvedId: number) {
+        if (involvedId) {
+            const mainPlayer = this.getKillfeedPlayerDetails(id);
+            if (involvedId === -1) {
+                // The player left on their own accord
+                if (mainPlayer) {
+                    EventHandler.callEvent(EventHandler.Event.KILLFEED_UPDATE, {
+                        mainPlayer,
+                    });
+                }
+            } else {
+                // The player was killed
+                let involvedPlayer = this.getKillfeedPlayerDetails(involvedId);
+                if (!involvedPlayer) {
+                    // The involved player has left the game
+                    involvedPlayer = {
+                        name: "A Ghost",
+                        color: 0xffffff,
+                        isSelf: false,
+                    };
+                }
+                EventHandler.callEvent(EventHandler.Event.KILLFEED_UPDATE, {
+                    mainPlayer,
+                    involvedPlayer,
+                });
+            }
+        }
+    }
+
+    private getKillfeedPlayerDetails(id: number) {
+        if (this.player && this.player.id === id) {
+            return {
+                name: Options.options.username,
+                color: this.player.color,
+                isSelf: true,
+            };
+        } else {
+            const connectedPlayer = this.connectedPlayers.get(id);
+            if (connectedPlayer) {
+                return {
+                    name: connectedPlayer.name,
+                    color: connectedPlayer.color,
+                    isSelf: false,
+                };
+            }
+            return undefined;
+        }
     }
 }
