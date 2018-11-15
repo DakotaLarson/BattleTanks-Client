@@ -79,5 +79,7 @@
 
 .gui .killfeed-message {
     height: 2.5vmin;
+    font-family: 'Inconsolata', sans-serif;
+    font-weight: bold;
     transition: opacity 0.5s ease;
 }

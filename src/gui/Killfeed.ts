@@ -16,15 +16,18 @@ export default class Killfeed extends ChildComponent {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.KILLFEED_UPDATE, this.onUpdate);
+        EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_WAITING, this.clearMessages);
+        EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_STARTING, this.clearMessages);
         this.container.style.display = "block";
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.KILLFEED_UPDATE, this.onUpdate);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_WAITING, this.clearMessages);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_STARTING, this.clearMessages);
 
-        while (this.container.firstChild) {
-            this.container.removeChild(this.container.firstChild);
-        }
+        this.clearMessages();
+
         this.container.style.display = "";
     }
 
@@ -39,6 +42,7 @@ export default class Killfeed extends ChildComponent {
             element.appendChild(this.createPlayerElement(involvedPlayer));
             element.appendChild(this.createActionElement(false));
             element.appendChild(this.createPlayerElement(mainPlayer));
+            element.appendChild(this.createLivesRemainingElement(mainPlayer.livesRemaining));
         } else {
             element.appendChild(this.createPlayerElement(mainPlayer));
             element.appendChild(this.createActionElement(true));
@@ -48,21 +52,14 @@ export default class Killfeed extends ChildComponent {
 
     private addMessage(element: HTMLElement) {
 
-        let removePreviousMessages = true;
-        for (const child of this.container.children) {
-            if ((child as HTMLElement).style.opacity !== "0") {
-                removePreviousMessages = false;
-            }
-        }
-        if (removePreviousMessages) {
-            while (this.container.firstChild) {
-                this.container.removeChild(this.container.firstChild as Node);
-            }
-        }
-
         this.container.appendChild(element);
         setTimeout(() => {
             element.style.opacity = "0";
+            setTimeout(() => {
+                if (this.container.contains(element)) {
+                    this.container.removeChild(element);
+                }
+            }, 500);
         }, 5000);
 
         while (this.container.childElementCount > Killfeed.MAX_MESSAGES) {
@@ -92,11 +89,28 @@ export default class Killfeed extends ChildComponent {
         return element;
     }
 
+    private createLivesRemainingElement(livesRemaining: number) {
+        const element = document.createElement("span");
+        element.style.color = "#f0f0f0";
+        if (livesRemaining) {
+            element.textContent = " (" + livesRemaining + ")";
+        } else {
+            element.textContent = " (KO)";
+        }
+        return element;
+    }
+
     private getCSSColorString(value: number) {
         let cssValue = value.toString(16);
         while (cssValue.length < 6) {
             cssValue = "0" + cssValue;
         }
         return "#" + cssValue;
+    }
+
+    private clearMessages() {
+        while (this.container.firstChild) {
+            this.container.removeChild(this.container.firstChild);
+        }
     }
 }

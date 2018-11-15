@@ -35,9 +35,11 @@ const receivePlayerMove = (data: string) => {
 const receivePlayerRemove = (data: number[]) => {
     const id = data[0];
     const involvedId = data[1];
+    const livesRemaining = data[2];
     const dataObj = {
         id,
         involvedId,
+        livesRemaining,
     };
     EventHandler.callEvent(EventHandler.Event.PLAYER_REMOVAL, dataObj);
 };
@@ -76,9 +78,11 @@ const receiveConnectedPlayerAdd = (data: string) => {
 const receiveConnectedPlayerRemove = (data: number[]) => {
     const id = data[0];
     const involvedId = data[1];
+    const livesRemaining = data[2];
     const dataObj = {
         id,
         involvedId,
+        livesRemaining,
     };
     EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_REMOVAL, dataObj);
 };

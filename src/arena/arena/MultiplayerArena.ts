@@ -1,5 +1,4 @@
 import EventHandler from "../../EventHandler";
-import Globals from "../../Globals";
 import Options from "../../Options";
 import ConnectedPlayer from "../player/ConnectedPlayer";
 import Player from "../player/Player";
@@ -64,7 +63,7 @@ export default class MultiplayerArena extends Arena {
     }
 
     private onPlayerRemoval(data: any) {
-        this.updateKillfeed(data.id, data.involvedId);
+        this.updateKillfeed(data.id, data.involvedId, data.livesRemaining);
         if (!this.gameMenuOpen) {
             this.detachChild(this.player as Player);
         }
@@ -100,7 +99,7 @@ export default class MultiplayerArena extends Arena {
 
     private onConnectedPlayerRemoval(data: any) {
         const player = this.connectedPlayers.get(data.id);
-        this.updateKillfeed(data.id, data.involvedId);
+        this.updateKillfeed(data.id, data.involvedId, data.livesRemaining);
         this.connectedPlayers.delete(data.id);
         if (player) {
             this.detachChild(player);
@@ -121,9 +120,9 @@ export default class MultiplayerArena extends Arena {
         this.gameMenuOpen = false;
     }
 
-    private updateKillfeed(id: number, involvedId: number) {
+    private updateKillfeed(id: number, involvedId: number, livesRemaining: number) {
         if (involvedId) {
-            const mainPlayer = this.getKillfeedPlayerDetails(id);
+            const mainPlayer = this.getKillfeedPlayerDetails(id, livesRemaining);
             if (involvedId === -1) {
                 // The player left on their own accord
                 if (mainPlayer) {
@@ -133,13 +132,14 @@ export default class MultiplayerArena extends Arena {
                 }
             } else {
                 // The player was killed
-                let involvedPlayer = this.getKillfeedPlayerDetails(involvedId);
+                let involvedPlayer = this.getKillfeedPlayerDetails(involvedId, livesRemaining);
                 if (!involvedPlayer) {
                     // The involved player has left the game
                     involvedPlayer = {
                         name: "A Ghost",
                         color: 0xffffff,
                         isSelf: false,
+                        livesRemaining,
                     };
                 }
                 EventHandler.callEvent(EventHandler.Event.KILLFEED_UPDATE, {
@@ -150,12 +150,13 @@ export default class MultiplayerArena extends Arena {
         }
     }
 
-    private getKillfeedPlayerDetails(id: number) {
+    private getKillfeedPlayerDetails(id: number, livesRemaining: number) {
         if (this.player && this.player.id === id) {
             return {
                 name: Options.options.username,
                 color: this.player.color,
                 isSelf: true,
+                livesRemaining,
             };
         } else {
             const connectedPlayer = this.connectedPlayers.get(id);
@@ -164,6 +165,7 @@ export default class MultiplayerArena extends Arena {
                     name: connectedPlayer.name,
                     color: connectedPlayer.color,
                     isSelf: false,
+                    livesRemaining,
                 };
             }
             return undefined;
