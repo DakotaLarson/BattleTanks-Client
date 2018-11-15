@@ -56,17 +56,13 @@ export default class MultiplayerArena extends Arena {
             console.warn("Attempting to attach player when one already exists");
             this.detachChild(this.player);
         }
-        this.player = new Player(data.id, data.color, data.pos);
-        if (!this.gameMenuOpen) {
-            this.attachChild(this.player);
-        }
+        this.player = new Player(data.id, data.color, data.pos, this.gameMenuOpen);
+        this.attachChild(this.player);
     }
 
     private onPlayerRemoval(data: any) {
         this.updateKillfeed(data.id, data.involvedId, data.livesRemaining);
-        if (!this.gameMenuOpen) {
-            this.detachChild(this.player as Player);
-        }
+        this.detachChild(this.player as Player);
         this.player = undefined;
     }
 
@@ -107,16 +103,10 @@ export default class MultiplayerArena extends Arena {
     }
 
     private onGameMenuOpen() {
-        if (this.player) {
-            this.detachChild(this.player);
-        }
         this.gameMenuOpen = true;
     }
 
     private onGameMenuClose() {
-        if (this.player) {
-            this.attachChild(this.player);
-        }
         this.gameMenuOpen = false;
     }
 

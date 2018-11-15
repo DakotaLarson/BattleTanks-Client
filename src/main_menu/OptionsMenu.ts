@@ -12,6 +12,7 @@ export default class OptionsMenu extends Component {
     private backwardValueElt: HTMLElement;
     private leftValueElt: HTMLElement;
     private rightValueElt: HTMLElement;
+    private reloadValueElt: HTMLElement;
     private shootValueElt: HTMLElement;
 
     private volumeValueElt: HTMLInputElement;
@@ -29,6 +30,7 @@ export default class OptionsMenu extends Component {
         this.backwardValueElt = DomHandler.getElement("#option-value-backward", this.element);
         this.leftValueElt = DomHandler.getElement("#option-value-left", this.element);
         this.rightValueElt = DomHandler.getElement("#option-value-right", this.element);
+        this.reloadValueElt = DomHandler.getElement("#option-value-reload", this.element);
         this.shootValueElt = DomHandler.getElement("#option-value-shoot", this.element);
 
         this.volumeValueElt = DomHandler.getElement("#option-value-volume", this.element) as HTMLInputElement;
@@ -48,8 +50,9 @@ export default class OptionsMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onForwardClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onLeftClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onRightClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReloadClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onShootClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
 
         DomEventHandler.addListener(this, this.volumeValueElt, "change", this.onVolumeChange);
         DomEventHandler.addListener(this, this.mouseValueElt, "change", this.onMouseChange);
@@ -64,8 +67,9 @@ export default class OptionsMenu extends Component {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onForwardClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onLeftClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onRightClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReloadClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onShootClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
 
         DomEventHandler.removeListener(this, this.volumeValueElt, "change", this.onVolumeChange);
         DomEventHandler.removeListener(this, this.mouseValueElt, "change", this.onMouseChange);
@@ -112,6 +116,16 @@ export default class OptionsMenu extends Component {
             if (!this.isListening) {
                 this.listenForInput(this.rightValueElt).then((data) => {
                     this.saveChange("right", data);
+                });
+            }
+        }
+    }
+
+    private onReloadClick(event: MouseEvent) {
+        if (event.target === this.reloadValueElt) {
+            if (!this.isListening) {
+                this.listenForInput(this.reloadValueElt).then((data) => {
+                    this.saveChange("reload", data);
                 });
             }
         }
@@ -227,6 +241,7 @@ export default class OptionsMenu extends Component {
             setOption("left", this.leftValueElt);
             setOption("right", this.rightValueElt);
             setOption("shoot", this.shootValueElt);
+            setOption("reload", this.reloadValueElt);
 
             setRangeValue(options.volume, this.volumeValueElt);
             setRangeValue(options.mouseSensitivity, this.mouseValueElt);
