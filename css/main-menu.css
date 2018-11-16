@@ -99,4 +99,8 @@
 .main-menu .social-image {
     height: 5vmin;
     width: 5vmin;
+    margin: 0 0.5vmin;
+}
+.main-menu .social-ref {
+    display: inline-block;
 }
