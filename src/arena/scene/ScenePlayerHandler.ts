@@ -44,12 +44,12 @@ export default class ScenePlayerHandler extends Component {
         const audioLoader = new AudioLoader();
 
         // @ts-ignore Disregard additional arguments
-        audioLoader.load(location.pathname + "audio/shoot.wav", (buffer: AudioBuffer) => {
+        audioLoader.load(location.pathname + "res/audio/shoot.wav", (buffer: AudioBuffer) => {
             this.shootSoundBuffer = buffer;
         });
 
         // @ts-ignore Disregard additional arguments
-        audioLoader.load(location.pathname + "audio/shoot-invalid.wav", (buffer: AudioBuffer) => {
+        audioLoader.load(location.pathname + "res/audio/shoot-invalid.wav", (buffer: AudioBuffer) => {
             this.invalidShootSoundBuffer = buffer;
         });
 

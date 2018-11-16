@@ -18,20 +18,20 @@ export default class AudioHandler extends Component {
 
         const audioLoader = new AudioLoader();
         // @ts-ignore Disregard extra arguments.
-        audioLoader.load(location.pathname + "audio/win.wav", (buffer: AudioBuffer) => {
+        audioLoader.load(location.pathname + "res/audio/win.wav", (buffer: AudioBuffer) => {
             this.winAudioBuffer = buffer;
         });
 
         // @ts-ignore Disregard extra arguments.
-        audioLoader.load(location.pathname + "audio/lose.wav", (buffer: AudioBuffer) => {
+        audioLoader.load(location.pathname + "res/audio/lose.wav", (buffer: AudioBuffer) => {
             this.loseAudioBuffer = buffer;
         });
 
         /* tslint:disable */
-        new Audio(location.pathname + "audio/menu-select.wav");
-        new Audio(location.pathname + "audio/menu-back.wav");
-        new Audio(location.pathname + "audio/menu-validate.wav");
-        new Audio(location.pathname + "audio/menu-hover.wav");
+        new Audio(location.pathname + "res/audio/menu-select.wav");
+        new Audio(location.pathname + "res/audio/menu-back.wav");
+        new Audio(location.pathname + "res/audio/menu-validate.wav");
+        new Audio(location.pathname + "res/audio/menu-hover.wav");
         /* tslint:enable */
 
     }
@@ -54,16 +54,16 @@ export default class AudioHandler extends Component {
                     this.playBuffer(this.loseAudioBuffer as AudioBuffer);
                     break;
                 case AudioType.MENU_SELECT:
-                    this.playElement(location.pathname + "audio/menu-select.wav");
+                    this.playElement(location.pathname + "res/audio/menu-select.wav");
                     break;
                 case AudioType.MENU_RETURN:
-                    this.playElement(location.pathname + "audio/menu-back.wav");
+                    this.playElement(location.pathname + "res/audio/menu-back.wav");
                     break;
                 case AudioType.MENU_VALIDATE:
-                    this.playElement(location.pathname + "audio/menu-validate.wav");
+                    this.playElement(location.pathname + "res/audio/menu-validate.wav");
                     break;
                 case AudioType.MENU_HOVER:
-                    this.playElement(location.pathname + "audio/menu-hover.wav");
+                    this.playElement(location.pathname + "res/audio/menu-hover.wav");
                     break;
             }
         }

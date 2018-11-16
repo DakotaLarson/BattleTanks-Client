@@ -91,3 +91,12 @@
     color: #A0A0A0;
     font-size: 2vmin;
 }
+.social-container {
+    position: absolute;
+    bottom: 2.5vmin;
+    right: 2.5vmin;
+}
+.main-menu .social-image {
+    height: 5vmin;
+    width: 5vmin;
+}
