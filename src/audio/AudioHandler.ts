@@ -42,7 +42,6 @@ export default class AudioHandler extends Component {
     }
 
     private onAudioRequest(audio: AudioType) {
-        console.log(audio);
         if (Options.options.volume) {
             if (audio.startsWith("GAME")) {
                 const buffer = this.buffers.get(audio);
