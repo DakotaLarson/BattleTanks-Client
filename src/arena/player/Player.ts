@@ -78,6 +78,8 @@ export default class Player extends Component {
 
         EventHandler.addListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
 
+        EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
+
         this.movementVelocity = 0;
         this.rotationVelocity = 0;
 
@@ -114,6 +116,8 @@ export default class Player extends Component {
         EventHandler.removeListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
         EventHandler.removeListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
+
+        EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
 
         PacketSender.sendReloadMoveToggle(false);
         this.movingLastFrame = false;
@@ -279,6 +283,12 @@ export default class Player extends Component {
 
     private cameraIsFollowing() {
         return Globals.getGlobal(Globals.Global.CAMERA_IS_FOLLOWING);
+    }
+
+    private onBlur() {
+        this.movementVelocity = 0;
+        this.rotationVelocity = 0;
+        this.onTick(); // Prevents jitter in other clients.
     }
 
     private onGameMenuOpen() {
