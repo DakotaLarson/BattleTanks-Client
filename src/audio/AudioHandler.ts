@@ -9,31 +9,28 @@ export default class AudioHandler extends Component {
 
     private audioListener: AudioListener;
 
-    private winAudioBuffer: AudioBuffer | undefined;
-    private loseAudioBuffer: AudioBuffer | undefined;
+    private buffers: Map<string, AudioBuffer>;
 
     constructor(audioListener: AudioListener) {
         super();
         this.audioListener = audioListener;
 
         const audioLoader = new AudioLoader();
-        // @ts-ignore Disregard extra arguments.
-        audioLoader.load(location.pathname + "res/audio/win.wav", (buffer: AudioBuffer) => {
-            this.winAudioBuffer = buffer;
-        });
 
-        // @ts-ignore Disregard extra arguments.
-        audioLoader.load(location.pathname + "res/audio/lose.wav", (buffer: AudioBuffer) => {
-            this.loseAudioBuffer = buffer;
-        });
+        this.buffers = new Map();
 
         /* tslint:disable */
-        new Audio(location.pathname + "res/audio/menu-select.wav");
-        new Audio(location.pathname + "res/audio/menu-back.wav");
-        new Audio(location.pathname + "res/audio/menu-validate.wav");
-        new Audio(location.pathname + "res/audio/menu-hover.wav");
+        for (const audioFile in AudioType) {
+            if (audioFile.startsWith("GAME")) {
+                // @ts-ignore Disregard extra arguments.
+                audioLoader.load(location.pathname + AudioType[audioFile], (buffer: AudioBuffer) => {
+                    this.buffers.set(audioFile, buffer);
+                });
+            } else {
+                new Audio(location.pathname + AudioType[audioFile]);
+            }
+        }
         /* tslint:enable */
-
     }
 
     public enable() {
@@ -45,34 +42,25 @@ export default class AudioHandler extends Component {
     }
 
     private onAudioRequest(audio: AudioType) {
+        console.log(audio);
         if (Options.options.volume) {
-            switch (audio) {
-                case AudioType.WIN:
-                    this.playBuffer(this.winAudioBuffer as AudioBuffer);
-                    break;
-                case AudioType.LOSE:
-                    this.playBuffer(this.loseAudioBuffer as AudioBuffer);
-                    break;
-                case AudioType.MENU_SELECT:
-                    this.playElement(location.pathname + "res/audio/menu-select.wav");
-                    break;
-                case AudioType.MENU_RETURN:
-                    this.playElement(location.pathname + "res/audio/menu-back.wav");
-                    break;
-                case AudioType.MENU_VALIDATE:
-                    this.playElement(location.pathname + "res/audio/menu-validate.wav");
-                    break;
-                case AudioType.MENU_HOVER:
-                    this.playElement(location.pathname + "res/audio/menu-hover.wav");
-                    break;
+            if (audio.startsWith("GAME")) {
+                const buffer = this.buffers.get(audio);
+                if (buffer) {
+                    this.playBuffer(buffer);
+                } else {
+                    console.warn("Attempting to play buffer: " + audio);
+                }
+            } else {
+                this.playElement(location.pathname + audio);
             }
         }
     }
 
     private playBuffer(buffer: AudioBuffer) {
         const audio = new ThreeAudio(this.audioListener);
-        audio.setVolume(Options.options.volume);
         audio.setBuffer(buffer);
+        audio.setVolume(Options.options.volume);
         audio.play();
     }
 

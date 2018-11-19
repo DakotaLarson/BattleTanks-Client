@@ -1,11 +1,10 @@
-# Tanks - BoxelScript Fork; Tanx Remake (Creative title needed)
+# BattleTanks - A Multiplayer Tank Shooter for the Browser
 
-This project is designed as an intermediary step on the path to creating BoxelScript. Many of the technologies that are used with this project are transferrable to BoxelScript
+## Features
 
-## Technologies
-
-* World Creator (Import/Export)
-* Multiplayer Experience (Work with SFTP with fallback to WebSockets)
+* Multiplayer Experience (WS implementation (as of 11/18))
+* Team Elimination Gamemode
+* Arena Creator
 
 
 Follow the project on Trello: https://trello.com/b/XkG9gNRn

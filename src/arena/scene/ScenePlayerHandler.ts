@@ -44,7 +44,7 @@ export default class ScenePlayerHandler extends Component {
         const audioLoader = new AudioLoader();
 
         // @ts-ignore Disregard additional arguments
-        audioLoader.load(location.pathname + "res/audio/shoot.wav", (buffer: AudioBuffer) => {
+        audioLoader.load(location.pathname + "res/audio/game/shoot.mp3", (buffer: AudioBuffer) => {
             this.shootSoundBuffer = buffer;
         });
 
@@ -291,7 +291,7 @@ export default class ScenePlayerHandler extends Component {
     private generateNameplate(name: string) {
         if (this.font) {
             // @ts-ignore Types specification is not remotely correct.
-            const shapes = this.font.generateShapes(name, 0.1);
+            const shapes = this.font.generateShapes(name, 0.175);
 
             const geometry = new ShapeBufferGeometry(shapes);
             geometry.computeBoundingBox();

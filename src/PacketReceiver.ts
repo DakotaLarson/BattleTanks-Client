@@ -122,8 +122,8 @@ const receiveMatchStatistics = (rawStats: string) => {
     EventHandler.callEvent(EventHandler.Event.MATCH_STATISTICS_RECEPTION, statistics);
 };
 
-const receiveAudio = (value: number) => {
-    EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST,  value);
+const receiveAudio = (value: string) => {
+    EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, value);
 };
 
 const receiveCooldownTime = (time: number) => {

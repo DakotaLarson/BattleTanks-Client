@@ -96,10 +96,18 @@
     bottom: 2.5vmin;
     right: 2.5vmin;
 }
+.social-small-container {
+    display: inline-block;
+    height: 10vmin;
+}
 .main-menu .social-image {
-    height: 5vmin;
-    width: 5vmin;
-    margin: 0 0.5vmin;
+    height: 3.5vmin;
+    width: 3.5vmin;
+    margin: 0.5vmin 0.5vmin;
+}
+.main-menu .social-image-large {
+    height: 10vmin;
+    width: 10vmin;
 }
 .main-menu .social-ref {
     display: inline-block;

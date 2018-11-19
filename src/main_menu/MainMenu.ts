@@ -199,7 +199,7 @@ export default class MainMenu extends Component {
     }
 
     private playReturn() {
-        EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, AudioType.MENU_RETURN);
+        EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, AudioType.MENU_BACK);
     }
 
     private playSelect() {

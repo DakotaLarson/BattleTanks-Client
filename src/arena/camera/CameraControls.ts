@@ -116,7 +116,7 @@ export default class CameraControls extends Component {
     private onZoom(deltaY: number, isScroll: boolean) {
         if (isScroll) {
             if (deltaY > 0) {
-                this.spherical.radius = Math.min(this.spherical.radius + 2, 50);
+                this.spherical.radius = Math.min(this.spherical.radius + 2, 17);
             } else {
                 this.spherical.radius = Math.max(this.spherical.radius - 2, 3);
             }
