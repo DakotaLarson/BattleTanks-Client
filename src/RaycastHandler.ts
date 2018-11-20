@@ -8,7 +8,16 @@ let camera: PerspectiveCamera;
 
 export default class RaycastHandler {
 
-    public static updateMouseCoords() {
+    public static init() {
+        camera = Globals.getGlobal(Globals.Global.CAMERA);
+        EventHandler.addListener(undefined, EventHandler.Event.RENDERER_RENDER_PREPARE, RaycastHandler.updateMouseCoords, EventHandler.Level.LOW);
+    }
+
+    public static getRaycaster() {
+        return raycaster;
+    }
+
+    private static updateMouseCoords() {
         if (camera) {
             const dimensions = DomHandler.getDisplayDimensions();
             const currentCoords = DomHandler.getMouseCoordinates();
@@ -18,14 +27,5 @@ export default class RaycastHandler {
             };
             raycaster.setFromCamera(mouseCoords, camera);
         }
-    }
-
-    public static init() {
-        camera = Globals.getGlobal(Globals.Global.CAMERA);
-        EventHandler.addListener(undefined, EventHandler.Event.RENDERER_RENDER_PREPARE, RaycastHandler.updateMouseCoords, EventHandler.Level.LOW);
-    }
-
-    public static getRaycaster() {
-        return raycaster;
     }
 }
