@@ -12,12 +12,21 @@ export default class MultiplayerCamera extends Camera {
     private menuOpen: boolean;
     private playerAttached: boolean;
 
+    private cameraTarget: Vector3;
+    private cameraTargetRotation: number;
+    private cameraFrozen: boolean;
+
     constructor(camera: PerspectiveCamera) {
         super(camera);
 
         this.isSpectating = false;
         this.menuOpen = false;
         this.playerAttached = false;
+
+        this.cameraTarget = new Vector3();
+        this.cameraTargetRotation = 0;
+
+        this.cameraFrozen = false;
 
         this.cameraToggleHandler = new CameraToggleHandler();
     }
@@ -30,6 +39,7 @@ export default class MultiplayerCamera extends Camera {
         this.isSpectating = false;
         this.menuOpen = false;
         this.playerAttached = false;
+        this.cameraFrozen = false;
 
         EventHandler.addListener(this, EventHandler.Event.PLAYER_ADDITION, this.onPlayerAddition);
         EventHandler.addListener(this, EventHandler.Event.PLAYER_REMOVAL, this.onPlayerRemoval);
@@ -39,6 +49,9 @@ export default class MultiplayerCamera extends Camera {
 
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
+
+        EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
+        EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
 
         EventHandler.addListener(this, EventHandler.Event.CAMERA_TOGGLE, this.updateContols);
 
@@ -56,6 +69,9 @@ export default class MultiplayerCamera extends Camera {
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
 
+        EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
+
         EventHandler.removeListener(this, EventHandler.Event.CAMERA_TOGGLE, this.updateContols);
 
         if (this.isSpectating) {
@@ -63,36 +79,37 @@ export default class MultiplayerCamera extends Camera {
         }
     }
 
-    private moveCamera(pos: Vector3, bodyRot: number, headRot: number) {
+    private moveCamera( headRot: number) {
         if (this.usingFollowingCamera()) {
-            const spherical = this.controls.setFromPlayer(bodyRot);
+            if (!this.cameraFrozen) {
+                const spherical = this.controls.setFromPlayer(this.cameraTargetRotation);
 
-            this.followingSpherical = spherical;
-            this.followingTarget = pos;
+                this.followingSpherical = spherical;
 
-            this.camera.position.setFromSpherical(this.followingSpherical);
-            this.camera.position.add(this.followingTarget);
+                this.camera.position.setFromSpherical(this.followingSpherical);
+                this.camera.position.add(this.cameraTarget);
 
-            this.camera.lookAt(this.followingTarget);
-
+                this.camera.lookAt(this.cameraTarget);
+            }
         } else {
-            const camPos = pos.clone();
+            const camPos = this.cameraTarget.clone();
             camPos.add(new Vector3(0.25 * Math.sin(headRot), 0.85, 0.25 * Math.cos(headRot)));
             this.camera.position.copy(camPos);
             this.camera.rotation.setFromVector3(new Vector3(0, headRot + Math.PI, 0));
+            this.cameraFrozen = false;
         }
     }
 
     private onPlayerAddition(data: any) {
-        const pos = new Vector3(data.pos.x + 0.5, data.pos.y, data.pos.z + 0.5);
-        const rot = data.pos.w;
+        this.cameraTarget = new Vector3(data.pos.x + 0.5, data.pos.y, data.pos.z + 0.5);
+        this.cameraTargetRotation = data.pos.w;
 
         this.playerAttached = true;
         this.isSpectating = false;
         this.controls.resetPhi();
         this.updateContols();
 
-        this.moveCamera(pos, rot, rot);
+        this.moveCamera(this.cameraTargetRotation);
     }
 
     private onPlayerRemoval() {
@@ -102,8 +119,9 @@ export default class MultiplayerCamera extends Camera {
     }
 
     private onPlayerMove(data: any) {
-        const pos = new Vector3(data.pos.x + 0.5, data.pos.y, data.pos.z + 0.5);
-        this.moveCamera(pos, data.bodyRot, data.headRot);
+        this.cameraTarget = new Vector3(data.pos.x + 0.5, data.pos.y, data.pos.z + 0.5);
+        this.cameraTargetRotation = data.bodyRot;
+        this.moveCamera(data.headRot);
     }
 
     private usingFollowingCamera() {
@@ -118,6 +136,7 @@ export default class MultiplayerCamera extends Camera {
 
     private onGameMenuOpen() {
         this.menuOpen = true;
+        this.cameraFrozen = false;
         this.updateContols();
     }
 
@@ -149,6 +168,21 @@ export default class MultiplayerCamera extends Camera {
         } else {
             this.detachChild(this.controls);
             this.detachChild(this.cameraToggleHandler);
+        }
+    }
+
+    private onMouseDown(event: MouseEvent) {
+        if (event.button === 2 && !this.menuOpen && this.usingFollowingCamera()) {
+            this.cameraFrozen = true;
+        }
+    }
+
+    private onMouseUp(event: MouseEvent) {
+        if (event.button === 2) {
+            this.cameraFrozen = false;
+            if (this.usingFollowingCamera()) {
+                this.moveCamera(0);
+            }
         }
     }
 }
