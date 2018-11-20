@@ -78,7 +78,11 @@ const constructData = (header: Packet, body: any, dataType: DataType) => {
 
 const send = (data: ArrayBuffer) => {
     if (socket) {
-        socket.send(data);
+        if (socket.readyState !== socket.OPEN) {
+            console.warn("socket is closed, but not removed.");
+        } else {
+            socket.send(data);
+        }
     } else {
         console.warn("Attempting to send data with no connection.");
     }

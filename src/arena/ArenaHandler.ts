@@ -44,6 +44,8 @@ export default class ArenaHandler extends Component {
     private isSingleplayer: boolean;
     private gameMenuEnabled: boolean;
 
+    private arenaAttached: boolean;
+
     constructor() {
         super();
 
@@ -80,6 +82,7 @@ export default class ArenaHandler extends Component {
 
         this.isSingleplayer = false;
         this.gameMenuEnabled = false;
+        this.arenaAttached = false;
     }
 
     public enable() {
@@ -148,19 +151,24 @@ export default class ArenaHandler extends Component {
 
         this.attachChild(this.sceneHandler);
         this.attachChild(this.renderer);
+        this.arenaAttached = true;
     }
 
     private detachArena() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
-        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenuFromEvent);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE, this.onBlur);
+        if (this.arenaAttached) {
+            EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
+            EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenuFromEvent);
+            EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
+            EventHandler.removeListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE, this.onBlur);
 
-        this.detachChild(this.sceneHandler);
-        this.detachChild(this.renderer);
+            this.detachChild(this.sceneHandler);
+            this.detachChild(this.renderer);
 
-        if (this.gameMenuEnabled) {
-            this.closeGameMenu(false);
+            if (this.gameMenuEnabled) {
+                this.closeGameMenu(false);
+            }
+
+            this.arenaAttached = false;
         }
     }
 
