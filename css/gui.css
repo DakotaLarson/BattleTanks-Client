@@ -4,6 +4,7 @@
     position: absolute;
     height: 100%;
     width: 100%;
+    z-index: 0; /* Generates stacking context for GUI*/
 }
 .gui .gui-element{
     display: none;
@@ -61,16 +62,16 @@
     vertical-align: center;
 }
 
-.gui svg {
+.gui .ammo-display-container svg {
     transform: rotate(-90deg);
 }
 
 .gui .killfeed-container {
-    width:  25vw;
+    width: 25vw;
     max-height: 25vh;
     right: 2.5vmin;
     top: 2.5vmin;
-    color:  white;
+    color:  #ffffff;
     font-size: 2vmin;
     text-align: right;
     white-space: nowrap;
@@ -78,8 +79,35 @@
 }
 
 .gui .killfeed-message {
-    height: 2.5vmin;
+    height: 2.5vh;
     font-family: 'Inconsolata', sans-serif;
     font-weight: bold;
     transition: opacity 0.5s ease;
+}
+
+.gui .chat-container {
+    z-index: 1;
+    width: 25vw;
+    max-height: 25vh;
+    bottom: 2.5vmin;
+    left: 2.5vmin;
+    color: #ffffff;
+    font-size: 2vmin;
+    font-family: 'Inconsolata', sans-serif;
+}
+
+.gui .chat-container .chat-message {
+    margin: 0.5vh 0;
+}
+
+.gui .chat-container .chat-input {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    border-bottom: solid 1px #ffffff;
+    outline: none;
+    color: #ffffff;
+    font-size: 2vmin;
+    font-family: 'Inconsolata', sans-serif;
 }

@@ -164,11 +164,11 @@
         <span class="menu-selection option-disconnect">Disconnect</span>
     </div>
     <div class="menu-section section-waiting">
-        <span class="message">Waiting for match to start...</span><br/>
+        <span class="message">Waiting for more players...</span><br/>
         <span class="menu-selection option-disconnect">Disconnect</span>
     </div>
     <div class="menu-section section-starting">
-        <span class="message">Next match starting up...</span><br/>
+        <span class="message">Match starting up!</span><br/>
         <span class="menu-selection option-disconnect">Disconnect</span>
     </div>
 </div>
@@ -197,7 +197,24 @@
         <div class="create-world-mode-toggle no-select" id="gui-create-world-toggle-team-b-spawn">Team B Spawn</div>
     </div>
 
-    <div class="killfeed-container gui-element no-select">
+    <div class="killfeed-container gui-element no-select"></div>
+
+    <div class="chat-container gui-element no-select">
+        <div class="chat-message-container">
+            <div class="chat-message">
+                <span>Alice: </span>
+                <span>A long test message that will extend onto two lines due to the length</span>
+            </div>
+            <div class="chat-message">
+                <span>Bob: </span>
+                <span>Another Test Message</span>
+            </div>
+            <div class="chat-message">
+                <span>Kotamigo: </span>
+                <span>Test Message</span>
+            </div>
+        </div>
+        <input type="text" class="chat-input">
     </div>
 
     <div class="cooldown-bar-container gui-element no-select">

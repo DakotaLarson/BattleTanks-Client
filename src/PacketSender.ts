@@ -6,6 +6,7 @@ enum Packet {
     PLAYER_SHOOT,
     RELOAD_REQUEST,
     RELOAD_MOVE_TOGGLE,
+    CHAT_MESSAGE_SEND,
 }
 
 enum DataType {
@@ -113,6 +114,11 @@ export default class PacketSender {
     public static sendReloadMoveToggle(isMoving: boolean) {
         const rawMoving = isMoving ? 1 : 0;
         const data = constructData(Packet.RELOAD_MOVE_TOGGLE, rawMoving, DataType.NUMBER);
+        send(data);
+    }
+
+    public static sendChatMessageSend(message: string) {
+        const data = constructData(Packet.CHAT_MESSAGE_SEND, message, DataType.STRING);
         send(data);
     }
 

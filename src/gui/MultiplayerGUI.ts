@@ -2,6 +2,7 @@ import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 import AmmoDisplay from "./AmmoDisplay";
+import Chat from "./Chat";
 import DebugPanel from "./DebugPanel";
 import HealthBar from "./HealthBar";
 import Killfeed from "./Killfeed";
@@ -13,6 +14,7 @@ export default class GUI extends Component {
     private healthBar: HealthBar;
     private ammoDisplay: AmmoDisplay;
     private killfeed: Killfeed;
+    private chat: Chat;
 
     constructor() {
         super();
@@ -22,6 +24,7 @@ export default class GUI extends Component {
         this.ammoDisplay = new AmmoDisplay(this.element);
         this.healthBar = new HealthBar(this.element);
         this.killfeed = new Killfeed(this.element);
+        this.chat = new Chat(this.element);
     }
 
     public enable() {
@@ -32,6 +35,7 @@ export default class GUI extends Component {
 
         this.attachChild(this.debugPanel);
         this.attachChild(this.killfeed);
+        this.attachChild(this.chat);
 
         this.element.style.display = "block";
     }
@@ -44,6 +48,7 @@ export default class GUI extends Component {
 
         this.detachChild(this.debugPanel);
         this.detachChild(this.killfeed);
+        this.detachChild(this.chat);
 
         this.element.style.display = "";
     }
