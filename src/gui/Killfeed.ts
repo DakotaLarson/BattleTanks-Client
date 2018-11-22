@@ -4,7 +4,7 @@ import EventHandler from "../EventHandler";
 
 export default class Killfeed extends ChildComponent {
 
-    private static readonly MAX_MESSAGES = 10;
+    private static readonly MAX_MESSAGE_COUNT = 10;
 
     private container: HTMLElement;
 
@@ -54,15 +54,17 @@ export default class Killfeed extends ChildComponent {
 
         this.container.appendChild(element);
         setTimeout(() => {
-            element.style.opacity = "0";
-            setTimeout(() => {
-                if (this.container.contains(element)) {
-                    this.container.removeChild(element);
-                }
-            }, 500);
+            if (this.container.contains(element)) {
+                element.style.opacity = "0";
+                setTimeout(() => {
+                    if (this.container.contains(element)) {
+                        this.container.removeChild(element);
+                    }
+                }, 500);
+            }
         }, 5000);
 
-        while (this.container.childElementCount > Killfeed.MAX_MESSAGES) {
+        while (this.container.childElementCount > Killfeed.MAX_MESSAGE_COUNT) {
             this.container.removeChild(this.container.firstChild as Node);
         }
     }

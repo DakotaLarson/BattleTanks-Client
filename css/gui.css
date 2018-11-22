@@ -85,7 +85,8 @@
     transition: opacity 0.5s ease;
 }
 
-.gui .chat-container {
+.gui .chat-container,
+.gui .chat-preview-container {
     z-index: 1;
     width: 25vw;
     max-height: 25vh;
@@ -96,8 +97,9 @@
     font-family: 'Inconsolata', sans-serif;
 }
 
-.gui .chat-container .chat-message {
+.gui .chat-message {
     margin: 0.5vh 0;
+    transition: opacity 0.5s ease;
 }
 
 .gui .chat-container .chat-input {
@@ -108,6 +110,8 @@
     border-bottom: solid 1px #ffffff;
     outline: none;
     color: #ffffff;
+    height: 2.5vh;
     font-size: 2vmin;
+    box-sizing: border-box;
     font-family: 'Inconsolata', sans-serif;
 }
