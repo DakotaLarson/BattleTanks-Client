@@ -153,6 +153,10 @@ const receiveProjectileClear = () => {
     EventHandler.callEvent(EventHandler.Event.PROJECTILE_CLEAR);
 };
 
+const receiveChatMessage = (data: string) => {
+    EventHandler.callEvent(EventHandler.Event.CHAT_UPDATE, JSON.parse(data));
+};
+
 const handlers: any[] = new Array();
 handlers.push(receiveArena);
 
@@ -185,6 +189,8 @@ handlers.push(receiveProjecileLaunch);
 handlers.push(receiveProjectileMove);
 handlers.push(receiveProjectileRemoval);
 handlers.push(receiveProjectileClear);
+
+handlers.push(receiveChatMessage);
 
 enum DataType {
     NUMBER,

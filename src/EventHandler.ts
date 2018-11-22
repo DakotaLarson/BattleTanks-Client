@@ -153,6 +153,9 @@ enum Event {
 
     // KILLFEED
     KILLFEED_UPDATE,
+
+    // CHAT
+    CHAT_UPDATE,
 }
 
 enum Level {

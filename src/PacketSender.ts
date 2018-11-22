@@ -6,7 +6,7 @@ enum Packet {
     PLAYER_SHOOT,
     RELOAD_REQUEST,
     RELOAD_MOVE_TOGGLE,
-    CHAT_MESSAGE_SEND,
+    CHAT_MESSAGE,
 }
 
 enum DataType {
@@ -117,8 +117,8 @@ export default class PacketSender {
         send(data);
     }
 
-    public static sendChatMessageSend(message: string) {
-        const data = constructData(Packet.CHAT_MESSAGE_SEND, message, DataType.STRING);
+    public static sendChatMessage(message: string) {
+        const data = constructData(Packet.CHAT_MESSAGE, message, DataType.STRING);
         send(data);
     }
 

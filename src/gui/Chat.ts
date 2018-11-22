@@ -22,10 +22,12 @@ export default class Chat extends ChildComponent {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+        EventHandler.addListener(this, EventHandler.Event.CHAT_UPDATE, this.onUpdate);
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+        EventHandler.removeListener(this, EventHandler.Event.CHAT_UPDATE, this.onUpdate);
         this.clearMessages();
     }
 
@@ -40,10 +42,15 @@ export default class Chat extends ChildComponent {
         }
     }
 
+    private onUpdate(data: any) {
+        const newMessageElt = this.constructChatMessage(data);
+        this.messageContaner.appendChild(newMessageElt);
+    }
+
     private sendMessage() {
         const message = this.inputElt.value.trim();
         if (message) {
-            PacketSender.sendChatMessageSend(message);
+            PacketSender.sendChatMessage(message);
         }
     }
 
@@ -63,5 +70,31 @@ export default class Chat extends ChildComponent {
         while (this.messageContaner.firstChild) {
             this.messageContaner.removeChild(this.messageContaner.firstChild);
         }
+    }
+
+    private constructChatMessage(data: any) {
+        const elements = [];
+        for (const segment of data) {
+            const element = document.createElement("span");
+            element.textContent = segment.text;
+            element.style.color = this.getCSSColorString(segment.color);
+            elements.push(element);
+        }
+
+        const messageElt = document.createElement("div");
+        messageElt.classList.add("chat-message");
+        for (const element of elements) {
+            messageElt.appendChild(element);
+        }
+
+        return messageElt;
+    }
+
+    private getCSSColorString(value: number) {
+        let cssValue = value.toString(16);
+        while (cssValue.length < 6) {
+            cssValue = "0" + cssValue;
+        }
+        return "#" + cssValue;
     }
 }

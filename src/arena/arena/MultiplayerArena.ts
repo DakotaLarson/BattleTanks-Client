@@ -124,7 +124,7 @@ export default class MultiplayerArena extends Arena {
                 // The player was killed
                 let involvedPlayer = this.getKillfeedPlayerDetails(involvedId, livesRemaining);
                 if (!involvedPlayer) {
-                    // The involved player has left the game
+                    // The involved player has left the game or was just killed
                     involvedPlayer = {
                         name: "A Ghost",
                         color: 0xffffff,
