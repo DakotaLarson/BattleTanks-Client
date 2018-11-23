@@ -42,7 +42,6 @@ export default class ArenaHandler extends Component {
     private projectileHandler: ProjectileHandler;
 
     private isSingleplayer: boolean;
-    private gameMenuEnabled: boolean;
 
     private arenaAttached: boolean;
 
@@ -81,8 +80,9 @@ export default class ArenaHandler extends Component {
         this.projectileHandler = new ProjectileHandler(this.sceneHandler.getScene());
 
         this.isSingleplayer = false;
-        this.gameMenuEnabled = false;
         this.arenaAttached = false;
+
+        Globals.setGlobal(Globals.Global.GAME_MENU_OPEN, false);
     }
 
     public enable() {
@@ -164,7 +164,7 @@ export default class ArenaHandler extends Component {
             this.detachChild(this.sceneHandler);
             this.detachChild(this.renderer);
 
-            if (this.gameMenuEnabled) {
+            if (Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
                 this.closeGameMenu(false);
             }
 
@@ -174,7 +174,7 @@ export default class ArenaHandler extends Component {
 
     private onKeyUp(event: KeyboardEvent) {
         if (event.code === "Escape") {
-            if (this.gameMenuEnabled) {
+            if (Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
                 this.closeGameMenu(true);
             } else {
                 this.openGameMenu();
@@ -183,7 +183,7 @@ export default class ArenaHandler extends Component {
     }
 
     private onBlur() {
-        if (!this.gameMenuEnabled) {
+        if (!Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
             this.openGameMenu();
         }
     }
@@ -198,11 +198,10 @@ export default class ArenaHandler extends Component {
         } else {
             this.detachChild(this.multiplayerGameMenu);
         }
+        Globals.setGlobal(Globals.Global.GAME_MENU_OPEN, false);
         if (callEvent) {
             EventHandler.callEvent(EventHandler.Event.GAMEMENU_CLOSE);
         }
-
-        this.gameMenuEnabled = false;
     }
 
     private openGameMenu() {
@@ -211,8 +210,8 @@ export default class ArenaHandler extends Component {
         } else {
             this.attachChild(this.multiplayerGameMenu);
         }
-        EventHandler.callEvent(EventHandler.Event.GAMEMENU_OPEN);
+        Globals.setGlobal(Globals.Global.GAME_MENU_OPEN, true);
 
-        this.gameMenuEnabled = true;
+        EventHandler.callEvent(EventHandler.Event.GAMEMENU_OPEN);
     }
 }

@@ -1,6 +1,7 @@
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
+import Globals from "../Globals";
 import PacketSender from "../PacketSender";
 
 export default class Chat extends ChildComponent {
@@ -11,8 +12,6 @@ export default class Chat extends ChildComponent {
     private inputElt: HTMLInputElement;
     private previewContainer: HTMLElement;
 
-    private visible: boolean;
-
     constructor(parent: HTMLElement) {
         super();
 
@@ -20,7 +19,7 @@ export default class Chat extends ChildComponent {
         this.messageContainer = DomHandler.getElement(".chat-message-container", this.container);
         this.inputElt = DomHandler.getElement(".chat-input", this.container) as HTMLInputElement;
         this.previewContainer = DomHandler.getElement(".chat-preview-container", parent);
-        this.visible = false;
+        Globals.setGlobal(Globals.Global.CHAT_OPEN, false);
     }
 
     public enable() {
@@ -40,7 +39,7 @@ export default class Chat extends ChildComponent {
 
     private onKeyDown(event: KeyboardEvent) {
         if (event.code === "Enter") {
-            if (this.visible) {
+            if (this.isVisible()) {
                 this.sendMessage();
                 this.hideChat();
             } else {
@@ -53,10 +52,11 @@ export default class Chat extends ChildComponent {
         const newMessageElt = this.constructChatMessage(data);
         this.messageContainer.appendChild(newMessageElt);
         this.removeOldMessages(this.messageContainer);
-        if (!this.visible) {
+        if (!this.isVisible()) {
             const previewMessageElt = newMessageElt.cloneNode(true) as HTMLElement;
             this.previewContainer.appendChild(previewMessageElt);
             this.removeOldMessages(this.previewContainer);
+            this.previewContainer.scrollTop = this.previewContainer.scrollHeight;
             setTimeout(() => {
                 if (this.previewContainer.contains(previewMessageElt)) {
                     previewMessageElt.style.opacity = "0";
@@ -79,16 +79,17 @@ export default class Chat extends ChildComponent {
 
     private showChat() {
         this.hidePreview();
-        this.container.style.display = "block";
+        this.container.style.display = "flex";
+        this.messageContainer.scrollTop = this.messageContainer.scrollHeight;
         this.inputElt.focus();
-        this.visible = true;
+        Globals.setGlobal(Globals.Global.CHAT_OPEN, true);
     }
 
     private hideChat() {
         this.inputElt.value = "";
         this.container.style.display = "";
         this.previewContainer.style.display = "block";
-        this.visible = false;
+        Globals.setGlobal(Globals.Global.CHAT_OPEN, false);
     }
 
     private hidePreview() {
@@ -134,5 +135,9 @@ export default class Chat extends ChildComponent {
         while (container.childElementCount > Chat.MAX_MESSAGE_COUNT) {
             container.removeChild(container.firstChild as Node);
         }
+    }
+
+    private isVisible() {
+        return Globals.getGlobal(Globals.Global.CHAT_OPEN);
     }
 }

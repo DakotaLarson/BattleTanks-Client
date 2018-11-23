@@ -1,6 +1,8 @@
 enum Global {
     CAMERA,
     CAMERA_IS_FOLLOWING,
+    CHAT_OPEN,
+    GAME_MENU_OPEN,
 }
 
 export default class Globals {

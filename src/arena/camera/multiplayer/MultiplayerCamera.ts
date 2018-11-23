@@ -9,7 +9,6 @@ export default class MultiplayerCamera extends Camera {
     private cameraToggleHandler: CameraToggleHandler;
 
     private isSpectating: boolean;
-    private menuOpen: boolean;
     private playerAttached: boolean;
 
     private cameraTarget: Vector3;
@@ -20,7 +19,6 @@ export default class MultiplayerCamera extends Camera {
         super(camera);
 
         this.isSpectating = false;
-        this.menuOpen = false;
         this.playerAttached = false;
 
         this.cameraTarget = new Vector3();
@@ -37,7 +35,6 @@ export default class MultiplayerCamera extends Camera {
         this.controls.reset();
 
         this.isSpectating = false;
-        this.menuOpen = false;
         this.playerAttached = false;
         this.cameraFrozen = false;
 
@@ -135,18 +132,16 @@ export default class MultiplayerCamera extends Camera {
     }
 
     private onGameMenuOpen() {
-        this.menuOpen = true;
         this.cameraFrozen = false;
         this.updateContols();
     }
 
     private onGameMenuClose() {
-        this.menuOpen = false;
         this.updateContols();
     }
 
     private updateContols() {
-        if (!this.menuOpen) {
+        if (!Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
             if (this.playerAttached || this.isSpectating) {
                 if (this.isSpectating) {
                     this.controls.zoomOnly = false;
@@ -172,7 +167,7 @@ export default class MultiplayerCamera extends Camera {
     }
 
     private onMouseDown(event: MouseEvent) {
-        if (event.button === 2 && !this.menuOpen && this.usingFollowingCamera()) {
+        if (event.button === 2 && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN) && this.usingFollowingCamera()) {
             this.cameraFrozen = true;
         }
     }

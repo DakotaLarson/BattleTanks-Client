@@ -32,9 +32,7 @@ export default class Player extends Component {
 
     private movingLastFrame: boolean;
 
-    private gameMenuOpen: boolean;
-
-    constructor(id: number, color: number, pos: Vector4, gameMenuOpen: boolean) {
+    constructor(id: number, color: number, pos: Vector4) {
         super();
         this.id = id;
 
@@ -54,8 +52,6 @@ export default class Player extends Component {
 
         this.movementVelocity = 0;
         this.rotationVelocity = 0;
-
-        this.gameMenuOpen = gameMenuOpen;
     }
 
     public enable() {
@@ -66,7 +62,6 @@ export default class Player extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
 
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
 
         if (!this.cameraIsFollowing()) {
             EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
@@ -105,7 +100,6 @@ export default class Player extends Component {
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
 
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
 
         if (!this.cameraIsFollowing()) {
             EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
@@ -141,13 +135,13 @@ export default class Player extends Component {
     }
 
     private onMouseMove(event: MouseEvent) {
-        if (!this.gameMenuOpen) {
+        if (!Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
             this.headRotation -= event.movementX / 365;
         }
     }
 
     private onInputDown(code: string | number) {
-        if (!this.cameraIsFollowing() && !DomHandler.hasPointerLock() && !this.gameMenuOpen) {
+        if (!this.cameraIsFollowing() && !DomHandler.hasPointerLock() && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
             DomHandler.requestPointerLock();
         }
 
@@ -159,9 +153,9 @@ export default class Player extends Component {
             this.rotatingLeft = true;
         } else if (code === Options.options.right.code) {
             this.rotatingRight = true;
-        } else if (code === Options.options.shoot.code && !this.gameMenuOpen) {
+        } else if (code === Options.options.shoot.code && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
             PacketSender.sendPlayerShoot();
-        } else if (code === Options.options.reload.code && !this.gameMenuOpen) {
+        } else if (code === Options.options.reload.code && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
             PacketSender.sendReloadRequest();
         }
     }
@@ -186,15 +180,15 @@ export default class Player extends Component {
         this.movementVelocity -= this.movementVelocity * 10 * delta;
         this.rotationVelocity -= this.rotationVelocity * 10 * delta;
 
-        if (this.movingForward && !this.movingBackward && !this.gameMenuOpen) {
+        if (this.movingForward && !this.movingBackward && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
             this.movementVelocity += PLAYER_MOVEMENT_SPEED * delta * multiplier;
-        } else if (this.movingBackward && !this.movingForward && !this.gameMenuOpen) {
+        } else if (this.movingBackward && !this.movingForward && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
             this.movementVelocity -= PLAYER_MOVEMENT_SPEED * delta * multiplier;
         }
 
-        if (this.rotatingLeft && !this.rotatingRight && !this.gameMenuOpen) {
+        if (this.rotatingLeft && !this.rotatingRight && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
             this.rotationVelocity += PLAYER_ROTATION_SPEED * delta * multiplier;
-        } else if (this.rotatingRight && !this.rotatingLeft && !this.gameMenuOpen) {
+        } else if (this.rotatingRight && !this.rotatingLeft && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
             this.rotationVelocity -=  PLAYER_ROTATION_SPEED * delta * multiplier;
         }
 
@@ -217,7 +211,7 @@ export default class Player extends Component {
 
         const collisionCorrection = CollisionHandler.getCollision(potentialPosition.clone(), potentialRotation);
 
-        if (this.cameraIsFollowing() && !this.gameMenuOpen) {
+        if (this.cameraIsFollowing() && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
             this.computeTurretRotation();
         }
 
@@ -268,7 +262,7 @@ export default class Player extends Component {
     }
 
     private onCameraToggle() {
-        if (!this.gameMenuOpen) {
+        if (!Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
             if (this.cameraIsFollowing()) {
                 EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
                 DomHandler.exitPointerLock();
@@ -290,15 +284,10 @@ export default class Player extends Component {
     }
 
     private onGameMenuOpen() {
-        this.gameMenuOpen = true;
         this.movingForward = false;
         this.movingBackward = false;
 
         this.rotatingLeft = false;
         this.rotatingRight = false;
-    }
-
-    private onGameMenuClose() {
-        this.gameMenuOpen = false;
     }
 }

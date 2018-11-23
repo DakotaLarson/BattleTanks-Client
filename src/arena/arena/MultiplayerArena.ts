@@ -8,21 +8,16 @@ export default class MultiplayerArena extends Arena {
 
     private player: Player | undefined;
     private connectedPlayers: Map<number, ConnectedPlayer>;
-    private gameMenuOpen: boolean;
 
     constructor() {
         super();
 
         this.player = undefined;
         this.connectedPlayers = new Map();
-        this.gameMenuOpen = false;
     }
 
     public enable() {
         super.enable();
-
-        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
 
         EventHandler.addListener(this, EventHandler.Event.PLAYER_ADDITION, this.onPlayerAddition);
         EventHandler.addListener(this, EventHandler.Event.PLAYER_REMOVAL, this.onPlayerRemoval);
@@ -35,8 +30,6 @@ export default class MultiplayerArena extends Arena {
 
     public disable() {
         super.disable();
-        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
-        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE, this.onGameMenuClose);
 
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_ADDITION, this.onPlayerAddition);
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_REMOVAL, this.onPlayerRemoval);
@@ -46,7 +39,6 @@ export default class MultiplayerArena extends Arena {
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_MOVE, this.onConnectedPlayerMove);
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_REMOVAL, this.onConnectedPlayerRemoval);
 
-        this.gameMenuOpen = false;
         this.connectedPlayers.clear();
         this.player = undefined;
     }
@@ -56,7 +48,7 @@ export default class MultiplayerArena extends Arena {
             console.warn("Attempting to attach player when one already exists");
             this.detachChild(this.player);
         }
-        this.player = new Player(data.id, data.color, data.pos, this.gameMenuOpen);
+        this.player = new Player(data.id, data.color, data.pos);
         this.attachChild(this.player);
     }
 
@@ -100,14 +92,6 @@ export default class MultiplayerArena extends Arena {
         if (player) {
             this.detachChild(player);
         }
-    }
-
-    private onGameMenuOpen() {
-        this.gameMenuOpen = true;
-    }
-
-    private onGameMenuClose() {
-        this.gameMenuOpen = false;
     }
 
     private updateKillfeed(id: number, involvedId: number, livesRemaining: number) {

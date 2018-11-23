@@ -97,8 +97,21 @@
     font-family: 'Inconsolata', sans-serif;
 }
 
+.gui .chat-container {
+    flex-direction: column;
+}
+.gui .chat-preview-container {
+    overflow: hidden;
+    bottom: calc(2.5vmin + 2.5vh);
+    max-height: 22.5vh;
+}
+
+.gui .chat-container .chat-message-container {
+    overflow: hidden;
+}
+
 .gui .chat-message {
-    margin: 0.5vh 0;
+    line-height: 2.5vh;
     transition: opacity 0.5s ease;
 }
 
