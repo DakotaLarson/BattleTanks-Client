@@ -2,6 +2,7 @@ import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 import Globals from "../Globals";
+import Options from "../Options";
 import PacketSender from "../PacketSender";
 
 export default class Chat extends ChildComponent {
@@ -23,35 +24,29 @@ export default class Chat extends ChildComponent {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         EventHandler.addListener(this, EventHandler.Event.CHAT_UPDATE, this.onUpdate);
+        EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.hideChat);
         this.previewContainer.style.display = "block";
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
-        EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         EventHandler.removeListener(this, EventHandler.Event.CHAT_UPDATE, this.onUpdate);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.hideChat);
         this.clearMessages();
 
         this.hideChat();
         this.previewContainer.style.display = "";
     }
 
-    private onKeyDown(event: KeyboardEvent) {
-        if (event.code === "Enter" && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
-            if (Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
-                this.sendMessage();
-                this.hideChat();
-            } else {
-                this.showChat();
-            }
-        }
-    }
-
     private onKeyUp(event: KeyboardEvent) {
-        if (event.code === "Escape" && Globals.getGlobal(Globals.Global.CHAT_OPEN) && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+        if (event.code === Options.options.chatOpen.code && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN) && !Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
+            this.showChat();
+        } else if (event.code === "Escape" && Globals.getGlobal(Globals.Global.CHAT_OPEN) && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+            this.hideChat();
+        } else if (event.code === "Enter" && Globals.getGlobal(Globals.Global.CHAT_OPEN) && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+            this.sendMessage();
             this.hideChat();
         }
     }

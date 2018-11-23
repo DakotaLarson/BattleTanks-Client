@@ -1,6 +1,7 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
+import Options from "../Options";
 import AmmoDisplay from "./AmmoDisplay";
 import Chat from "./Chat";
 import DebugPanel from "./DebugPanel";
@@ -34,8 +35,13 @@ export default class GUI extends Component {
         EventHandler.addListener(this, EventHandler.Event.PLAYER_SPECTATING, this.onPlayerRemoval);
 
         this.attachChild(this.debugPanel);
-        this.attachChild(this.killfeed);
-        this.attachChild(this.chat);
+
+        if (Options.options.killfeedEnabled) {
+            this.attachChild(this.killfeed);
+        }
+        if (Options.options.chatEnabled) {
+            this.attachChild(this.chat);
+        }
 
         this.element.style.display = "block";
     }

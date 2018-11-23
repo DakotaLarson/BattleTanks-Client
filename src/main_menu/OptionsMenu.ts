@@ -8,12 +8,16 @@ export default class OptionsMenu extends Component {
     private element: HTMLElement;
     private returnBtn: HTMLElement;
 
+    private chatEnabledElt: HTMLInputElement;
+    private killfeedEnabledElt: HTMLInputElement;
+
     private forwardValueElt: HTMLElement;
     private backwardValueElt: HTMLElement;
     private leftValueElt: HTMLElement;
     private rightValueElt: HTMLElement;
     private reloadValueElt: HTMLElement;
     private shootValueElt: HTMLElement;
+    private chatOpenValueElt: HTMLElement;
 
     private volumeValueElt: HTMLInputElement;
     private mouseValueElt: HTMLInputElement;
@@ -26,12 +30,16 @@ export default class OptionsMenu extends Component {
         super();
         this.element = DomHandler.getElement("#main-menu-opt", mainMenu);
 
+        this.chatEnabledElt = DomHandler.getElement("#option-enabled-chat", this.element) as HTMLInputElement;
+        this.killfeedEnabledElt = DomHandler.getElement("#option-enabled-killfeed", this.element) as HTMLInputElement;
+
         this.forwardValueElt = DomHandler.getElement("#option-value-forward", this.element);
         this.backwardValueElt = DomHandler.getElement("#option-value-backward", this.element);
         this.leftValueElt = DomHandler.getElement("#option-value-left", this.element);
         this.rightValueElt = DomHandler.getElement("#option-value-right", this.element);
         this.reloadValueElt = DomHandler.getElement("#option-value-reload", this.element);
         this.shootValueElt = DomHandler.getElement("#option-value-shoot", this.element);
+        this.chatOpenValueElt = DomHandler.getElement("#option-value-chatopen", this.element);
 
         this.volumeValueElt = DomHandler.getElement("#option-value-volume", this.element) as HTMLInputElement;
         this.mouseValueElt = DomHandler.getElement("#option-value-mouse", this.element) as HTMLInputElement;
@@ -46,6 +54,9 @@ export default class OptionsMenu extends Component {
     }
 
     public enable() {
+        DomEventHandler.addListener(this, this.chatEnabledElt, "change", this.onChatEnabledChange);
+        DomEventHandler.addListener(this, this.killfeedEnabledElt, "change", this.onKillfeedEnabledChange);
+
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onBackwardClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onForwardClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onLeftClick);
@@ -53,6 +64,7 @@ export default class OptionsMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReloadClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onShootClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onChatOpenClick);
 
         DomEventHandler.addListener(this, this.volumeValueElt, "change", this.onVolumeChange);
         DomEventHandler.addListener(this, this.mouseValueElt, "change", this.onMouseChange);
@@ -63,6 +75,9 @@ export default class OptionsMenu extends Component {
     }
 
     public disable() {
+        DomEventHandler.addListener(this, this.chatEnabledElt, "change", this.onChatEnabledChange);
+        DomEventHandler.addListener(this, this.killfeedEnabledElt, "change", this.onKillfeedEnabledChange);
+
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onBackwardClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onForwardClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onLeftClick);
@@ -70,6 +85,7 @@ export default class OptionsMenu extends Component {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReloadClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onShootClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onChatOpenClick);
 
         DomEventHandler.removeListener(this, this.volumeValueElt, "change", this.onVolumeChange);
         DomEventHandler.removeListener(this, this.mouseValueElt, "change", this.onMouseChange);
@@ -79,6 +95,14 @@ export default class OptionsMenu extends Component {
         this.isListening = false;
 
         this.element.style.display = "";
+    }
+
+    private onChatEnabledChange() {
+        this.saveChange("chatEnabled", this.chatEnabledElt.checked);
+    }
+
+    private onKillfeedEnabledChange() {
+        this.saveChange("killfeedEnabled", this.killfeedEnabledElt.checked);
     }
 
     private onForwardClick(event: MouseEvent) {
@@ -136,6 +160,16 @@ export default class OptionsMenu extends Component {
             if (!this.isListening) {
                 this.listenForInput(this.shootValueElt).then((data) => {
                     this.saveChange("shoot", data);
+                });
+            }
+        }
+    }
+
+    private onChatOpenClick(event: MouseEvent) {
+        if (event.target === this.chatOpenValueElt) {
+            if (!this.isListening) {
+                this.listenForInput(this.chatOpenValueElt).then((data) => {
+                    this.saveChange("chatOpen", data);
                 });
             }
         }
@@ -220,6 +254,10 @@ export default class OptionsMenu extends Component {
         if (rawOptions) {
             const options = JSON.parse(rawOptions);
 
+            const setCheckedValue = (optionName: string, element: HTMLInputElement) => {
+                    element.checked = options[optionName];
+            };
+
             const setOption = (optionName: string, element: HTMLElement) => {
                 if (options[optionName].isMouse) {
                     element.textContent = "Mouse " + options[optionName].key;
@@ -236,12 +274,16 @@ export default class OptionsMenu extends Component {
                 element.value = value ? value : "";
             };
 
+            setCheckedValue("chatEnabled", this.chatEnabledElt);
+            setCheckedValue("killfeedEnabled", this.killfeedEnabledElt);
+
             setOption("forward", this.forwardValueElt);
             setOption("backward", this.backwardValueElt);
             setOption("left", this.leftValueElt);
             setOption("right", this.rightValueElt);
             setOption("shoot", this.shootValueElt);
             setOption("reload", this.reloadValueElt);
+            setOption("chatOpen", this.chatOpenValueElt);
 
             setRangeValue(options.volume, this.volumeValueElt);
             setRangeValue(options.mouseSensitivity, this.mouseValueElt);
@@ -259,6 +301,9 @@ export default class OptionsMenu extends Component {
             const storedOptions = JSON.parse(rawOptions);
             storedOptions[attribute] = data;
             localStorage.setItem("userOptions", JSON.stringify(storedOptions));
+            if (!storedOptions.username) {
+                storedOptions.username = "Guest";
+            }
             EventHandler.callEvent(EventHandler.Event.OPTIONS_UPDATE, storedOptions);
         }
     }

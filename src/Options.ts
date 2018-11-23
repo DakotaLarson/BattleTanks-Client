@@ -13,6 +13,12 @@ export default class Options extends Component {
         } else {
             Options.options = {};
         }
+        if (!("chatEnabled" in Options.options)) {
+            Options.options.chatEnabled = true;
+        }
+        if (!("killfeedEnabled" in Options.options)) {
+            Options.options.killfeedEnabled = true;
+        }
         if (!("forward" in Options.options)) {
             Options.options.forward = {
                 key: "w",
@@ -55,11 +61,17 @@ export default class Options extends Component {
                 isMouse: false,
             };
         }
+        if (!("chatOpen" in Options.options)) {
+            Options.options.chatOpen = {
+                key: "Enter",
+                code: "Enter",
+                isMouse: false,
+            };
+        }
 
         if (!("volume" in Options.options)) {
             Options.options.volume = 0.5;
         }
-
         if (!("mouseSensitivity" in Options.options)) {
             Options.options.mouseSensitivity = 0.5;
         }
