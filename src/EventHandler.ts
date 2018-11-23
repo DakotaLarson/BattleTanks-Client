@@ -156,6 +156,7 @@ enum Event {
 
     // CHAT
     CHAT_UPDATE,
+    CHAT_OPEN,
 }
 
 enum Level {

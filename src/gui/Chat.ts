@@ -24,12 +24,14 @@ export default class Chat extends ChildComponent {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+        EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         EventHandler.addListener(this, EventHandler.Event.CHAT_UPDATE, this.onUpdate);
         this.previewContainer.style.display = "block";
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+        EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         EventHandler.removeListener(this, EventHandler.Event.CHAT_UPDATE, this.onUpdate);
         this.clearMessages();
 
@@ -38,8 +40,8 @@ export default class Chat extends ChildComponent {
     }
 
     private onKeyDown(event: KeyboardEvent) {
-        if (event.code === "Enter") {
-            if (this.isVisible()) {
+        if (event.code === "Enter" && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+            if (Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
                 this.sendMessage();
                 this.hideChat();
             } else {
@@ -48,11 +50,17 @@ export default class Chat extends ChildComponent {
         }
     }
 
+    private onKeyUp(event: KeyboardEvent) {
+        if (event.code === "Escape" && Globals.getGlobal(Globals.Global.CHAT_OPEN) && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+            this.hideChat();
+        }
+    }
+
     private onUpdate(data: any) {
         const newMessageElt = this.constructChatMessage(data);
         this.messageContainer.appendChild(newMessageElt);
         this.removeOldMessages(this.messageContainer);
-        if (!this.isVisible()) {
+        if (!Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
             const previewMessageElt = newMessageElt.cloneNode(true) as HTMLElement;
             this.previewContainer.appendChild(previewMessageElt);
             this.removeOldMessages(this.previewContainer);
@@ -83,6 +91,7 @@ export default class Chat extends ChildComponent {
         this.messageContainer.scrollTop = this.messageContainer.scrollHeight;
         this.inputElt.focus();
         Globals.setGlobal(Globals.Global.CHAT_OPEN, true);
+        EventHandler.callEvent(EventHandler.Event.CHAT_OPEN);
     }
 
     private hideChat() {
@@ -135,9 +144,5 @@ export default class Chat extends ChildComponent {
         while (container.childElementCount > Chat.MAX_MESSAGE_COUNT) {
             container.removeChild(container.firstChild as Node);
         }
-    }
-
-    private isVisible() {
-        return Globals.getGlobal(Globals.Global.CHAT_OPEN);
     }
 }

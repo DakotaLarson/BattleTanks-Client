@@ -173,7 +173,7 @@ export default class ArenaHandler extends Component {
     }
 
     private onKeyUp(event: KeyboardEvent) {
-        if (event.code === "Escape") {
+        if (event.code === "Escape" && !Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
             if (Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
                 this.closeGameMenu(true);
             } else {

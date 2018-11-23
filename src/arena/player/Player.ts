@@ -61,7 +61,8 @@ export default class Player extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
 
-        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
+        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onOverlayOpen);
+        EventHandler.addListener(this, EventHandler.Event.CHAT_OPEN, this.onOverlayOpen);
 
         if (!this.cameraIsFollowing()) {
             EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
@@ -99,7 +100,8 @@ export default class Player extends Component {
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
 
-        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onGameMenuOpen);
+        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onOverlayOpen);
+        EventHandler.removeListener(this, EventHandler.Event.CHAT_OPEN, this.onOverlayOpen);
 
         if (!this.cameraIsFollowing()) {
             EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
@@ -180,15 +182,15 @@ export default class Player extends Component {
         this.movementVelocity -= this.movementVelocity * 10 * delta;
         this.rotationVelocity -= this.rotationVelocity * 10 * delta;
 
-        if (this.movingForward && !this.movingBackward && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+        if (this.movingForward && !this.movingBackward && !this.isOverlayOpen()) {
             this.movementVelocity += PLAYER_MOVEMENT_SPEED * delta * multiplier;
-        } else if (this.movingBackward && !this.movingForward && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+        } else if (this.movingBackward && !this.movingForward && !this.isOverlayOpen()) {
             this.movementVelocity -= PLAYER_MOVEMENT_SPEED * delta * multiplier;
         }
 
-        if (this.rotatingLeft && !this.rotatingRight && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+        if (this.rotatingLeft && !this.rotatingRight && !this.isOverlayOpen()) {
             this.rotationVelocity += PLAYER_ROTATION_SPEED * delta * multiplier;
-        } else if (this.rotatingRight && !this.rotatingLeft && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+        } else if (this.rotatingRight && !this.rotatingLeft && !this.isOverlayOpen()) {
             this.rotationVelocity -=  PLAYER_ROTATION_SPEED * delta * multiplier;
         }
 
@@ -283,11 +285,15 @@ export default class Player extends Component {
         this.onTick(); // Prevents jitter in other clients.
     }
 
-    private onGameMenuOpen() {
+    private onOverlayOpen() {
         this.movingForward = false;
         this.movingBackward = false;
 
         this.rotatingLeft = false;
         this.rotatingRight = false;
+    }
+
+    private isOverlayOpen() {
+        return Globals.getGlobal(Globals.Global.CHAT_OPEN) || Globals.getGlobal(Globals.Global.GAME_MENU_OPEN);
     }
 }
