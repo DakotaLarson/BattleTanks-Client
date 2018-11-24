@@ -18,6 +18,7 @@ export default class Chat extends ChildComponent {
 
     private messages: HTMLElement[];
     private messageOffset: number;
+    private listenerAdded: boolean;
 
     constructor(parent: HTMLElement) {
         super();
@@ -29,6 +30,7 @@ export default class Chat extends ChildComponent {
 
         this.messages = [];
         this.messageOffset = 0;
+        this.listenerAdded = false;
 
         Globals.setGlobal(Globals.Global.CHAT_OPEN, false);
 
@@ -102,6 +104,7 @@ export default class Chat extends ChildComponent {
         this.hidePreview();
         this.setMessages();
         EventHandler.addListener(this, EventHandler.Event.DOM_WHEEL, this.onWheel);
+        this.listenerAdded = true;
         this.container.style.display = "flex";
         this.inputElt.focus();
         Globals.setGlobal(Globals.Global.CHAT_OPEN, true);
@@ -111,7 +114,10 @@ export default class Chat extends ChildComponent {
     private hideChat() {
         this.inputElt.value = "";
         this.messageOffset = 0;
-        EventHandler.removeListener(this, EventHandler.Event.DOM_WHEEL, this.onWheel);
+        if (this.listenerAdded) {
+            EventHandler.removeListener(this, EventHandler.Event.DOM_WHEEL, this.onWheel);
+            this.listenerAdded = false;
+        }
         this.container.style.display = "";
         this.previewContainer.style.display = "block";
         Globals.setGlobal(Globals.Global.CHAT_OPEN, false);
