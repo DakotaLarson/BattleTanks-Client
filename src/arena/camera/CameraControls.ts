@@ -17,13 +17,13 @@ export default class CameraControls extends Component {
 
     private state: number;
 
-    constructor() {
+    constructor(spherical: Spherical) {
         super();
 
-        this.spherical = new Spherical(8, Math.PI / 4, Math.PI / 3);
+        this.spherical = spherical;
+        this.reset();
 
         this.state = -1;
-
         this.zoomOnly = false;
     }
 
@@ -48,7 +48,9 @@ export default class CameraControls extends Component {
     }
 
     public reset() {
-        this.spherical = new Spherical(8, Math.PI / 4, Math.PI / 3);
+        this.spherical.radius = 8;
+        this.spherical.phi = Math.PI / 4;
+        this.spherical.theta = Math.PI / 3;
     }
 
     public resetPhi() {

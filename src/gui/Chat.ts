@@ -94,6 +94,7 @@ export default class Chat extends ChildComponent {
         this.container.style.display = "";
         this.previewContainer.style.display = "block";
         Globals.setGlobal(Globals.Global.CHAT_OPEN, false);
+        EventHandler.callEvent(EventHandler.Event.CHAT_CLOSE);
     }
 
     private hidePreview() {

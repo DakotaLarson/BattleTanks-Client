@@ -137,13 +137,13 @@ export default class Player extends Component {
     }
 
     private onMouseMove(event: MouseEvent) {
-        if (!Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+        if (!this.isOverlayOpen()) {
             this.headRotation -= event.movementX / 365;
         }
     }
 
     private onInputDown(code: string | number) {
-        if (!this.cameraIsFollowing() && !DomHandler.hasPointerLock() && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+        if (!this.cameraIsFollowing() && !DomHandler.hasPointerLock() && !this.isOverlayOpen()) {
             DomHandler.requestPointerLock();
         }
 
@@ -155,9 +155,9 @@ export default class Player extends Component {
             this.rotatingLeft = true;
         } else if (code === Options.options.right.code) {
             this.rotatingRight = true;
-        } else if (code === Options.options.shoot.code && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+        } else if (code === Options.options.shoot.code && !this.isOverlayOpen()) {
             PacketSender.sendPlayerShoot();
-        } else if (code === Options.options.reload.code && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+        } else if (code === Options.options.reload.code && !this.isOverlayOpen()) {
             PacketSender.sendReloadRequest();
         }
     }
@@ -213,7 +213,7 @@ export default class Player extends Component {
 
         const collisionCorrection = CollisionHandler.getCollision(potentialPosition.clone(), potentialRotation);
 
-        if (this.cameraIsFollowing() && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+        if (this.cameraIsFollowing() && !this.isOverlayOpen()) {
             this.computeTurretRotation();
         }
 
@@ -264,13 +264,13 @@ export default class Player extends Component {
     }
 
     private onCameraToggle() {
-        if (!Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+        if (!this.isOverlayOpen()) {
             if (this.cameraIsFollowing()) {
                 EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
                 DomHandler.exitPointerLock();
             } else {
                 EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
-                DomHandler.requestPointerLock();
+                // dupe pointer lock request opens game menu; Request is sent in MultiplayerCamera class.
             }
         }
     }

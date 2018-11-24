@@ -9,17 +9,17 @@ export default class Camera extends ChildComponent {
     protected camera: PerspectiveCamera;
     protected controls: CameraControls;
 
-    protected followingSpherical: Spherical;
-    protected followingTarget: Vector3;
+    protected spherical: Spherical;
+    protected target: Vector3;
 
     constructor(camera: PerspectiveCamera) {
         super();
         this.camera = camera;
-        this.controls = new CameraControls();
 
-        this.followingSpherical = new Spherical(25, Math.PI / 4, Math.PI / 3);
-        this.followingTarget = new Vector3();
+        this.spherical = new Spherical(); // Coordinates are defined in CameraControls
+        this.target = new Vector3();
 
+        this.controls = new CameraControls(this.spherical);
     }
 
     public enable() {
@@ -38,25 +38,23 @@ export default class Camera extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.CAMERA_PAN, this.onPan);
     }
 
-    protected onControlsUpdate(spherical: Spherical) {
-        this.followingSpherical = spherical;
+    protected onControlsUpdate() {
 
-        this.camera.position.setFromSpherical(this.followingSpherical);
-        this.camera.position.add(this.followingTarget);
+        this.camera.position.setFromSpherical(this.spherical);
+        this.camera.position.add(this.target);
 
-        this.camera.lookAt(this.followingTarget);
+        this.camera.lookAt(this.target);
     }
 
     protected onArenaSceneUpdate(data: any) {
-        this.followingTarget = new Vector3(data.width / 2, 0, data.height / 2);
+        this.target = new Vector3(data.width / 2, 0, data.height / 2);
 
-        this.followingSpherical = new Spherical(8, Math.PI / 4, Math.PI / 3);
-        this.followingSpherical.makeSafe();
+        this.controls.reset();
 
-        this.camera.position.setFromSpherical(this.followingSpherical);
-        this.camera.position.add(this.followingTarget);
+        this.camera.position.setFromSpherical(this.spherical);
+        this.camera.position.add(this.target);
 
-        this.camera.lookAt(this.followingTarget);
+        this.camera.lookAt(this.target);
     }
 
     private onPan(data: any) {
@@ -64,7 +62,7 @@ export default class Camera extends ChildComponent {
         const deltaY = data.y;
 
         const offset = this.camera.position.clone();
-        offset.sub(this.followingTarget);
+        offset.sub(this.target);
 
         let targetDistance = offset.length();
         targetDistance *= Math.tan(this.camera.fov / 2 * Math.PI / 180);
@@ -77,15 +75,15 @@ export default class Camera extends ChildComponent {
 
         yVec.crossVectors(this.camera.up, yVec);
         yVec.multiplyScalar(2 * deltaY * targetDistance / DomHandler.getDisplayDimensions().height);
-        this.followingTarget.add(yVec);
+        this.target.add(yVec);
 
         xVec.multiplyScalar(-(2 * deltaX * targetDistance / DomHandler.getDisplayDimensions().height));
-        this.followingTarget.add(xVec);
+        this.target.add(xVec);
 
-        this.camera.position.setFromSpherical(this.followingSpherical);
-        this.camera.position.add(this.followingTarget);
+        this.camera.position.setFromSpherical(this.spherical);
+        this.camera.position.add(this.target);
 
-        this.camera.lookAt(this.followingTarget);
+        this.camera.lookAt(this.target);
     }
 
     private onResize() {
