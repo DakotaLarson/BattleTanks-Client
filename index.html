@@ -209,7 +209,7 @@
     <div class="killfeed-container gui-element no-select"></div>
 
     <div class="chat-preview-container gui-element no-select"></div>
-    <div class="chat-container gui-element no-select">
+    <div class="chat-container gui-element text-select">
         <div class="chat-message-container"></div>
         <input type="text" class="chat-input" maxlength="255">
     </div>
@@ -260,11 +260,11 @@
 <script>
     const config = {
         map: {
-            three: './node_modules/three/build/three.js'
+            three: "./node_modules/three/build/three.js"
         },
         packages: {
             build: {
-                defaultExtension: 'js'
+                defaultExtension: "js"
             }
         } 
     }
@@ -281,7 +281,7 @@
     }
 
     SystemJS.config(config);
-    SystemJS.import('./build/Game.js');
+    SystemJS.import("./build/Game.js");
 </script>
 </body>
 </html>
