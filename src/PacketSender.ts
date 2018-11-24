@@ -12,7 +12,7 @@ enum Packet {
 enum DataType {
     NUMBER,
     STRING,
-    FLOAT_ARRAY,
+    NUMBER_ARRAY,
     HEADER_ONLY,
 }
 
@@ -49,7 +49,7 @@ const constructData = (header: Packet, body: any, dataType: DataType) => {
             arr.set(encodedBody, 2);
 
             break;
-        case DataType.FLOAT_ARRAY:
+        case DataType.NUMBER_ARRAY:
 
             buffer = new ArrayBuffer(body.length * 4 + 4);
 
@@ -97,7 +97,7 @@ export default class PacketSender {
 
     public static sendPlayerMove(pos: Vector3, movementVelocity: number, rotationVelocity: number, bodyRot: number, headRot: number) {
         const dataArr = [pos.x, pos.y, pos.z, movementVelocity, rotationVelocity, bodyRot, headRot];
-        const data = constructData(Packet.PLAYER_MOVE, dataArr, DataType.FLOAT_ARRAY);
+        const data = constructData(Packet.PLAYER_MOVE, dataArr, DataType.NUMBER_ARRAY);
         send(data);
     }
 

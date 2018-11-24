@@ -195,8 +195,8 @@ handlers.push(receiveChatMessage);
 enum DataType {
     NUMBER,
     STRING,
-    FLOAT_ARRAY,
-    FLOAT_ARRAY_INT_HEADER,
+    NUMBER_ARRAY,
+    NUMBER_ARRAY_HEADER,
     HEADER_ONLY,
 }
 
@@ -212,12 +212,12 @@ export default class PacketReceiver {
             case DataType.STRING:
                 body = decoder.decode(new Uint8Array(message.slice(2)));
                 break;
-            case DataType.FLOAT_ARRAY:
+            case DataType.NUMBER_ARRAY:
                 body = new Float32Array(message.slice(4));
                 break;
-            case DataType.FLOAT_ARRAY_INT_HEADER:
+            case DataType.NUMBER_ARRAY_HEADER:
                 body = {
-                    header: new Uint8Array(message.slice(2, 3))[0],
+                    header: new Uint16Array(message.slice(2, 4))[0],
                     body: new Float32Array(message.slice(4)),
                 };
                 break;
