@@ -8,10 +8,16 @@ import PacketSender from "../PacketSender";
 export default class Chat extends ChildComponent {
 
     private static readonly MAX_MESSAGE_COUNT = 100;
+    private static readonly MAX_VISIBLE_COUNT = 10;
+    private static readonly MAX_PREVIEW_COUNT = 5;
+
     private container: HTMLElement;
     private messageContainer: HTMLElement;
     private inputElt: HTMLInputElement;
     private previewContainer: HTMLElement;
+
+    private messages: HTMLElement[];
+    private messageOffset: number;
 
     constructor(parent: HTMLElement) {
         super();
@@ -20,23 +26,30 @@ export default class Chat extends ChildComponent {
         this.messageContainer = DomHandler.getElement(".chat-message-container", this.container);
         this.inputElt = DomHandler.getElement(".chat-input", this.container) as HTMLInputElement;
         this.previewContainer = DomHandler.getElement(".chat-preview-container", parent);
+
+        this.messages = [];
+        this.messageOffset = 0;
+
         Globals.setGlobal(Globals.Global.CHAT_OPEN, false);
+
     }
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
-        EventHandler.addListener(this, EventHandler.Event.CHAT_UPDATE, this.onUpdate);
+        EventHandler.addListener(this, EventHandler.Event.CHAT_UPDATE, this.onChatUpdate);
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.hideChat);
         this.previewContainer.style.display = "block";
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
-        EventHandler.removeListener(this, EventHandler.Event.CHAT_UPDATE, this.onUpdate);
+        EventHandler.removeListener(this, EventHandler.Event.CHAT_UPDATE, this.onChatUpdate);
         EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.hideChat);
         this.clearMessages();
 
         this.hideChat();
+
+        this.messages = [];
         this.previewContainer.style.display = "";
     }
 
@@ -51,15 +64,20 @@ export default class Chat extends ChildComponent {
         }
     }
 
-    private onUpdate(data: any) {
+    private onChatUpdate(data: any) {
         const newMessageElt = this.constructChatMessage(data);
-        this.messageContainer.appendChild(newMessageElt);
-        this.removeOldMessages(this.messageContainer);
+
+        this.messages.push(newMessageElt);
+        const messageCount = this.messages.length;
+        const extraCount = messageCount - Chat.MAX_MESSAGE_COUNT;
+        if (extraCount > 0) {
+            this.messages.splice(0, extraCount);
+        }
+
         if (!Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
             const previewMessageElt = newMessageElt.cloneNode(true) as HTMLElement;
             this.previewContainer.appendChild(previewMessageElt);
-            this.removeOldMessages(this.previewContainer);
-            this.previewContainer.scrollTop = this.previewContainer.scrollHeight;
+            this.removeOldPreviewMessages();
             setTimeout(() => {
                 if (this.previewContainer.contains(previewMessageElt)) {
                     previewMessageElt.style.opacity = "0";
@@ -82,8 +100,9 @@ export default class Chat extends ChildComponent {
 
     private showChat() {
         this.hidePreview();
+        this.setMessages();
+        EventHandler.addListener(this, EventHandler.Event.DOM_WHEEL, this.onWheel);
         this.container.style.display = "flex";
-        this.messageContainer.scrollTop = this.messageContainer.scrollHeight;
         this.inputElt.focus();
         Globals.setGlobal(Globals.Global.CHAT_OPEN, true);
         EventHandler.callEvent(EventHandler.Event.CHAT_OPEN);
@@ -91,6 +110,8 @@ export default class Chat extends ChildComponent {
 
     private hideChat() {
         this.inputElt.value = "";
+        this.messageOffset = 0;
+        EventHandler.removeListener(this, EventHandler.Event.DOM_WHEEL, this.onWheel);
         this.container.style.display = "";
         this.previewContainer.style.display = "block";
         Globals.setGlobal(Globals.Global.CHAT_OPEN, false);
@@ -136,9 +157,32 @@ export default class Chat extends ChildComponent {
         return "#" + cssValue;
     }
 
-    private removeOldMessages(container: HTMLElement) {
-        while (container.childElementCount > Chat.MAX_MESSAGE_COUNT) {
-            container.removeChild(container.firstChild as Node);
+    private removeOldPreviewMessages() {
+        while (this.previewContainer.childElementCount > Chat.MAX_PREVIEW_COUNT) {
+            this.previewContainer.removeChild(this.previewContainer.firstChild as Node);
         }
+    }
+
+    private setMessages() {
+        this.clearMessages();
+        const messageCount = this.messages.length;
+        if (messageCount) {
+            // for (let i = messageCount - this.messageOffset - 1; i  > Math.min(Chat.MAX_VISIBLE_COUNT, messageCount); i --) {
+            //     this.messageContainer.insertBefore(this.messages[i], this.messageContainer.firstChild);
+            // }
+            for (let i = 0; i < Math.min(Chat.MAX_VISIBLE_COUNT, messageCount); i ++) {
+                this.messageContainer.insertBefore(this.messages[messageCount - i - 1 - this.messageOffset], this.messageContainer.firstChild);
+            }
+        }
+
+    }
+
+    private onWheel(event: MouseWheelEvent) {
+        if (event.deltaY > 0) {
+            this.messageOffset = Math.max(this.messageOffset - 1, 0);
+        } else if (event.deltaY < 0) {
+            this.messageOffset = Math.min(this.messageOffset + 1, Math.max(this.messages.length - Chat.MAX_VISIBLE_COUNT, 0));
+        }
+        this.setMessages();
     }
 }

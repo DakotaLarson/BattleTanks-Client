@@ -32,7 +32,6 @@ export default class CameraControls extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
         EventHandler.addListener(this, EventHandler.Event.DOM_WHEEL, this.onWheel);
-        EventHandler.callEvent(EventHandler.Event.CAMERA_CONTROLS_UPDATE, this.spherical);
     }
 
     public disable() {
@@ -104,7 +103,7 @@ export default class CameraControls extends Component {
          this.spherical.theta += deltaX * Math.PI / 180 / 3;
          this.spherical.phi += deltaY * Math.PI / 180 / 5;
          this.spherical.phi = Math.min(Math.PI / 2 - Math.PI / 24, this.spherical.phi);
-         EventHandler.callEvent(EventHandler.Event.CAMERA_CONTROLS_UPDATE, this.spherical);
+         EventHandler.callEvent(EventHandler.Event.CAMERA_CONTROLS_UPDATE);
     }
 
     private onPan = (deltaX: number, deltaY: number) => {
@@ -125,6 +124,6 @@ export default class CameraControls extends Component {
         } else {
             this.spherical.radius = Math.max(Math.min(this.spherical.radius + deltaY / 10, 50), 3);
         }
-        EventHandler.callEvent(EventHandler.Event.CAMERA_CONTROLS_UPDATE, this.spherical);
+        EventHandler.callEvent(EventHandler.Event.CAMERA_CONTROLS_UPDATE);
     }
 }

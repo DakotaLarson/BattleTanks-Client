@@ -89,7 +89,6 @@
 .gui .chat-preview-container {
     z-index: 1;
     width: 25vw;
-    max-height: 25vh;
     bottom: 2.5vmin;
     left: 2.5vmin;
     color: #ffffff;
@@ -101,17 +100,10 @@
     flex-direction: column;
 }
 .gui .chat-preview-container {
-    overflow: hidden;
     bottom: calc(2.5vmin + 2.5vh);
-    max-height: 22.5vh;
-}
-
-.gui .chat-container .chat-message-container {
-    overflow: hidden;
 }
 
 .gui .chat-message {
-    line-height: 2.5vh;
     transition: opacity 0.5s ease;
 }
 
@@ -124,7 +116,7 @@
     outline: none;
     color: #ffffff;
     height: 2.5vh;
-    font-size: 2vmin;
+    font-size: 2vh;
     box-sizing: border-box;
     font-family: 'Inconsolata', sans-serif;
 }
