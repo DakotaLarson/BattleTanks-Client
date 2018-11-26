@@ -158,6 +158,9 @@ enum Event {
     CHAT_UPDATE,
     CHAT_OPEN,
     CHAT_CLOSE,
+
+    // AUTH
+    SIGN_OUT_REQUEST,
 }
 
 enum Level {

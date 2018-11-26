@@ -112,3 +112,6 @@
 .main-menu .social-ref {
     display: inline-block;
 }
+.main-menu .play-btn {
+    margin-bottom: 35vh;
+}

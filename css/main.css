@@ -43,6 +43,10 @@ html, body{
     background-color: green;
     border-color: green;
 }
+.menu-selection-xl{
+    font-size: 10vmin;
+    padding: 2vmin 3vmin;
+}
 .menu-selection.disabled{
     color: #707070 !important;
     background: none !important;
@@ -57,4 +61,10 @@ html, body{
 }
 .menu-text-input:focus{
     border-color: green;
+}
+
+.auth {
+    position: absolute;
+    left: 1vmin;
+    top: 1vmin;
 }

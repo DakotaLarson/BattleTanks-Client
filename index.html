@@ -8,6 +8,7 @@
     <meta name="keywords" content="BattleTanks, Battle, Tanks"/>
     <meta name="author" content="Dakota Larson"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-signin-client_id" content="42166570332-0egs4928q7kfsnhh4nib3o8hjn62f9u5.apps.googleusercontent.com">
 
     <link rel="icon" href="./tank-icon.png"/>
     <link href="https://fonts.googleapis.com/css?family=Nova+Mono" rel="stylesheet"/>
@@ -28,19 +29,22 @@
 </head>
 <body>
 <div class="menu main-menu no-select">
+    <div class="auth" id=google-sign-in></div>
     <div class="options-dropdown">
         <div class="options-dropdown-header">
                 <span id="options-dropdown-username"></span>
                 <span class="arrow-down"></span>
         </div>
         <div class="options-dropdown-list">
-            <span class="menu-selection" id="options-dropdown-option--options">Options</span>
+            <span class="menu-selection" id="options-dropdown-option--options">Options</span><br/>
+            <span class="menu-selection" id="options-dropdown-option--sign-out">Sign Out</span>
+
         </div>
     </div>
     <h1 class="main-menu-title">Battle Tanks</h1><br/>
     <!-- TOP MENU -->
     <div class="menu-section" id="main-menu-top">
-        <span class="menu-selection" id="top-opt-mp">Play</span><br/>
+        <span class="menu-selection menu-selection-xl play-btn" id="top-opt-mp">Play</span><br/>
         <span class="menu-selection" id="top-opt-sp">Create Arena</span><br/>
     </div>
     <!-- SINGLEPLAYER MENU -->
@@ -183,9 +187,7 @@
 </div>
 
 <!-- ALERT MESSAGE -->
-<div class="alert-message-parent">
-    <div class="alert-message no-select"></div>
-</div>
+<div class="alert-message no-select"></div>
 
 <!-- GUI -->
 <div class="gui no-select">
@@ -283,5 +285,15 @@
     SystemJS.config(config);
     SystemJS.import("./build/Game.js");
 </script>
+<script>
+    function onAuthInit() {
+        if(window.initAuth) {
+            window.initializeAuth();
+        } else {
+            window.isAuthInitialized = true;
+        }
+    }
+</script>
+<script async defer src="https://apis.google.com/js/platform.js" onload="onAuthInit()"></script>
 </body>
 </html>

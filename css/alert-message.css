@@ -1,17 +1,13 @@
-.alert-message-parent{
-    position: fixed;
-    top: 15%;
-    width: 100%;
-    text-align: center;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-} 
- 
 .alert-message{
     background-color: rgba(0, 0, 0, 0.75);
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
     border-radius: 5vmin;
     font-size: 5vmin;
     padding: 1vmin 2vmin;
     color: white;
     display: inline-block;
+    opacity: 0;
+    transition: opacity 0.5s ease;
 }

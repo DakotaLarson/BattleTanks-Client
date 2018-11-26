@@ -12,6 +12,7 @@ export default class OptionsDropdown extends ChildComponent {
     private usernameElt: HTMLElement;
 
     private optBtn: HTMLElement;
+    private signOutBtn: HTMLElement;
 
     private hidden: boolean;
 
@@ -23,6 +24,7 @@ export default class OptionsDropdown extends ChildComponent {
         this.usernameElt = DomHandler.getElement("#options-dropdown-username", this.element);
 
         this.optBtn = DomHandler.getElement("#options-dropdown-option--options", this.element);
+        this.signOutBtn = DomHandler.getElement("#options-dropdown-option--sign-out", this.element);
 
         const username = Options.options.username;
         this.usernameElt.textContent = username;
@@ -57,6 +59,9 @@ export default class OptionsDropdown extends ChildComponent {
             }
         } else if (event.target === this.optBtn) {
             EventHandler.callEvent(EventHandler.Event.TOPMENU_OPT_OPT_CLICK);
+            this.hide();
+        } else if (event.target === this.signOutBtn) {
+            EventHandler.callEvent(EventHandler.Event.SIGN_OUT_REQUEST);
             this.hide();
         }
     }

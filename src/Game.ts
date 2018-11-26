@@ -3,6 +3,7 @@ import EventHandler from "./EventHandler";
 
 import AlertMessageHandler from "./alert_message/AlertMessageHandler";
 import ArenaHandler from "./arena/ArenaHandler";
+import Auth from "./Auth";
 import ComponentDebugger from "./component/ComponentDebugger";
 import ConnectionScreen from "./connection_screen/ConnectionScreen";
 import GameStatusHandler from "./GameStatusHandler";
@@ -19,9 +20,11 @@ class Game extends Component {
     private gameStatusHandler: GameStatusHandler;
     private alertMessageHandler: AlertMessageHandler;
     private options: Options;
+    private auth: Auth;
 
     constructor() {
         super();
+        this.auth = new Auth();
         this.options = new Options();
         this.mainMenu = new MainMenu();
         this.connectionScreen = new ConnectionScreen();
@@ -42,6 +45,7 @@ class Game extends Component {
         EventHandler.addListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.disconnectFromMultiplayer);
         EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.disconnectFromMultiplayer);
 
+        this.attachComponent(this.auth);
         this.attachComponent(this.options);
         this.attachChild(this.mainMenu);
         this.attachChild(this.alertMessageHandler);
