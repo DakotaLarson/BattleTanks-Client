@@ -64,7 +64,11 @@ class Game extends Component {
         this.attachChild(this.mainMenu);
     }
 
-    private connectToMultiplayer(address: string) {
+    private connectToMultiplayer() {
+        let address = "wss://battle-tanks-server.herokuapp.com";
+        if (location.host.startsWith("localhost")) {
+            address = "ws://localhost:8000";
+        }
         this.detachChild(this.mainMenu);
         this.attachChild(this.connectionScreen);
         this.mpConnection = new MultiplayerConnection(address);

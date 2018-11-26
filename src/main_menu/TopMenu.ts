@@ -39,13 +39,7 @@ export default class TopMenu extends Component {
 
     private onMPOption(event: MouseEvent) {
         if (event.target === this.mpBtn) {
-
-            let address = "wss://battle-tanks-server.herokuapp.com";
-            if (location.host.startsWith("localhost")) {
-                address = "ws://localhost:8000";
-            }
-            EventHandler.callEvent(EventHandler.Event.MPMENU_JOIN_OPT_CLICK, address);
-            // EventHandler.callEvent(EventHandler.Event.TOPMENU_MP_OPT_CLICK);
+            EventHandler.callEvent(EventHandler.Event.MPMENU_JOIN_OPT_CLICK);
         }
     }
 }
