@@ -22,6 +22,8 @@ class Game extends Component {
     private options: Options;
     private auth: Auth;
 
+    private tokenId: string | undefined;
+
     constructor() {
         super();
         this.auth = new Auth();
@@ -44,6 +46,9 @@ class Game extends Component {
 
         EventHandler.addListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.disconnectFromMultiplayer);
         EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.disconnectFromMultiplayer);
+
+        EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
+        EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
 
         this.attachComponent(this.auth);
         this.attachComponent(this.options);
@@ -71,7 +76,7 @@ class Game extends Component {
         }
         this.detachChild(this.mainMenu);
         this.attachChild(this.connectionScreen);
-        this.mpConnection = new MultiplayerConnection(address);
+        this.mpConnection = new MultiplayerConnection(address, this.tokenId);
         this.attachChild(this.mpConnection);
         this.attachChild(this.gameStatusHandler);
     }
@@ -82,6 +87,14 @@ class Game extends Component {
         this.detachChild(this.gameStatusHandler);
         this.mpConnection = undefined;
         this.attachChild(this.mainMenu);
+    }
+
+    private onSignIn(tokenId: string) {
+        this.tokenId = tokenId;
+    }
+
+    private onSignOut() {
+        this.tokenId = undefined;
     }
 }
 

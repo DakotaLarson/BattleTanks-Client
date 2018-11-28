@@ -9,7 +9,7 @@ export default class Auth extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.AUTH_REQUEST, this.onAuthRequest);
+        EventHandler.addListener(this, EventHandler.Event.MENU_AUTH_REQUEST, this.onAuthRequest);
     }
 
     private onAuthRequest(signIn: boolean) {
@@ -20,6 +20,7 @@ export default class Auth extends Component {
             // @ts-ignore
             gapi.auth2.getAuthInstance().signOut();
             EventHandler.callEvent(EventHandler.Event.SIGN_OUT);
+            console.log("Signed out");
         }
     }
 
@@ -43,34 +44,12 @@ export default class Auth extends Component {
     }
 
     private onSuccess(googleUser: any) {
-        console.log(googleUser.getBasicProfile());
-        console.log(googleUser.getAuthResponse());
-        console.log("Logged in as: " + googleUser.getBasicProfile().getName());
-        this.verify(googleUser.getAuthResponse().id_token);
-        EventHandler.callEvent(EventHandler.Event.SIGN_IN);
+        console.log("Signed in as: " + googleUser.getBasicProfile().getName());
+        const token = googleUser.getAuthResponse().id_token;
+        EventHandler.callEvent(EventHandler.Event.SIGN_IN, token);
     }
 
     private onFailure(error: any) {
         console.log(error);
-    }
-
-    private verify(token: string) {
-        let address = "https://battle-tanks-server.herokuapp.com";
-        if (location.host.startsWith("localhost")) {
-            address = "http://localhost:8000";
-        }
-
-        fetch(address + "/token", {
-            method: "POST",
-            mode: "no-cors",
-            headers: {
-                "content-type": "application/x-www-form-urlencoded",
-            },
-            body: "token=" + token,
-        }).then((response) => {
-            console.log(response);
-        }).catch((error) => {
-            console.log(error);
-        });
     }
 }

@@ -9,12 +9,14 @@ const protocol = "tanks-MP";
 
 export default class MultiplayerConnection extends Component {
 
-    public ws: WebSocket | undefined;
-    public address: string;
+    private ws: WebSocket | undefined;
+    private address: string;
+    private tokenId: string | undefined;
 
-    constructor(address: string) {
+    constructor(address: string, tokenId: string | undefined) {
         super();
         this.address = address;
+        this.tokenId = tokenId;
     }
 
     public enable() {
@@ -38,23 +40,22 @@ export default class MultiplayerConnection extends Component {
 
     }
 
-    public onOpen() {
+    private onOpen() {
         PacketSender.setSocket(this.ws);
         this.initHandshake();
     }
 
-    public onMessage(event: MessageEvent) {
+    private onMessage(event: MessageEvent) {
         PacketReceiver.handleMessage(event.data);
     }
 
-    public initHandshake() {
+    private initHandshake() {
         EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_OPEN);
         const name = Options.options.username;
-        PacketSender.sendPlayerJoin(name);
+        PacketSender.sendPlayerJoin(name, this.tokenId);
     }
 
-    public onClose(event: any) {
+    private onClose(event: any) {
         EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, event);
     }
-
 }

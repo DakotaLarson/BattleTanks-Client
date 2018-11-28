@@ -76,7 +76,7 @@ export default class OptionsDropdown extends ChildComponent {
             EventHandler.callEvent(EventHandler.Event.TOPMENU_OPT_OPT_CLICK);
             this.hide();
         } else if (event.target === this.authBtn) {
-            EventHandler.callEvent(EventHandler.Event.AUTH_REQUEST, !this.signedIn);
+            EventHandler.callEvent(EventHandler.Event.MENU_AUTH_REQUEST, !this.signedIn);
             this.hide();
         }
     }

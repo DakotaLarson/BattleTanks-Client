@@ -90,8 +90,20 @@ const send = (data: ArrayBuffer) => {
 };
 export default class PacketSender {
 
-    public static sendPlayerJoin(name: string) {
-        const data = constructData(Packet.PLAYER_JOIN, name, DataType.STRING);
+    public static sendPlayerJoin(name: string, tokenId?: string) {
+        let rawData;
+        if (tokenId) {
+            rawData = JSON.stringify({
+                name,
+                tokenId,
+            });
+        } else {
+            rawData = JSON.stringify({
+                name,
+            });
+        }
+
+        const data = constructData(Packet.PLAYER_JOIN, rawData, DataType.STRING);
         send(data);
     }
 
