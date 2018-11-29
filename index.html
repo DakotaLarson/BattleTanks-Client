@@ -15,6 +15,7 @@
     <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet"/>
     
     <link rel="stylesheet" type="text/css" href="./css/fonts/fonts.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/loading.css"/>
     <link rel="stylesheet" type="text/css" href="./css/main.css"/>
     <link rel="stylesheet" type="text/css" href="./css/game-menu.css"/>
     <link rel="stylesheet" type="text/css" href="./css/gui.css"/>
@@ -28,6 +29,34 @@
 
 </head>
 <body>
+<div class="loading-screen">
+    <div class="loading">
+        <div class="finger finger-1">
+            <div class="finger-item">
+            <span></span><i></i>
+            </div>
+        </div>
+            <div class="finger finger-2">
+            <div class="finger-item">
+            <span></span><i></i>
+            </div>
+        </div>
+            <div class="finger finger-3">
+            <div class="finger-item">
+            <span></span><i></i>
+            </div>
+        </div>
+            <div class="finger finger-4">
+            <div class="finger-item">
+            <span></span><i></i>
+            </div>
+        </div>
+            <div class="last-finger">
+            <div class="last-finger-item"><i></i></div>
+        </div>
+    </div>
+    <div class="loading-text">Loading...</div>     
+</div>
 <div class="menu main-menu no-select">
     <div class="auth" id=google-sign-in></div>
     <div class="options-dropdown">
@@ -237,8 +266,7 @@
         <svg viewBox="0 0 100 100">
             <circle class="ammo-circle" cx="50" cy="50" r="45" stroke="green" stroke-width="10" stroke-dasharray="282.6" fill="none"/>
         </svg>
-    </div>
-    
+    </div> 
 </div>
 
 <!-- GAME MENU -->
@@ -257,7 +285,7 @@
     </div>
 </div>
 
-<canvas id="game-canvas"></canvas>
+<canvas id="game-canvas" width="0" height="0"></canvas>
 
 <script src="./polyfill/encoding.js"></script>
 <script src="./polyfill/encoding-indexes.js"></script>

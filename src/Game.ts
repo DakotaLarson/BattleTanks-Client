@@ -6,6 +6,7 @@ import ArenaHandler from "./arena/ArenaHandler";
 import Auth from "./Auth";
 import ComponentDebugger from "./component/ComponentDebugger";
 import ConnectionScreen from "./connection_screen/ConnectionScreen";
+import DomHandler from "./DomHandler";
 import GameStatusHandler from "./GameStatusHandler";
 import MainMenu from "./main_menu/MainMenu";
 import MultiplayerConnection from "./MultiplayerConnection";
@@ -55,6 +56,7 @@ class Game extends Component {
         this.attachChild(this.mainMenu);
         this.attachChild(this.alertMessageHandler);
         this.attachComponent(this.arenaHandler);
+        this.hideLoadingScreen();
     }
 
     public update(delta: number) {
@@ -95,6 +97,10 @@ class Game extends Component {
 
     private onSignOut() {
         this.tokenId = undefined;
+    }
+
+    private hideLoadingScreen() {
+        DomHandler.getElement(".loading-screen").style.display = "none";
     }
 }
 
