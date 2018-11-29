@@ -156,11 +156,15 @@ export default class Chat extends ChildComponent {
     }
 
     private getCSSColorString(value: number) {
-        let cssValue = value.toString(16);
-        while (cssValue.length < 6) {
-            cssValue = "0" + cssValue;
+        if (value) {
+            let cssValue = value.toString(16);
+            while (cssValue.length < 6) {
+                cssValue = "0" + cssValue;
+            }
+            return "#" + cssValue;
+        } else {
+            return "#ffffff";
         }
-        return "#" + cssValue;
     }
 
     private removeOldPreviewMessages() {
