@@ -1,7 +1,6 @@
 /*Debug Panel*/
 .debug-panel{
     width: 150px;
-    background-color: rgba(0, 0, 0, 0.5);
     font-family: 'Inconsolata', sans-serif;
 }
 .debug-panel .debug-data{

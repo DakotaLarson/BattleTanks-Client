@@ -11,6 +11,22 @@
     position: absolute;
 }
 
+.gui .fullscreen-toggle {
+    right: 1vmin;
+    top: 1vmin;
+}
+
+.gui .fullscreen-toggle:hover {
+    cursor: pointer;
+}
+
+.gui .fullscreen-toggle #fullscreen-toggle-off,
+.gui .fullscreen-toggle #fullscreen-toggle-on {
+    display: none;
+    width: 4.5vmin;
+    height: 4.5vmin;
+}
+
 .gui .cooldown-bar-container,
 .gui .health-bar-container{
     text-align: center;
@@ -31,8 +47,6 @@
     background-color: rgba(0, 0, 0, 0.25);
     border: solid 1px #ffffff;
 }
-
-
 
 .gui .cooldown-bar,
 .gui .health-bar{
@@ -70,7 +84,7 @@
     width: 25vw;
     max-height: 25vh;
     right: 2.5vmin;
-    top: 2.5vmin;
+    top: 5.5vmin;
     color:  #ffffff;
     font-size: 2vmin;
     text-align: right;

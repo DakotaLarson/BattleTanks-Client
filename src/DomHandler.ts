@@ -11,7 +11,7 @@ export default class DomHandler {
         if (gameCanvas) {
             gameCanvas.requestPointerLock();
         } else {
-            document.body.requestPointerLock();
+            (document.documentElement as HTMLElement).requestPointerLock();
         }
     }
 
@@ -22,6 +22,14 @@ export default class DomHandler {
 
     public static hasPointerLock() {
         return document.pointerLockElement !== null;
+    }
+
+    public static requestFullscreen() {
+        (document.documentElement as HTMLElement).requestFullscreen();
+    }
+
+    public static exitFullscreen() {
+        document.exitFullscreen();
     }
 
     public static getElement(query: string, parent?: HTMLElement): HTMLElement {
@@ -108,6 +116,27 @@ document.addEventListener("pointerlockchange", () => {
     }
 });
 
+const onFullscreenChange = () => {
+    // @ts-ignore necessary as of 11/18
+    if (document.fullscreen || document.mozFullScreen || document.webkitIsFullScreen || document.msFullscreenElement) {
+        EventHandler.callEvent(EventHandler.Event.DOM_FULLSCREEN_ENABLED);
+    } else {
+        EventHandler.callEvent(EventHandler.Event.DOM_FULLSCREEN_DISABLED);
+    }
+};
+
+document.addEventListener("fullscreenchange", onFullscreenChange);
+document.addEventListener("webkitfullscreenchange", onFullscreenChange);
+document.addEventListener("mozfullscreenchange", onFullscreenChange);
+document.addEventListener("msfullscreenchange", onFullscreenChange);
+
+// @ts-ignore Necessary as of 11/18
+document.exitFullscreen = document.exitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen || document.msExitFullscreen;
+
+const docElt = document.documentElement as HTMLElement;
+// @ts-ignore Necessary as of 11/18
+docElt.requestFullscreen = docElt.requestFullscreen || docElt.mozRequestFullScreen || docElt.webkitRequestFullscreen || docElt.msRequestFullscreen;
+
 EventHandler.addListener(undefined, EventHandler.Event.DOM_RESIZE, () => {
     displayDimensions.width = window.innerWidth;
     displayDimensions.height = window.innerHeight;
@@ -116,7 +145,7 @@ EventHandler.addListener(undefined, EventHandler.Event.DOM_RESIZE, () => {
 EventHandler.addListener(undefined, EventHandler.Event.DOM_MOUSEMOVE, (event) => {
     mousePosition.x = event.clientX;
     mousePosition.y = event.clientY;
-});
+}, EventHandler.Level.LOW);
 
 const stopDefaultActions = () => {
     document.oncontextmenu = () => false;
