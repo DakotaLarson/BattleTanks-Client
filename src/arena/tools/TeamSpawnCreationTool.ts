@@ -19,7 +19,6 @@ export default class TeamSpawnCreationTool extends Component {
     }
 
     private onClick(event: MouseEvent) {
-        console.log("reached");
         if (event.button === 0) {
             EventHandler.callEvent(EventHandler.Event.TEAMSPAWN_CREATION_TOOL_PRIMARY, this.team);
         } else if (event.button === 2) {

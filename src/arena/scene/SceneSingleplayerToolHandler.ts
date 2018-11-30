@@ -24,12 +24,6 @@ export default class SceneSingleplayerToolHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.onBCTPrimary);
         EventHandler.addListener(this, EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.onBCTSecondary);
 
-        EventHandler.addListener(this, EventHandler.Event.INITIALSPAWN_CREATION_TOOL_PRIMARY, this.onInitialSpawnPrimary);
-        EventHandler.addListener(this, EventHandler.Event.INITIALSPAWN_CREATION_TOOL_SECONDARY, this.onInitialSpawnSecondary);
-
-        EventHandler.addListener(this, EventHandler.Event.GAMESPAWN_CREATION_TOOL_PRIMARY, this.onGameSpawnPrimary);
-        EventHandler.addListener(this, EventHandler.Event.GAMESPAWN_CREATION_TOOL_SECONDARY, this.onGameSpawnSecondary);
-
         EventHandler.addListener(this, EventHandler.Event.TEAMSPAWN_CREATION_TOOL_PRIMARY, this.onTeamSpawnPrimary);
         EventHandler.addListener(this, EventHandler.Event.TEAMSPAWN_CREATION_TOOL_SECONDARY, this.onTeamSpawnSecondary);
 
@@ -39,12 +33,6 @@ export default class SceneSingleplayerToolHandler extends Component {
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.onBCTPrimary);
         EventHandler.removeListener(this, EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.onBCTSecondary);
-
-        EventHandler.removeListener(this, EventHandler.Event.INITIALSPAWN_CREATION_TOOL_PRIMARY, this.onInitialSpawnPrimary);
-        EventHandler.removeListener(this, EventHandler.Event.INITIALSPAWN_CREATION_TOOL_SECONDARY, this.onInitialSpawnSecondary);
-
-        EventHandler.removeListener(this, EventHandler.Event.GAMESPAWN_CREATION_TOOL_PRIMARY, this.onGameSpawnPrimary);
-        EventHandler.removeListener(this, EventHandler.Event.GAMESPAWN_CREATION_TOOL_SECONDARY, this.onGameSpawnSecondary);
 
         EventHandler.removeListener(this, EventHandler.Event.TEAMSPAWN_CREATION_TOOL_PRIMARY, this.onTeamSpawnPrimary);
         EventHandler.removeListener(this, EventHandler.Event.TEAMSPAWN_CREATION_TOOL_SECONDARY, this.onTeamSpawnSecondary);
@@ -82,70 +70,6 @@ export default class SceneSingleplayerToolHandler extends Component {
             const removed = this.removeBlockPosition(position);
             if (removed) {
                 this.parent.updateBlocks(this.parent.blockPositions);
-            }
-        }
-    }
-
-    private onInitialSpawnPrimary() {
-        if (this.floorIntersection.length) {
-            const origPosition = this.floorIntersection[0].point.setY(0);
-            const position = origPosition.clone().floor();
-            position.floor();
-            if (this.isPositionBlock(position)) {
-                this.sendAlert("Cannot create initial spawn (Block at position).");
-            } else if (this.isPositionInitialSpawn(position)) {
-                this.sendAlert("That is already an initial spawn.");
-            } else {
-                const rotation = this.getSpawnRotationAngle(origPosition);
-                this.parent.initialSpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
-                this.sendAlert("Initial spawn created.");
-                this.parent.updateSpawnVisuals();
-            }
-        }
-    }
-
-    private onInitialSpawnSecondary() {
-        if (this.floorIntersection.length) {
-            const position = this.floorIntersection[0].point.setY(0);
-            position.floor();
-            const removed = this.removeInitialSpawnPosition(position);
-            if (removed) {
-                this.sendAlert("Initial spawn removed.");
-                this.parent.updateSpawnVisuals();
-            } else {
-                this.sendAlert("That is not an initial spawn.");
-            }
-        }
-    }
-
-    private onGameSpawnPrimary() {
-        if (this.floorIntersection.length) {
-            const origPostion = this.floorIntersection[0].point.setY(0);
-            const position = origPostion.clone().floor();
-            if (this.isPositionBlock(position)) {
-                this.sendAlert("Cannot create game spawn (Block at position).");
-
-            } else if (this.isPositionGameSpawn(position)) {
-                this.sendAlert("That is already a game spawn.");
-            } else {
-                const rotation = this.getSpawnRotationAngle(origPostion);
-                this.parent.gameSpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
-                this.sendAlert("Game spawn created.");
-                this.parent.updateSpawnVisuals();
-            }
-        }
-    }
-
-    private onGameSpawnSecondary() {
-        if (this.floorIntersection.length) {
-            const position = this.floorIntersection[0].point.setY(0);
-            position.floor();
-            const removed = this.removeGameSpawnPosition(position);
-            if (removed) {
-                this.sendAlert("Game spawn removed.");
-                this.parent.updateSpawnVisuals();
-            } else {
-                this.sendAlert("That is not a game spawn.");
             }
         }
     }
@@ -192,14 +116,6 @@ export default class SceneSingleplayerToolHandler extends Component {
         return this.isPositionInArray(pos, this.parent.blockPositions);
     }
 
-    private isPositionGameSpawn(pos: Vector3) {
-        return this.isPositionInArray(pos, this.parent.gameSpawnPositions);
-    }
-
-    private isPositionInitialSpawn(pos: Vector3) {
-        return this.isPositionInArray(pos, this.parent.initialSpawnPositions);
-    }
-
     private isPositionTeamSpawn(pos: Vector3, team: number) {
         if (team === 0) {
             return this.isPositionInArray(pos, this.parent.teamASpawnPositions);
@@ -212,14 +128,6 @@ export default class SceneSingleplayerToolHandler extends Component {
 
     private removeBlockPosition(pos: Vector3) {
         return this.removePositionFromArray(pos, this.parent.blockPositions);
-    }
-
-    private removeInitialSpawnPosition(pos: Vector3) {
-        return this.removePositionFromArray(pos, this.parent.initialSpawnPositions);
-    }
-
-    private removeGameSpawnPosition(pos: Vector3) {
-        return this.removePositionFromArray(pos, this.parent.gameSpawnPositions);
     }
 
     private removeTeamSpawnPosition(pos: Vector3, team: number) {

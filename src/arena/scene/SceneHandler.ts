@@ -9,8 +9,6 @@ import SceneSingleplayerToolHandler from "./SceneSingleplayerToolHandler";
 export default class SceneHandler extends Component {
 
     public blockPositions: Vector3[];
-    public initialSpawnPositions: Vector4[];
-    public gameSpawnPositions: Vector4[];
     public teamASpawnPositions: Vector4[];
     public teamBSpawnPositions: Vector4[];
 
@@ -26,8 +24,6 @@ export default class SceneHandler extends Component {
     private lines: LineSegments | undefined;
     private lights: Object3D[] | undefined;
 
-    private gameSpawnVisuals: Mesh | undefined;
-    private initialSpawnVisuals: Mesh | undefined;
     private teamASpawnVisuals: Mesh | undefined;
     private teamBSpawnVisuals: Mesh | undefined;
 
@@ -43,8 +39,6 @@ export default class SceneHandler extends Component {
         this.width = 0;
         this.height = 0;
 
-        this.initialSpawnPositions = [];
-        this.gameSpawnPositions = [];
         this.teamASpawnPositions = [];
         this.teamBSpawnPositions = [];
 
@@ -151,28 +145,17 @@ export default class SceneHandler extends Component {
     }
 
     public updateSpawnVisuals() {
-        if (this.gameSpawnVisuals) {
-            this.scene.remove(this.gameSpawnVisuals);
-        }
-        if (this.initialSpawnVisuals) {
-            this.scene.remove(this.initialSpawnVisuals);
-        }
         if (this.teamASpawnVisuals) {
             this.scene.remove(this.teamASpawnVisuals);
         }
         if (this.teamBSpawnVisuals) {
             this.scene.remove(this.teamBSpawnVisuals);
         }
+        const teamASpawnMesh = this.createRotatedPositionsVisualMesh(this.teamASpawnPositions, 0x009247);
+        const teamBSpawnMesh = this.createRotatedPositionsVisualMesh(this.teamBSpawnPositions, 0xcf2b36);
 
-        const gameSpawnMesh = this.createRotatedPositionsVisualMesh(this.gameSpawnPositions, 0xffff00);
-        const initialSpawnMesh = this.createRotatedPositionsVisualMesh(this.initialSpawnPositions, 0xff0000);
-        const teamASpawnMesh = this.createRotatedPositionsVisualMesh(this.teamASpawnPositions, 0x742389);
-        const teamBSpawnMesh = this.createRotatedPositionsVisualMesh(this.teamBSpawnPositions, 0x432879);
+        this.scene.add(teamASpawnMesh, teamBSpawnMesh);
 
-        this.scene.add(gameSpawnMesh, initialSpawnMesh, teamASpawnMesh, teamBSpawnMesh);
-
-        this.initialSpawnVisuals = initialSpawnMesh;
-        this.gameSpawnVisuals = gameSpawnMesh;
         this.teamASpawnVisuals = teamASpawnMesh;
         this.teamBSpawnVisuals = teamBSpawnMesh;
     }
@@ -215,8 +198,6 @@ export default class SceneHandler extends Component {
 
         CollisionHandler.updateBlockPositions(positions);
 
-        this.gameSpawnPositions = this.parseRotatedPositionData(data.gameSpawnPositions) || [];
-        this.initialSpawnPositions = this.parseRotatedPositionData(data.initialSpawnPositions) || [];
         this.teamASpawnPositions = this.parseRotatedPositionData(data.teamASpawnPositions) || [];
         this.teamBSpawnPositions = this.parseRotatedPositionData(data.teamBSpawnPositions) || [];
 
@@ -233,8 +214,6 @@ export default class SceneHandler extends Component {
 
     private onSaveGameRequest() {
         const blockData = this.generatePositionData(this.blockPositions);
-        const gameSpawnData = this.generatePositionData(this.gameSpawnPositions);
-        const initialSpawnData = this.generatePositionData(this.initialSpawnPositions);
         const teamASpawnData = this.generatePositionData(this.teamASpawnPositions);
         const teamBSpawnData = this.generatePositionData(this.teamBSpawnPositions);
 
@@ -243,8 +222,6 @@ export default class SceneHandler extends Component {
             width: this.width - 2,
             height: this.height - 2,
             blockPositions: blockData,
-            gameSpawnPositions: gameSpawnData,
-            initialSpawnPositions: initialSpawnData,
             teamASpawnPositions: teamASpawnData,
             teamBSpawnPositions: teamBSpawnData,
         };
@@ -323,14 +300,6 @@ export default class SceneHandler extends Component {
         }
         if (this.blockPositions) {
             this.blockPositions = [];
-        }
-        if (this.initialSpawnVisuals) {
-            this.scene.remove(this.initialSpawnVisuals);
-            this.initialSpawnVisuals = undefined;
-        }
-        if (this.gameSpawnVisuals) {
-            this.scene.remove(this.gameSpawnVisuals);
-            this.gameSpawnVisuals = undefined;
         }
         if (this.teamASpawnVisuals) {
             this.scene.remove(this.teamASpawnVisuals);
