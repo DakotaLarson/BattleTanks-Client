@@ -1,7 +1,7 @@
 .loading-screen {
     width: 100%;
     height: 100%;
-    background: #640b0d;
+    background: #202020;
 }
 .loading-screen * {
     box-sizing: border-box;
@@ -98,7 +98,7 @@
     margin: 0 0 2px 0;
     width: 100%;
     height: 2px;
-    background: #640b0d;
+    background: #202020;
 }
 .loading .finger-item i {
     position: absolute;
@@ -108,7 +108,7 @@
     height: 14px;
     border-radius: 10px 10px 7px 7px;
     background-clip: padding-box;
-    background: #640b0d;
+    background: #202020;
 }
 .loading .last-finger {
     position: relative;
@@ -146,7 +146,7 @@
     height: 20px;
     border-radius: 0 0 15px 15px;
     background-clip: padding-box;
-    background: #640b0d;
+    background: #202020;
 }
 @keyframes finger-1-animation {
     0% {

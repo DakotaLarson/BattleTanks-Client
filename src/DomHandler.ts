@@ -2,6 +2,10 @@ import EventHandler from "./EventHandler";
 
 const gameCanvas = document.querySelector("#game-canvas") as HTMLElement;
 
+const guiBlockers: Set<HTMLElement> = new Set();
+
+let guiInterference: boolean = false;
+
 export default class DomHandler {
     public static getDisplayDimensions() {
         return displayDimensions;
@@ -53,6 +57,18 @@ export default class DomHandler {
     public static getMouseCoordinates() {
         return mousePosition;
     }
+
+    public static addGUIMouseBlocker(element: HTMLElement) {
+        guiBlockers.add(element);
+    }
+
+    public static removeGUIMouseBlocker(element: HTMLElement) {
+        guiBlockers.delete(element);
+    }
+
+    public static setInterference(interference: boolean) {
+        guiInterference = interference;
+    }
 }
 
 let nextPointerLockExitInvoked = false;
@@ -67,29 +83,31 @@ const mousePosition = {
     y: 0,
 };
 
-const eventTitles = new Map([
+const events = new Map([
     ["resize", EventHandler.Event.DOM_RESIZE],
     ["mousemove", EventHandler.Event.DOM_MOUSEMOVE],
-    ["click", EventHandler.Event.DOM_CLICK],
     ["keydown", EventHandler.Event.DOM_KEYDOWN],
     ["keyup", EventHandler.Event.DOM_KEYUP],
-    ["mousedown", EventHandler.Event.DOM_MOUSEDOWN],
-    ["mouseup", EventHandler.Event.DOM_MOUSEUP],
     ["pointerlockerror", EventHandler.Event.DOM_POINTERLOCKERROR],
     ["blur", EventHandler.Event.DOM_BLUR],
     ["focus", EventHandler.Event.DOM_FOCUS],
     ["wheel", EventHandler.Event.DOM_WHEEL],
-    ["contextmenu", EventHandler.Event.DOM_CONTEXTMENU],
 ]);
 
 const windowEventTitles = ["resize", "blur", "focus", "click"];
+const guiBlockedEvents = new Map([
+    ["mouseup", [EventHandler.Event.DOM_GUI_MOUSEUP, EventHandler.Event.DOM_MOUSEUP]],
+    ["mousedown", [EventHandler.Event.DOM_GUI_MOUSEDOWN, EventHandler.Event.DOM_MOUSEDOWN]],
+    ["click", [EventHandler.Event.DOM_GUI_CLICK, EventHandler.Event.DOM_CLICK]],
+    ["contextmenu", [EventHandler.Event.DOM_GUI_CLICK, EventHandler.Event.DOM_CLICK]],
+ ]);
 
-const iterator = eventTitles.entries();
-let next = iterator.next();
+const eventsIterator = events.entries();
+let eventsNext = eventsIterator.next();
 
-while (!next.done) {
-    const eventTitle = next.value[0];
-    const eventHandlerEvent = next.value[1];
+while (!eventsNext.done) {
+    const eventTitle = eventsNext.value[0];
+    const eventHandlerEvent = eventsNext.value[1];
 
     if (windowEventTitles.indexOf(eventTitle) > -1) {
         window.addEventListener(eventTitle, (event) => {
@@ -100,7 +118,31 @@ while (!next.done) {
             EventHandler.callEvent(eventHandlerEvent, event);
         });
     }
-    next = iterator.next();
+    eventsNext = eventsIterator.next();
+}
+
+const guiBlockedEventsIterator = guiBlockedEvents.entries();
+let guiBlockedEventsNext = guiBlockedEventsIterator.next();
+
+while (!guiBlockedEventsNext.done) {
+    const eventTitle = guiBlockedEventsNext.value[0];
+    const eventList = guiBlockedEventsNext.value[1];
+
+    const handler = (event: any) => {
+        DomHandler.setInterference(false);
+        EventHandler.callEvent(eventList[0], event); // Call GUI Event
+        if (!guiInterference) {
+            EventHandler.callEvent(eventList[1], event); // Call regular event
+        }
+        DomHandler.setInterference(false);
+    };
+
+    if (windowEventTitles.indexOf(eventTitle) > -1) {
+        window.addEventListener(eventTitle, handler);
+    } else {
+        document.addEventListener(eventTitle, handler);
+    }
+    guiBlockedEventsNext = guiBlockedEventsIterator.next();
 }
 
 document.addEventListener("pointerlockchange", () => {

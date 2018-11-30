@@ -29,7 +29,8 @@ export default class ArenaCreateModeToggle extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_GUI_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_GUI_MOUSEDOWN, this.onMousedown);
 
         EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.onToggleBlock);
         EventHandler.addListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.onToggleCamera);
@@ -46,7 +47,8 @@ export default class ArenaCreateModeToggle extends Component {
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_GUI_CLICK, this.onClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_GUI_MOUSEDOWN, this.onMousedown);
 
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK, this.onToggleBlock);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA, this.onToggleCamera);
@@ -61,30 +63,39 @@ export default class ArenaCreateModeToggle extends Component {
     }
 
     private onClick(event: MouseEvent) {
-        if (event.target === this.cameraToggleElt) {
-            if (this.mode !== Mode.CAMERA) {
-                EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA);
+        if (this.parentElt.contains(event.target as Node)) {
+            DomHandler.setInterference(true);
+            if (event.target === this.cameraToggleElt) {
+                if (this.mode !== Mode.CAMERA) {
+                    EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_CAMERA);
+                }
+            } else if (event.target === this.blockToggleElt) {
+                if (this.mode !== Mode.BLOCK) {
+                    EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK);
+                }
+            } else if (event.target === this.gamespawnToggleElt) {
+                if (this.mode !== Mode.GAME_SPAWN) {
+                    EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN);
+                }
+            } else if (event.target === this.initialspawnToggleElt) {
+                if (this.mode !== Mode.INITIAL_SPAWN) {
+                    EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN);
+                }
+            } else if (event.target === this.teamASpawnToggleElt) {
+                if (this.mode !== Mode.TEAM_A_SPAWN) {
+                    EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_TEAM_A);
+                }
+            } else if (event.target === this.teamBSpawnToggleElt) {
+                if (this.mode !== Mode.TEAM_B_SPAWN) {
+                    EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_TEAM_B);
+                }
             }
-        } else if (event.target === this.blockToggleElt) {
-            if (this.mode !== Mode.BLOCK) {
-                EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_BLOCK);
-            }
-        } else if (event.target === this.gamespawnToggleElt) {
-            if (this.mode !== Mode.GAME_SPAWN) {
-                EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_GAMESPAWN);
-            }
-        } else if (event.target === this.initialspawnToggleElt) {
-            if (this.mode !== Mode.INITIAL_SPAWN) {
-                EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_INITIALSPAWN);
-            }
-        } else if (event.target === this.teamASpawnToggleElt) {
-            if (this.mode !== Mode.TEAM_A_SPAWN) {
-                EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_TEAM_A);
-            }
-        } else if (event.target === this.teamBSpawnToggleElt) {
-            if (this.mode !== Mode.TEAM_B_SPAWN) {
-                EventHandler.callEvent(EventHandler.Event.ARENA_CREATE_MODE_TOGGLE_TEAM_B);
-            }
+        }
+    }
+
+    private onMousedown(event: MouseEvent) {
+        if (this.parentElt.contains(event.target as Node)) {
+            DomHandler.setInterference(true);
         }
     }
 
