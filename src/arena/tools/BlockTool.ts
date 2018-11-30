@@ -1,7 +1,7 @@
 import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 
-export default class BlockCreationTool extends Component {
+export default class BlockTool extends Component {
 
     private eventToCall: any;
 
@@ -31,9 +31,9 @@ export default class BlockCreationTool extends Component {
     private onMouseDown(event: MouseEvent) {
         if (!this.eventToCall) {
             if (event.button === 0) {
-                this.eventToCall = EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY;
+                this.eventToCall = EventHandler.Event.BLOCK_TOOL_PRIMARY;
             } else if (event.button === 2) {
-                this.eventToCall = EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY;
+                this.eventToCall = EventHandler.Event.BLOCK_TOOL_SECONDARY;
             }
             EventHandler.callEvent(this.eventToCall);
         }
@@ -41,7 +41,7 @@ export default class BlockCreationTool extends Component {
 
     private onMouseUp(event: MouseEvent) {
         if (this.eventToCall) {
-            if (this.eventToCall === EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY && event.button === 0 || this.eventToCall === EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY && event.button === 2) {
+            if (this.eventToCall === EventHandler.Event.BLOCK_TOOL_PRIMARY && event.button === 0 || this.eventToCall === EventHandler.Event.BLOCK_TOOL_SECONDARY && event.button === 2) {
                 this.eventToCall = undefined;
             }
         }

@@ -9,8 +9,14 @@ import SceneSingleplayerToolHandler from "./SceneSingleplayerToolHandler";
 export default class SceneHandler extends Component {
 
     public blockPositions: Vector3[];
+
     public teamASpawnPositions: Vector4[];
     public teamBSpawnPositions: Vector4[];
+
+    public shieldPowerupPositions: Vector3[];
+    public healthPowerupPositions: Vector3[];
+    public speedPowerupPositions: Vector3[];
+    public ammoPowerupPositions: Vector3[];
 
     public floor: Mesh | undefined;
     public blocks: Mesh | undefined;
@@ -27,6 +33,11 @@ export default class SceneHandler extends Component {
     private teamASpawnVisuals: Mesh | undefined;
     private teamBSpawnVisuals: Mesh | undefined;
 
+    private shieldPowerupVisuals: Mesh | undefined;
+    private healthPowerupVisuals: Mesh | undefined;
+    private speedPowerupVisuals: Mesh | undefined;
+    private ammoPowerupVisuals: Mesh | undefined;
+
     private scenePlayerHandler: ScenePlayerHandler;
     private sceneSingleplayerToolHandler: SceneSingleplayerToolHandler;
 
@@ -34,13 +45,18 @@ export default class SceneHandler extends Component {
 
     constructor(audioListener: AudioListener) {
         super();
-        this.blockPositions = [];
-
         this.width = 0;
         this.height = 0;
 
+        this.blockPositions = [];
+
         this.teamASpawnPositions = [];
         this.teamBSpawnPositions = [];
+
+        this.shieldPowerupPositions = [];
+        this.healthPowerupPositions = [];
+        this.speedPowerupPositions = [];
+        this.ammoPowerupPositions = [];
 
         this.scene = new Scene();
         this.scene.background = new Color(0x1e1e20);

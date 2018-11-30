@@ -21,21 +21,27 @@ export default class SceneSingleplayerToolHandler extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.onBCTPrimary);
-        EventHandler.addListener(this, EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.onBCTSecondary);
+        EventHandler.addListener(this, EventHandler.Event.BLOCK_TOOL_PRIMARY, this.onBCTPrimary);
+        EventHandler.addListener(this, EventHandler.Event.BLOCK_TOOL_SECONDARY, this.onBCTSecondary);
 
-        EventHandler.addListener(this, EventHandler.Event.TEAMSPAWN_CREATION_TOOL_PRIMARY, this.onTeamSpawnPrimary);
-        EventHandler.addListener(this, EventHandler.Event.TEAMSPAWN_CREATION_TOOL_SECONDARY, this.onTeamSpawnSecondary);
+        EventHandler.addListener(this, EventHandler.Event.TEAMSPAWN_TOOL_PRIMARY, this.onTeamSpawnPrimary);
+        EventHandler.addListener(this, EventHandler.Event.TEAMSPAWN_TOOL_SECONDARY, this.onTeamSpawnSecondary);
+
+        EventHandler.addListener(this, EventHandler.Event.POWERUP_TOOL_PRIMARY, this.onPowerupPrimary);
+        EventHandler.addListener(this, EventHandler.Event.POWERUP_TOOL_SECONDARY, this.onPowerupSecondary);
 
         EventHandler.addListener(this, EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.BLOCK_CREATION_TOOL_PRIMARY, this.onBCTPrimary);
-        EventHandler.removeListener(this, EventHandler.Event.BLOCK_CREATION_TOOL_SECONDARY, this.onBCTSecondary);
+        EventHandler.removeListener(this, EventHandler.Event.BLOCK_TOOL_PRIMARY, this.onBCTPrimary);
+        EventHandler.removeListener(this, EventHandler.Event.BLOCK_TOOL_SECONDARY, this.onBCTSecondary);
 
-        EventHandler.removeListener(this, EventHandler.Event.TEAMSPAWN_CREATION_TOOL_PRIMARY, this.onTeamSpawnPrimary);
-        EventHandler.removeListener(this, EventHandler.Event.TEAMSPAWN_CREATION_TOOL_SECONDARY, this.onTeamSpawnSecondary);
+        EventHandler.removeListener(this, EventHandler.Event.TEAMSPAWN_TOOL_PRIMARY, this.onTeamSpawnPrimary);
+        EventHandler.removeListener(this, EventHandler.Event.TEAMSPAWN_TOOL_SECONDARY, this.onTeamSpawnSecondary);
+
+        EventHandler.removeListener(this, EventHandler.Event.POWERUP_TOOL_PRIMARY, this.onPowerupPrimary);
+        EventHandler.removeListener(this, EventHandler.Event.POWERUP_TOOL_SECONDARY, this.onPowerupSecondary);
 
         EventHandler.removeListener(this, EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
     }
@@ -75,41 +81,57 @@ export default class SceneSingleplayerToolHandler extends Component {
     }
 
     private onTeamSpawnPrimary(team: number) {
-        if (this.floorIntersection.length) {
-            const origPostion = this.floorIntersection[0].point.setY(0);
-            const position = origPostion.clone().floor();
-            if (this.isPositionBlock(position)) {
-                this.sendAlert("Cannot create team spawn (Block at position).");
+        if (this.blocksIntersection.length) {
+            this.sendAlert("Cannot create team spawn (Block at position).");
+        } else {
+            if (this.floorIntersection.length) {
+                const origPostion = this.floorIntersection[0].point.setY(0);
+                const position = origPostion.clone().floor();
+                if (this.isPositionBlock(position)) {
+                    this.sendAlert("Cannot create team spawn (Block at position).");
 
-            } else if (this.isPositionTeamSpawn(position, team)) {
-                this.sendAlert("That is already a team spawn.");
-            } else {
-                const rotation = this.getSpawnRotationAngle(origPostion);
+                } else if (this.isPositionTeamSpawn(position, team)) {
+                    this.sendAlert("That is already a team spawn.");
+                } else {
+                    const rotation = this.getSpawnRotationAngle(origPostion);
 
-                if (team === 0) {
-                    this.parent.teamASpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
-                } else if (team === 1) {
-                    this.parent.teamBSpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
+                    if (team === 0) {
+                        this.parent.teamASpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
+                    } else if (team === 1) {
+                        this.parent.teamBSpawnPositions.push(new Vector4(position.x, position.y, position.z, rotation));
+                    }
+
+                    this.sendAlert("Team spawn created.");
+                    this.parent.updateSpawnVisuals();
                 }
-
-                this.sendAlert("Team spawn created.");
-                this.parent.updateSpawnVisuals();
             }
         }
     }
 
     private onTeamSpawnSecondary(team: number) {
-        if (this.floorIntersection.length) {
-            const position = this.floorIntersection[0].point.setY(0);
-            position.floor();
-            const removed = this.removeTeamSpawnPosition(position, team);
-            if (removed) {
-                this.sendAlert("Team spawn removed.");
-                this.parent.updateSpawnVisuals();
-            } else {
-                this.sendAlert("That is not a team spawn.");
+        if (this.blocksIntersection.length) {
+            this.sendAlert("Cannot remove team spawn (Block at position).");
+        } else {
+            if (this.floorIntersection.length) {
+                const position = this.floorIntersection[0].point.setY(0);
+                position.floor();
+                const removed = this.removeTeamSpawnPosition(position, team);
+                if (removed) {
+                    this.sendAlert("Team spawn removed.");
+                    this.parent.updateSpawnVisuals();
+                } else {
+                    this.sendAlert("That is not a team spawn.");
+                }
             }
         }
+    }
+
+    private onPowerupPrimary(powerup: number) {
+        console.log(powerup);
+    }
+
+    private onPowerupSecondary(powerup: number) {
+        console.log(powerup);
     }
 
     private isPositionBlock(pos: Vector3) {
