@@ -132,7 +132,7 @@ export default class CreationToolPanel extends Component {
                     EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_CAMERA);
                 }
                 break;
-            case "KeyB":
+            case "KeyK":
                 if (this.mode !== Mode.BLOCK) {
                     EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_BLOCK);
                 }

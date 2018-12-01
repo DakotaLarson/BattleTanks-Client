@@ -1,4 +1,4 @@
-import {AudioListener, BoxGeometry, BufferGeometry, CircleGeometry, Color, DirectionalLight, Float32BufferAttribute, Geometry, HemisphereLight, LineDashedMaterial, LineSegments, Mesh, MeshLambertMaterial, Object3D, PlaneGeometry, Scene, Texture, TextureLoader, Vector3, Vector4} from "three";
+import {AudioListener, BoxGeometry, BufferGeometry, CircleGeometry, Color, DirectionalLight, Float32BufferAttribute, Geometry, HemisphereLight, LineDashedMaterial, LineSegments, Mesh, MeshBasicMaterial, MeshLambertMaterial, Object3D, PlaneGeometry, Scene, Texture, TextureLoader, Vector3, Vector4} from "three";
 
 import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
@@ -41,7 +41,11 @@ export default class SceneHandler extends Component {
     private scenePlayerHandler: ScenePlayerHandler;
     private sceneSingleplayerToolHandler: SceneSingleplayerToolHandler;
 
-    private spawnVisualTexture: Texture | undefined;
+    private spawnTexture: Texture | undefined;
+    private shieldTexture: Texture | undefined;
+    private healthTexture: Texture | undefined;
+    private speedTexture: Texture | undefined;
+    private ammoTexture: Texture | undefined;
 
     constructor(audioListener: AudioListener) {
         super();
@@ -64,9 +68,22 @@ export default class SceneHandler extends Component {
         this.sceneSingleplayerToolHandler = new SceneSingleplayerToolHandler(this);
         this.scenePlayerHandler = new ScenePlayerHandler(this.scene, audioListener);
 
-        this.spawnVisualTexture = undefined;
-        new TextureLoader().load(location.pathname + "res/arrow.png", (texture) => {
-            this.spawnVisualTexture = texture;
+        this.spawnTexture = undefined;
+        const textureLoader = new TextureLoader();
+        textureLoader.load(location.pathname + "res/world/arrow.png", (texture) => {
+            this.spawnTexture = texture;
+        });
+        textureLoader.load(location.pathname + "res/world/shield.png", (texture) => {
+            this.shieldTexture = texture;
+        });
+        textureLoader.load(location.pathname + "res/world/health.png", (texture) => {
+            this.healthTexture = texture;
+        });
+        textureLoader.load(location.pathname + "res/world/speed.png", (texture) => {
+            this.speedTexture = texture;
+        });
+        textureLoader.load(location.pathname + "res/world/ammo.png", (texture) => {
+            this.ammoTexture = texture;
         });
     }
 
@@ -167,13 +184,34 @@ export default class SceneHandler extends Component {
         if (this.teamBSpawnVisuals) {
             this.scene.remove(this.teamBSpawnVisuals);
         }
+        if (this.shieldPowerupVisuals) {
+            this.scene.remove(this.shieldPowerupVisuals);
+        }
+        if (this.healthPowerupVisuals) {
+            this.scene.remove(this.healthPowerupVisuals);
+        }
+        if (this.speedPowerupVisuals) {
+            this.scene.remove(this.speedPowerupVisuals);
+        }
+        if (this.ammoPowerupVisuals) {
+            this.scene.remove(this.ammoPowerupVisuals);
+        }
         const teamASpawnMesh = this.createRotatedPositionsVisualMesh(this.teamASpawnPositions, 0x009247);
         const teamBSpawnMesh = this.createRotatedPositionsVisualMesh(this.teamBSpawnPositions, 0xcf2b36);
 
-        this.scene.add(teamASpawnMesh, teamBSpawnMesh);
+        const shieldPowerupMesh = this.createPositionsVisualMesh(this.shieldPowerupPositions, 0x20ffff, this.shieldTexture);
+        const healthPowerupMesh = this.createPositionsVisualMesh(this.healthPowerupPositions, 0xa02020, this.healthTexture);
+        const speedPowerupMesh = this.createPositionsVisualMesh(this.speedPowerupPositions, 0xa0ffff, this.speedTexture);
+        const ammoPowerupMesh = this.createPositionsVisualMesh(this.ammoPowerupPositions, 0xe0ffff, this.ammoTexture);
+
+        this.scene.add(teamASpawnMesh, teamBSpawnMesh, shieldPowerupMesh, healthPowerupMesh, speedPowerupMesh, ammoPowerupMesh);
 
         this.teamASpawnVisuals = teamASpawnMesh;
         this.teamBSpawnVisuals = teamBSpawnMesh;
+        this.shieldPowerupVisuals = shieldPowerupMesh;
+        this.healthPowerupVisuals = healthPowerupMesh;
+        this.speedPowerupVisuals = speedPowerupMesh;
+        this.ammoPowerupVisuals = ammoPowerupMesh;
     }
 
     private createRotatedPositionsVisualMesh(positions: Vector4[], color: number) {
@@ -192,8 +230,29 @@ export default class SceneHandler extends Component {
         }
 
         const material = new MeshLambertMaterial({
-            map: this.spawnVisualTexture,
+            map: this.spawnTexture,
             color,
+        });
+
+        return new Mesh(masterGeo, material);
+    }
+
+    private createPositionsVisualMesh(positions: Vector3[], color: number, texture: Texture | undefined) {
+        const masterGeo = new Geometry();
+
+        for (const pos of positions) {
+            const geo = new CircleGeometry(0.5, 16);
+
+            geo.rotateX(-Math.PI / 2);
+
+            for (const vert of geo.vertices) {
+                vert.add(new Vector3(pos.x + 0.5, pos.y + 0.01, pos.z + 0.5));
+            }
+            masterGeo.merge(geo);
+        }
+
+        const material = new MeshLambertMaterial({
+            map: texture,
         });
 
         return new Mesh(masterGeo, material);
@@ -210,14 +269,18 @@ export default class SceneHandler extends Component {
         this.lines = this.createLines();
         this.lights = this.createLights();
 
-        const positions = this.parsePositionData(data.blockPositions);
+        const blockPositions = this.parsePositionData(data.blockPositions);
 
-        CollisionHandler.updateBlockPositions(positions);
+        CollisionHandler.updateBlockPositions(blockPositions);
 
         this.teamASpawnPositions = this.parseRotatedPositionData(data.teamASpawnPositions) || [];
         this.teamBSpawnPositions = this.parseRotatedPositionData(data.teamBSpawnPositions) || [];
+        this.shieldPowerupPositions = this.parsePositionData(data.shieldPowerupPositions) || [];
+        this.healthPowerupPositions = this.parsePositionData(data.healthPowerupPositions) || [];
+        this.speedPowerupPositions = this.parsePositionData(data.speedPowerupPositions) || [];
+        this.ammoPowerupPositions = this.parsePositionData(data.ammoPowerupPositions) || [];
 
-        this.updateBlocks(positions);
+        this.updateBlocks(blockPositions);
 
         this.scene.add(this.lines as LineSegments);
         this.scene.add(this.floor);
@@ -230,16 +293,24 @@ export default class SceneHandler extends Component {
 
     private onSaveGameRequest() {
         const blockData = this.generatePositionData(this.blockPositions);
-        const teamASpawnData = this.generatePositionData(this.teamASpawnPositions);
-        const teamBSpawnData = this.generatePositionData(this.teamBSpawnPositions);
+        const teamASpawnPositions = this.generatePositionData(this.teamASpawnPositions);
+        const teamBSpawnPositions = this.generatePositionData(this.teamBSpawnPositions);
+        const shieldPowerupPositions = this.generatePositionData(this.shieldPowerupPositions);
+        const healthPowerupPositions = this.generatePositionData(this.healthPowerupPositions);
+        const speedPowerupPositions = this.generatePositionData(this.speedPowerupPositions);
+        const ammoPowerupPositions = this.generatePositionData(this.ammoPowerupPositions);
 
         const saveObject = {
             title: this.title,
             width: this.width - 2,
             height: this.height - 2,
             blockPositions: blockData,
-            teamASpawnPositions: teamASpawnData,
-            teamBSpawnPositions: teamBSpawnData,
+            teamASpawnPositions,
+            teamBSpawnPositions,
+            shieldPowerupPositions,
+            healthPowerupPositions,
+            speedPowerupPositions,
+            ammoPowerupPositions,
         };
         const blob = new Blob([JSON.stringify(saveObject)], {type : "application/json"});
         const objectURL = URL.createObjectURL(blob);
@@ -324,6 +395,22 @@ export default class SceneHandler extends Component {
         if (this.teamBSpawnVisuals) {
             this.scene.remove(this.teamBSpawnVisuals);
             this.teamBSpawnVisuals = undefined;
+        }
+        if (this.shieldPowerupVisuals) {
+            this.scene.remove(this.shieldPowerupVisuals);
+            this.shieldPowerupVisuals = undefined;
+        }
+        if (this.healthPowerupVisuals) {
+            this.scene.remove(this.healthPowerupVisuals);
+            this.healthPowerupVisuals = undefined;
+        }
+        if (this.speedPowerupVisuals) {
+            this.scene.remove(this.speedPowerupVisuals);
+            this.speedPowerupVisuals = undefined;
+        }
+        if (this.ammoPowerupVisuals) {
+            this.scene.remove(this.ammoPowerupVisuals);
+            this.ammoPowerupVisuals = undefined;
         }
         this.scenePlayerHandler.clearPlayers();
     }

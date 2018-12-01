@@ -90,7 +90,7 @@ export default class SceneSingleplayerToolHandler extends Component {
                 if (this.isPositionBlock(position)) {
                     this.sendAlert("Cannot create team spawn (Block at position).");
 
-                } else if (this.isPositionTeamSpawn(position, team)) {
+                } else if (this.isPositionTeamSpawn(position)) {
                     this.sendAlert("That is already a team spawn.");
                 } else {
                     const rotation = this.getSpawnRotationAngle(origPostion);
@@ -127,25 +127,68 @@ export default class SceneSingleplayerToolHandler extends Component {
     }
 
     private onPowerupPrimary(powerup: number) {
-        console.log(powerup);
+        if (this.blocksIntersection.length) {
+            this.sendAlert("Cannot create powerup (Block at position).");
+        } else {
+            if (this.floorIntersection.length) {
+                const origPostion = this.floorIntersection[0].point.setY(0);
+                const position = origPostion.clone().floor();
+                if (this.isPositionBlock(position)) {
+                    this.sendAlert("Cannot create powerup (Block at position).");
+
+                } else if (this.isPositionPowerup(position)) {
+                    this.sendAlert("That is already a powerup.");
+                } else {
+                    if (powerup === 0) {
+                        this.parent.shieldPowerupPositions.push(position);
+                    } else if (powerup === 1) {
+                        this.parent.healthPowerupPositions.push(position);
+                    } else if (powerup === 2) {
+                        this.parent.speedPowerupPositions.push(position);
+                    } else if (powerup === 3) {
+                        this.parent.ammoPowerupPositions.push(position);
+                    } else {
+                        throw new Error("Unknown powerup: " + powerup);
+                    }
+                    this.sendAlert("Powerup created.");
+                    this.parent.updateSpawnVisuals();
+                }
+            }
+        }
     }
 
     private onPowerupSecondary(powerup: number) {
-        console.log(powerup);
+        if (this.blocksIntersection.length) {
+            this.sendAlert("Cannot remove powerup (Block at position).");
+        } else {
+            if (this.floorIntersection.length) {
+                const position = this.floorIntersection[0].point.setY(0);
+                position.floor();
+                const removed = this.removePowerupPosition(position, powerup);
+                if (removed) {
+                    this.sendAlert("Powerup removed.");
+                    this.parent.updateSpawnVisuals();
+                } else {
+                    this.sendAlert("That is not a powerup.");
+                }
+            }
+        }
     }
 
     private isPositionBlock(pos: Vector3) {
         return this.isPositionInArray(pos, this.parent.blockPositions);
     }
 
-    private isPositionTeamSpawn(pos: Vector3, team: number) {
-        if (team === 0) {
-            return this.isPositionInArray(pos, this.parent.teamASpawnPositions);
-        } else if (team === 1) {
-            return this.isPositionInArray(pos, this.parent.teamBSpawnPositions);
-        } else {
-            throw new Error("Team not identifiable");
-        }
+    private isPositionTeamSpawn(pos: Vector3) {
+            return this.isPositionInArray(pos, this.parent.teamASpawnPositions) ||
+            this.isPositionInArray(pos, this.parent.teamBSpawnPositions);
+    }
+
+    private isPositionPowerup(pos: Vector3) {
+        return this.isPositionInArray(pos, this.parent.shieldPowerupPositions) ||
+        this.isPositionInArray(pos, this.parent.healthPowerupPositions) ||
+        this.isPositionInArray(pos, this.parent.speedPowerupPositions) ||
+        this.isPositionInArray(pos, this.parent.ammoPowerupPositions);
     }
 
     private removeBlockPosition(pos: Vector3) {
@@ -159,6 +202,20 @@ export default class SceneSingleplayerToolHandler extends Component {
             return this.removePositionFromArray(pos, this.parent.teamBSpawnPositions);
         } else {
             throw new Error("Team not identifiable");
+        }
+    }
+
+    private removePowerupPosition(pos: Vector3, powerup: number) {
+        if (powerup === 0) {
+            return this.removePositionFromArray(pos, this.parent.shieldPowerupPositions);
+        } else if (powerup === 1) {
+            return this.removePositionFromArray(pos, this.parent.healthPowerupPositions);
+        } else if (powerup === 2) {
+            return this.removePositionFromArray(pos, this.parent.speedPowerupPositions);
+        } else if (powerup === 3) {
+            return this.removePositionFromArray(pos, this.parent.ammoPowerupPositions);
+        } else {
+            throw new Error("Powerup not identifiable");
         }
     }
 
