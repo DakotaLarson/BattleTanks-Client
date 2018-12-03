@@ -14,6 +14,7 @@ import MultiplayerArena from "./arena/MultiplayerArena";
 import SingleplayerArena from "./arena/SinglePlayerArena";
 import MultiplayerCamera from "./camera/multiplayer/MultiplayerCamera";
 import SingleplayerCamera from "./camera/singleplayer/SingleplayerCamera";
+import PowerupCollisionHandler from "./PowerupCollisionHandler";
 import ProjectileHandler from "./ProjectileHandler";
 import SceneHandler from "./scene/SceneHandler";
 import CreationToolHandler from "./tools/CreationToolHandler";
@@ -40,6 +41,8 @@ export default class ArenaHandler extends Component {
     private audioHandler: AudioHandler;
 
     private projectileHandler: ProjectileHandler;
+
+    private powerupCollisionHandler: PowerupCollisionHandler;
 
     private isSingleplayer: boolean;
 
@@ -78,6 +81,8 @@ export default class ArenaHandler extends Component {
         this.audioHandler = new AudioHandler(audioListener);
 
         this.projectileHandler = new ProjectileHandler(this.sceneHandler.getScene());
+
+        this.powerupCollisionHandler = new PowerupCollisionHandler();
 
         this.isSingleplayer = false;
         this.arenaAttached = false;
@@ -130,6 +135,7 @@ export default class ArenaHandler extends Component {
         this.attachChild(this.multiplayerGUI);
         this.attachChild(this.multiplayerCamera);
         this.attachChild(this.projectileHandler);
+        this.attachChild(this.powerupCollisionHandler);
 
         this.isSingleplayer = false;
     }
@@ -141,6 +147,7 @@ export default class ArenaHandler extends Component {
         this.detachChild(this.multiplayerGUI);
         this.detachChild(this.multiplayerCamera);
         this.detachChild(this.projectileHandler);
+        this.detachChild(this.powerupCollisionHandler);
     }
 
     private attachArena() {

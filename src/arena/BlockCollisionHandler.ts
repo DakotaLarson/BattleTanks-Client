@@ -2,7 +2,7 @@ import {Vector3 } from "three";
 
 let blockPositions: Vector3[];
 
-export default class CollisionHandler {
+export default class BlockCollisionHandler {
 
     public static getCollision(pos: Vector3, rot: number): Vector3 {
 
@@ -16,23 +16,23 @@ export default class CollisionHandler {
         for (let x = blockPos.x - 1; x <= blockPos.x + 1; x ++) {
             for (let z = blockPos.z - 1; z <= blockPos.z + 1; z ++) {
                 const testPos = new Vector3(x, 0, z);
-                if (CollisionHandler.isPositionBlock(testPos)) {
+                if (BlockCollisionHandler.isPositionBlock(testPos)) {
                     testBlockPositions.push(testPos);
                 }
             }
         }
         if (testBlockPositions.length) {
-            const playerCornerPositions = CollisionHandler.getPlayerCorners(pos, rot, offsetX, offsetZ);
+            const playerCornerPositions = BlockCollisionHandler.getPlayerCorners(pos, rot, offsetX, offsetZ);
 
-            const axes = CollisionHandler.getAxes(rot, 0);
+            const axes = BlockCollisionHandler.getAxes(rot, 0);
 
             const totalCorrection = new Vector3();
 
             for (const blockPosition of testBlockPositions) {
 
-                const blockCornerPositions = CollisionHandler.getBlockCorners(blockPosition);
+                const blockCornerPositions = BlockCollisionHandler.getBlockCorners(blockPosition);
 
-                const overlaps = CollisionHandler.getOverlaps(axes, playerCornerPositions, blockCornerPositions);
+                const overlaps = BlockCollisionHandler.getOverlaps(axes, playerCornerPositions, blockCornerPositions);
 
                 if (overlaps) {
 
@@ -60,7 +60,7 @@ export default class CollisionHandler {
     private static getOverlaps(axes: Vector3[], aCorners: Vector3[], bCorners: Vector3[]) {
         const overlaps = [];
         for (const axis of axes) {
-            const overlap = CollisionHandler.overlaps(axis, aCorners, bCorners);
+            const overlap = BlockCollisionHandler.overlaps(axis, aCorners, bCorners);
             if (overlap) {
                 overlaps.push(overlap);
             } else {
@@ -81,10 +81,10 @@ export default class CollisionHandler {
         const otherCorners = [];
 
         // Order of corners doesn't matter.
-        otherCorners.push(CollisionHandler.getCorner(pos, rot, -offsetX, -offsetZ));
-        otherCorners.push(CollisionHandler.getCorner(pos, rot, offsetX, -offsetZ));
-        otherCorners.push(CollisionHandler.getCorner(pos, rot, offsetX, offsetZ));
-        otherCorners.push(CollisionHandler.getCorner(pos, rot, -offsetX, offsetZ));
+        otherCorners.push(BlockCollisionHandler.getCorner(pos, rot, -offsetX, -offsetZ));
+        otherCorners.push(BlockCollisionHandler.getCorner(pos, rot, offsetX, -offsetZ));
+        otherCorners.push(BlockCollisionHandler.getCorner(pos, rot, offsetX, offsetZ));
+        otherCorners.push(BlockCollisionHandler.getCorner(pos, rot, -offsetX, offsetZ));
 
         return otherCorners;
     }

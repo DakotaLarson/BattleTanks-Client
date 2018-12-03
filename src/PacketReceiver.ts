@@ -1,4 +1,5 @@
 import {Vector3, Vector4} from "three";
+import Powerup from "./arena/powerup/Powerup";
 import EventHandler from "./EventHandler";
 
 const decoder = new TextDecoder();
@@ -157,7 +158,23 @@ const receiveChatMessage = (data: string) => {
     EventHandler.callEvent(EventHandler.Event.CHAT_UPDATE, JSON.parse(data));
 };
 
-const handlers: any[] = new Array();
+const receivePowerupAddition = (rawData: number[]) => {
+    const powerup = new Powerup(rawData[0], new Vector3(rawData[1], rawData[2], rawData[3]));
+    powerup.position.add(new Vector3(0.5, 0, 0.5));
+    EventHandler.callEvent(EventHandler.Event.POWERUP_ADDITION, powerup);
+};
+
+const receivePowerupRemoval = (rawData: number[]) => {
+    const powerup = new Powerup(rawData[0], new Vector3(rawData[1], rawData[2], rawData[3]));
+    powerup.position.add(new Vector3(0.5, 0, 0.5));
+    EventHandler.callEvent(EventHandler.Event.POWERUP_REMOVAL, powerup);
+};
+
+const receivePowerupApplication = (powerupId: number) => {
+    EventHandler.callEvent(EventHandler.Event.POWERUP_APPLICATION, powerupId);
+};
+
+const handlers: any[] = [];
 handlers.push(receiveArena);
 
 handlers.push(receiveGameStatus);
@@ -191,6 +208,10 @@ handlers.push(receiveProjectileRemoval);
 handlers.push(receiveProjectileClear);
 
 handlers.push(receiveChatMessage);
+
+handlers.push(receivePowerupAddition);
+handlers.push(receivePowerupRemoval);
+handlers.push(receivePowerupApplication);
 
 enum DataType {
     NUMBER,

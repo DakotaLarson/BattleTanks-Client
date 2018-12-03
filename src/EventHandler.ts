@@ -166,6 +166,11 @@ enum Event {
     MENU_AUTH_REQUEST,
     SIGN_IN,
     SIGN_OUT,
+
+    // POWERUP
+    POWERUP_ADDITION,
+    POWERUP_REMOVAL,
+    POWERUP_APPLICATION,
 }
 
 enum Level {

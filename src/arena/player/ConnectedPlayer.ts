@@ -1,7 +1,7 @@
 import { Vector3, Vector4 } from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
-import CollisionHandler from "../CollisionHandler";
+import BlockCollisionHandler from "../BlockCollisionHandler";
 
 export default class ConnectedPlayer extends ChildComponent {
 
@@ -58,7 +58,7 @@ export default class ConnectedPlayer extends ChildComponent {
         potentialPosition.x += delta * this.movementVelocity * Math.sin(potentialRotation),
         potentialPosition.z += delta * this.movementVelocity * Math.cos(potentialRotation);
 
-        const collisionCorrection = CollisionHandler.getCollision(potentialPosition.clone(), potentialRotation);
+        const collisionCorrection = BlockCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation);
 
         if (collisionCorrection) {
             potentialPosition.sub(collisionCorrection);

@@ -6,12 +6,14 @@ import Globals from "../../Globals";
 import Options from "../../Options";
 import PacketSender from "../../PacketSender";
 import RaycastHandler from "../../RaycastHandler";
-import CollisionHandler from "../CollisionHandler";
+import BlockCollisionHandler from "../BlockCollisionHandler";
 
 const PLAYER_MOVEMENT_SPEED = 5;
 const PLAYER_ROTATION_SPEED = 2.5;
 
 export default class Player extends Component {
+
+    public static radius = Math.sqrt(Math.pow(0.5, 2) + Math.pow(0.75, 2));
 
     public position: Vector3;
 
@@ -211,7 +213,7 @@ export default class Player extends Component {
         potentialPosition.x += delta * this.movementVelocity * Math.sin(potentialRotation),
         potentialPosition.z += delta * this.movementVelocity * Math.cos(potentialRotation);
 
-        const collisionCorrection = CollisionHandler.getCollision(potentialPosition.clone(), potentialRotation);
+        const collisionCorrection = BlockCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation);
 
         if (this.cameraIsFollowing() && !this.isOverlayOpen()) {
             this.computeTurretRotation();

@@ -2,7 +2,7 @@ import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
-const MAX_DIMENSION = 100;
+const MAX_DIMENSION = 1000;
 
 export default class CreateWorldMenu extends Component {
 

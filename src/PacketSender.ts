@@ -7,6 +7,7 @@ enum Packet {
     RELOAD_REQUEST,
     RELOAD_MOVE_TOGGLE,
     CHAT_MESSAGE,
+    POWERUP_PICKUP,
 }
 
 enum DataType {
@@ -131,6 +132,11 @@ export default class PacketSender {
 
     public static sendChatMessage(message: string) {
         const data = constructData(Packet.CHAT_MESSAGE, message, DataType.STRING);
+        send(data);
+    }
+
+    public static sendPowerupPickup(rawData: number[]) {
+        const data = constructData(Packet.POWERUP_PICKUP, rawData, DataType.NUMBER_ARRAY);
         send(data);
     }
 
