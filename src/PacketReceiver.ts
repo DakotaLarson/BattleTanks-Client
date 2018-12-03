@@ -171,7 +171,15 @@ const receivePowerupRemoval = (rawData: number[]) => {
 };
 
 const receivePowerupApplication = (powerupId: number) => {
-    EventHandler.callEvent(EventHandler.Event.POWERUP_APPLICATION, powerupId);
+    if (powerupId === 0) {
+        EventHandler.callEvent(EventHandler.Event.SHIELD_POWERUP_APPLICATION);
+    } else if (powerupId === 1) {
+        EventHandler.callEvent(EventHandler.Event.HEALTH_POWERUP_APPLICATION);
+    } else if (powerupId === 2) {
+        EventHandler.callEvent(EventHandler.Event.SPEED_POWERUP_APPLICATION);
+    } else if (powerupId === 3) {
+        EventHandler.callEvent(EventHandler.Event.AMMO_POWERUP_APPLICATION);
+    }
 };
 
 const handlers: any[] = [];
