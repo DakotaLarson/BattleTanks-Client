@@ -118,6 +118,9 @@ export default class ScenePlayerHandler extends Component {
             if (playerObj.healthBar) {
                 this.scene.remove(playerObj.healthBar);
             }
+            if (playerObj.shieldBar) {
+                this.scene.remove(playerObj.shieldBar);
+            }
 
             playerValue = playerValues.next();
         }
