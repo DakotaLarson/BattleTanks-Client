@@ -26,6 +26,7 @@ export default class Player extends Component {
 
     private movementVelocity: number;
     private rotationVelocity: number;
+    private speedMultiplier: number;
 
     private movingForward: boolean;
     private movingBackward: boolean;
@@ -54,6 +55,7 @@ export default class Player extends Component {
 
         this.movementVelocity = 0;
         this.rotationVelocity = 0;
+        this.speedMultiplier = 1;
     }
 
     public enable() {
@@ -66,17 +68,19 @@ export default class Player extends Component {
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onOverlayOpen);
         EventHandler.addListener(this, EventHandler.Event.CHAT_OPEN, this.onOverlayOpen);
 
-        if (!this.cameraIsFollowing()) {
-            EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
-        }
-
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
+
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_SPEED_MULTIPLIER, this.onMultiplier);
 
         EventHandler.addListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
         EventHandler.addListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
 
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
+
+        if (!this.cameraIsFollowing()) {
+            EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
+        }
 
         this.movementVelocity = 0;
         this.rotationVelocity = 0;
@@ -105,17 +109,19 @@ export default class Player extends Component {
         EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.onOverlayOpen);
         EventHandler.removeListener(this, EventHandler.Event.CHAT_OPEN, this.onOverlayOpen);
 
-        if (!this.cameraIsFollowing()) {
-            EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
-        }
-
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
+
+        EventHandler.removeListener(this, EventHandler.Event.PLAYER_SPEED_MULTIPLIER, this.onMultiplier);
 
         EventHandler.removeListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
         EventHandler.removeListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
+
+        if (!this.cameraIsFollowing()) {
+            EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
+        }
 
         PacketSender.sendReloadMoveToggle(false);
         this.movingLastFrame = false;
@@ -177,23 +183,23 @@ export default class Player extends Component {
     }
 
     private onUpdate(delta: number) {
-
-        const multiplier = 10;
+        const decreaseMultiplier = 10;
+        const increaseMultiplier = decreaseMultiplier * this.speedMultiplier;
 
         // Velocity always goes to 0 with this calculation.
-        this.movementVelocity -= this.movementVelocity * 10 * delta;
-        this.rotationVelocity -= this.rotationVelocity * 10 * delta;
+        this.movementVelocity -= this.movementVelocity * decreaseMultiplier * delta;
+        this.rotationVelocity -= this.rotationVelocity * decreaseMultiplier * delta;
 
         if (this.movingForward && !this.movingBackward && !this.isOverlayOpen()) {
-            this.movementVelocity += PLAYER_MOVEMENT_SPEED * delta * multiplier;
+            this.movementVelocity += PLAYER_MOVEMENT_SPEED * delta * increaseMultiplier;
         } else if (this.movingBackward && !this.movingForward && !this.isOverlayOpen()) {
-            this.movementVelocity -= PLAYER_MOVEMENT_SPEED * delta * multiplier;
+            this.movementVelocity -= PLAYER_MOVEMENT_SPEED * delta * increaseMultiplier;
         }
 
         if (this.rotatingLeft && !this.rotatingRight && !this.isOverlayOpen()) {
-            this.rotationVelocity += PLAYER_ROTATION_SPEED * delta * multiplier;
+            this.rotationVelocity += PLAYER_ROTATION_SPEED * delta * increaseMultiplier;
         } else if (this.rotatingRight && !this.rotatingLeft && !this.isOverlayOpen()) {
-            this.rotationVelocity -=  PLAYER_ROTATION_SPEED * delta * multiplier;
+            this.rotationVelocity -=  PLAYER_ROTATION_SPEED * delta * increaseMultiplier;
         }
 
         const moving = this.movingForward && this.movingBackward && this.rotatingLeft && this.rotatingRight;
@@ -275,6 +281,11 @@ export default class Player extends Component {
                 // dupe pointer lock request opens game menu; Request is sent in MultiplayerCamera class.
             }
         }
+    }
+
+    private onMultiplier(multiplier: number) {
+        this.speedMultiplier = multiplier;
+        console.log(this.speedMultiplier);
     }
 
     private cameraIsFollowing() {

@@ -14,7 +14,7 @@ import MultiplayerArena from "./arena/MultiplayerArena";
 import SingleplayerArena from "./arena/SinglePlayerArena";
 import MultiplayerCamera from "./camera/multiplayer/MultiplayerCamera";
 import SingleplayerCamera from "./camera/singleplayer/SingleplayerCamera";
-import PowerupCollisionHandler from "./PowerupCollisionHandler";
+import PowerupCollisionHandler from "./powerup/PowerupCollisionHandler";
 import ProjectileHandler from "./ProjectileHandler";
 import SceneHandler from "./scene/SceneHandler";
 import CreationToolHandler from "./tools/CreationToolHandler";

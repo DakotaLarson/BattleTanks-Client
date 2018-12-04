@@ -9,6 +9,7 @@ interface IPlayerObj {
     head: Mesh;
     nameplate?: Mesh;
     healthBar?: Group;
+    shieldBar?: Group;
 }
 
 export default class ScenePlayerHandler extends Component {
@@ -32,6 +33,10 @@ export default class ScenePlayerHandler extends Component {
     private controlledPlayerId: number;
 
     private playerOffset: Vector3;
+
+    private healthBarOffset = 0.65;
+    private shieldBarOffset = 0.725;
+    private nameplateOffset = 0.8;
 
     constructor(scene: Scene, audioListener: AudioListener) {
         super();
@@ -81,6 +86,7 @@ export default class ScenePlayerHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_SHOOT, this.onShoot);
 
         EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_HEALTH_CHANGE, this.onHealthChange);
+        EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_SHIELD_CHANGE, this.onShieldChange);
     }
 
     public disable() {
@@ -97,6 +103,7 @@ export default class ScenePlayerHandler extends Component {
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_SHOOT, this.onShoot);
 
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_HEALTH_CHANGE, this.onHealthChange);
+        EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_SHIELD_CHANGE, this.onShieldChange);
     }
 
     public clearPlayers() {
@@ -133,6 +140,7 @@ export default class ScenePlayerHandler extends Component {
             const head = playerObj.head;
             const nameplate = playerObj.nameplate;
             const healthBar = playerObj.healthBar;
+            const shieldBar = playerObj.shieldBar;
 
             head.position.copy(pos).add(this.playerOffset);
             head.rotation.y = data.headRot;
@@ -144,15 +152,21 @@ export default class ScenePlayerHandler extends Component {
 
             if (nameplate) {
                 const nameplatePos = nameplate.position;
-                nameplatePos.copy(pos).add(this.playerOffset).add(new Vector3(0, 0.75, 0));
+                nameplatePos.copy(pos).add(this.playerOffset).add(new Vector3(0, this.nameplateOffset, 0));
 
                 nameplate.lookAt(cameraPos);
             }
             if (healthBar) {
                 const healthBarPos = healthBar.position;
-                healthBarPos.copy(pos).add(this.playerOffset).add(new Vector3(0, 0.65, 0));
+                healthBarPos.copy(pos).add(this.playerOffset).add(new Vector3(0, this.healthBarOffset, 0));
 
                 healthBar.lookAt(cameraPos);
+            }
+            if (shieldBar) {
+                const shieldBarPos = shieldBar.position;
+                shieldBarPos.copy(pos).add(this.playerOffset).add(new Vector3(0, this.shieldBarOffset, 0));
+
+                shieldBar.lookAt(cameraPos);
             }
         }
     }
@@ -168,6 +182,10 @@ export default class ScenePlayerHandler extends Component {
 
             if (obj.healthBar) {
                 this.scene.remove(obj.healthBar);
+            }
+
+            if (obj.shieldBar) {
+                this.scene.remove(obj.shieldBar);
             }
             this.players.delete(data.id);
             if (this.controlledPlayerId === data.id) {
@@ -225,20 +243,23 @@ export default class ScenePlayerHandler extends Component {
 
         if (isConnectedPlayer) {
             const nameplateMesh = this.generateNameplate(name);
-            nameplateMesh.position.copy(bodyPos).add(this.playerOffset).add(new Vector3(0, 0.75, 0));
-
+            nameplateMesh.position.copy(bodyPos).add(this.playerOffset).add(new Vector3(0, this.nameplateOffset, 0));
             this.scene.add(nameplateMesh);
 
             const healthBar = this.generateHealthBar(1);
-            healthBar.position.copy(bodyPos).add(this.playerOffset).add(new Vector3(0, 0.65, 0));
-
+            healthBar.position.copy(bodyPos).add(this.playerOffset).add(new Vector3(0, this.healthBarOffset, 0));
             this.scene.add(healthBar);
+
+            const shieldBar = this.generateShieldBar(0);
+            shieldBar.position.copy(bodyPos).add(this.playerOffset).add(new Vector3(0, this.shieldBarOffset, 0));
+            this.scene.add(shieldBar);
 
             playerObj = {
                 body: bodyMesh,
                 head: headMesh,
                 nameplate: nameplateMesh,
                 healthBar,
+                shieldBar,
             };
         } else {
             playerObj = {
@@ -279,12 +300,31 @@ export default class ScenePlayerHandler extends Component {
 
             healthBar = this.generateHealthBar(data.health);
 
-            healthBar.position.copy(playerObj.body.position).add(new Vector3(0, 0.65, 0));
+            healthBar.position.copy(playerObj.body.position).add(new Vector3(0, this.healthBarOffset, 0));
 
             healthBar.lookAt(this.camera.position);
 
             this.scene.add(healthBar);
             playerObj.healthBar = healthBar;
+        }
+    }
+
+    private onShieldChange(data: any) {
+        const playerObj = this.players.get(data.id);
+        if (playerObj) {
+            let shieldBar = playerObj.shieldBar;
+            if (shieldBar) {
+                this.scene.remove(shieldBar);
+            }
+
+            shieldBar = this.generateShieldBar(data.shield);
+
+            shieldBar.position.copy(playerObj.body.position).add(new Vector3(0, this.shieldBarOffset, 0));
+
+            shieldBar.lookAt(this.camera.position);
+
+            this.scene.add(shieldBar);
+            playerObj.shieldBar = shieldBar;
         }
     }
 
@@ -310,6 +350,14 @@ export default class ScenePlayerHandler extends Component {
     }
 
     private generateHealthBar(health: number) {
+        return this.generateBar(0x00ff00, health);
+    }
+
+    private generateShieldBar(shield: number) {
+        return this.generateBar(0x0095d8, shield);
+    }
+
+    private generateBar(color: number, percentage: number) {
         const containerShape = new Shape();
         const barShape = new Shape();
 
@@ -324,8 +372,8 @@ export default class ScenePlayerHandler extends Component {
 
         barShape.moveTo(0, 0);
         barShape.lineTo(0, fullHeight);
-        barShape.lineTo(fullWidth * health, fullHeight);
-        barShape.lineTo(fullWidth * health, 0);
+        barShape.lineTo(fullWidth * percentage, fullHeight);
+        barShape.lineTo(fullWidth * percentage, 0);
         barShape.lineTo(0, 0);
 
         const containerGeo = new ShapeBufferGeometry(containerShape);
@@ -339,7 +387,7 @@ export default class ScenePlayerHandler extends Component {
         });
 
         const barMaterial = new MeshBasicMaterial({
-            color: 0x00ff00,
+            color,
         });
 
         const containerMesh = new Mesh(containerGeo, containerMaterial);

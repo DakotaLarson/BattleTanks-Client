@@ -1,5 +1,6 @@
 import {Vector3, Vector4} from "three";
 import Powerup from "./arena/powerup/Powerup";
+import AudioType from "./audio/AudioType";
 import EventHandler from "./EventHandler";
 
 const decoder = new TextDecoder();
@@ -57,8 +58,20 @@ const receivePlayerHealth = (health: number) => {
     EventHandler.callEvent(EventHandler.Event.PLAYER_HEALTH_CHANGE, health);
 };
 
+const receivePlayerShield = (shield: number) => {
+    EventHandler.callEvent(EventHandler.Event.PLAYER_SHIELD_CHANGE, shield);
+};
+
 const receivePlayerSpectating = () => {
     EventHandler.callEvent(EventHandler.Event.PLAYER_SPECTATING);
+};
+
+const receivePlayerSpeedMultiplier = (multiplier: number) => {
+    EventHandler.callEvent(EventHandler.Event.PLAYER_SPEED_MULTIPLIER, multiplier);
+};
+
+const receivePlayerPowerupPickup = () => {
+    EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, AudioType.POWERUP);
 };
 
 const receivePlayerAmmoStatus = (data: number[]) => {
@@ -115,6 +128,15 @@ const receiveConnectedPlayerHealth = (data: any) => {
     EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_HEALTH_CHANGE, {
         id: playerId,
         health,
+    });
+};
+
+const receiveConnectedPlayerShield = (data: any) => {
+    const playerId = data.header;
+    const shield = data.body[0];
+    EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_SHIELD_CHANGE, {
+        id: playerId,
+        shield,
     });
 };
 
@@ -195,14 +217,18 @@ handlers.push(receivePlayerRemove);
 handlers.push(receivePlayerShootInvalid);
 handlers.push(receivePlayerShoot);
 handlers.push(receivePlayerHealth);
+handlers.push(receivePlayerShield);
 handlers.push(receivePlayerSpectating);
 handlers.push(receivePlayerAmmoStatus);
+handlers.push(receivePlayerSpeedMultiplier);
+handlers.push(receivePlayerPowerupPickup);
 
 handlers.push(receiveConnectedPlayerAdd);
 handlers.push(receiveConnectedPlayerMove);
 handlers.push(receiveConnectedPlayerRemove);
 handlers.push(receiveConnectedPlayerShoot);
 handlers.push(receiveConnectedPlayerHealth);
+handlers.push(receiveConnectedPlayerShield);
 
 handlers.push(receiveMatchStatistics);
 

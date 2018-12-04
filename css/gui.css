@@ -27,18 +27,18 @@
     height: 4.5vmin;
 }
 
-.gui .cooldown-bar-container,
+.gui .shield-bar-container,
 .gui .health-bar-container{
     text-align: center;
     width: 100%;
     bottom: 2.5vh;
 }
 
-.gui .cooldown-bar-container{
+.gui .shield-bar-container{
     bottom: 5.5vh;
 }
 
-.gui .cooldown-bar-parent,
+.gui .shield-bar-parent,
 .gui .health-bar-parent{
     box-sizing: border-box;
     display: inline-block;
@@ -48,10 +48,10 @@
     border: solid 1px #ffffff;
 }
 
-.gui .cooldown-bar,
+.gui .shield-bar,
 .gui .health-bar{
     height: 100%;
-    background-color: green;
+    background-color: #0095d8;
 }
 
 .gui .health-bar{

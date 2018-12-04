@@ -8,6 +8,7 @@ import DebugPanel from "./DebugPanel";
 import FullscreenToggle from "./FullscreenToggle";
 import HealthBar from "./HealthBar";
 import Killfeed from "./Killfeed";
+import ShieldBar from "./ShieldBar";
 
 export default class GUI extends Component {
 
@@ -15,6 +16,7 @@ export default class GUI extends Component {
     private debugPanel: DebugPanel;
     private fullscreenToggle: FullscreenToggle;
     private healthBar: HealthBar;
+    private shieldBar: ShieldBar;
     private ammoDisplay: AmmoDisplay;
     private killfeed: Killfeed;
     private chat: Chat;
@@ -27,6 +29,7 @@ export default class GUI extends Component {
         this.fullscreenToggle = new FullscreenToggle(this.element);
         this.ammoDisplay = new AmmoDisplay(this.element);
         this.healthBar = new HealthBar(this.element);
+        this.shieldBar = new ShieldBar(this.element);
         this.killfeed = new Killfeed(this.element);
         this.chat = new Chat(this.element);
     }
@@ -66,11 +69,13 @@ export default class GUI extends Component {
 
     private onPlayerAddition() {
         this.attachChild(this.healthBar);
+        this.attachChild(this.shieldBar);
         this.attachChild(this.ammoDisplay);
     }
 
     private onPlayerRemoval() {
         this.detachChild(this.healthBar);
+        this.detachChild(this.shieldBar);
         this.detachChild(this.ammoDisplay);
     }
 }

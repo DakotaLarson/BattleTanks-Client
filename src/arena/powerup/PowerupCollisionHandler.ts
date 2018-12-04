@@ -1,9 +1,9 @@
 import { Vector3 } from "three";
-import ChildComponent from "../component/ChildComponent";
-import EventHandler from "../EventHandler";
-import PacketSender from "../PacketSender";
-import Player from "./player/Player";
-import Powerup from "./powerup/Powerup";
+import ChildComponent from "../../component/ChildComponent";
+import EventHandler from "../../EventHandler";
+import PacketSender from "../../PacketSender";
+import Player from "../player/Player";
+import Powerup from "./Powerup";
 
 export default class PowerupCollisionHandler extends ChildComponent {
 
