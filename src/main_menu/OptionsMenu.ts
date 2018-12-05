@@ -21,6 +21,7 @@ export default class OptionsMenu extends Component {
 
     private volumeValueElt: HTMLInputElement;
     private mouseValueElt: HTMLInputElement;
+    private rotationValueElt: HTMLInputElement;
     private cameraAngleValueElt: HTMLInputElement;
 
     private usernameElt: HTMLInputElement;
@@ -44,6 +45,7 @@ export default class OptionsMenu extends Component {
 
         this.volumeValueElt = DomHandler.getElement("#option-value-volume", this.element) as HTMLInputElement;
         this.mouseValueElt = DomHandler.getElement("#option-value-mouse", this.element) as HTMLInputElement;
+        this.rotationValueElt = DomHandler.getElement("#option-value-rotation", this.element) as HTMLInputElement;
         this.cameraAngleValueElt = DomHandler.getElement("#option-value-camera-angle", this.element) as HTMLInputElement;
 
         this.usernameElt = DomHandler.getElement("#option-value-username", this.element) as HTMLInputElement;
@@ -70,6 +72,7 @@ export default class OptionsMenu extends Component {
 
         DomEventHandler.addListener(this, this.volumeValueElt, "change", this.onVolumeChange);
         DomEventHandler.addListener(this, this.mouseValueElt, "change", this.onMouseChange);
+        DomEventHandler.addListener(this, this.rotationValueElt, "change", this.onRotationSensitivityChange);
         DomEventHandler.addListener(this, this.cameraAngleValueElt, "change", this.onCameraAngleChange);
 
         DomEventHandler.addListener(this, this.usernameElt, "change", this.onUsernameChange);
@@ -92,6 +95,8 @@ export default class OptionsMenu extends Component {
 
         DomEventHandler.removeListener(this, this.volumeValueElt, "change", this.onVolumeChange);
         DomEventHandler.removeListener(this, this.mouseValueElt, "change", this.onMouseChange);
+        DomEventHandler.removeListener(this, this.rotationValueElt, "change", this.onRotationSensitivityChange);
+        DomEventHandler.removeListener(this, this.cameraAngleValueElt, "change", this.onCameraAngleChange);
 
         DomEventHandler.removeListener(this, this.usernameElt, "change", this.onUsernameChange);
 
@@ -196,6 +201,11 @@ export default class OptionsMenu extends Component {
         this.saveChange("mouseSensitivity", value);
     }
 
+    private onRotationSensitivityChange() {
+        const value = Number(this.rotationValueElt.value);
+        this.saveChange("rotationSensitivity", value);
+    }
+
     private onCameraAngleChange() {
         const value = Number(this.cameraAngleValueElt.value);
         this.saveChange("cameraAngle", value);
@@ -295,6 +305,7 @@ export default class OptionsMenu extends Component {
 
             setRangeValue(options.volume, this.volumeValueElt);
             setRangeValue(options.mouseSensitivity, this.mouseValueElt);
+            setRangeValue(options.rotationSensitivity, this.rotationValueElt);
             setRangeValue(options.cameraAngle, this.cameraAngleValueElt);
 
             setTextValue(options.username, this.usernameElt);

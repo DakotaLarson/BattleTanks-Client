@@ -197,9 +197,9 @@ export default class Player extends Component {
         }
 
         if (this.rotatingLeft && !this.rotatingRight && !this.isOverlayOpen()) {
-            this.rotationVelocity += PLAYER_ROTATION_SPEED * delta * increaseMultiplier;
+            this.rotationVelocity += PLAYER_ROTATION_SPEED * delta * increaseMultiplier * Options.options.rotationSensitivity;
         } else if (this.rotatingRight && !this.rotatingLeft && !this.isOverlayOpen()) {
-            this.rotationVelocity -=  PLAYER_ROTATION_SPEED * delta * increaseMultiplier;
+            this.rotationVelocity -=  PLAYER_ROTATION_SPEED * delta * increaseMultiplier * Options.options.rotationSensitivity;
         }
 
         const moving = this.movingForward && this.movingBackward && this.rotatingLeft && this.rotatingRight;
