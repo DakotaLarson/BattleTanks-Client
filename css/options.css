@@ -28,3 +28,8 @@
 .options-menu .active{
     background: green;
 }
+
+.options-tip {
+    font-size: 2vmin;
+    font-family: 'Inconsolata', sans-serif;
+}

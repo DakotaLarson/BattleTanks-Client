@@ -38,7 +38,7 @@ export default class OptionsDropdown extends ChildComponent {
     public enable(): void {
         DomEventHandler.addListener(this, document.body, "click", this.onClick);
 
-        EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
+        EventHandler.addListener(this, EventHandler.Event.OPTIONS_USERNAME_UPDATE, this.onOptionsUpdate);
 
         EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
@@ -53,7 +53,7 @@ export default class OptionsDropdown extends ChildComponent {
     public disable(): void {
         DomEventHandler.removeListener(this, document.body, "click", this.onClick);
 
-        EventHandler.removeListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
+        EventHandler.removeListener(this, EventHandler.Event.OPTIONS_USERNAME_UPDATE, this.onOptionsUpdate);
 
         EventHandler.removeListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.removeListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
@@ -91,8 +91,8 @@ export default class OptionsDropdown extends ChildComponent {
         this.signedIn = false;
     }
 
-    private onOptionsUpdate(options: any) {
-        this.usernameElt.textContent = options.username;
+    private onOptionsUpdate(username: string) {
+        this.usernameElt.textContent = username;
     }
 
     private show() {

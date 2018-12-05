@@ -2,6 +2,7 @@ import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 
 import {Spherical} from "three";
+import Options from "../../Options";
 
 enum ButtonState {
     PRIMARY,
@@ -12,6 +13,7 @@ enum ButtonState {
 export default class CameraControls extends Component {
 
     public zoomOnly: boolean;
+    private angleButtonDown: boolean;
 
     private spherical: Spherical;
 
@@ -25,13 +27,20 @@ export default class CameraControls extends Component {
 
         this.state = -1;
         this.zoomOnly = false;
+        this.angleButtonDown = false;
     }
 
     public enable() {
+        this.state = -1;
+        this.angleButtonDown = false;
+
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
         EventHandler.addListener(this, EventHandler.Event.DOM_WHEEL, this.onWheel);
+
+        EventHandler.addListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+        EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
     }
 
     public disable() {
@@ -39,6 +48,8 @@ export default class CameraControls extends Component {
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
         EventHandler.removeListener(this, EventHandler.Event.DOM_WHEEL, this.onWheel);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
     }
 
     public setFromPlayer(rot: number) {
@@ -48,19 +59,20 @@ export default class CameraControls extends Component {
 
     public reset() {
         this.spherical.radius = 8;
-        this.spherical.phi = Math.PI / 4;
+        this.spherical.phi = 11 * Math.PI / 24 * Options.options.cameraAngle;
         this.spherical.theta = Math.PI / 3;
     }
 
     public resetPhi() {
-        this.spherical.phi = Math.PI / 4;
+        this.spherical.phi = 11 * Math.PI / 24 * Options.options.cameraAngle;
+        this.state = -1;
     }
 
     private onMouseDown(event: MouseEvent) {
         if (this.state === -1) {
             switch (event.button) {
                 case 0:
-                    if (!this.zoomOnly) {
+                    if (!this.zoomOnly || this.angleButtonDown) {
                         this.state = ButtonState.PRIMARY;
                     }
                     break;
@@ -78,6 +90,7 @@ export default class CameraControls extends Component {
 
     private onMouseUp() {
         this.state = -1;
+        this.angleButtonDown = false;
     }
 
     private onMouseMove(event: MouseEvent) {
@@ -99,12 +112,34 @@ export default class CameraControls extends Component {
         this.onZoom(event.deltaY, true);
     }
 
+    private onKeyUp(event: KeyboardEvent) {
+        if (event.key === "Control" && this.zoomOnly) {
+            this.angleButtonDown = false;
+        }
+    }
+
+    private onKeyDown(event: KeyboardEvent) {
+        if (event.key === "Control" && this.zoomOnly) {
+            this.angleButtonDown = true;
+        }
+    }
+
     private onRotation = (deltaX: number, deltaY: number) => {
-         this.spherical.theta += deltaX * Math.PI / 180 / 3;
-         this.spherical.phi += deltaY * Math.PI / 180 / 5;
-         this.spherical.phi = Math.min(Math.PI / 2 - Math.PI / 24, this.spherical.phi);
-         this.spherical.makeSafe();
-         EventHandler.callEvent(EventHandler.Event.CAMERA_CONTROLS_UPDATE);
+        if (!this.angleButtonDown) {
+            this.spherical.theta += deltaX * Math.PI / 180 / 3;
+        }
+        this.spherical.phi += deltaY * Math.PI / 180 / 5;
+        this.spherical.phi = Math.min(11 * Math.PI / 24, this.spherical.phi);
+        this.spherical.makeSafe();
+        if (this.zoomOnly) {
+            // Player is in game & holding down both buttons
+            const angleRatio = this.spherical.phi / (11 * Math.PI / 24);
+            EventHandler.callEvent(EventHandler.Event.OPTIONS_UPDATE, {
+                attribute: "cameraAngle",
+                data: angleRatio,
+            });
+        }
+        EventHandler.callEvent(EventHandler.Event.CAMERA_CONTROLS_UPDATE);
     }
 
     private onPan = (deltaX: number, deltaY: number) => {

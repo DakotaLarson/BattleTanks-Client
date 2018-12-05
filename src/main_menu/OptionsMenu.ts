@@ -21,6 +21,7 @@ export default class OptionsMenu extends Component {
 
     private volumeValueElt: HTMLInputElement;
     private mouseValueElt: HTMLInputElement;
+    private cameraAngleValueElt: HTMLInputElement;
 
     private usernameElt: HTMLInputElement;
 
@@ -43,6 +44,7 @@ export default class OptionsMenu extends Component {
 
         this.volumeValueElt = DomHandler.getElement("#option-value-volume", this.element) as HTMLInputElement;
         this.mouseValueElt = DomHandler.getElement("#option-value-mouse", this.element) as HTMLInputElement;
+        this.cameraAngleValueElt = DomHandler.getElement("#option-value-camera-angle", this.element) as HTMLInputElement;
 
         this.usernameElt = DomHandler.getElement("#option-value-username", this.element) as HTMLInputElement;
 
@@ -68,6 +70,7 @@ export default class OptionsMenu extends Component {
 
         DomEventHandler.addListener(this, this.volumeValueElt, "change", this.onVolumeChange);
         DomEventHandler.addListener(this, this.mouseValueElt, "change", this.onMouseChange);
+        DomEventHandler.addListener(this, this.cameraAngleValueElt, "change", this.onCameraAngleChange);
 
         DomEventHandler.addListener(this, this.usernameElt, "change", this.onUsernameChange);
 
@@ -193,6 +196,11 @@ export default class OptionsMenu extends Component {
         this.saveChange("mouseSensitivity", value);
     }
 
+    private onCameraAngleChange() {
+        const value = Number(this.cameraAngleValueElt.value);
+        this.saveChange("cameraAngle", value);
+    }
+
     private onUsernameChange() {
         let value = this.usernameElt.value;
         if (!value) {
@@ -287,6 +295,7 @@ export default class OptionsMenu extends Component {
 
             setRangeValue(options.volume, this.volumeValueElt);
             setRangeValue(options.mouseSensitivity, this.mouseValueElt);
+            setRangeValue(options.cameraAngle, this.cameraAngleValueElt);
 
             setTextValue(options.username, this.usernameElt);
 
@@ -296,15 +305,9 @@ export default class OptionsMenu extends Component {
     }
 
     private saveChange(attribute: string, data: any) {
-        const rawOptions = localStorage.getItem("userOptions");
-        if (rawOptions) {
-            const storedOptions = JSON.parse(rawOptions);
-            storedOptions[attribute] = data;
-            localStorage.setItem("userOptions", JSON.stringify(storedOptions));
-            if (!storedOptions.username) {
-                storedOptions.username = "Guest";
-            }
-            EventHandler.callEvent(EventHandler.Event.OPTIONS_UPDATE, storedOptions);
-        }
+        EventHandler.callEvent(EventHandler.Event.OPTIONS_UPDATE, {
+            attribute,
+            data,
+        });
     }
 }

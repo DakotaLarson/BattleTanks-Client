@@ -26,7 +26,6 @@ export default class ScenePlayerHandler extends Component {
     private audioListener: AudioListener;
 
     private shootSoundBuffer: AudioBuffer | undefined;
-    private invalidShootSoundBuffer: AudioBuffer | undefined;
 
     private font: Font | undefined;
 
@@ -53,11 +52,6 @@ export default class ScenePlayerHandler extends Component {
             this.shootSoundBuffer = buffer;
         });
 
-        // @ts-ignore Disregard additional arguments
-        audioLoader.load(location.pathname + "res/audio/shoot-invalid.wav", (buffer: AudioBuffer) => {
-            this.invalidShootSoundBuffer = buffer;
-        });
-
         const fontLoader = new FontLoader();
         fontLoader.load(location.pathname + "res/font/no_continue.json", (font: Font) => {
             this.font = font;
@@ -82,7 +76,6 @@ export default class ScenePlayerHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_MOVE, this.onPlayerMove);
 
         EventHandler.addListener(this, EventHandler.Event.PLAYER_SHOOT, this.onShoot);
-        EventHandler.addListener(this, EventHandler.Event.PLAYER_SHOOT_INVALID, this.onShootInvalid);
         EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_SHOOT, this.onShoot);
 
         EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_HEALTH_CHANGE, this.onHealthChange);
@@ -99,7 +92,6 @@ export default class ScenePlayerHandler extends Component {
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_MOVE, this.onPlayerMove);
 
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_SHOOT, this.onShoot);
-        EventHandler.removeListener(this, EventHandler.Event.PLAYER_SHOOT_INVALID, this.onShootInvalid);
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_SHOOT, this.onShoot);
 
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_HEALTH_CHANGE, this.onHealthChange);
@@ -284,13 +276,6 @@ export default class ScenePlayerHandler extends Component {
         }
         const player = this.players.get(playerId);
         this.playSound(player as IPlayerObj, this.shootSoundBuffer as AudioBuffer);
-    }
-
-    private onShootInvalid() {
-        if (this.controlledPlayerId > -1) {
-            const player = this.players.get(this.controlledPlayerId);
-            this.playSound(player as IPlayerObj, this.invalidShootSoundBuffer as AudioBuffer);
-        }
     }
 
     private onHealthChange(data: any) {

@@ -72,8 +72,13 @@ export default class Options extends Component {
         if (!("volume" in Options.options)) {
             Options.options.volume = 0.5;
         }
+
         if (!("mouseSensitivity" in Options.options)) {
             Options.options.mouseSensitivity = 0.5;
+        }
+
+        if (!("cameraAngle" in Options.options)) {
+            Options.options.cameraAngle = 0.65;
         }
 
         localStorage.setItem("userOptions", JSON.stringify(Options.options));
@@ -89,7 +94,18 @@ export default class Options extends Component {
         EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
     }
 
-    public onOptionsUpdate(data: any) {
-        Options.options = data;
+    public onOptionsUpdate(event: any) {
+        const attribute = event.attribute;
+        const data = event.data;
+        const rawOptions = localStorage.getItem("userOptions");
+        if (rawOptions) {
+            const storedOptions = JSON.parse(rawOptions);
+            storedOptions[attribute] = data;
+            localStorage.setItem("userOptions", JSON.stringify(storedOptions));
+            if (!storedOptions.username) {
+                storedOptions.username = "Guest";
+            }
+            EventHandler.callEvent(EventHandler.Event.OPTIONS_USERNAME_UPDATE, storedOptions.username);
+        }
     }
 }

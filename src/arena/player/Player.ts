@@ -146,7 +146,7 @@ export default class Player extends Component {
 
     private onMouseMove(event: MouseEvent) {
         if (!this.isOverlayOpen()) {
-            this.headRotation -= event.movementX / 365;
+            this.headRotation -= event.movementX / 365 * Options.options.mouseSensitivity;
         }
     }
 
@@ -285,7 +285,6 @@ export default class Player extends Component {
 
     private onMultiplier(multiplier: number) {
         this.speedMultiplier = multiplier;
-        console.log(this.speedMultiplier);
     }
 
     private cameraIsFollowing() {
