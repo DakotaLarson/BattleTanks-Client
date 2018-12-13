@@ -134,3 +134,10 @@
     box-sizing: border-box;
     font-family: 'Inconsolata', sans-serif;
 }
+
+.gui .joystick-container {
+    bottom: 0;
+    height: 25vmin;
+    width: 25vmin;
+    position: absolute;
+}

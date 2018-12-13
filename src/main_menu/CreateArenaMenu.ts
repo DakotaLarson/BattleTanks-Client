@@ -3,10 +3,12 @@ import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
 const MAX_DIMENSION = 1000;
+const MIN_DIMENSION = 5;
 
 export default class CreateWorldMenu extends Component {
 
     private element: HTMLElement;
+
     private titleElt: HTMLInputElement;
     private widthElt: HTMLInputElement;
     private heightElt: HTMLInputElement;
@@ -53,8 +55,10 @@ export default class CreateWorldMenu extends Component {
 
             if (titleValue.length === 0) {
                 this.errorElt.textContent = "Missing Title";
-            } else if (isNaN(widthValue) || isNaN(heightValue) || widthValue < 1 || heightValue < 1) {
+            } else if (isNaN(widthValue) || isNaN(heightValue)) {
                 this.errorElt.textContent = "Invalid arena dimensions";
+            } else if (widthValue < MIN_DIMENSION || heightValue < MIN_DIMENSION) {
+                this.errorElt.textContent = "Arena dimensions cannot be less than " + MIN_DIMENSION;
             } else if (widthValue > MAX_DIMENSION || heightValue > MAX_DIMENSION) {
                 this.errorElt.textContent = "Arena dimensions cannot be greater than " + MAX_DIMENSION;
             } else {

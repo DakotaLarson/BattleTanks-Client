@@ -11,12 +11,13 @@
     display: inline-block;
     color: #ffffff;
     font-weight: normal;
+    font-family: 'Bombardier', sans-serif;
 }
 .main-menu .menu-input{
     outline: none;
     background: none;
     padding: 0.5vmin 1vmin;
-    font: 3vmin 'No Regular', monospace;
+    font: 3vmin 'Bombardier', sans-serif;
     color: #ffffff;
     border: solid 1px;
     margin-bottom: 3vmin;

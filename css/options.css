@@ -10,17 +10,18 @@
     justify-self: right;
 }
 
+.options-menu .option-value{
+    justify-self: stretch;
+    background: #505050;
+    cursor: pointer;
+}
+
 .options-menu #opt-opt-return{
     grid-column-start: 1;
     grid-column-end: 3;
     justify-self: center;
 }
 
-.options-menu .option-value{
-    justify-self: stretch;
-    background: #505050;
-    cursor: pointer;
-}
 .options-menu .option-value:hover:not(.active){
     background-color: #707070;
 }

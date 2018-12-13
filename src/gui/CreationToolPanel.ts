@@ -1,6 +1,7 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
+import Globals from "../Globals";
 
 export default class CreationToolPanel extends Component {
 
@@ -81,7 +82,7 @@ export default class CreationToolPanel extends Component {
     }
 
     private onClick(event: MouseEvent) {
-        if (this.parentElt.contains(event.target as Node)) {
+        if (this.parentElt.contains(event.target as Node) && !this.hasOverlay()) {
             DomHandler.setInterference(true);
             if (event.target === this.cameraToggleElt) {
                 if (this.mode !== Mode.CAMERA) {
@@ -126,47 +127,49 @@ export default class CreationToolPanel extends Component {
     }
 
     private onKeyDown(event: KeyboardEvent) {
-        switch (event.code) {
-            case "KeyC":
-                if (this.mode !== Mode.CAMERA) {
-                    EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_CAMERA);
-                }
-                break;
-            case "KeyK":
-                if (this.mode !== Mode.BLOCK) {
-                    EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_BLOCK);
-                }
-                break;
-            case "KeyA":
-                if (this.mode !== Mode.TEAM_A_SPAWN) {
-                    EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_TEAM_A);
-                }
-                break;
-            case "KeyB":
-                if (this.mode !== Mode.TEAM_B_SPAWN) {
-                    EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_TEAM_B);
-                }
-                break;
-            case "KeyS":
-                if (this.mode !== Mode.SHIELD_POWERUP) {
-                    EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_SHIELD);
-                }
-                break;
-            case "KeyH":
-                if (this.mode !== Mode.HEALTH_POWERUP) {
-                    EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_HEALTH);
-                }
-                break;
-            case "KeyE":
-                if (this.mode !== Mode.SPEED_POWERUP) {
-                    EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_SPEED);
-                }
-                break;
-            case "KeyM":
-                if (this.mode !== Mode.AMMO_POWERUP) {
-                    EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_AMMO);
-                }
-                break;
+        if (!this.hasOverlay()) {
+            switch (event.code) {
+                case "KeyC":
+                    if (this.mode !== Mode.CAMERA) {
+                        EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_CAMERA);
+                    }
+                    break;
+                case "KeyK":
+                    if (this.mode !== Mode.BLOCK) {
+                        EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_BLOCK);
+                    }
+                    break;
+                case "KeyA":
+                    if (this.mode !== Mode.TEAM_A_SPAWN) {
+                        EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_TEAM_A);
+                    }
+                    break;
+                case "KeyB":
+                    if (this.mode !== Mode.TEAM_B_SPAWN) {
+                        EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_TEAM_B);
+                    }
+                    break;
+                case "KeyS":
+                    if (this.mode !== Mode.SHIELD_POWERUP) {
+                        EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_SHIELD);
+                    }
+                    break;
+                case "KeyH":
+                    if (this.mode !== Mode.HEALTH_POWERUP) {
+                        EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_HEALTH);
+                    }
+                    break;
+                case "KeyE":
+                    if (this.mode !== Mode.SPEED_POWERUP) {
+                        EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_SPEED);
+                    }
+                    break;
+                case "KeyM":
+                    if (this.mode !== Mode.AMMO_POWERUP) {
+                        EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_AMMO);
+                    }
+                    break;
+            }
         }
     }
 
@@ -258,6 +261,10 @@ export default class CreationToolPanel extends Component {
                 elt.classList.remove("create-world-toggle-enabled");
             }
         }
+    }
+
+    private hasOverlay() {
+        return Globals.getGlobal(Globals.Global.GAME_MENU_OPEN);
     }
 }
 

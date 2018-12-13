@@ -7,7 +7,7 @@
     <meta name="description" content="Web based tank game!"/>
     <meta name="keywords" content="BattleTanks, Battle Tanks"/>
     <meta name="author" content="Dakota Larson"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="google-site-verification" content="EVg7I0KTCnW1qmVkwFeW3pX7rKxemX923IcLJWonO-8"/>
     <meta name="msvalidate.01" content="195C8869D5EEBF8AAA413CDA4482BEF4" />
     <meta name="google-signin-client_id" content="42166570332-0egs4928q7kfsnhh4nib3o8hjn62f9u5.apps.googleusercontent.com"/>
@@ -28,6 +28,7 @@
     <link rel="stylesheet" type="text/css" href="./css/alert-message.css"/>
     <link rel="stylesheet" type="text/css" href="./css/options.css"/>
     <link rel="stylesheet" type="text/css" href="./css/options-dropdown.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/joystick.css"/>
 
 </head>
 <body>
@@ -72,7 +73,7 @@
 
         </div>
     </div>
-    <h1 class="main-menu-title">Battle Tanks</h1><br/>
+    <h1 class="main-menu-title">BattleTanks</h1><br/>
     <!-- TOP MENU -->
     <div class="menu-section" id="main-menu-top">
         <span class="menu-selection menu-selection-xl play-btn" id="top-opt-mp">Play</span><br/>
@@ -145,8 +146,8 @@
     <!-- SINGLEPLAYER CREATE MENU -->
     <div class="menu-section" id="sp-menu-create">
         <input type="text" class="menu-input" id="create-opt-title" placeholder="Title"/><br/>
-        <input type="text" class="menu-input menu-number-input" id="create-opt-width" placeholder="Width"/><br/>
-        <input type="text" class="menu-input menu-number-input" id="create-opt-height" placeholder="Height"/><br/>
+        <input type="number" min="5" max="1000" class="menu-input menu-number-input" id="create-opt-width" placeholder="Width"/><br/>
+        <input type="number" min="5" max="1000" class="menu-input menu-number-input" id="create-opt-height" placeholder="Height"/><br/>
         <span class="menu-selection" id="create-opt-create">Create</span>
         <span class="menu-selection" id="create-opt-cancel">Cancel</span><br/>
         <span class="menu-error" id="create-opt-error"></span>
@@ -176,27 +177,6 @@
         <a class="social-ref" href="https://discord.gg/kGcw5M6" target="_blank">
             <img class="social-image-large" src="./res/social/discord.svg" alt="BattleTanks Discord">
         </a>
-        <!-- <div class="social-small-container">
-            <a class="social-ref" href="http://bit.ly/2FqrpJy" target="_blank">
-                <img class="social-image" src="./res/social/youtube.svg" alt="BattleTanks YouTube">
-            </a>
-            <a class="social-ref" href="http://bit.ly/2Q13hBc" target="_blank">
-                <img class="social-image" src="./res/social/twitch.svg" alt="BattleTanks Twitch">
-            </a>
-            <a class="social-ref" href="http://bit.ly/2ORfmUS" target="_blank">
-                <img class="social-image" src="./res/social/facebook.svg" alt="BattleTanks Facebook">
-            </a>
-            <br/>
-            <a class="social-ref" href="http://bit.ly/2DGOGFd" target="_blank">
-                <img class="social-image" src="./res/social/twitter.svg" alt="BattleTanks Twitter">
-            </a>
-            <a class="social-ref" href="http://bit.ly/2zVc6CA" target="_blank">
-                <img class="social-image" src="./res/social/github.svg" alt="BattleTanks GitHub">
-            </a>
-            <a class="social-ref" href="http://bit.ly/2DHEX1u" target="_blank">
-                <img class="social-image" src="./res/social/trello.svg" alt="BattleTanks Trello">
-            </a>
-        </div> -->
     </div>
 </div>
 
@@ -255,6 +235,10 @@
 
     <div class="killfeed-container gui-element no-select"></div>
 
+    <div class="joystick-container gui-element no-select">
+        <div class="joystick"></div>
+    </div>
+    
     <div class="chat-preview-container gui-element no-select"></div>
     <div class="chat-container gui-element text-select">
         <div class="chat-message-container"></div>
@@ -285,15 +269,33 @@
 <div class="menu game-menu no-select" id="game-menu-sp">
     <div class="game-menu-options">
         <span class="menu-selection" id="game-menu-sp-return-to-main">Return to Main Menu</span><br/>
-        <span class="menu-selection" id="game-menu-sp-world-save">Save World</span><br/>
-        <span class="menu-selection" id="game-menu-sp-cancel">Cancel</span>
+        <span class="menu-selection" id="game-menu-sp-world-save">Download Arena</span><br/>
+        <span class="menu-selection" id="game-menu-sp-cancel">Return to Game</span>
+    </div>
+</div>
+
+<div class="menu game-menu no-select" id="download-menu">
+    <div class="game-menu-options download-options">
+        <div class='options-parent'>
+            <span class="option-title">Minimum Player Count</span>
+            <input type="number" min="2" max="32" class="option-value" id="download-option-min">
+
+            <span class="option-title">Recommended Player Count</span>
+            <input type="number" min="2" max="32" class="option-value" id="download-option-rec">
+
+            <span class="option-title">Maximum Player Count</span>
+            <input type="number" min="4" max="34" class="option-value" id="download-option-max">
+        </div><br/>
+        <span class="menu-selection" id="download-menu-arena-download">Download Arena</span>
+        <span class="menu-selection" id="download-menu-return">Return to Game</span><br/>
+        <span class="menu-error" id="download-menu-error"></span>
     </div>
 </div>
 
 <div class="menu game-menu no-select" id="game-menu-mp">
     <div class="game-menu-options">
         <span class="menu-selection" id="game-menu-mp-disconnect">Disconnect</span><br/>
-        <span class="menu-selection" id="game-menu-mp-cancel">Cancel</span>
+        <span class="menu-selection" id="game-menu-mp-cancel">Return To Game</span>
     </div>
 </div>
 

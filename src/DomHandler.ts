@@ -69,6 +69,11 @@ export default class DomHandler {
     public static setInterference(interference: boolean) {
         guiInterference = interference;
     }
+
+    public static supportsTouch() {
+        // @ts-ignore
+        return "ontouchstart" in document.documentElement;
+    }
 }
 
 let nextPointerLockExitInvoked = false;
@@ -92,6 +97,9 @@ const events = new Map([
     ["blur", EventHandler.Event.DOM_BLUR],
     ["focus", EventHandler.Event.DOM_FOCUS],
     ["wheel", EventHandler.Event.DOM_WHEEL],
+    ["touchstart", EventHandler.Event.DOM_TOUCHSTART],
+    ["touchmove", EventHandler.Event.DOM_TOUCHMOVE],
+    ["touchend", EventHandler.Event.DOM_TOUCHEND],
 ]);
 
 const windowEventTitles = ["resize", "blur", "focus", "click"];

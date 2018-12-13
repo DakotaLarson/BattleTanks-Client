@@ -215,15 +215,7 @@ export default class SceneHandler extends Component {
             speedPowerupPositions,
             ammoPowerupPositions,
         };
-        const blob = new Blob([JSON.stringify(saveObject)], {type : "application/json"});
-        const objectURL = URL.createObjectURL(blob);
-        const anchor = document.createElement("a");
-        anchor.download = saveObject.title + ".json";
-        anchor.href = objectURL;
-        document.body.appendChild(anchor);
-        anchor.click();
-        document.body.removeChild(anchor);
-        URL.revokeObjectURL(objectURL);
+        EventHandler.callEvent(EventHandler.Event.ARENA_SAVE_REQUEST, saveObject);
     }
 
     private clearScene() {

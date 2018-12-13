@@ -53,7 +53,7 @@ export default class ScenePlayerHandler extends Component {
         });
 
         const fontLoader = new FontLoader();
-        fontLoader.load(location.pathname + "res/font/no_continue.json", (font: Font) => {
+        fontLoader.load(location.pathname + "res/font/Bombardier_Regular.json", (font: Font) => {
             this.font = font;
         });
 

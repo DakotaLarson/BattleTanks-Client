@@ -9,3 +9,36 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+.download-options{
+    background: #222222;
+}
+
+.download-options .options-parent{
+    display: inline-grid;
+    grid-template-columns: auto auto;
+    justify-items: left;
+    grid-gap: 5px 5px;
+    font-size: 3vmin;
+}
+
+.download-options .option-title{
+    justify-self: right;
+}
+
+.download-options .option-value{
+    outline: none;
+    background: none;
+    padding: 0.5vmin 1vmin;
+    font: 3vmin 'Bombardier', sans-serif;
+    color: #ffffff;
+    border: solid 1px;
+    margin-bottom: 3vmin;
+}
+
+.download-options .menu-error{
+    font-size: 3vmin;
+    color: red;
+    text-transform: none;
+}
+

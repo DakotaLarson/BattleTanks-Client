@@ -12,6 +12,7 @@ import RaycastHandler from "../RaycastHandler";
 import Renderer from "../Renderer";
 import MultiplayerArena from "./arena/MultiplayerArena";
 import SingleplayerArena from "./arena/SinglePlayerArena";
+import ArenaDownloadHandler from "./ArenaDownloadHandler";
 import MultiplayerCamera from "./camera/multiplayer/MultiplayerCamera";
 import SingleplayerCamera from "./camera/singleplayer/SingleplayerCamera";
 import PowerupCollisionHandler from "./powerup/PowerupCollisionHandler";
@@ -39,13 +40,11 @@ export default class ArenaHandler extends Component {
     private multiplayerCamera: MultiplayerCamera;
 
     private audioHandler: AudioHandler;
-
     private projectileHandler: ProjectileHandler;
-
     private powerupCollisionHandler: PowerupCollisionHandler;
+    private arenaDownloadHandler: ArenaDownloadHandler;
 
     private isSingleplayer: boolean;
-
     private arenaAttached: boolean;
 
     constructor() {
@@ -79,10 +78,9 @@ export default class ArenaHandler extends Component {
         this.multiplayerCamera = new MultiplayerCamera(perspectiveCamera);
 
         this.audioHandler = new AudioHandler(audioListener);
-
         this.projectileHandler = new ProjectileHandler(this.sceneHandler.getScene());
-
         this.powerupCollisionHandler = new PowerupCollisionHandler();
+        this.arenaDownloadHandler = new ArenaDownloadHandler();
 
         this.isSingleplayer = false;
         this.arenaAttached = false;
@@ -112,6 +110,7 @@ export default class ArenaHandler extends Component {
         this.attachChild(this.singleplayerGUI);
         this.attachChild(this.creationToolHandler);
         this.attachChild(this.singleplayerCamera);
+        this.attachChild(this.arenaDownloadHandler);
 
         worldData.fromServer = false;
         EventHandler.callEvent(EventHandler.Event.ARENA_SCENE_UPDATE, worldData);
@@ -126,6 +125,7 @@ export default class ArenaHandler extends Component {
         this.detachChild(this.singleplayerGUI);
         this.detachChild(this.creationToolHandler);
         this.detachChild(this.singleplayerCamera);
+        this.detachChild(this.arenaDownloadHandler);
     }
 
     private attachMultiplayerArena() {

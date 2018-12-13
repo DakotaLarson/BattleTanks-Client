@@ -72,9 +72,15 @@ class Game extends Component {
     }
 
     private connectToMultiplayer() {
-        let address = "wss://battle-tanks-server.herokuapp.com";
-        if (location.host.startsWith("localhost")) {
-            address = "ws://localhost:8000";
+        let address = "ws://" + location.hostname + ":8000";
+        const host = location.hostname;
+        const gaeHostnames = ["battletanks.app", "appspot.com"];
+
+        for (const hostname of gaeHostnames) {
+            if (host.includes(hostname)) {
+                address = "wss://battle-tanks-server.herokuapp.com";
+                break;
+            }
         }
         this.detachChild(this.mainMenu);
         this.attachChild(this.connectionScreen);
@@ -153,15 +159,15 @@ class Game extends Component {
     });
 
     const outputDebugData = () => {
-         const idleTime = 1000 - debugRenderTime - debugComputeTime;
-         const debugData = {
-             fps: debugFPSCount,
-             rendering: debugRenderTime,
-             computation: debugComputeTime,
-             idle: idleTime,
-         };
-         EventHandler.callEvent(EventHandler.Event.GAME_DEBUG_OUTPUT, debugData);
-         debugRenderTime = debugComputeTime = debugFPSCount = 0;
+        const idleTime = 1000 - debugRenderTime - debugComputeTime;
+        const debugData = {
+            fps: debugFPSCount,
+            rendering: debugRenderTime,
+            computation: debugComputeTime,
+            idle: idleTime,
+        };
+        EventHandler.callEvent(EventHandler.Event.GAME_DEBUG_OUTPUT, debugData);
+        debugRenderTime = debugComputeTime = debugFPSCount = 0;
     };
 
     EventHandler.addListener(undefined, EventHandler.Event.DOM_KEYUP, (event) => {

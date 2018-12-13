@@ -1,9 +1,10 @@
 html, body{
     margin: 0;
     background-color: black;
-    font-family: 'No Regular', monospace;
+    font-family: 'Bombardier', sans-serif;
     height: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 #game-canvas{
     display: block;
@@ -25,8 +26,8 @@ html, body{
     width: 100%;
     color: #d0d0d0;
     text-align: center;
-    text-transform: uppercase;
     display: none;
+    text-transform: uppercase;
 }
 .menu-section{
     display: none;
@@ -54,7 +55,7 @@ html, body{
     cursor: default !important;
 }
 .menu-text-input{
-    font-family: 'No Regular', monospace;
+    font-family: 'Bombardier', sans-serif;
     background: none;
     color: #d0d0d0;
     outline: none;

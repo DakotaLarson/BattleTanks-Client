@@ -7,6 +7,7 @@ import Chat from "./Chat";
 import DebugPanel from "./DebugPanel";
 import FullscreenToggle from "./FullscreenToggle";
 import HealthBar from "./HealthBar";
+import Joystick from "./Joystick";
 import Killfeed from "./Killfeed";
 import ShieldBar from "./ShieldBar";
 
@@ -19,6 +20,7 @@ export default class GUI extends Component {
     private shieldBar: ShieldBar;
     private ammoDisplay: AmmoDisplay;
     private killfeed: Killfeed;
+    private joystick: Joystick;
     private chat: Chat;
 
     constructor() {
@@ -31,6 +33,7 @@ export default class GUI extends Component {
         this.healthBar = new HealthBar(this.element);
         this.shieldBar = new ShieldBar(this.element);
         this.killfeed = new Killfeed(this.element);
+        this.joystick = new Joystick(this.element);
         this.chat = new Chat(this.element);
     }
 
@@ -71,11 +74,16 @@ export default class GUI extends Component {
         this.attachChild(this.healthBar);
         this.attachChild(this.shieldBar);
         this.attachChild(this.ammoDisplay);
+
+        if (DomHandler.supportsTouch()) {
+            this.attachChild(this.joystick);
+        }
     }
 
     private onPlayerRemoval() {
         this.detachChild(this.healthBar);
         this.detachChild(this.shieldBar);
         this.detachChild(this.ammoDisplay);
+        this.detachChild(this.joystick);
     }
 }
