@@ -145,7 +145,6 @@
     </div>
     <!-- SINGLEPLAYER CREATE MENU -->
     <div class="menu-section" id="sp-menu-create">
-        <input type="text" class="menu-input" id="create-opt-title" placeholder="Title"/><br/>
         <input type="number" min="5" max="1000" class="menu-input menu-number-input" id="create-opt-width" placeholder="Width"/><br/>
         <input type="number" min="5" max="1000" class="menu-input menu-number-input" id="create-opt-height" placeholder="Height"/><br/>
         <span class="menu-selection" id="create-opt-create">Create</span>
@@ -277,6 +276,8 @@
 <div class="menu game-menu no-select" id="download-menu">
     <div class="game-menu-options download-options">
         <div class='options-parent'>
+            <span class="option-title">Title</span>
+            <input type="text" maxlength="32" class="option-value" id="download-option-title"> 
             <span class="option-title">Minimum Player Count</span>
             <input type="number" min="2" max="32" class="option-value" id="download-option-min">
 

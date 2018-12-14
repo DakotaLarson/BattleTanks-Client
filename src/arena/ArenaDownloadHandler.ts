@@ -14,6 +14,7 @@ export default class ArenaDownloadHandler extends ChildComponent {
     private downloadBtn: HTMLElement;
     private errorElt: HTMLElement;
 
+    private titleValueElt: HTMLInputElement;
     private minValueElt: HTMLInputElement;
     private recValueElt: HTMLInputElement;
     private maxValueElt: HTMLInputElement;
@@ -26,6 +27,7 @@ export default class ArenaDownloadHandler extends ChildComponent {
         super();
         this.parent = DomHandler.getElement("#download-menu");
 
+        this.titleValueElt = DomHandler.getElement("#download-option-title") as HTMLInputElement;
         this.minValueElt = DomHandler.getElement("#download-option-min") as HTMLInputElement;
         this.recValueElt = DomHandler.getElement("#download-option-rec") as HTMLInputElement;
         this.maxValueElt = DomHandler.getElement("#download-option-max") as HTMLInputElement;
@@ -58,7 +60,7 @@ export default class ArenaDownloadHandler extends ChildComponent {
             EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onDownloadClick);
 
             this.parent.style.display = "block";
-            this.minValueElt.focus();
+            this.titleValueElt.focus();
             this.visible = true;
         }
     }
@@ -70,6 +72,7 @@ export default class ArenaDownloadHandler extends ChildComponent {
 
             this.arenaData = undefined;
 
+            this.titleValueElt.value = "";
             this.minValueElt.value = "";
             this.recValueElt.value = "";
             this.maxValueElt.value = "";
@@ -87,12 +90,12 @@ export default class ArenaDownloadHandler extends ChildComponent {
     }
 
     private onDownloadClick(event: MouseEvent) {
-        console.log("reached");
         if (event.target === this.downloadBtn) {
+            const titleValue = this.titleValueElt.value.trim();
             const minValue = Number(this.minValueElt.value);
             const recValue = Number(this.recValueElt.value);
             const maxValue = Number(this.maxValueElt.value);
-            if (isNaN(minValue) || isNaN(recValue) || isNaN(maxValue)) {
+            if (isNaN(minValue) || isNaN(recValue) || isNaN(maxValue) || !titleValue) {
                 this.errorElt.textContent = "Invalid value(s)";
             } else if (minValue < ArenaDownloadHandler.MIN_VALUE ||
                 minValue > ArenaDownloadHandler.MAX_VALUE ||
@@ -103,6 +106,7 @@ export default class ArenaDownloadHandler extends ChildComponent {
                     maxValue > ArenaDownloadHandler.MAX_VALUE + ArenaDownloadHandler.MAX_OFFSET) {
                         this.errorElt.textContent = "Maximum value must be between " + (ArenaDownloadHandler.MIN_VALUE + ArenaDownloadHandler.MAX_OFFSET) + " - " + (ArenaDownloadHandler.MAX_VALUE + ArenaDownloadHandler.MAX_OFFSET);
             } else {
+                this.arenaData.title = titleValue;
                 this.arenaData.minimumPlayerCount = minValue;
                 this.arenaData.recommendedPlayerCount = recValue;
                 this.arenaData.maximumPlayerCount = maxValue;

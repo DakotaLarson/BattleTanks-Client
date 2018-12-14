@@ -29,8 +29,6 @@ export default class SceneHandler extends Component {
 
     private scene: Scene;
 
-    private title: string | undefined;
-
     private lines: LineSegments | undefined;
     private lights: Object3D[] | undefined;
 
@@ -162,7 +160,6 @@ export default class SceneHandler extends Component {
     }
 
     private onSceneUpdate(data: any) {
-        this.title = data.title;
         this.width = data.width + 2;
         this.height = data.height + 2;
 
@@ -204,7 +201,6 @@ export default class SceneHandler extends Component {
         const ammoPowerupPositions = this.sceneUtils.generatePositionData(this.ammoPowerupPositions);
 
         const saveObject = {
-            title: this.title,
             width: this.width - 2,
             height: this.height - 2,
             blockPositions: blockData,

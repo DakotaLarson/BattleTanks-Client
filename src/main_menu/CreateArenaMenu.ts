@@ -9,7 +9,6 @@ export default class CreateWorldMenu extends Component {
 
     private element: HTMLElement;
 
-    private titleElt: HTMLInputElement;
     private widthElt: HTMLInputElement;
     private heightElt: HTMLInputElement;
     private createElt: HTMLElement;
@@ -19,7 +18,6 @@ export default class CreateWorldMenu extends Component {
     constructor(mainMenu: HTMLElement) {
         super();
         this.element = DomHandler.getElement("#sp-menu-create", mainMenu);
-        this.titleElt = DomHandler.getElement("#create-opt-title", this.element) as HTMLInputElement;
         this.widthElt = DomHandler.getElement("#create-opt-width", this.element) as HTMLInputElement;
         this.heightElt = DomHandler.getElement("#create-opt-height", this.element) as HTMLInputElement;
         this.createElt = DomHandler.getElement("#create-opt-create", this.element);
@@ -32,14 +30,13 @@ export default class CreateWorldMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCancelClick);
 
         this.element.style.display = "block";
-        this.titleElt.focus();
+        this.widthElt.focus();
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCancelClick);
 
-        this.titleElt.value = "";
         this.heightElt.value = "";
         this.widthElt.value = "";
         this.errorElt.textContent = "";
@@ -49,13 +46,10 @@ export default class CreateWorldMenu extends Component {
 
     private onCreateClick(event: MouseEvent) {
         if (event.target === this.createElt) {
-            const titleValue = this.titleElt.value.trim();
             const widthValue = Number(this.widthElt.value);
             const heightValue = Number(this.heightElt.value);
 
-            if (titleValue.length === 0) {
-                this.errorElt.textContent = "Missing Title";
-            } else if (isNaN(widthValue) || isNaN(heightValue)) {
+            if (isNaN(widthValue) || isNaN(heightValue)) {
                 this.errorElt.textContent = "Invalid arena dimensions";
             } else if (widthValue < MIN_DIMENSION || heightValue < MIN_DIMENSION) {
                 this.errorElt.textContent = "Arena dimensions cannot be less than " + MIN_DIMENSION;
@@ -64,7 +58,6 @@ export default class CreateWorldMenu extends Component {
             } else {
                 this.errorElt.textContent = "";
                 EventHandler.callEvent(EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, {
-                    title: titleValue,
                     width: widthValue,
                     height: heightValue,
                 });
