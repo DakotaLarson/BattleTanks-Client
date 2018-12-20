@@ -1,5 +1,4 @@
 import EventHandler from "./EventHandler";
-import Globals from "./Globals";
 
 const gameCanvas = document.querySelector("#game-canvas") as HTMLElement;
 

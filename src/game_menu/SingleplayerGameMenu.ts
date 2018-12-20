@@ -35,7 +35,9 @@ export default class SinglePlayerGameMenu extends Component {
         } else if (event.target === this.saveBtn) {
             EventHandler.callEvent(EventHandler.Event.SP_GAMEMENU_SAVE_GAME_REQUEST);
         } else if (event.target === this.returnBtn) {
-            EventHandler.callEvent(EventHandler.Event.SP_GAMEMENU_RETURN_TO_MAIN_REQUEST);
+            if (window.confirm("Are you sure you want to discard changes?")) {
+                EventHandler.callEvent(EventHandler.Event.SP_GAMEMENU_RETURN_TO_MAIN_REQUEST);
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
+import Options from "../Options";
 
 export default class TopMenu extends Component {
 
@@ -39,7 +40,27 @@ export default class TopMenu extends Component {
 
     private onMPOption(event: MouseEvent) {
         if (event.target === this.mpBtn) {
+            this.getUsername();
             EventHandler.callEvent(EventHandler.Event.MPMENU_JOIN_OPT_CLICK);
         }
+    }
+
+    private getUsername() {
+        if (!localStorage.getItem("hasUsernamePrompt") && Options.options.username === "Guest") {
+            const username = window.prompt("Do you want a custom username? You can change this later in 'Options' (Accessed by the top right dropdown menu).", "Guest");
+            if (username && username !== "Guest") {
+                let trimmedName = username.trim();
+                if (trimmedName) {
+                    if (trimmedName.length > 16) {
+                        trimmedName = trimmedName.substring(0, 16);
+                    }
+                    EventHandler.callEvent(EventHandler.Event.OPTIONS_UPDATE, {
+                        attribute: "username",
+                        data: trimmedName,
+                    });
+                }
+            }
+        }
+        localStorage.setItem("hasUsernamePrompt", "true");
     }
 }
