@@ -19,7 +19,8 @@ export default class OptionsMenu extends Component {
     private shootValueElt: HTMLElement;
     private chatOpenValueElt: HTMLElement;
 
-    private volumeValueElt: HTMLInputElement;
+    private gameVolumeValueElt: HTMLInputElement;
+    private menuVolumeValueElt: HTMLInputElement;
     private mouseValueElt: HTMLInputElement;
     private rotationValueElt: HTMLInputElement;
     private cameraAngleValueElt: HTMLInputElement;
@@ -43,7 +44,8 @@ export default class OptionsMenu extends Component {
         this.shootValueElt = DomHandler.getElement("#option-value-shoot", this.element);
         this.chatOpenValueElt = DomHandler.getElement("#option-value-chatopen", this.element);
 
-        this.volumeValueElt = DomHandler.getElement("#option-value-volume", this.element) as HTMLInputElement;
+        this.gameVolumeValueElt = DomHandler.getElement("#option-value-volume-game", this.element) as HTMLInputElement;
+        this.menuVolumeValueElt = DomHandler.getElement("#option-value-volume-menu", this.element) as HTMLInputElement;
         this.mouseValueElt = DomHandler.getElement("#option-value-mouse", this.element) as HTMLInputElement;
         this.rotationValueElt = DomHandler.getElement("#option-value-rotation", this.element) as HTMLInputElement;
         this.cameraAngleValueElt = DomHandler.getElement("#option-value-camera-angle", this.element) as HTMLInputElement;
@@ -70,7 +72,8 @@ export default class OptionsMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onChatOpenClick);
 
-        DomEventHandler.addListener(this, this.volumeValueElt, "change", this.onVolumeChange);
+        DomEventHandler.addListener(this, this.gameVolumeValueElt, "change", this.onGameVolumeChange);
+        DomEventHandler.addListener(this, this.menuVolumeValueElt, "change", this.onMenuVolumeChange);
         DomEventHandler.addListener(this, this.mouseValueElt, "change", this.onMouseChange);
         DomEventHandler.addListener(this, this.rotationValueElt, "change", this.onRotationSensitivityChange);
         DomEventHandler.addListener(this, this.cameraAngleValueElt, "change", this.onCameraAngleChange);
@@ -93,7 +96,8 @@ export default class OptionsMenu extends Component {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onChatOpenClick);
 
-        DomEventHandler.removeListener(this, this.volumeValueElt, "change", this.onVolumeChange);
+        DomEventHandler.removeListener(this, this.gameVolumeValueElt, "change", this.onGameVolumeChange);
+        DomEventHandler.removeListener(this, this.menuVolumeValueElt, "change", this.onMenuVolumeChange);
         DomEventHandler.removeListener(this, this.mouseValueElt, "change", this.onMouseChange);
         DomEventHandler.removeListener(this, this.rotationValueElt, "change", this.onRotationSensitivityChange);
         DomEventHandler.removeListener(this, this.cameraAngleValueElt, "change", this.onCameraAngleChange);
@@ -191,9 +195,14 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    private onVolumeChange() {
-        const value = Number(this.volumeValueElt.value);
-        this.saveChange("volume", value);
+    private onGameVolumeChange() {
+        const value = Number(this.gameVolumeValueElt.value);
+        this.saveChange("gameVolume", value);
+    }
+
+    private onMenuVolumeChange() {
+        const value = Number(this.menuVolumeValueElt.value);
+        this.saveChange("menuVolume", value);
     }
 
     private onMouseChange() {
@@ -303,7 +312,8 @@ export default class OptionsMenu extends Component {
             setOption("reload", this.reloadValueElt);
             setOption("chatOpen", this.chatOpenValueElt);
 
-            setRangeValue(options.volume, this.volumeValueElt);
+            setRangeValue(options.gameVolume, this.gameVolumeValueElt);
+            setRangeValue(options.menuVolume, this.menuVolumeValueElt);
             setRangeValue(options.mouseSensitivity, this.mouseValueElt);
             setRangeValue(options.rotationSensitivity, this.rotationValueElt);
             setRangeValue(options.cameraAngle, this.cameraAngleValueElt);

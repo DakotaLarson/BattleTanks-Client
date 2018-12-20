@@ -390,7 +390,7 @@ export default class ScenePlayerHandler extends Component {
 
     private playSound(player: IPlayerObj, buffer: AudioBuffer) {
 
-        const volume = Options.options.volume;
+        const volume = Options.options.gameVolume;
         if (volume) {
             const head = player.head;
 

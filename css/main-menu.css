@@ -116,3 +116,15 @@
 .main-menu .play-btn {
     margin-bottom: 35vh;
 }
+
+.main-menu .menu-volume-control {
+    position: absolute;
+    width: 5vmin;
+    height: 5vmin;
+    right: 15vw;
+    top: 1vmin;
+}
+
+.main-menu .menu-volume-control:hover {
+    cursor: pointer;
+}

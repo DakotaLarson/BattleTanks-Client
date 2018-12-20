@@ -62,6 +62,10 @@
 </div>
 <div class="menu main-menu no-select">
     <div class="auth" id=google-sign-in></div>
+    <img class="menu-volume-control" draggable="false"/>
+    <audio id="mainmenu-background-audio" preload="auto" loop>
+        <source src="./res/audio/menu/background.mp3" type="audio/mpeg"/>
+    </audio>
     <div class="options-dropdown">
         <div class="options-dropdown-header">
                 <span id="options-dropdown-username"></span>
@@ -127,8 +131,11 @@
             <span class="option-title">Open Chat</span>
             <span class="option-value option-listening-value" id="option-value-chatopen"></span>
 
-            <span class="option-title">Volume</span>
-            <input type="range" id="option-value-volume" class="option-value option-range-value" min="0" max="1" step="any"/>
+            <span class="option-title">Game Volume</span>
+            <input type="range" id="option-value-volume-game" class="option-value option-range-value" min="0" max="1" step="any"/>
+
+            <span class="option-title">Menu Volume</span>
+            <input type="range" id="option-value-volume-menu" class="option-value option-range-value" min="0" max="1" step="any"/>
 
             <span class="option-title">Mouse Sensitivity</span>
             <input type="range" id="option-value-mouse" class="option-value option-range-value" min="0.1" max="1" step="any"/>
@@ -174,7 +181,7 @@
     <!-- SOCIAL LINKS -->
     <div class="social-container">
         <a class="social-ref" href="https://discord.gg/kGcw5M6" target="_blank">
-            <img class="social-image-large" src="./res/social/discord.svg" alt="BattleTanks Discord">
+            <img class="social-image-large" draggable="false" src="./res/social/discord.svg" alt="BattleTanks Discord">
         </a>
     </div>
 </div>
@@ -216,8 +223,8 @@
         <span class="debug-data no-select">Idle: <span id="debug-idle">...</span></span><br/>
     </div>
     <div class="fullscreen-toggle gui-element no-select">
-        <img id="fullscreen-toggle-on" src="./res/gui/fullscreen.svg">
-        <img id="fullscreen-toggle-off" src="./res/gui/fullscreen-exit.svg">
+        <img id="fullscreen-toggle-on" draggable="false" src="./res/gui/fullscreen.svg">
+        <img id="fullscreen-toggle-off" draggable="false" src="./res/gui/fullscreen-exit.svg">
     </div>
 
     <div class="create-world-mode-toggle-parent gui-element no-select">
@@ -281,10 +288,10 @@
             <input type="text" maxlength="32" class="option-value" id="download-option-title"> 
             
             <span class="option-title">Minimum Player Count</span>
-            <input type="number" min="2" max="32" class="option-value" id="download-option-min">
+            <input type="number" min="2" max="30" class="option-value" id="download-option-min">
 
             <span class="option-title">Maximum Player Count</span>
-            <input type="number" min="4" max="34" class="option-value" id="download-option-max">
+            <input type="number" min="4" max="32" class="option-value" id="download-option-max">
             
         </div><br/>
         <span class="menu-selection" id="download-menu-arena-download">Download Arena</span>
@@ -309,7 +316,7 @@
 <script>
     const config = {
         map: {
-            three: "./node_modules/three/build/three.js"
+            three: "https://cdnjs.cloudflare.com/ajax/libs/three.js/99/three.js"
         },
         packages: {
             build: {
@@ -317,18 +324,6 @@
             }
         } 
     }
-
-    const host = location.hostname;
-
-    const gaeHostnames = ["battletanks.app", "appspot.com"];
-
-    for (const hostname of gaeHostnames) {
-        if (host.includes(hostname)) {
-            config.map.three = "./three/three.js";
-            break;
-        }
-    }
-
     SystemJS.config(config);
     SystemJS.import("./build/Game.js");
 </script>

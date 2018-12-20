@@ -69,8 +69,12 @@ export default class Options extends Component {
             };
         }
 
-        if (!("volume" in Options.options)) {
-            Options.options.volume = 0.5;
+        if (!("gameVolume" in Options.options)) {
+            Options.options.gameVolume = 0.5;
+        }
+
+        if (!("menuVolume" in Options.options)) {
+            Options.options.menuVolume = 0.5;
         }
 
         if (!("mouseSensitivity" in Options.options)) {
@@ -105,6 +109,7 @@ export default class Options extends Component {
         if (rawOptions) {
             const storedOptions = JSON.parse(rawOptions);
             storedOptions[attribute] = data;
+            Options.options[attribute] = data;
             localStorage.setItem("userOptions", JSON.stringify(storedOptions));
             if (!storedOptions.username) {
                 storedOptions.username = "Guest";

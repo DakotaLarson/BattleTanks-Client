@@ -1,4 +1,5 @@
 import EventHandler from "./EventHandler";
+import Globals from "./Globals";
 
 const gameCanvas = document.querySelector("#game-canvas") as HTMLElement;
 
@@ -199,8 +200,10 @@ EventHandler.addListener(undefined, EventHandler.Event.DOM_MOUSEMOVE, (event) =>
 
 const stopDefaultActions = () => {
     document.oncontextmenu = () => false;
-    // document.addListener(this, 'keydown', (event) => {
-    //     event.preventDefault();
-    // });
+    document.addEventListener("keydown", (event) => {
+        if (!Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
+            event.preventDefault();
+        }
+    });
 };
 stopDefaultActions();

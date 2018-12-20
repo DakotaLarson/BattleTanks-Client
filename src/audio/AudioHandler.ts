@@ -42,7 +42,7 @@ export default class AudioHandler extends Component {
     }
 
     private onAudioRequest(audio: AudioType) {
-        if (Options.options.volume) {
+        if (Options.options.gameVolume) {
             if (audio.startsWith("GAME")) {
                 const buffer = this.buffers.get(audio);
                 if (buffer) {
@@ -59,13 +59,13 @@ export default class AudioHandler extends Component {
     private playBuffer(buffer: AudioBuffer) {
         const audio = new ThreeAudio(this.audioListener);
         audio.setBuffer(buffer);
-        audio.setVolume(Options.options.volume);
+        audio.setVolume(Options.options.gameVolume);
         audio.play();
     }
 
     private playElement(path: string) {
         const audio = new Audio(path);
-        audio.volume = Options.options.volume;
+        audio.volume = Options.options.gameVolume;
         audio.play();
     }
 }

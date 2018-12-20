@@ -5,6 +5,7 @@ import EventHandler from "../EventHandler";
 import AudioType from "../audio/AudioType";
 import ChildComponent from "../component/ChildComponent";
 import AddServerMenu from "./AddServerMenu";
+import BackgroundVolumeHandler from "./BackgroundVolumeHandler";
 import CreateWorldMenu from "./CreateArenaMenu";
 import LoadWorldMenu from "./LoadArenaMenu";
 import MultiplayerMenu from "./MultiplayerMenu";
@@ -26,6 +27,7 @@ export default class MainMenu extends Component {
     private addServerMenu: AddServerMenu;
 
     private optionsDropdown: OptionsDropdown;
+    private backgroundVolumeHandler: BackgroundVolumeHandler;
 
     private attachedCmp: ChildComponent | undefined;
 
@@ -42,6 +44,7 @@ export default class MainMenu extends Component {
         this.addServerMenu = new AddServerMenu(this.element);
 
         this.optionsDropdown = new OptionsDropdown(this.element);
+        this.backgroundVolumeHandler = new BackgroundVolumeHandler(this.element);
     }
     public enable() {
 
@@ -76,6 +79,7 @@ export default class MainMenu extends Component {
         this.attach(this.topMenu);
 
         this.attachChild(this.optionsDropdown);
+        this.attachChild(this.backgroundVolumeHandler);
 
         this.element.style.display = "block";
     }
@@ -108,6 +112,7 @@ export default class MainMenu extends Component {
         EventHandler.removeListener(this, EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK, this.onAddServerSave);
 
         this.detachChild(this.optionsDropdown);
+        this.detachChild(this.backgroundVolumeHandler);
 
         this.element.style.display = "";
     }
