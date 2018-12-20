@@ -93,6 +93,8 @@ export default class Player extends Component {
 
         this.movingLastFrame = false;
 
+        this.speedMultiplier = 1;
+
         PacketSender.sendPlayerMove(this.position, this.movementVelocity, this.rotationVelocity, this.bodyRotation, this.headRotation);
         if (!this.cameraIsFollowing() && !DomHandler.hasPointerLock()) {
             DomHandler.requestPointerLock();
