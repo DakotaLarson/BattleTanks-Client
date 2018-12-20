@@ -201,8 +201,9 @@ EventHandler.addListener(undefined, EventHandler.Event.DOM_MOUSEMOVE, (event) =>
 const stopDefaultActions = () => {
     document.oncontextmenu = () => false;
     document.addEventListener("keydown", (event) => {
-        if (!Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
+        if ((document.activeElement as Element).nodeName !== "INPUT") {
             event.preventDefault();
+
         }
     });
 };
