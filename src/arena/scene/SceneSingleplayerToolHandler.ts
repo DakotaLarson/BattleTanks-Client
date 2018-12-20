@@ -48,17 +48,21 @@ export default class SceneSingleplayerToolHandler extends Component {
 
     private onBCTPrimary() {
         if (this.blocksIntersection.length) {
-            // const face = this.blocksIntersection[0].face;
-            // if (face) {
-            //     const normal = face.normal;
-            //     if (normal.x && !normal.z) {
+            const face = this.blocksIntersection[0].face;
+            const point = this.blocksIntersection[0].point;
 
-            //     } else if (normal.z && !normal.x) {
-
-            //     }
-            //     console.log(normal);
-            //     console.log(this.blocksIntersection[0].point);
-            // }
+            if (face) {
+                const normal = face.normal;
+                if (!normal.y) {
+                    point.x -= 0.5 * normal.x;
+                    point.z -= 0.5 * normal.z;
+                    const blockPos = point.clone().floor().add(normal);
+                    if (!this.isOutOfBounds(blockPos) && !this.isPositionBlock(blockPos)) {
+                        this.parent.blockPositions.push(blockPos);
+                        this.parent.updateBlocks(this.parent.blockPositions);
+                    }
+                }
+            }
         } else if (this.floorIntersection.length) {
             const position = this.floorIntersection[0].point.setY(0);
             position.floor();
@@ -70,7 +74,24 @@ export default class SceneSingleplayerToolHandler extends Component {
     }
 
     private onBCTSecondary() {
-        if (this.floorIntersection.length) {
+        if (this.blocksIntersection.length) {
+            const face = this.blocksIntersection[0].face;
+            const point = this.blocksIntersection[0].point;
+
+            if (face) {
+                const normal = face.normal;
+
+                point.x -= 0.5 * normal.x;
+                point.z -= 0.5 * normal.z;
+                point.y = 0;
+                const blockPos = point.clone().floor();
+                const removed = this.removeBlockPosition(blockPos);
+                if (removed) {
+                    this.parent.updateBlocks(this.parent.blockPositions);
+                }
+
+            }
+        } else if (this.floorIntersection.length) {
             const position = this.floorIntersection[0].point.setY(0);
             position.floor();
             const removed = this.removeBlockPosition(position);
@@ -177,6 +198,10 @@ export default class SceneSingleplayerToolHandler extends Component {
 
     private isPositionBlock(pos: Vector3) {
         return this.isPositionInArray(pos, this.parent.blockPositions);
+    }
+
+    private isOutOfBounds(pos: Vector3) {
+        return pos.x < 0 || pos.z < 0 || pos.x >= this.parent.width || pos.z >= this.parent.height;
     }
 
     private isPositionTeamSpawn(pos: Vector3) {

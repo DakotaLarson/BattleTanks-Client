@@ -3,11 +3,15 @@ import EventHandler from "../../EventHandler";
 
 export default class BlockTool extends Component {
 
+    private static readonly COOLDOWN_TIME = 125;
+
     private eventToCall: any;
+    private cooldown: number;
 
     constructor() {
         super();
         this.eventToCall = undefined;
+        this.cooldown = performance.now();
     }
 
     public enable() {
@@ -23,8 +27,9 @@ export default class BlockTool extends Component {
     }
 
     private onMouseMove() {
-        if (this.eventToCall) {
+        if (this.eventToCall && performance.now() - this.cooldown > BlockTool.COOLDOWN_TIME) {
             EventHandler.callEvent(this.eventToCall);
+            this.cooldown = performance.now();
         }
     }
 
@@ -36,6 +41,7 @@ export default class BlockTool extends Component {
                 this.eventToCall = EventHandler.Event.BLOCK_TOOL_SECONDARY;
             }
             EventHandler.callEvent(this.eventToCall);
+            this.cooldown = performance.now();
         }
     }
 
