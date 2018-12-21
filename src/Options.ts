@@ -82,7 +82,7 @@ export default class Options extends Component {
         }
 
         if (!("rotationSensitivity" in Options.options)) {
-            Options.options.mouseSensitivity = 0.9;
+            Options.options.rotationSensitivity = 0.5;
         }
 
         if (!("cameraAngle" in Options.options)) {
