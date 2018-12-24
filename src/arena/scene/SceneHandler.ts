@@ -2,7 +2,7 @@ import {AudioListener, BoxGeometry, Color, Geometry, LineSegments, Mesh, MeshLam
 
 import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
-import BlockCollisionHandler from "../BlockCollisionHandler";
+import BlockCollisionHandler from "../collision/BlockCollisionHandler";
 import ScenePlayerHandler from "./ScenePlayerHandler";
 import ScenePowerupHandler from "./ScenePowerupHandler";
 import SceneSingleplayerToolHandler from "./SceneSingleplayerToolHandler";

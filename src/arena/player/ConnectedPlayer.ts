@@ -1,13 +1,16 @@
 import { Vector3, Vector4 } from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
-import BlockCollisionHandler from "../BlockCollisionHandler";
+import BlockCollisionHandler from "../collision/BlockCollisionHandler";
 
 export default class ConnectedPlayer extends ChildComponent {
 
-    public name: string;
+    public static readonly X_OFFSET = 0.5;
+    public static readonly Z_OFFSET = 0.75;
 
+    public name: string;
     public id: number;
+    public bodyRotation: number;
 
     public color: number;
     private position: Vector3;
@@ -15,7 +18,6 @@ export default class ConnectedPlayer extends ChildComponent {
     private movementVelocity: number;
     private rotationVelocity: number;
 
-    private bodyRotation: number;
     private headRotation: number;
 
     constructor(id: number, name: string, color: number, pos: Vector4, headRot: number) {
@@ -51,23 +53,30 @@ export default class ConnectedPlayer extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onFrame);
     }
 
+    public getCenterPosition() {
+        return this.position.clone().add(new Vector3(0.5, 0, 0.5));
+    }
+
+    public getInternalPosition(center: Vector3) {
+        return center.clone().sub(new Vector3(0.5, 0, 0.5));
+    }
+
     private onFrame(delta: number) {
         const potentialRotation = (this.bodyRotation + delta * this.rotationVelocity);
 
-        const potentialPosition = this.position.clone();
+        const potentialPosition = this.getCenterPosition();
         potentialPosition.x += delta * this.movementVelocity * Math.sin(potentialRotation),
         potentialPosition.z += delta * this.movementVelocity * Math.cos(potentialRotation);
 
-        const collisionCorrection = BlockCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation);
+        const collisionCorrection = BlockCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, ConnectedPlayer.X_OFFSET, ConnectedPlayer.Z_OFFSET);
 
         if (collisionCorrection) {
             potentialPosition.sub(collisionCorrection);
             this.bodyRotation = potentialRotation;
-            this.position.copy(potentialPosition);
         } else {
             this.bodyRotation = potentialRotation;
-            this.position.copy(potentialPosition);
         }
+        this.position.copy(this.getInternalPosition(potentialPosition));
 
         const movementData = {
             id: this.id,

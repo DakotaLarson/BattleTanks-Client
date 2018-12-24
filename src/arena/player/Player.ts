@@ -6,14 +6,17 @@ import Globals from "../../Globals";
 import Options from "../../Options";
 import PacketSender from "../../PacketSender";
 import RaycastHandler from "../../RaycastHandler";
-import BlockCollisionHandler from "../BlockCollisionHandler";
-
-const PLAYER_MOVEMENT_SPEED = 5;
-const PLAYER_ROTATION_SPEED = 2.5;
+import BlockCollisionHandler from "../collision/BlockCollisionHandler";
+import PlayerCollisionHandler from "../collision/PlayerCollisionHandler";
 
 export default class Player extends Component {
 
     public static radius = Math.sqrt(Math.pow(0.5, 2) + Math.pow(0.75, 2));
+
+    private static readonly PLAYER_MOVEMENT_SPEED = 5;
+    private static readonly PLAYER_ROTATION_SPEED = 2.5;
+    private static readonly X_OFFSET = 0.5;
+    private static readonly Z_OFFSET = 0.75;
 
     public position: Vector3;
 
@@ -130,6 +133,14 @@ export default class Player extends Component {
         DomHandler.exitPointerLock();
     }
 
+    public getCenterPosition() {
+        return this.position.clone().add(new Vector3(0.5, 0, 0.5));
+    }
+
+    public getInternalPosition(center: Vector3) {
+        return center.clone().sub(new Vector3(0.5, 0, 0.5));
+    }
+
     private onKeyDown(event: KeyboardEvent) {
         this.onInputDown(event.code);
     }
@@ -193,15 +204,15 @@ export default class Player extends Component {
         this.rotationVelocity -= this.rotationVelocity * decreaseMultiplier * delta;
 
         if (this.movingForward && !this.movingBackward && !this.isOverlayOpen()) {
-            this.movementVelocity += PLAYER_MOVEMENT_SPEED * delta * increaseMultiplier;
+            this.movementVelocity += Player.PLAYER_MOVEMENT_SPEED * delta * increaseMultiplier;
         } else if (this.movingBackward && !this.movingForward && !this.isOverlayOpen()) {
-            this.movementVelocity -= PLAYER_MOVEMENT_SPEED * delta * increaseMultiplier;
+            this.movementVelocity -= Player.PLAYER_MOVEMENT_SPEED * delta * increaseMultiplier;
         }
 
         if (this.rotatingLeft && !this.rotatingRight && !this.isOverlayOpen()) {
-            this.rotationVelocity += PLAYER_ROTATION_SPEED * delta * increaseMultiplier * Options.options.rotationSensitivity;
+            this.rotationVelocity += Player.PLAYER_ROTATION_SPEED * delta * increaseMultiplier * Options.options.rotationSensitivity;
         } else if (this.rotatingRight && !this.rotatingLeft && !this.isOverlayOpen()) {
-            this.rotationVelocity -=  PLAYER_ROTATION_SPEED * delta * increaseMultiplier * Options.options.rotationSensitivity;
+            this.rotationVelocity -=  Player.PLAYER_ROTATION_SPEED * delta * increaseMultiplier * Options.options.rotationSensitivity;
         }
 
         const moving = this.movingForward && this.movingBackward && this.rotatingLeft && this.rotatingRight;
@@ -217,25 +228,25 @@ export default class Player extends Component {
         const rotationDiff = delta * this.rotationVelocity;
         const potentialRotation = (this.bodyRotation + rotationDiff);
 
-        const potentialPosition = this.position.clone();
+        const potentialPosition = this.getCenterPosition();
         potentialPosition.x += delta * this.movementVelocity * Math.sin(potentialRotation),
         potentialPosition.z += delta * this.movementVelocity * Math.cos(potentialRotation);
 
-        const collisionCorrection = BlockCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation);
+        const collisionCorrection = BlockCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, Player.X_OFFSET, Player.Z_OFFSET);
+        collisionCorrection.add(PlayerCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, Player.X_OFFSET, Player.Z_OFFSET));
 
         if (this.cameraIsFollowing() && !this.isOverlayOpen()) {
             this.computeTurretRotation();
         }
 
-        if (collisionCorrection) {
+        if (collisionCorrection.lengthSq()) {
             potentialPosition.sub(collisionCorrection);
             this.bodyRotation = potentialRotation;
             this.headRotation += rotationDiff;
-            this.position.copy(potentialPosition);
         } else {
             this.bodyRotation = potentialRotation;
-            this.position.copy(potentialPosition);
         }
+        this.position.copy(this.getInternalPosition(potentialPosition));
 
         const movementData = {
             id: this.id,

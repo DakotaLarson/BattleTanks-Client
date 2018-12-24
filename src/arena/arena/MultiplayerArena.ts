@@ -1,5 +1,6 @@
 import EventHandler from "../../EventHandler";
 import Options from "../../Options";
+import PlayerCollisionHandler from "../collision/PlayerCollisionHandler";
 import ConnectedPlayer from "../player/ConnectedPlayer";
 import Player from "../player/Player";
 import Arena from "./Arena";
@@ -14,6 +15,7 @@ export default class MultiplayerArena extends Arena {
 
         this.player = undefined;
         this.connectedPlayers = new Map();
+        PlayerCollisionHandler.clearPlayers();
     }
 
     public enable() {
@@ -40,6 +42,7 @@ export default class MultiplayerArena extends Arena {
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_REMOVAL, this.onConnectedPlayerRemoval);
 
         this.connectedPlayers.clear();
+        PlayerCollisionHandler.clearPlayers();
         this.player = undefined;
     }
 
@@ -74,6 +77,7 @@ export default class MultiplayerArena extends Arena {
         const player = new ConnectedPlayer(data.id, data.name, data.color, data.pos, data.headRot);
         this.connectedPlayers.set(data.id, player);
         this.attachChild(player);
+        PlayerCollisionHandler.addPlayer(player);
     }
 
     private onConnectedPlayerMove(data: any) {
@@ -91,6 +95,7 @@ export default class MultiplayerArena extends Arena {
         this.connectedPlayers.delete(data.id);
         if (player) {
             this.detachChild(player);
+            PlayerCollisionHandler.removePlayer(player);
         }
     }
 
