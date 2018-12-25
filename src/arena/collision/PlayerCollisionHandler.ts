@@ -7,20 +7,19 @@ export default class PlayerCollisionHandler {
     public static getCollision(pos: Vector3, rot: number, offsetX: number, offsetZ: number): Vector3 {
 
         const testPlayers: ConnectedPlayer[] = new Array();
-        const testDistance = Player.radius * 2;
         for (const player of PlayerCollisionHandler.players) {
-            if (player.getCenterPosition().distanceToSquared(pos) < Math.pow(Player.radius + Player.radius, 2)) {
+            if (player.getCenterPosition().distanceToSquared(pos) <= Math.pow(Player.radius + Player.radius, 2)) {
                 testPlayers.push(player);
             }
         }
         if (testPlayers.length) {
             const playerCornerPositions = CollisionUtils.getPlayerCorners(pos, rot, offsetX, offsetZ);
 
-            const axes = CollisionUtils.getAxes(rot, 0);
-
             const totalCorrection = new Vector3();
 
             for (const player of testPlayers) {
+
+                const axes = CollisionUtils.getAxes(rot, player.bodyRotation);
 
                 const otherPlayerCornerPositions = CollisionUtils.getPlayerCorners(player.getCenterPosition(), player.bodyRotation, ConnectedPlayer.X_OFFSET, ConnectedPlayer.Z_OFFSET);
 
