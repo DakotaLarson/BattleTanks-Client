@@ -134,7 +134,7 @@ export default class CreationToolPanel extends Component {
                         EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_CAMERA);
                     }
                     break;
-                case "KeyK":
+                case "KeyV":
                     if (this.mode !== Mode.BLOCK) {
                         EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_BLOCK);
                     }
@@ -154,17 +154,17 @@ export default class CreationToolPanel extends Component {
                         EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_SHIELD);
                     }
                     break;
-                case "KeyH":
+                case "KeyD":
                     if (this.mode !== Mode.HEALTH_POWERUP) {
                         EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_HEALTH);
                     }
                     break;
-                case "KeyE":
+                case "KeyF":
                     if (this.mode !== Mode.SPEED_POWERUP) {
                         EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_SPEED);
                     }
                     break;
-                case "KeyM":
+                case "KeyG":
                     if (this.mode !== Mode.AMMO_POWERUP) {
                         EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_AMMO);
                     }
