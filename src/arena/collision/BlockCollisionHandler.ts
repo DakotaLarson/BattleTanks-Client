@@ -3,7 +3,7 @@ import CollisionUtils from "./CollisionUtils";
 
 export default class BlockCollisionHandler {
 
-    public static getCollision(pos: Vector3, rot: number, offsetX: number, offsetZ: number): Vector3 {
+    public static getCollision(pos: Vector3, rot: number, offsetX: number, offsetZ: number) {
 
         const blockPos = pos.clone().floor();
 
@@ -21,7 +21,7 @@ export default class BlockCollisionHandler {
 
             const axes = CollisionUtils.getAxes(rot, 0);
 
-            const totalCorrection = new Vector3();
+            const correction = new Vector3();
 
             for (const blockPosition of testBlockPositions) {
 
@@ -30,14 +30,26 @@ export default class BlockCollisionHandler {
                 const overlaps = CollisionUtils.getOverlaps(axes, playerCornerPositions, blockCornerPositions);
 
                 if (overlaps) {
-
                     const mtv = CollisionUtils.getMTV(overlaps);
-                    totalCorrection.add(mtv);
+                    if (CollisionUtils.isValidCorrection(correction, mtv)) {
+                        correction.add(mtv);
+                    } else {
+                        return {
+                            valid: false,
+                            correction: new Vector3(),
+                        };
+                    }
                 }
             }
-            return totalCorrection;
+            return {
+                valid: true,
+                correction,
+            };
         }
-        return new Vector3();
+        return {
+            valid: true,
+            correction: new Vector3(),
+        };
     }
 
     public static updateBlockPositions(positions: Vector3[] | undefined) {

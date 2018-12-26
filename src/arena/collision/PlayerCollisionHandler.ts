@@ -4,7 +4,7 @@ import Player from "../player/Player";
 import CollisionUtils from "./CollisionUtils";
 
 export default class PlayerCollisionHandler {
-    public static getCollision(pos: Vector3, rot: number, offsetX: number, offsetZ: number): Vector3 {
+    public static getCollision(pos: Vector3, rot: number, offsetX: number, offsetZ: number) {
 
         const testPlayers: ConnectedPlayer[] = new Array();
         for (const player of PlayerCollisionHandler.players) {
@@ -15,7 +15,7 @@ export default class PlayerCollisionHandler {
         if (testPlayers.length) {
             const playerCornerPositions = CollisionUtils.getPlayerCorners(pos, rot, offsetX, offsetZ);
 
-            const totalCorrection = new Vector3();
+            const correction = new Vector3();
 
             for (const player of testPlayers) {
 
@@ -27,12 +27,25 @@ export default class PlayerCollisionHandler {
 
                 if (overlaps) {
                     const mtv = CollisionUtils.getMTV(overlaps);
-                    totalCorrection.add(mtv);
+                    if (CollisionUtils.isValidCorrection(correction, mtv)) {
+                        correction.add(mtv);
+                    } else {
+                        return {
+                            valid: false,
+                            correction: new Vector3(),
+                        };
+                    }
                 }
             }
-            return totalCorrection;
+            return {
+                valid: true,
+                correction,
+            };
         }
-        return new Vector3();
+        return {
+            valid: true,
+            correction: new Vector3(),
+        };
     }
 
     public static addPlayer(player: ConnectedPlayer) {

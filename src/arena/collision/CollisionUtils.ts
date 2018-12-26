@@ -61,6 +61,20 @@ export default class CollisionUtils {
         return [aParallelAxis, aPerpendicularAxis, bParallelAxis, bPerpendicularAxis];
     }
 
+    public static isValidCorrection(correction: Vector3, addition: Vector3) {
+        if (correction.x && addition.x) {
+            if (Math.sign(correction.x) !== Math.sign(addition.x)) {
+                return false;
+            }
+        }
+        if (correction.z && addition.z) {
+            if (Math.sign(correction.z) !== Math.sign(addition.z)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private static getOverlap(axis: Vector3, playerCorners: Vector3[], blockCorners: Vector3[]): Vector3 | undefined {
 
         const playerScalars: number[] = new Array();
