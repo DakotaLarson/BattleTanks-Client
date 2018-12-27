@@ -4,11 +4,11 @@ import Player from "../player/Player";
 import CollisionUtils from "./CollisionUtils";
 
 export default class PlayerCollisionHandler {
-    public static getCollision(pos: Vector3, rot: number, offsetX: number, offsetZ: number) {
+    public static getCollision(pos: Vector3, rot: number, offsetX: number, offsetZ: number, id: number) {
 
-        const testPlayers: ConnectedPlayer[] = new Array();
+        const testPlayers: Array<ConnectedPlayer | Player> = new Array();
         for (const player of PlayerCollisionHandler.players) {
-            if (player.getCenterPosition().distanceToSquared(pos) <= Math.pow(Player.radius + Player.radius, 2)) {
+            if (player.id !== id && player.getCenterPosition().distanceToSquared(pos) <= Math.pow(Player.radius + Player.radius, 2)) {
                 testPlayers.push(player);
             }
         }
@@ -17,6 +17,8 @@ export default class PlayerCollisionHandler {
 
             const correction = new Vector3();
 
+            let valid = true;
+
             for (const player of testPlayers) {
 
                 const axes = CollisionUtils.getAxes(rot, player.bodyRotation);
@@ -24,21 +26,16 @@ export default class PlayerCollisionHandler {
                 const otherPlayerCornerPositions = CollisionUtils.getPlayerCorners(player.getCenterPosition(), player.bodyRotation, ConnectedPlayer.X_OFFSET, ConnectedPlayer.Z_OFFSET);
 
                 const overlaps = CollisionUtils.getOverlaps(axes, playerCornerPositions, otherPlayerCornerPositions);
-
                 if (overlaps) {
                     const mtv = CollisionUtils.getMTV(overlaps);
-                    if (CollisionUtils.isValidCorrection(correction, mtv)) {
-                        correction.add(mtv);
-                    } else {
-                        return {
-                            valid: false,
-                            correction: new Vector3(),
-                        };
+                    if (!CollisionUtils.isValidCorrection(correction, mtv)) {
+                        valid = false;
                     }
+                    correction.add(mtv);
                 }
             }
             return {
-                valid: true,
+                valid,
                 correction,
             };
         }
@@ -48,14 +45,14 @@ export default class PlayerCollisionHandler {
         };
     }
 
-    public static addPlayer(player: ConnectedPlayer) {
+    public static addPlayer(player: ConnectedPlayer | Player) {
         const index = PlayerCollisionHandler.players.indexOf(player);
         if (index === -1) {
             PlayerCollisionHandler.players.push(player);
         }
     }
 
-    public static removePlayer(player: ConnectedPlayer) {
+    public static removePlayer(player: ConnectedPlayer | Player) {
         const index = PlayerCollisionHandler.players.indexOf(player);
         if (index !== -1) {
             PlayerCollisionHandler.players.splice(index, 1);
@@ -66,5 +63,5 @@ export default class PlayerCollisionHandler {
         PlayerCollisionHandler.players = [];
     }
 
-    private static players: ConnectedPlayer[] = [];
+    private static players: Array<ConnectedPlayer | Player> = [];
 }

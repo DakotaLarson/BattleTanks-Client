@@ -68,15 +68,13 @@ export default class ConnectedPlayer extends ChildComponent {
         potentialPosition.x += delta * this.movementVelocity * Math.sin(potentialRotation),
         potentialPosition.z += delta * this.movementVelocity * Math.cos(potentialRotation);
 
-        const collisionCorrection = BlockCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, ConnectedPlayer.X_OFFSET, ConnectedPlayer.Z_OFFSET);
+        // Do not run collision detection on other players
 
-        if (collisionCorrection) {
-            potentialPosition.sub(collisionCorrection);
-            this.bodyRotation = potentialRotation;
-        } else {
-            this.bodyRotation = potentialRotation;
-        }
+        const blockCollision = BlockCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, ConnectedPlayer.X_OFFSET, ConnectedPlayer.Z_OFFSET);
+        potentialPosition.sub(blockCollision.correction);
+
         this.position.copy(this.getInternalPosition(potentialPosition));
+        this.bodyRotation = potentialRotation;
 
         const movementData = {
             id: this.id,

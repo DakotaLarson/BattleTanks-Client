@@ -7,7 +7,6 @@ import Options from "../../Options";
 import PacketSender from "../../PacketSender";
 import RaycastHandler from "../../RaycastHandler";
 import BlockCollisionHandler from "../collision/BlockCollisionHandler";
-import CollisionUtils from "../collision/CollisionUtils";
 import PlayerCollisionHandler from "../collision/PlayerCollisionHandler";
 
 export default class Player extends Component {
@@ -241,30 +240,22 @@ export default class Player extends Component {
         }
 
         const rotationDiff = delta * this.rotationVelocity;
-        const potentialRotation = (this.bodyRotation + rotationDiff);
+        const potentialRotation = this.bodyRotation + rotationDiff;
 
         const potentialPosition = this.getCenterPosition();
         potentialPosition.x += delta * this.movementVelocity * Math.sin(potentialRotation),
         potentialPosition.z += delta * this.movementVelocity * Math.cos(potentialRotation);
 
-        const collisionCorrection = new Vector3();
-        let canMove = false;
+        const playerCollision = PlayerCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, Player.X_OFFSET, Player.Z_OFFSET, this.id);
+        potentialPosition.sub(playerCollision.correction);
+
         const blockCollision = BlockCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, Player.X_OFFSET, Player.Z_OFFSET);
-        const playerCollision = PlayerCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, Player.X_OFFSET, Player.Z_OFFSET);
-        if (blockCollision.valid && playerCollision.valid) {
-            if (CollisionUtils.isValidCorrection(blockCollision.correction, playerCollision.correction)) {
-                canMove = true;
-                collisionCorrection.addVectors(blockCollision.correction, playerCollision.correction);
-            }
-        }
+        potentialPosition.sub(blockCollision.correction);
 
         if (this.cameraIsFollowing() && !this.isOverlayOpen()) {
             this.computeTurretRotation();
         }
 
-        if (canMove) {
-            potentialPosition.sub(collisionCorrection);
-        }
         this.position.copy(this.getInternalPosition(potentialPosition));
         this.bodyRotation = potentialRotation;
         this.headRotation += rotationDiff;

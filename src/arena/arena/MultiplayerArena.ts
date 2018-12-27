@@ -53,11 +53,13 @@ export default class MultiplayerArena extends Arena {
         }
         this.player = new Player(data.id, data.color, data.pos);
         this.attachChild(this.player);
+        PlayerCollisionHandler.addPlayer(this.player);
     }
 
     private onPlayerRemoval(data: any) {
         this.updateKillfeed(data.id, data.involvedId, data.livesRemaining);
         this.detachChild(this.player as Player);
+        PlayerCollisionHandler.removePlayer(this.player as Player);
         this.player = undefined;
     }
 
