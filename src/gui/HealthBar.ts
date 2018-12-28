@@ -4,27 +4,25 @@ import EventHandler from "../EventHandler";
 
 export default class HealthBar extends ChildComponent {
 
-    private healthContainer: HTMLElement;
     private healthParent: HTMLElement;
     private bar: HTMLElement;
 
     constructor(parentElt: HTMLElement) {
         super();
 
-        this.healthContainer = DomHandler.getElement(".health-bar-container", parentElt);
-        this.healthParent = DomHandler.getElement("#health-parent", this.healthContainer);
+        this.healthParent = DomHandler.getElement("#health-parent", parentElt);
         this.bar = DomHandler.getElement(".health-bar", this.healthParent);
     }
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.PLAYER_HEALTH_CHANGE, this.onHealthChange);
-        this.healthContainer.style.display = "block";
+        this.healthParent.style.display = "block";
         this.setPercentage(100);
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_HEALTH_CHANGE, this.onHealthChange);
-        this.healthContainer.style.display = "";
+        this.healthParent.style.display = "";
     }
 
     private onHealthChange(health: number) {

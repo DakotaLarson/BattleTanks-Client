@@ -16,6 +16,7 @@ export default class OptionsMenu extends Component {
     private leftValueElt: HTMLElement;
     private rightValueElt: HTMLElement;
     private reloadValueElt: HTMLElement;
+    private ramValueElt: HTMLElement;
     private shootValueElt: HTMLElement;
     private chatOpenValueElt: HTMLElement;
 
@@ -41,6 +42,7 @@ export default class OptionsMenu extends Component {
         this.leftValueElt = DomHandler.getElement("#option-value-left", this.element);
         this.rightValueElt = DomHandler.getElement("#option-value-right", this.element);
         this.reloadValueElt = DomHandler.getElement("#option-value-reload", this.element);
+        this.ramValueElt = DomHandler.getElement("#option-value-ram", this.element);
         this.shootValueElt = DomHandler.getElement("#option-value-shoot", this.element);
         this.chatOpenValueElt = DomHandler.getElement("#option-value-chatopen", this.element);
 
@@ -68,6 +70,7 @@ export default class OptionsMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onLeftClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onRightClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReloadClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onRamClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onShootClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onChatOpenClick);
@@ -92,6 +95,7 @@ export default class OptionsMenu extends Component {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onLeftClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onRightClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReloadClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onRamClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onShootClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onChatOpenClick);
@@ -162,6 +166,16 @@ export default class OptionsMenu extends Component {
             if (!this.isListening) {
                 this.listenForInput(this.reloadValueElt).then((data) => {
                     this.saveChange("reload", data);
+                });
+            }
+        }
+    }
+
+    private onRamClick(event: MouseEvent) {
+        if (event.target === this.ramValueElt) {
+            if (!this.isListening) {
+                this.listenForInput(this.ramValueElt).then((data) => {
+                    this.saveChange("ram", data);
                 });
             }
         }
@@ -310,6 +324,7 @@ export default class OptionsMenu extends Component {
             setOption("right", this.rightValueElt);
             setOption("shoot", this.shootValueElt);
             setOption("reload", this.reloadValueElt);
+            setOption("ram", this.ramValueElt);
             setOption("chatOpen", this.chatOpenValueElt);
 
             setRangeValue(options.gameVolume, this.gameVolumeValueElt);

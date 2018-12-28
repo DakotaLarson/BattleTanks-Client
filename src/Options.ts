@@ -61,6 +61,13 @@ export default class Options extends Component {
                 isMouse: false,
             };
         }
+        if (!("ram" in Options.options)) {
+            Options.options.ram = {
+                key: "e",
+                code: "KeyE",
+                isMouse: false,
+            };
+        }
         if (!("chatOpen" in Options.options)) {
             Options.options.chatOpen = {
                 key: "Enter",

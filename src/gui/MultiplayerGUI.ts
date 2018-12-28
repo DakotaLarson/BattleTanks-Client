@@ -9,15 +9,18 @@ import FullscreenToggle from "./FullscreenToggle";
 import HealthBar from "./HealthBar";
 import Joystick from "./Joystick";
 import Killfeed from "./Killfeed";
+import RamBar from "./RamBar";
 import ShieldBar from "./ShieldBar";
 
 export default class GUI extends Component {
 
     private element: HTMLElement;
+
     private debugPanel: DebugPanel;
     private fullscreenToggle: FullscreenToggle;
     private healthBar: HealthBar;
     private shieldBar: ShieldBar;
+    private ramBar: RamBar;
     private ammoDisplay: AmmoDisplay;
     private killfeed: Killfeed;
     private joystick: Joystick;
@@ -32,6 +35,7 @@ export default class GUI extends Component {
         this.ammoDisplay = new AmmoDisplay(this.element);
         this.healthBar = new HealthBar(this.element);
         this.shieldBar = new ShieldBar(this.element);
+        this.ramBar = new RamBar(this.element);
         this.killfeed = new Killfeed(this.element);
         this.joystick = new Joystick(this.element);
         this.chat = new Chat(this.element);
@@ -73,6 +77,7 @@ export default class GUI extends Component {
     private onPlayerAddition() {
         this.attachChild(this.healthBar);
         this.attachChild(this.shieldBar);
+        this.attachChild(this.ramBar);
         this.attachChild(this.ammoDisplay);
 
         if (DomHandler.supportsTouch()) {
@@ -83,6 +88,7 @@ export default class GUI extends Component {
     private onPlayerRemoval() {
         this.detachChild(this.healthBar);
         this.detachChild(this.shieldBar);
+        this.detachChild(this.ramBar);
         this.detachChild(this.ammoDisplay);
         this.detachChild(this.joystick);
     }

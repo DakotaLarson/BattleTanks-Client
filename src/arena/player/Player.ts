@@ -79,6 +79,8 @@ export default class Player extends Component {
 
         EventHandler.addListener(this, EventHandler.Event.PLAYER_SPEED_MULTIPLIER, this.onMultiplier);
 
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_RAM, this.onRam);
+
         EventHandler.addListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
         EventHandler.addListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
@@ -122,6 +124,7 @@ export default class Player extends Component {
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
 
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_SPEED_MULTIPLIER, this.onMultiplier);
+        EventHandler.removeListener(this, EventHandler.Event.PLAYER_RAM, this.onRam);
 
         EventHandler.removeListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
@@ -186,11 +189,8 @@ export default class Player extends Component {
             PacketSender.sendPlayerShoot();
         } else if (code === Options.options.reload.code && !this.isOverlayOpen()) {
             PacketSender.sendReloadRequest();
-        } else if (code === "KeyE" && !this.isOverlayOpen()) {
-            this.rammingSpeedEnabled = true;
-            setTimeout(() => {
-                this.rammingSpeedEnabled = false;
-            }, 350);
+        } else if (code === Options.options.ram.code && !this.isOverlayOpen()) {
+            PacketSender.sendPlayerRam();
         }
     }
 
@@ -310,6 +310,29 @@ export default class Player extends Component {
 
     private onMultiplier(multiplier: number) {
         this.speedMultiplier = multiplier;
+    }
+
+    private onRam(data: any) {
+        const startTime = data.startTime;
+        const endTime = data.endTime;
+        const currentTime = Date.now();
+
+        if (currentTime >= startTime) {
+            console.warn("Ram enabled after start time. Is there a slow connection?");
+            this.enableRam(endTime);
+        } else {
+            setTimeout(() => {
+                this.enableRam(endTime);
+            }, startTime - currentTime);
+        }
+    }
+
+    private enableRam(endTime: number) {
+        this.rammingSpeedEnabled = true;
+        const currentTime = Date.now();
+        setTimeout(() => {
+            this.rammingSpeedEnabled = false;
+        }, endTime - currentTime);
     }
 
     private cameraIsFollowing() {

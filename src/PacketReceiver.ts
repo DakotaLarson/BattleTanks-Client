@@ -74,6 +74,16 @@ const receivePlayerPowerupPickup = () => {
     EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, AudioType.POWERUP);
 };
 
+const receivePlayerRam = (rawData: string) => {
+    const data = rawData.split(" ");
+    const startTime = parseInt(data[0], 10);
+    const endTime = parseInt(data[1], 10);
+    EventHandler.callEvent(EventHandler.Event.PLAYER_RAM, {
+        startTime,
+        endTime,
+    });
+};
+
 const receivePlayerAmmoStatus = (data: number[]) => {
     const dataObj = {
         ammoCount: data[0],
@@ -222,6 +232,7 @@ handlers.push(receivePlayerSpectating);
 handlers.push(receivePlayerAmmoStatus);
 handlers.push(receivePlayerSpeedMultiplier);
 handlers.push(receivePlayerPowerupPickup);
+handlers.push(receivePlayerRam);
 
 handlers.push(receiveConnectedPlayerAdd);
 handlers.push(receiveConnectedPlayerMove);

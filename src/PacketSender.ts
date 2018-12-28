@@ -4,6 +4,7 @@ enum Packet {
     PLAYER_JOIN,
     PLAYER_MOVE,
     PLAYER_SHOOT,
+    PLAYER_RAM,
     RELOAD_REQUEST,
     RELOAD_MOVE_TOGGLE,
     CHAT_MESSAGE,
@@ -116,6 +117,11 @@ export default class PacketSender {
 
     public static sendPlayerShoot() {
         const data = constructData(Packet.PLAYER_SHOOT, undefined, DataType.HEADER_ONLY);
+        send(data);
+    }
+
+    public static sendPlayerRam() {
+        const data = constructData(Packet.PLAYER_RAM, undefined, DataType.HEADER_ONLY);
         send(data);
     }
 

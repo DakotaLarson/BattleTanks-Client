@@ -27,35 +27,41 @@
     height: 4.5vmin;
 }
 
-.gui .shield-bar-container,
-.gui .health-bar-container{
-    text-align: center;
-    width: 100%;
-    bottom: 2.5vh;
-}
-
-.gui .shield-bar-container{
-    bottom: 5.5vh;
-}
-
 .gui .shield-bar-parent,
-.gui .health-bar-parent{
+.gui .health-bar-parent,
+.gui .ram-bar-parent {
     box-sizing: border-box;
     display: inline-block;
+    bottom: 2.5vh;
     width: 33vw;
     height: 2.5vh;
+    left: 50%;
+    transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.25);
     border: solid 1px #ffffff;
 }
 
-.gui .shield-bar,
-.gui .health-bar{
-    height: 100%;
-    background-color: #0095d8;
+.gui .shield-bar-parent {
+    bottom: 5.5vh;
 }
 
-.gui .health-bar{
+.gui .ram-bar-parent {
+    height: 1vmin;
+    bottom: 1vmin;
+}
+
+.gui .shield-bar,
+.gui .health-bar,
+.gui .ram-bar {
+    height: 100%;
+}
+
+.gui .health-bar {
     background-color: red;
+}
+
+.gui .shield-bar {
+    background-color: #0095d8;
 }
 
 .gui .ammo-display-container {
