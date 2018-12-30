@@ -74,7 +74,7 @@ class Game extends Component {
     private connectToMultiplayer() {
         let address = "ws://" + location.hostname + ":8000";
         const host = location.hostname;
-        const gaeHostnames = ["battletanks.app", "appspot.com"];
+        const gaeHostnames = ["battletanks.app", "github.io", "appspot.com"];
 
         for (const hostname of gaeHostnames) {
             if (host.includes(hostname)) {

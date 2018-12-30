@@ -8,9 +8,9 @@
     <meta name="keywords" content="BattleTanks, Battle Tanks"/>
     <meta name="author" content="Dakota Larson"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+
     <meta name="google-site-verification" content="EVg7I0KTCnW1qmVkwFeW3pX7rKxemX923IcLJWonO-8"/>
     <meta name="msvalidate.01" content="195C8869D5EEBF8AAA413CDA4482BEF4" />
-    <meta name="google-signin-client_id" content="42166570332-0egs4928q7kfsnhh4nib3o8hjn62f9u5.apps.googleusercontent.com"/>
 
     <link rel="icon" href="./tank-icon.png"/>
     <link href="https://fonts.googleapis.com/css?family=Nova+Mono" rel="stylesheet"/>
@@ -61,7 +61,6 @@
     <div class="loading-text">Loading...</div>     
 </div>
 <div class="menu main-menu no-select">
-    <div class="auth" id=google-sign-in></div>
     <img class="menu-volume-control" draggable="false"/>
     <audio id="mainmenu-background-audio" preload="auto" loop>
         <source src="./res/audio/menu/background.mp3" type="audio/mpeg"/>
@@ -344,6 +343,6 @@ Be heard <a href="http://bit.ly/2QbTqoa" target="_blank">here</a>!
         }
     }
 </script>
-<script async defer src="https://apis.google.com/js/platform.js" onload="onAuthInit()"></script>
+<script async defer src="https://apis.google.com/js/api.js" onload="onAuthInit()"></script>
 </body>
 </html>

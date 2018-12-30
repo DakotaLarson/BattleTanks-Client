@@ -63,9 +63,3 @@ html, body{
 .menu-text-input:focus{
     border-color: green;
 }
-
-.auth {
-    position: absolute;
-    left: 1vmin;
-    top: 1vmin;
-}

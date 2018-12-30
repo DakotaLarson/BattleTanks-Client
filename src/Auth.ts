@@ -14,10 +14,8 @@ export default class Auth extends Component {
 
     private onAuthRequest(signIn: boolean) {
         if (signIn) {
-            // @ts-ignore
             gapi.auth2.getAuthInstance().signIn().then(this.onSuccess.bind(this)).catch(this.onFailure.bind(this));
         } else {
-            // @ts-ignore
             gapi.auth2.getAuthInstance().signOut();
             EventHandler.callEvent(EventHandler.Event.SIGN_OUT);
             console.log("Signed out");
@@ -26,11 +24,16 @@ export default class Auth extends Component {
 
     private init() {
         const initializeAuth = () => {
-            // @ts-ignore
-            gapi.signin2.render("google-sign-in", {
-                theme: "dark",
-                onsuccess: this.onSuccess.bind(this),
-                onfailure: this.onFailure.bind(this),
+
+            gapi.load("auth2", () => {
+                gapi.auth2.init({
+                    client_id: "42166570332-0egs4928q7kfsnhh4nib3o8hjn62f9u5.apps.googleusercontent.com",
+                }).then((auth: gapi.auth2.GoogleAuth) => {
+                    if (auth.isSignedIn.get()) {
+                        const token = auth.currentUser.get().getAuthResponse().id_token;
+                        EventHandler.callEvent(EventHandler.Event.SIGN_IN, token);
+                    }
+                }).catch(this.onFailure);
             });
         };
 
@@ -43,7 +46,7 @@ export default class Auth extends Component {
         }
     }
 
-    private onSuccess(googleUser: any) {
+    private onSuccess(googleUser: gapi.auth2.GoogleUser) {
         console.log("Signed in as: " + googleUser.getBasicProfile().getName());
         const token = googleUser.getAuthResponse().id_token;
         EventHandler.callEvent(EventHandler.Event.SIGN_IN, token);
