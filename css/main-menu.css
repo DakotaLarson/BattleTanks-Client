@@ -132,6 +132,7 @@
     font-family: 'Inconsolata', sans-serif;
     font-size: 2vmin;
     text-align: left;
+    text-transform: none;
 }
 .main-menu .feedback-greeting {
     font-size: 3vmin;
