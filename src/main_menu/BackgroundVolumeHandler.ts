@@ -48,6 +48,9 @@ export default class BackgroundVolumeHandler extends ChildComponent {
 
     public disable() {
         this.backgroundAudio.pause();
+
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.removeListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
     }
 
     private onClick(event: MouseEvent) {

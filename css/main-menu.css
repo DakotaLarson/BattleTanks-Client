@@ -1,11 +1,11 @@
 /* Main Menu */
-.main-menu{
+.main-menu {
     background: #202020;
 }
-.main-menu .opt-title{
+.main-menu .opt-title {
     font-size: 4vmin;
 }
-.main-menu .main-menu-title{
+.main-menu .main-menu-title {
     font-size: 15vmin;
     margin: 5vmin 0 7.5vmin 0;
     display: inline-block;
@@ -13,7 +13,7 @@
     font-weight: normal;
     font-family: 'Bombardier', sans-serif;
 }
-.main-menu .menu-input{
+.main-menu .menu-input {
     outline: none;
     background: none;
     padding: 0.5vmin 1vmin;
@@ -22,18 +22,18 @@
     border: solid 1px;
     margin-bottom: 3vmin;
 }
-.main-menu .menu-input:focus{
+.main-menu .menu-input:focus {
     border-color: green;
 }
-.main-menu .menu-number-input{
+.main-menu .menu-number-input {
     width: 9vmin;
 }
-.main-menu .menu-error{
+.main-menu .menu-error {
     font-size: 3vmin;
     color: red;
     text-transform: none;
 }
-.main-menu input[type='file']{
+.main-menu input[type='file'] {
     display: none;
 }
 .main-menu .menu-file-input {
@@ -47,7 +47,7 @@
     align-items: center;
     margin-bottom: 5vmin;
 }
-.main-menu .menu-file-choose{
+.main-menu .menu-file-choose {
     font-size: 4vmin;
     display: inline-block;
 }
@@ -55,64 +55,59 @@
     font-size: 2vmin;
     display: inline-block;
 }
-.main-menu .menu-drop{
+.main-menu .menu-drop {
     font-size: 4vmin;
     display: inline-block;
 }
-.main-menu .menu-file-name{
+.main-menu .menu-file-name {
     display: inline-block;
     color: green;
     font-size: 5vmin;
     margin-top: 5vmin;
 }
 
-.main-menu .server-list{
+.main-menu .server-list {
     height: 50vh;
     width: 33vw;
     overflow: auto;
     display: inline-block;
 }
 
-.main-menu .server-opt-parent{
+.main-menu .server-opt-parent {
     box-sizing: border-box;
     margin: 2vmin;
     padding: 1vmin;
 }
 
-.main-menu .server-opt-selected{
+.main-menu .server-opt-selected {
     border: solid 1px white;
 }
 
 .main-menu .server-opt-name,
-.main-menu .server-opt-address{
+.main-menu .server-opt-address {
     margin-bottom: 1vmin;
 }
 
-.main-menu .server-opt-address{
+.main-menu .server-opt-address {
     color: #A0A0A0;
     font-size: 2vmin;
 }
-.social-container {
+
+.discord-container {
     position: absolute;
     bottom: 2.5vmin;
     right: 2.5vmin;
 }
-.social-small-container {
-    display: inline-block;
-    height: 10vmin;
-}
-.main-menu .social-image {
-    height: 3.5vmin;
-    width: 3.5vmin;
-    margin: 0.5vmin 0.5vmin;
-}
-.main-menu .social-image-large {
+
+.main-menu .discord-image {
     height: 10vmin;
     width: 10vmin;
 }
-.main-menu .social-ref {
+
+.main-menu .discord-ref {
     display: inline-block;
 }
+
 .main-menu .play-btn {
     margin-bottom: 35vh;
 }
@@ -127,4 +122,20 @@
 
 .main-menu .menu-volume-control:hover {
     cursor: pointer;
+}
+
+.main-menu .feedback-request {
+    position: absolute;
+    left: 2.5vmin;
+    bottom: 2.5vmin;
+    width: 33vw;
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 2vmin;
+    text-align: left;
+}
+.main-menu .feedback-greeting {
+    font-size: 3vmin;
+}
+.main-menu .feedback-request a {
+    color: #00b9ff;
 }
