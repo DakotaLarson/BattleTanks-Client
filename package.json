@@ -6,7 +6,8 @@
   "scripts": {
     "start": "lite-server",
     "watch": "tsc -w",
-    "build": "tsc"
+    "build": "tsc",
+    "build-deploy": "tsc -p ./tsconfig.prod.json"
   },
   "repository": {
     "type": "git",
