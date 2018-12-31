@@ -74,14 +74,8 @@ const receivePlayerPowerupPickup = () => {
     EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, AudioType.POWERUP);
 };
 
-const receivePlayerRam = (rawData: string) => {
-    const data = rawData.split(" ");
-    const startTime = parseInt(data[0], 10);
-    const endTime = parseInt(data[1], 10);
-    EventHandler.callEvent(EventHandler.Event.PLAYER_RAM, {
-        startTime,
-        endTime,
-    });
+const receivePlayerRam = (time: number) => {
+    EventHandler.callEvent(EventHandler.Event.PLAYER_RAM, time);
 };
 
 const receivePlayerAmmoStatus = (data: number[]) => {

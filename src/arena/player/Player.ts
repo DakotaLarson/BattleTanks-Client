@@ -312,27 +312,11 @@ export default class Player extends Component {
         this.speedMultiplier = multiplier;
     }
 
-    private onRam(data: any) {
-        const startTime = data.startTime;
-        const endTime = data.endTime;
-        const currentTime = Date.now();
-
-        if (currentTime >= startTime) {
-            console.warn("Ram enabled after start time. Is there a slow connection?");
-            this.enableRam(endTime);
-        } else {
-            setTimeout(() => {
-                this.enableRam(endTime);
-            }, startTime - currentTime);
-        }
-    }
-
-    private enableRam(endTime: number) {
+    private onRam(time: number) {
         this.rammingSpeedEnabled = true;
-        const currentTime = Date.now();
         setTimeout(() => {
             this.rammingSpeedEnabled = false;
-        }, endTime - currentTime);
+        }, time);
     }
 
     private cameraIsFollowing() {

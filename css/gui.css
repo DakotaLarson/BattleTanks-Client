@@ -64,6 +64,10 @@
     background-color: #0095d8;
 }
 
+.gui .ram-bar {
+    background-color: #ffc107;
+}
+
 .gui .ammo-display-container {
     bottom: 2.5vmin;
     right: 2.5vmin;

@@ -6,10 +6,6 @@ export default class RamBar extends ChildComponent {
 
     private static readonly COOLDOWN_TIME = 7500;
 
-    private static readonly PREPARING_COLOR = "#ffc107";
-    private static readonly READY_COLOR = "#ff9800";
-    private static readonly STARTING_COLOR = "#ff5722";
-
     private ramParent: HTMLElement;
     private bar: HTMLElement;
 
@@ -30,7 +26,6 @@ export default class RamBar extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.PLAYER_RAM, this.onRam);
         this.ramParent.style.display = "block";
         this.setPercentage(100);
-        this.setColor(RamBar.READY_COLOR);
     }
 
     public disable() {
@@ -42,25 +37,9 @@ export default class RamBar extends ChildComponent {
         this.ramParent.style.display = "";
     }
 
-    private onRam(data: any) {
-        const startTime = data.startTime;
-        const currentTime = Date.now();
-
-        if (currentTime >= startTime) {
-            this.enableRam(startTime);
-        } else {
-            setTimeout(() => {
-                this.enableRam(startTime);
-            }, startTime - currentTime);
-            this.setColor(RamBar.STARTING_COLOR);
-        }
-
-    }
-
-    private enableRam(startTime: number) {
-        this.startTime = startTime;
+    private onRam() {
+        this.startTime = Date.now();
         EventHandler.addListener(this, EventHandler.Event.GAME_TICK, this.onTick);
-        this.setColor(RamBar.PREPARING_COLOR);
         this.listening = true;
     }
 
@@ -77,7 +56,6 @@ export default class RamBar extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.GAME_TICK, this.onTick);
         this.listening = false;
         this.setPercentage(100);
-        this.setColor(RamBar.READY_COLOR);
     }
 
     private updateBar(currentTime: number, startTime: number) {
@@ -88,9 +66,5 @@ export default class RamBar extends ChildComponent {
 
     private setPercentage(percentage: number) {
         this.bar.style.width = "" + percentage + "%";
-    }
-
-    private setColor(color: string) {
-        this.bar.style.backgroundColor = color;
     }
 }
