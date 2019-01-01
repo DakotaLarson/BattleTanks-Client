@@ -34,18 +34,23 @@ export default class Killfeed extends ChildComponent {
     private onUpdate(data: any) {
         const mainPlayer = data.mainPlayer;
         const involvedPlayer = data.involvedPlayer;
+        const isOOB = data.isOOB;
 
         const element = document.createElement("div");
         element.classList.add("killfeed-message");
 
-        if (involvedPlayer) {
+        if (isOOB) {
+            element.appendChild(this.createPlayerElement(mainPlayer));
+            element.appendChild(this.createActionElement(true, isOOB));
+            element.appendChild(this.createLivesRemainingElement(mainPlayer.livesRemaining));
+        } else if (involvedPlayer) {
             element.appendChild(this.createPlayerElement(involvedPlayer));
-            element.appendChild(this.createActionElement(false));
+            element.appendChild(this.createActionElement(false, isOOB));
             element.appendChild(this.createPlayerElement(mainPlayer));
             element.appendChild(this.createLivesRemainingElement(mainPlayer.livesRemaining));
         } else {
             element.appendChild(this.createPlayerElement(mainPlayer));
-            element.appendChild(this.createActionElement(true));
+            element.appendChild(this.createActionElement(true, isOOB));
         }
         this.addMessage(element);
     }
@@ -79,12 +84,16 @@ export default class Killfeed extends ChildComponent {
         return element;
     }
 
-    private createActionElement(isSelf: boolean) {
+    private createActionElement(isSelf: boolean, isOOB: boolean) {
         const element = document.createElement("span");
         element.style.color = "#f0f0f0";
         element.style.fontStyle = "italic";
         if (isSelf) {
-            element.textContent = " left the game";
+            if (isOOB) {
+                element.textContent = " went out of bounds";
+            } else {
+                element.textContent = " left the game";
+            }
         } else {
             element.textContent = " killed ";
         }

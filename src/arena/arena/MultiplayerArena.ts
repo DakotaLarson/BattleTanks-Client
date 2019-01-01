@@ -7,6 +7,8 @@ import Arena from "./Arena";
 
 export default class MultiplayerArena extends Arena {
 
+    private static readonly OOB_ID = -2; // Out of Bounds Id
+
     private player: Player | undefined;
     private connectedPlayers: Map<number, ConnectedPlayer>;
 
@@ -104,11 +106,13 @@ export default class MultiplayerArena extends Arena {
     private updateKillfeed(id: number, involvedId: number, livesRemaining: number) {
         if (involvedId) {
             const mainPlayer = this.getKillfeedPlayerDetails(id, livesRemaining);
-            if (involvedId === -1) {
-                // The player left on their own accord
+            const isOOB = involvedId === MultiplayerArena.OOB_ID;
+            if (involvedId === -1 || isOOB) {
+                // The player left on their own accord or went out of bounds
                 if (mainPlayer) {
                     EventHandler.callEvent(EventHandler.Event.KILLFEED_UPDATE, {
                         mainPlayer,
+                        isOOB,
                     });
                 }
             } else {
@@ -126,12 +130,21 @@ export default class MultiplayerArena extends Arena {
                 EventHandler.callEvent(EventHandler.Event.KILLFEED_UPDATE, {
                     mainPlayer,
                     involvedPlayer,
+                    isOOB,
                 });
             }
         }
     }
 
     private getKillfeedPlayerDetails(id: number, livesRemaining: number) {
+        if (id === MultiplayerArena.OOB_ID) {
+            return {
+                name: Options.options.username,
+                color: (this.player as Player).color,
+                isSelf: true,
+                livesRemaining,
+            };
+        }
         if (this.player && this.player.id === id) {
             return {
                 name: Options.options.username,
