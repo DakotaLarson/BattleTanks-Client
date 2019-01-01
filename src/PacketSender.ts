@@ -9,6 +9,7 @@ enum Packet {
     RELOAD_MOVE_TOGGLE,
     CHAT_MESSAGE,
     POWERUP_PICKUP,
+    RAM_COLLISION,
 }
 
 enum DataType {
@@ -143,6 +144,11 @@ export default class PacketSender {
 
     public static sendPowerupPickup(rawData: number[]) {
         const data = constructData(Packet.POWERUP_PICKUP, rawData, DataType.NUMBER_ARRAY);
+        send(data);
+    }
+
+    public static sendRamCollision(playerId: number) {
+        const data = constructData(Packet.RAM_COLLISION, playerId, DataType.NUMBER);
         send(data);
     }
 

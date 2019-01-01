@@ -22,7 +22,6 @@ export default class BlockCollisionHandler {
             const axes = CollisionUtils.getAxes(rot, 0);
             const correction = new Vector3();
 
-            let valid = true;
             for (const blockPosition of testBlockPositions) {
 
                 const blockCornerPositions = CollisionUtils.getBlockCorners(blockPosition);
@@ -31,21 +30,12 @@ export default class BlockCollisionHandler {
 
                 if (overlaps) {
                     const mtv = CollisionUtils.getMTV(overlaps);
-                    if (!CollisionUtils.isValidCorrection(correction, mtv)) {
-                        valid = false;
-                    }
                     correction.add(mtv);
                 }
             }
-            return {
-                valid,
-                correction,
-            };
+            return correction;
         }
-        return {
-            valid: true,
-            correction: new Vector3(),
-        };
+        return new Vector3();
     }
 
     public static updateBlockPositions(positions: Vector3[] | undefined) {

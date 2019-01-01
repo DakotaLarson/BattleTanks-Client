@@ -71,7 +71,7 @@ export default class ConnectedPlayer extends ChildComponent {
         // Do not run collision detection on other players
 
         const blockCollision = BlockCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, ConnectedPlayer.X_OFFSET, ConnectedPlayer.Z_OFFSET);
-        potentialPosition.sub(blockCollision.correction);
+        potentialPosition.sub(blockCollision);
 
         this.position.copy(this.getInternalPosition(potentialPosition));
         this.bodyRotation = potentialRotation;

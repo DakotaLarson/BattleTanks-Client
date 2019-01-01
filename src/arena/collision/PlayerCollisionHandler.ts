@@ -7,6 +7,7 @@ export default class PlayerCollisionHandler {
     public static getCollision(pos: Vector3, rot: number, offsetX: number, offsetZ: number, id: number) {
 
         const testPlayers: Array<ConnectedPlayer | Player> = new Array();
+        let playerId = 0;
         for (const player of PlayerCollisionHandler.players) {
             if (player.id !== id && player.getCenterPosition().distanceToSquared(pos) <= Math.pow(Player.radius + Player.radius, 2)) {
                 testPlayers.push(player);
@@ -17,8 +18,6 @@ export default class PlayerCollisionHandler {
 
             const correction = new Vector3();
 
-            let valid = true;
-
             for (const player of testPlayers) {
 
                 const axes = CollisionUtils.getAxes(rot, player.bodyRotation);
@@ -28,20 +27,18 @@ export default class PlayerCollisionHandler {
                 const overlaps = CollisionUtils.getOverlaps(axes, playerCornerPositions, otherPlayerCornerPositions);
                 if (overlaps) {
                     const mtv = CollisionUtils.getMTV(overlaps);
-                    if (!CollisionUtils.isValidCorrection(correction, mtv)) {
-                        valid = false;
-                    }
                     correction.add(mtv);
+                    playerId = player.id;
                 }
             }
             return {
-                valid,
                 correction,
+                playerId,
             };
         }
         return {
-            valid: true,
             correction: new Vector3(),
+            playerId,
         };
     }
 

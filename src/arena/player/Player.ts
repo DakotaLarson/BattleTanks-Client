@@ -250,10 +250,17 @@ export default class Player extends Component {
         potentialPosition.sub(playerCollision.correction);
 
         const blockCollision = BlockCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, Player.X_OFFSET, Player.Z_OFFSET);
-        potentialPosition.sub(blockCollision.correction);
+        potentialPosition.sub(blockCollision);
 
         if (this.cameraIsFollowing() && !this.isOverlayOpen()) {
             this.computeTurretRotation();
+        }
+
+        if (playerCollision.playerId) {
+            if (this.rammingSpeedEnabled) {
+                this.rammingSpeedEnabled = false;
+                PacketSender.sendRamCollision(playerCollision.playerId);
+            }
         }
 
         this.position.copy(this.getInternalPosition(potentialPosition));
