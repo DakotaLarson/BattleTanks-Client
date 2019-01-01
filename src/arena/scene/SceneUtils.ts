@@ -12,13 +12,13 @@ export default class SceneUtils {
         const diff = 0.3125;
         const geo = new BufferGeometry();
         const positions = [];
-        for (let i = 2; i < this.sceneHandler.width - 1; i ++) {
+        for (let i = 1; i < this.sceneHandler.width; i ++) {
             positions.push(i, 0.0001, diff);
-            positions.push(i, 0.0001, this.sceneHandler.height + diff - 1);
+            positions.push(i, 0.0001, this.sceneHandler.height + diff - 0.5);
         }
-        for (let i = 2; i < this.sceneHandler.height - 1; i ++) {
+        for (let i = 1; i < this.sceneHandler.height; i ++) {
             positions.push(diff, 0.0001, i);
-            positions.push(this.sceneHandler.width + diff - 1, 0.0001, i);
+            positions.push(this.sceneHandler.width + diff - 0.5, 0.0001, i);
         }
         geo.addAttribute("position", new Float32BufferAttribute(positions, 3));
         const lineSegments = new LineSegments(geo, new LineDashedMaterial({
