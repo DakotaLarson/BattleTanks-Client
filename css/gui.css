@@ -31,7 +31,6 @@
 .gui .health-bar-parent,
 .gui .ram-bar-parent {
     box-sizing: border-box;
-    display: inline-block;
     bottom: 2.5vh;
     width: 33vw;
     height: 2.5vh;

@@ -16,7 +16,7 @@ export default class ShieldBar extends ChildComponent {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.PLAYER_SHIELD_CHANGE, this.onShieldChange);
-        this.shieldParent.style.display = "block";
+        this.shieldParent.style.display = "inline-block";
         this.setPercentage(0);
     }
 

@@ -16,7 +16,7 @@ export default class HealthBar extends ChildComponent {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.PLAYER_HEALTH_CHANGE, this.onHealthChange);
-        this.healthParent.style.display = "block";
+        this.healthParent.style.display = "inline-block";
         this.setPercentage(100);
     }
 

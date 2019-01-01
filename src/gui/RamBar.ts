@@ -24,7 +24,7 @@ export default class RamBar extends ChildComponent {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.PLAYER_RAM, this.onRam);
-        this.ramParent.style.display = "block";
+        this.ramParent.style.display = "inline-block";
         this.setPercentage(100);
     }
 
