@@ -3,6 +3,10 @@ import EventHandler from "./EventHandler";
 
 export default class Auth extends Component {
 
+    private static readonly REFRESH_PADDING = 5000;
+
+    private taskId: number | undefined;
+
     constructor() {
         super();
         this.init();
@@ -30,8 +34,7 @@ export default class Auth extends Component {
                     client_id: "42166570332-0egs4928q7kfsnhh4nib3o8hjn62f9u5.apps.googleusercontent.com",
                 }).then((auth: gapi.auth2.GoogleAuth) => {
                     if (auth.isSignedIn.get()) {
-                        const token = auth.currentUser.get().getAuthResponse().id_token;
-                        EventHandler.callEvent(EventHandler.Event.SIGN_IN, token);
+                        this.onSuccess(auth.currentUser.get());
                     }
                 }).catch(this.onFailure);
             });
@@ -48,11 +51,20 @@ export default class Auth extends Component {
 
     private onSuccess(googleUser: gapi.auth2.GoogleUser) {
         console.log("Signed in as: " + googleUser.getBasicProfile().getName());
-        const token = googleUser.getAuthResponse().id_token;
-        EventHandler.callEvent(EventHandler.Event.SIGN_IN, token);
+        this.updateToken(googleUser.getAuthResponse());
     }
 
     private onFailure(error: any) {
         console.log(error);
+    }
+
+    private updateToken(authResponse: gapi.auth2.AuthResponse) {
+        window.clearTimeout(this.taskId);
+        const refreshTime = authResponse.expires_at - Date.now() - Auth.REFRESH_PADDING;
+        const token = authResponse.id_token;
+        EventHandler.callEvent(EventHandler.Event.SIGN_IN, token);
+        this.taskId = window.setTimeout(() => {
+            gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse().then(this.updateToken.bind(this)).catch(this.onFailure.bind(this));
+        }, refreshTime);
     }
 }
