@@ -126,9 +126,9 @@ export default class CameraControls extends Component {
 
     private onRotation = (deltaX: number, deltaY: number) => {
         if (!this.angleButtonDown) {
-            this.spherical.theta += deltaX * Math.PI / 180 / 3;
+            this.spherical.theta -= deltaX * Math.PI / 180 / 3;
         }
-        this.spherical.phi += deltaY * Math.PI / 180 / 5;
+        this.spherical.phi -= deltaY * Math.PI / 180 / 5;
         this.spherical.phi = Math.min(11 * Math.PI / 24, this.spherical.phi);
         this.spherical.makeSafe();
         if (this.zoomOnly) {
