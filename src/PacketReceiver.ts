@@ -144,8 +144,22 @@ const receiveConnectedPlayerShield = (data: any) => {
     });
 };
 
-const receiveMatchStatistics = (rawStats: string) => {
-    const statistics = JSON.parse(rawStats);
+const receiveMatchStatistics = (rawStats: number[]) => {
+    const win = rawStats[0] ? true : false;
+    const statistics = {
+        win,
+        teamShots: rawStats[1],
+        teamHits: rawStats[2],
+        teamKills: rawStats[3],
+        enemyTeamShots: rawStats[4],
+        enemyTeamHits: rawStats[5],
+        enemyTeamKills: rawStats[6],
+        shots: rawStats[7],
+        hits: rawStats[8],
+        kills: rawStats[9],
+        deaths: rawStats[10],
+    };
+
     EventHandler.callEvent(EventHandler.Event.MATCH_STATISTICS_RECEPTION, statistics);
 };
 

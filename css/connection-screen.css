@@ -1,4 +1,4 @@
-.connection-screen{
+.connection-screen {
     background: #202020;
     align-items: center;
     justify-content: center;
@@ -6,6 +6,23 @@
     font-size: 5vmin;
 }
 
-.connection-screen .stats-parent{
+.connection-screen .stats-parent {
     display: none;
+}
+
+.connection-screen .last-match-statistics {
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 2.5vmin;
+    display: inline-block;
+    margin-bottom: 5vmin;
+}
+
+.connection-screen .last-match-statistics .stats-large {
+    font-size: 3vmin;
+}
+.connection-screen .last-match-statistics .stats-title {
+    font-size: 4vmin;
+}
+.connection-screen .last-match-statistics .stats-pad {
+    margin-bottom: 1vmin;
 }

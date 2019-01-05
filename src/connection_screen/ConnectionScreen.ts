@@ -44,8 +44,11 @@ export default class ConnectionScreen extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_STARTING, this.onStartingGameStatus);
         EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onRunningGameStatus);
 
+        EventHandler.addListener(this, EventHandler.Event.MATCH_STATISTICS_RECEPTION, this.onStatsReception);
+
         this.element.style.display = "flex";
         this.showScreen(this.connectingScreen);
+
     }
 
     public disable() {
@@ -56,6 +59,8 @@ export default class ConnectionScreen extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_WAITING, this.onWaitingGameStatus);
         EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_STARTING, this.onStartingGameStatus);
         EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onRunningGameStatus);
+
+        EventHandler.removeListener(this, EventHandler.Event.MATCH_STATISTICS_RECEPTION, this.onStatsReception);
 
         this.element.style.display = "";
     }
@@ -79,6 +84,12 @@ export default class ConnectionScreen extends ChildComponent {
 
     private onRunningGameStatus() {
         this.hide();
+    }
+
+    private onStatsReception(stats: any) {
+        const elt = this.createStatisticsMarkup(stats);
+        this.waitingScreen.updateStatistics(elt);
+        this.startingScreen.updateStatistics(elt);
     }
 
     private showScreen(screen: ChildComponent) {
@@ -109,5 +120,61 @@ export default class ConnectionScreen extends ChildComponent {
     private show() {
         this.element.style.display = "flex";
         this.hidden = false;
+    }
+
+    private createStatisticsMarkup(stats: any) {
+        const parent = document.createElement("div");
+        parent.appendChild(this.createStatisticsTitle());
+        parent.appendChild(this.createStatisticMarkup("Status", stats.win ? "Win" : "Loss", true, true));
+
+        parent.appendChild(this.createStatisticMarkup("Kills", stats.kills));
+        parent.appendChild(this.createStatisticMarkup("Shots", stats.shots, true));
+
+        parent.appendChild(this.createStatisticMarkup("K/D Ratio", this.createRatioText(stats.kills, stats.deaths, false) + " (" + stats.deaths + " deaths)"));
+        parent.appendChild(this.createStatisticMarkup("Accuracy", this.createRatioText(stats.hits, stats.shots, true) + " (" + stats.hits + " hits)", true));
+
+        parent.appendChild(this.createStatisticMarkup("Team Kills", stats.teamKills));
+        parent.appendChild(this.createStatisticMarkup("Enemy Kills", stats.enemyTeamKills, true));
+
+        parent.appendChild(this.createStatisticMarkup("Team Hits", stats.teamHits));
+        parent.appendChild(this.createStatisticMarkup("Enemy Hits", stats.enemyTeamHits, true));
+
+        parent.appendChild(this.createStatisticMarkup("Team Shots", stats.teamShots));
+        parent.appendChild(this.createStatisticMarkup("Enemy Shots", stats.enemyTeamShots));
+        return parent;
+    }
+
+    private createStatisticsTitle() {
+        const elt = document.createElement("div");
+        elt.classList.add("stats-title");
+        elt.textContent = "Some stats from last match...";
+        return elt;
+    }
+
+    private createStatisticMarkup(title: string, value: any, hasPadding?: boolean, isLarge?: boolean) {
+        const elt = document.createElement("div");
+        if (hasPadding) {
+            elt.classList.add("stats-pad");
+        }
+        if (isLarge) {
+            elt.classList.add("stats-large");
+        }
+        elt.textContent = title + ": " + value;
+        return elt;
+    }
+
+    private createRatioText(a: number, b: number, isPercentage: boolean) {
+        let num = a;
+        if (b !== 0) {
+            num = Math.round(a / b * 100);
+        }
+        if (!isPercentage) {
+            if (b !== 0) {
+                num /= 100;
+            }
+            return "" + num;
+        } else {
+            return num + "%";
+        }
     }
 }
