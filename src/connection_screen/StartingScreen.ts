@@ -24,6 +24,7 @@ export default class StartingScreen extends Component {
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onDisconnect);
         this.element.style.display = "";
+        this.clearStats();
     }
 
     public updateStatistics(elt: HTMLElement) {
