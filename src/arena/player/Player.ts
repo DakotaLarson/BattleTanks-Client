@@ -15,7 +15,7 @@ export default class Player extends Component {
 
     private static readonly MOVEMENT_SPEED = 5;
     private static readonly ROTATION_SPEED = 2.5;
-    private static readonly RAMMING_SPEED_MULTI = 2.5;
+    private static readonly RAMMING_SPEED_MULTI = 2;
 
     private static readonly X_OFFSET = 0.5;
     private static readonly Z_OFFSET = 0.75;

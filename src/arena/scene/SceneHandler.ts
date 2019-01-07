@@ -11,6 +11,8 @@ import SceneVisualsHandler from "./SceneVisualsHandler";
 
 export default class SceneHandler extends Component {
 
+    private static readonly BLOCK_COLOR = 0xc0c0c0;
+
     public blockPositions: Vector3[];
 
     public teamASpawnPositions: Vector4[];
@@ -144,7 +146,7 @@ export default class SceneHandler extends Component {
             this.blocks.geometry = masterGeo;
 
         } else {
-            const material = new MeshLambertMaterial({color: 0x0077ef});
+            const material = new MeshLambertMaterial({color: SceneHandler.BLOCK_COLOR});
             this.blocks = new Mesh(masterGeo, material);
             this.blocks.position.addScalar(0.5);
             if (positions) {

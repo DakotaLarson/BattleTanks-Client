@@ -1,6 +1,10 @@
 {
     "compilerOptions": {
         "target": "es6",
+        "lib": [
+            "dom",
+            "esnext"
+        ],
         "module": "system",
         "sourceMap": true,
         "outDir": "build",

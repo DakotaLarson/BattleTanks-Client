@@ -3,6 +3,9 @@ import SceneHandler from "./SceneHandler";
 
 export default class SceneVisualsHandler {
 
+    private static readonly TEAM_A_COLOR = 0xf00e30;
+    private static readonly TEAM_B_COLOR = 0x0e52f0;
+
     private sceneHandler: SceneHandler;
     private scene: Scene;
 
@@ -61,8 +64,8 @@ export default class SceneVisualsHandler {
         if (this.ammoPowerupVisuals) {
             this.scene.remove(this.ammoPowerupVisuals);
         }
-        const teamASpawnMesh = this.createRotatedPositionsVisualMesh(this.sceneHandler.teamASpawnPositions, 0x009247);
-        const teamBSpawnMesh = this.createRotatedPositionsVisualMesh(this.sceneHandler.teamBSpawnPositions, 0xcf2b36);
+        const teamASpawnMesh = this.createRotatedPositionsVisualMesh(this.sceneHandler.teamASpawnPositions, SceneVisualsHandler.TEAM_A_COLOR);
+        const teamBSpawnMesh = this.createRotatedPositionsVisualMesh(this.sceneHandler.teamBSpawnPositions, SceneVisualsHandler.TEAM_B_COLOR);
 
         const shieldPowerupMesh = this.createPositionsVisualMesh(this.sceneHandler.shieldPowerupPositions, this.shieldTexture);
         const healthPowerupMesh = this.createPositionsVisualMesh(this.sceneHandler.healthPowerupPositions, this.healthTexture);
