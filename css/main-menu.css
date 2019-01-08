@@ -5,13 +5,12 @@
 .main-menu .opt-title {
     font-size: 4vmin;
 }
-.main-menu .main-menu-title {
-    font-size: 15vmin;
-    margin: 5vmin 0 7.5vmin 0;
-    display: inline-block;
-    color: #ffffff;
-    font-weight: normal;
-    font-family: 'Bombardier', sans-serif;
+.main-menu .main-menu-header {
+    margin-top: 2.5vh;
+    max-width: 1250px;
+    max-height: 512px;
+    height: 33vh;
+    margin-bottom: 2.5vh;
 }
 .main-menu .menu-input {
     outline: none;
@@ -109,7 +108,7 @@
 }
 
 .main-menu .play-btn {
-    margin-bottom: 35vh;
+    margin-bottom: 25vh;
 }
 
 .main-menu .menu-volume-control {
