@@ -174,7 +174,6 @@ enum Event {
     CHAT_CLOSE,
 
     // AUTH
-    MENU_AUTH_REQUEST,
     SIGN_IN,
     SIGN_OUT,
 

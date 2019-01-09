@@ -29,8 +29,8 @@
 
 
     <link rel="icon" href="./tank-icon.png"/>
-    <link href="https://fonts.googleapis.com/css?family=Nova+Mono" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     
     <link rel="stylesheet" type="text/css" href="./css/fonts/fonts.css"/>
     <link rel="stylesheet" type="text/css" href="./css/loading.css"/>
@@ -77,6 +77,10 @@
     <div class="loading-text">Loading...</div>     
 </div>
 <div class="menu main-menu no-select">
+    <div class="auth-container">
+        <span id="google-auth-btn"></span>
+        <span id="auth-signout">Sign out</span>
+    </div>
     <img class="menu-volume-control" draggable="false"/>
     <audio id="mainmenu-background-audio" preload="auto" loop>
         <source src="./res/audio/menu/background.mp3" type="audio/mpeg"/>
@@ -88,11 +92,10 @@
         </div>
         <div class="options-dropdown-list">
             <span class="menu-selection" id="options-dropdown-option--options">Options</span><br/>
-            <span class="menu-selection" id="options-dropdown-option--auth"></span>
 
         </div>
     </div>
-    <img class="main-menu-header" src="./res/menu/header.png"/>
+    <img class="main-menu-header" src="./res/menu/header.png" draggable="false"/>
     <!-- TOP MENU -->
     <div class="menu-section" id="main-menu-top">
         <span class="menu-selection menu-selection-xl play-btn" id="top-opt-mp">Play</span><br/>

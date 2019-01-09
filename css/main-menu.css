@@ -30,7 +30,6 @@
 .main-menu .menu-error {
     font-size: 3vmin;
     color: red;
-    text-transform: none;
 }
 .main-menu input[type='file'] {
     display: none;
@@ -131,11 +130,29 @@
     font-family: 'Inconsolata', sans-serif;
     font-size: 2vmin;
     text-align: left;
-    text-transform: none;
 }
 .main-menu .feedback-greeting {
     font-size: 3vmin;
 }
 .main-menu .feedback-request a {
     color: #00b9ff;
+}
+.main-menu .auth-container {
+    position: absolute;
+    top: 1vmin;
+    left: 1vmin;
+    display: inline-block;
+    text-align: center;
+}
+
+.main-menu #auth-signout {
+    display: none;
+    font-size: 13px;
+    font-family: 'Roboto', sans-serif;
+    color: #00b9ff;
+    text-decoration: underline;
+}
+
+.main-menu #auth-signout:hover {
+    cursor: pointer;
 }
