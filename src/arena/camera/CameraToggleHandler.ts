@@ -1,6 +1,5 @@
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
-import Globals from "../../Globals";
 
 export default class CameraToggleHandler extends ChildComponent {
 

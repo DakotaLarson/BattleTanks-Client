@@ -5,9 +5,12 @@ import Options from "./Options";
 import PacketReceiver from "./PacketReceiver";
 import PacketSender from "./PacketSender";
 
-const protocol = "tanks-MP";
-
 export default class MultiplayerConnection extends Component {
+
+    private static readonly PROTOCOL = "battletanks-1";
+
+    private static readonly CLIENT_OUTDATED_CODE = 4001;
+    private static readonly SERVER_OUTDATED_CODE = 4002;
 
     private ws: WebSocket | undefined;
     private address: string;
@@ -20,7 +23,7 @@ export default class MultiplayerConnection extends Component {
     }
 
     public enable() {
-        this.ws = new WebSocket(this.address, protocol);
+        this.ws = new WebSocket(this.address, MultiplayerConnection.PROTOCOL);
         this.ws.binaryType = "arraybuffer";
 
         DomEventHandler.addListener(this, this.ws, "open", this.onOpen);
@@ -57,5 +60,11 @@ export default class MultiplayerConnection extends Component {
 
     private onClose(event: any) {
         EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, event);
+
+        if (event.code === MultiplayerConnection.CLIENT_OUTDATED_CODE) {
+            EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE_REASON, "Your client is outdated. Try refreshing the page or try again in a few minutes.");
+        } else if (event.code === MultiplayerConnection.SERVER_OUTDATED_CODE) {
+            EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE_REASON, "The server is outdated. Try refreshing the page or try again in a few minutes.");
+        }
     }
 }

@@ -26,3 +26,9 @@
 .connection-screen .last-match-statistics .stats-pad {
     margin-bottom: 1vmin;
 }
+
+.connection-screen .disconnected-reason {
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 2.5vmin;
+    color: #ffd700
+}
