@@ -41,6 +41,8 @@ export default class Player extends Component {
     private movingLastFrame: boolean;
     private rammingSpeedEnabled: boolean;
 
+    private frameDelta: number;
+
     constructor(id: number, color: number, pos: Vector4) {
         super();
         this.id = id;
@@ -63,6 +65,8 @@ export default class Player extends Component {
         this.movementVelocity = 0;
         this.rotationVelocity = 0;
         this.speedMultiplier = 1;
+
+        this.frameDelta = 0;
     }
 
     public enable() {
@@ -87,7 +91,7 @@ export default class Player extends Component {
 
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
 
-        if (!this.cameraIsFollowing()) {
+        if (!this.usingStandardControls()) {
             EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
         }
 
@@ -106,7 +110,7 @@ export default class Player extends Component {
         this.speedMultiplier = 1;
 
         PacketSender.sendPlayerMove(this.position, this.movementVelocity, this.rotationVelocity, this.bodyRotation, this.headRotation);
-        if (!this.cameraIsFollowing() && !DomHandler.hasPointerLock()) {
+        if (!this.usingStandardControls() && !DomHandler.hasPointerLock()) {
             DomHandler.requestPointerLock();
         }
     }
@@ -132,7 +136,7 @@ export default class Player extends Component {
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
 
-        if (!this.cameraIsFollowing()) {
+        if (!this.usingStandardControls()) {
             EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
         }
 
@@ -167,13 +171,18 @@ export default class Player extends Component {
     }
 
     private onMouseMove(event: MouseEvent) {
+        const delta = event.movementX / 365 * Options.options.mouseSensitivity;
         if (!this.isOverlayOpen()) {
-            this.headRotation -= event.movementX / 365 * Options.options.mouseSensitivity;
+            if (this.usingSimpleControls()) {
+                this.frameDelta -= delta;
+            } else {
+                this.headRotation -= delta;
+            }
         }
     }
 
     private onInputDown(code: string | number) {
-        if (!this.cameraIsFollowing() && !DomHandler.hasPointerLock() && !this.isOverlayOpen()) {
+        if (!this.usingStandardControls() && !DomHandler.hasPointerLock() && !this.isOverlayOpen() && code !== "Escape") {
             DomHandler.requestPointerLock();
         }
 
@@ -239,7 +248,12 @@ export default class Player extends Component {
             this.rotationVelocity = 0;
         }
 
-        const rotationDiff = delta * this.rotationVelocity;
+        let rotationDiff = delta * this.rotationVelocity;
+        if (Math.abs(rotationDiff) < Math.abs(this.frameDelta)) {
+            rotationDiff = this.frameDelta;
+        }
+        this.frameDelta = 0;
+
         const potentialRotation = this.bodyRotation + rotationDiff;
 
         const potentialPosition = this.getCenterPosition();
@@ -252,7 +266,7 @@ export default class Player extends Component {
         const blockCollision = BlockCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, Player.X_OFFSET, Player.Z_OFFSET);
         potentialPosition.sub(blockCollision);
 
-        if (this.cameraIsFollowing() && !this.isOverlayOpen()) {
+        if (this.usingStandardControls() && !this.isOverlayOpen()) {
             this.computeTurretRotation();
         }
 
@@ -265,7 +279,12 @@ export default class Player extends Component {
 
         this.position.copy(this.getInternalPosition(potentialPosition));
         this.bodyRotation = potentialRotation;
-        this.headRotation += rotationDiff;
+
+        if (this.usingSimpleControls()) {
+            this.headRotation = potentialRotation;
+        } else {
+            this.headRotation += rotationDiff;
+        }
 
         const movementData = {
             id: this.id,
@@ -305,7 +324,7 @@ export default class Player extends Component {
 
     private onCameraToggle() {
         if (!this.isOverlayOpen()) {
-            if (this.cameraIsFollowing()) {
+            if (this.usingStandardControls()) {
                 EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
                 DomHandler.exitPointerLock();
             } else {
@@ -326,8 +345,12 @@ export default class Player extends Component {
         }, time);
     }
 
-    private cameraIsFollowing() {
-        return Globals.getGlobal(Globals.Global.CAMERA_IS_FOLLOWING);
+    private usingStandardControls() {
+        return Globals.getGlobal(Globals.Global.CAMERA_IS_FOLLOWING) && !this.usingSimpleControls();
+    }
+
+    private usingSimpleControls() {
+        return Options.options.controls === "simple";
     }
 
     private onBlur() {

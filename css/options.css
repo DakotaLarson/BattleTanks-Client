@@ -33,4 +33,8 @@
 .options-tip {
     font-size: 2vmin;
     font-family: 'Inconsolata', sans-serif;
+} 
+
+.options-menu .option-value-radio {
+    text-align: left;
 }

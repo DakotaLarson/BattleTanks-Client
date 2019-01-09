@@ -33,7 +33,7 @@ html, body{
     display: none;
 }
 .tall-menu-section{
-    height: 70vh;
+    height: 60vh;
     overflow-y: auto;
 }
 .menu-selection, .menu-text-input{

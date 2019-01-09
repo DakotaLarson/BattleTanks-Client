@@ -96,6 +96,10 @@ export default class Options extends Component {
             Options.options.cameraAngle = 0.65;
         }
 
+        if (!("controls" in Options.options)) {
+            Options.options.controls = "simple";
+        }
+
         localStorage.setItem("userOptions", JSON.stringify(Options.options));
 
         if (!Options.options.username) {

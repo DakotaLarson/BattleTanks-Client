@@ -154,7 +154,8 @@ export default class ArenaHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenuFromEvent);
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
-        EventHandler.addListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE, this.onBlur);
+        EventHandler.addListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE_INVOKED, this.onEscape);
+        EventHandler.addListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE, this.onEscape);
 
         this.attachChild(this.sceneHandler);
         this.attachChild(this.renderer);
@@ -166,7 +167,8 @@ export default class ArenaHandler extends Component {
             EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
             EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenuFromEvent);
             EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
-            EventHandler.removeListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE, this.onBlur);
+            EventHandler.removeListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE_INVOKED, this.onEscape);
+            EventHandler.removeListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE, this.onEscape);
 
             this.detachChild(this.sceneHandler);
             this.detachChild(this.renderer);
@@ -180,7 +182,13 @@ export default class ArenaHandler extends Component {
     }
 
     private onKeyUp(event: KeyboardEvent) {
-        if (event.code === "Escape" && !Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
+        if (event.code === "Escape") {
+            this.onEscape();
+        }
+    }
+
+    private onEscape() {
+        if (!Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
             if (Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
                 this.closeGameMenu(true);
             } else {
