@@ -42,18 +42,18 @@ export default class BackgroundVolumeHandler extends ChildComponent {
             });
         }
 
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_GUI_MOUSEDOWN, this.onMouseDown);
         EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
     }
 
     public disable() {
         this.backgroundAudio.pause();
 
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_GUI_MOUSEDOWN, this.onMouseDown);
         EventHandler.removeListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
     }
 
-    private onClick(event: MouseEvent) {
+    private onMouseDown(event: MouseEvent) {
         if (event.target === this.volumeElt) {
             if (this.backgroundAudio.paused) {
                 this.backgroundAudio.play();
@@ -64,6 +64,7 @@ export default class BackgroundVolumeHandler extends ChildComponent {
                 localStorage.setItem("menuBackgroundAudio", "false");
                 this.volumeElt.src = BackgroundVolumeHandler.VOLUME_OFF_SRC;
             }
+            DomHandler.setInterference(true);
         }
     }
 

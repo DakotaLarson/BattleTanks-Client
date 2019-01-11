@@ -1,3 +1,16 @@
+.options-menu {
+    position: absolute;
+    overflow-y: auto;
+    max-height: 90vh;
+    height: auto;
+    width: auto;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #101010;
+    padding: 2.5vmin;
+    border: solid 1px #ffffff;
+}
 .options-menu .options-parent{
     display: inline-grid;
     grid-template-columns: auto auto;

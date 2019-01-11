@@ -31,10 +31,6 @@ html, body{
 .menu-section{
     display: none;
 }
-.tall-menu-section{
-    height: 60vh;
-    overflow-y: auto;
-}
 .menu-selection, .menu-text-input{
     font-size: 5vmin;
     margin: 1vmin;

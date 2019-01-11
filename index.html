@@ -13,7 +13,7 @@
     <meta property="og:type" content="website"/>
     <meta property="og:url" content="https://battletanks.app"/>
     <meta property="og:description" content="BattleTanks is a free web based tank shooter where two teams of players battle it out in a team elimination gamemode!"/>
-    <!-- <meta property="og:image" content="image url here"/> -->
+    <meta property="og:image" content="./res/menu/header.png"/>
 
     <meta name="google-site-verification" content="EVg7I0KTCnW1qmVkwFeW3pX7rKxemX923IcLJWonO-8"/>
     <meta name="msvalidate.01" content="195C8869D5EEBF8AAA413CDA4482BEF4" />
@@ -36,18 +36,20 @@
     <link rel="stylesheet" type="text/css" href="./css/loading.css"/>
     <link rel="stylesheet" type="text/css" href="./css/main.css"/>
     <link rel="stylesheet" type="text/css" href="./css/game-menu.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/overlay-menu.css"/>
     <link rel="stylesheet" type="text/css" href="./css/gui.css"/>
     <link rel="stylesheet" type="text/css" href="./css/debug-panel.css"/>
     <link rel="stylesheet" type="text/css" href="./css/main-menu.css"/>
     <link rel="stylesheet" type="text/css" href="./css/connection-screen.css"/>
     <link rel="stylesheet" type="text/css" href="./css/create-world-mode-toggle.css"/>
     <link rel="stylesheet" type="text/css" href="./css/alert-message.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/options.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/options-menu.css"/>
     <link rel="stylesheet" type="text/css" href="./css/options-dropdown.css"/>
     <link rel="stylesheet" type="text/css" href="./css/joystick.css"/>
 
 </head>
 <body>
+<!-- LOADING SCREEN -->
 <div class="loading-screen">
     <div class="loading">
         <div class="finger finger-1">
@@ -76,16 +78,15 @@
     </div>
     <div class="loading-text">Loading...</div>     
 </div>
+
+<!-- MAIN MENU -->
 <div class="menu main-menu no-select">
     <div class="auth-container">
         <span id="google-auth-btn"></span>
         <span id="auth-signout">Sign out</span>
     </div>
-    <img class="menu-volume-control" draggable="false"/>
-    <audio id="mainmenu-background-audio" preload="auto" loop>
-        <source src="./res/audio/menu/background.mp3" type="audio/mpeg"/>
-    </audio>
-    <div class="options-dropdown">
+    
+    <!-- <div class="options-dropdown">
         <div class="options-dropdown-header">
                 <span id="options-dropdown-username"></span>
                 <span class="arrow-down"></span>
@@ -94,7 +95,7 @@
             <span class="menu-selection" id="options-dropdown-option--options">Options</span><br/>
 
         </div>
-    </div>
+    </div> -->
     <img class="main-menu-header" src="./res/menu/header.png" draggable="false"/>
     <!-- TOP MENU -->
     <div class="menu-section" id="main-menu-top">
@@ -106,82 +107,6 @@
         <span class="menu-selection" id="sp-opt-create">Create New</span><br/>
         <span class="menu-selection" id="sp-opt-load">Load Existing</span><br/>
         <span class="menu-selection" id="sp-opt-cancel">Cancel</span>
-    </div>
-    <!-- MULTIPLAYER MENU -->
-    <div class="menu-section" id="main-menu-mp">
-        <div class="server-list"></div>
-        <div class="server-action-parent">
-            <span class="menu-selection" id="mp-opt-add-server">Add Server</span>
-            <span class="menu-selection" id="mp-opt-remove-server">Remove Server</span>
-            <span class="menu-selection" id="mp-opt-join-server">Join Server</span>
-            <span class="menu-selection" id="mp-opt-cancel">Cancel</span>
-        </div>
-    </div>
-    <!-- OPTIONS MENU -->
-    <div class="menu-section tall-menu-section options-menu" id="main-menu-opt">
-
-        <input id="option-value-username" class="menu-text-input" maxlength="16" size="16" placeholder="Username"><br/>
-        <div class='options-parent'>
-            <span class="option-title">Chat</span>
-            <input type="checkbox" id="option-enabled-chat">
-
-            <span class="option-title">Killfeed</span>
-            <input type="checkbox" id="option-enabled-killfeed">
-
-            <span class="option-title">Forward</span>
-            <span class="option-value option-listening-value" id="option-value-forward"></span>
-
-            <span class="option-title">Backward</span>
-            <span class="option-value option-listening-value" id="option-value-backward"></span>
-
-            <span class="option-title">Rotate Left</span>
-            <span class="option-value option-listening-value" id="option-value-left"></span>
-
-            <span class="option-title">Rotate Right</span>
-            <span class="option-value option-listening-value" id="option-value-right"></span>
-
-            <span class="option-title">Reload</span>
-            <span class="option-value option-listening-value" id="option-value-reload"></span>
-
-            <span class="option-title">Ramming Speed</span>
-            <span class="option-value option-listening-value" id="option-value-ram"></span>
-
-            <span class="option-title">Shoot</span>
-            <span class="option-value option-listening-value" id="option-value-shoot"></span>
-
-            <span class="option-title">Open Chat</span>
-            <span class="option-value option-listening-value" id="option-value-chatopen"></span>
-
-            <span class="option-title">Game Volume</span>
-            <input type="range" id="option-value-volume-game" class="option-value option-range-value" min="0" max="1" step="any"/>
-
-            <span class="option-title">Menu Volume</span>
-            <input type="range" id="option-value-volume-menu" class="option-value option-range-value" min="0" max="1" step="any"/>
-
-            <span class="option-title">Mouse Sensitivity</span>
-            <input type="range" id="option-value-mouse" class="option-value option-range-value" min="0.1" max="1" step="any"/>
-
-            <span class="option-title">Rotation Sensitivity</span>
-            <input type="range" id="option-value-rotation" class="option-value option-range-value" min="0.5" max="1.5" step="any"/>
-            
-            <span class="option-title">Camera Angle</span>
-            <input type="range" id="option-value-camera-angle" class="option-value option-range-value" min="0" max="1" step="any"/>
-
-            <span class="option-title">Camera Angle</span>
-            <input type="range" id="option-value-camera-angle" class="option-value option-range-value" min="0" max="1" step="any"/>
-
-            <span class="option-title">Controls</span>
-            <div class="option-value-radio">
-                <input type="radio" id="option-value-controls-simple" class="option-value option-radio-value" name="controls-option"/>
-                <span>Simple</span><br/>
-                <input type="radio" id="option-value-controls-standard" class="option-value option-radio-value" name="controls-option"/>
-                <span>Standard</span><br/>
-            </div>
-            
-
-            <span class="menu-selection" id="opt-opt-return">Return</span>
-        </div><br/>
-        <span class="options-tip">Tip: Hold ctrl &amp; primary mouse button to alter camera angle in game</span>
     </div>
     <!-- SINGLEPLAYER CREATE MENU -->
     <div class="menu-section" id="sp-menu-create">
@@ -203,13 +128,6 @@
         <span class="menu-selection" id="load-opt-load">Load</span>
         <span class="menu-selection" id="load-opt-cancel">Cancel</span><br/>
         <span class="menu-error" id="load-opt-error"></span>
-    </div>
-    <!-- MULTIPLAYER ADD SERVER MENU -->
-    <div class="menu-section" id="mp-menu-add-server">
-        <input class="menu-text-input" id="add-server-name" placeholder="Server Name"/><br/>
-        <input class="menu-text-input" id="add-server-address" placeholder="Server Address"/><br/> 
-        <span class="menu-selection" id="add-server-opt-save">Save</span>
-        <span class="menu-selection" id="add-server-opt-cancel">Cancel</span>
     </div>
     <!-- SOCIAL LINKS -->
     <p class="feedback-request">
@@ -312,7 +230,20 @@ Be heard <a href="http://bit.ly/2QbTqoa" target="_blank">here</a>!
     </div> 
 </div>
 
-<!-- GAME MENU -->
+<!-- OVERLAY MENU -->
+<div class="menu overlay-menu">
+    <div class="fullscreen-toggle gui-element no-select">
+        <img id="fullscreen-toggle-on" draggable="false" src="./res/gui/fullscreen.svg">
+        <img id="fullscreen-toggle-off" draggable="false" src="./res/gui/fullscreen-exit.svg">
+    </div>
+    <img class="menu-volume-control" draggable="false"/>
+    <img class="menu-options" draggable="false" src="./res/menu/gear.svg"/>
+    <audio id="mainmenu-background-audio" preload="auto" loop>
+        <source src="./res/audio/menu/background.mp3" type="audio/mpeg"/>
+    </audio>
+</div>
+
+<!-- SP GAME MENU -->
 <div class="menu game-menu no-select" id="game-menu-sp">
     <div class="game-menu-options">
         <span class="menu-selection" id="game-menu-sp-return-to-main">Return to Main Menu</span><br/>
@@ -321,6 +252,7 @@ Be heard <a href="http://bit.ly/2QbTqoa" target="_blank">here</a>!
     </div>
 </div>
 
+<!-- DOWNLOAD MENU -->
 <div class="menu game-menu no-select" id="download-menu">
     <div class="game-menu-options download-options">
         <div class='options-parent'>
@@ -341,11 +273,76 @@ Be heard <a href="http://bit.ly/2QbTqoa" target="_blank">here</a>!
     </div>
 </div>
 
+<!-- MP GAME MENU -->
 <div class="menu game-menu no-select" id="game-menu-mp">
     <div class="game-menu-options">
         <span class="menu-selection" id="game-menu-mp-disconnect">Disconnect</span><br/>
         <span class="menu-selection" id="game-menu-mp-cancel">Return To Game</span>
     </div>
+</div>
+
+<!-- OPTIONS MENU -->
+<div class="options-menu menu">
+    <input id="option-value-username" class="menu-text-input" maxlength="16" size="16" placeholder="Username"><br/>
+    <div class='options-parent'>
+        <span class="option-title">Chat</span>
+        <input type="checkbox" id="option-enabled-chat">
+
+        <span class="option-title">Killfeed</span>
+        <input type="checkbox" id="option-enabled-killfeed">
+
+        <span class="option-title">Forward</span>
+        <span class="option-value option-listening-value" id="option-value-forward"></span>
+
+        <span class="option-title">Backward</span>
+        <span class="option-value option-listening-value" id="option-value-backward"></span>
+
+        <span class="option-title">Rotate Left</span>
+        <span class="option-value option-listening-value" id="option-value-left"></span>
+
+        <span class="option-title">Rotate Right</span>
+        <span class="option-value option-listening-value" id="option-value-right"></span>
+
+        <span class="option-title">Reload</span>
+        <span class="option-value option-listening-value" id="option-value-reload"></span>
+
+        <span class="option-title">Ramming Speed</span>
+        <span class="option-value option-listening-value" id="option-value-ram"></span>
+
+        <span class="option-title">Shoot</span>
+        <span class="option-value option-listening-value" id="option-value-shoot"></span>
+
+        <span class="option-title">Open Chat</span>
+        <span class="option-value option-listening-value" id="option-value-chatopen"></span>
+
+        <span class="option-title">Game Volume</span>
+        <input type="range" id="option-value-volume-game" class="option-value option-range-value" min="0" max="1" step="any"/>
+
+        <span class="option-title">Menu Volume</span>
+        <input type="range" id="option-value-volume-menu" class="option-value option-range-value" min="0" max="1" step="any"/>
+
+        <span class="option-title">Mouse Sensitivity</span>
+        <input type="range" id="option-value-mouse" class="option-value option-range-value" min="0.1" max="1" step="any"/>
+
+        <span class="option-title">Rotation Sensitivity</span>
+        <input type="range" id="option-value-rotation" class="option-value option-range-value" min="0.5" max="1.5" step="any"/>
+        
+        <span class="option-title">Camera Angle</span>
+        <input type="range" id="option-value-camera-angle" class="option-value option-range-value" min="0" max="1" step="any"/>
+
+        <span class="option-title">Camera Angle</span>
+        <input type="range" id="option-value-camera-angle" class="option-value option-range-value" min="0" max="1" step="any"/>
+
+        <span class="option-title">Controls</span>
+        <div class="option-value-radio">
+            <input type="radio" id="option-value-controls-simple" class="option-value option-radio-value" name="controls-option"/>
+            <span>Simple</span><br/>
+            <input type="radio" id="option-value-controls-standard" class="option-value option-radio-value" name="controls-option"/>
+            <span>Standard</span>
+        </div>
+    </div><br/>
+    <span class="menu-selection" id="opt-opt-close">Save &amp; Close</span><br/>
+    <span class="options-tip">Tip: Hold ctrl &amp; primary mouse button to alter camera angle in game</span>
 </div>
 
 <canvas id="game-canvas" width="0" height="0"></canvas>

@@ -1,0 +1,41 @@
+.overlay-menu {
+    position: absolute;
+    pointer-events: none;
+    top: 0;
+}
+
+.overlay-menu .fullscreen-toggle img {
+    width: 100%;
+    height: 100%;
+}
+
+.overlay-menu .fullscreen-toggle #fullscreen-toggle-off,
+.overlay-menu .fullscreen-toggle #fullscreen-toggle-on,
+.overlay-menu .fullscreen-toggle {
+    display: none;
+}
+
+.overlay-menu .menu-volume-control,
+.overlay-menu .menu-options,
+.overlay-menu .fullscreen-toggle {
+    position: absolute;
+    width: 2.5vmin;
+    height: 2.5vmin;
+    right: 1vmin;
+    top: 1vmin;
+    pointer-events: auto;
+}
+
+.overlay-menu .menu-volume-control {
+    right: 5vmin;
+}
+
+.overlay-menu .fullscreen-toggle {
+    right: 9vmin;
+}
+
+.overlay-menu .menu-volume-control:hover,
+.overlay-menu .menu-options:hover,
+.overlay-menu .fullscreen-toggle:hover {
+    cursor: pointer;
+}

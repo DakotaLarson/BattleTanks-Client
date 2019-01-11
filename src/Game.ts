@@ -11,10 +11,12 @@ import GameStatusHandler from "./GameStatusHandler";
 import MainMenu from "./main_menu/MainMenu";
 import MultiplayerConnection from "./MultiplayerConnection";
 import Options from "./Options";
+import OverlayMenu from "./overlay_menu/OverlayMenu";
 
 class Game extends Component {
 
     private mainMenu: MainMenu;
+    private overlayMenu: OverlayMenu;
     private connectionScreen: ConnectionScreen;
     private arenaHandler: ArenaHandler;
     private mpConnection: MultiplayerConnection | undefined;
@@ -30,6 +32,7 @@ class Game extends Component {
         this.auth = new Auth();
         this.options = new Options();
         this.mainMenu = new MainMenu();
+        this.overlayMenu = new OverlayMenu();
         this.connectionScreen = new ConnectionScreen();
         this.arenaHandler = new ArenaHandler();
         this.gameStatusHandler = new GameStatusHandler();
@@ -54,6 +57,7 @@ class Game extends Component {
         this.attachComponent(this.auth);
         this.attachComponent(this.options);
         this.attachChild(this.mainMenu);
+        this.attachComponent(this.overlayMenu);
         this.attachChild(this.alertMessageHandler);
         this.attachComponent(this.arenaHandler);
         this.hideLoadingScreen();

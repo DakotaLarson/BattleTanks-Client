@@ -11,22 +11,6 @@
     position: absolute;
 }
 
-.gui .fullscreen-toggle {
-    right: 1vmin;
-    top: 1vmin;
-}
-
-.gui .fullscreen-toggle:hover {
-    cursor: pointer;
-}
-
-.gui .fullscreen-toggle #fullscreen-toggle-off,
-.gui .fullscreen-toggle #fullscreen-toggle-on {
-    display: none;
-    width: 4.5vmin;
-    height: 4.5vmin;
-}
-
 .gui .shield-bar-parent,
 .gui .health-bar-parent,
 .gui .ram-bar-parent {

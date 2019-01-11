@@ -4,12 +4,8 @@ import EventHandler from "../EventHandler";
 
 import AudioType from "../audio/AudioType";
 import ChildComponent from "../component/ChildComponent";
-import AddServerMenu from "./AddServerMenu";
-import BackgroundVolumeHandler from "./BackgroundVolumeHandler";
 import CreateWorldMenu from "./CreateArenaMenu";
 import LoadWorldMenu from "./LoadArenaMenu";
-import MultiplayerMenu from "./MultiplayerMenu";
-import OptionsDropdown from "./OptionsDropdown";
 import OptionsMenu from "./OptionsMenu";
 import SingleplayerMenu from "./SingleplayerMenu";
 import TopMenu from "./TopMenu";
@@ -20,14 +16,9 @@ export default class MainMenu extends Component {
 
     private topMenu: TopMenu;
     private spMenu: SingleplayerMenu;
-    private mpMenu: MultiplayerMenu;
     private optMenu: OptionsMenu;
     private createMenu: CreateWorldMenu;
     private loadMenu: LoadWorldMenu;
-    private addServerMenu: AddServerMenu;
-
-    private optionsDropdown: OptionsDropdown;
-    private backgroundVolumeHandler: BackgroundVolumeHandler;
 
     private attachedCmp: ChildComponent | undefined;
 
@@ -37,20 +28,14 @@ export default class MainMenu extends Component {
 
         this.topMenu = new TopMenu(this.element);
         this.spMenu = new SingleplayerMenu(this.element);
-        this.mpMenu = new MultiplayerMenu(this.element);
         this.optMenu = new OptionsMenu(this.element);
         this.createMenu = new CreateWorldMenu(this.element);
         this.loadMenu = new LoadWorldMenu(this.element);
-        this.addServerMenu = new AddServerMenu(this.element);
-
-        this.optionsDropdown = new OptionsDropdown(this.element);
-        this.backgroundVolumeHandler = new BackgroundVolumeHandler(this.element);
     }
     public enable() {
 
         // TOP MENU
         EventHandler.addListener(this, EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.onTopSpOptClick);
-        EventHandler.addListener(this, EventHandler.Event.TOPMENU_MP_OPT_CLICK, this.onTopMpOptClick);
         EventHandler.addListener(this, EventHandler.Event.TOPMENU_OPT_OPT_CLICK, this.onTopOptOptClick);
 
         // SP MENU
@@ -59,9 +44,7 @@ export default class MainMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.onSpCreateOptClick);
 
         // MP MENU
-        EventHandler.addListener(this, EventHandler.Event.MPMENU_ADDSERVER_OPT_CLICK, this.onMpAddServerOptClick);
         EventHandler.addListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.onMpJoinOptClick);
-        EventHandler.addListener(this, EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.onMpCancelOptClick);
 
         // OPT MENU
         EventHandler.addListener(this, EventHandler.Event.OPTMENU_RETURN_OPT_CLICK, this.onOptCancelOptClick);
@@ -72,14 +55,7 @@ export default class MainMenu extends Component {
         // LOAD WORLD MENU
         EventHandler.addListener(this, EventHandler.Event.LOADWORLDMENU_CANCEL_OPT_CLICK, this.onLoadWorldCancelClick);
 
-        // ADD SERVER MENU
-        EventHandler.addListener(this, EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK, this.onAddServerCancel);
-        EventHandler.addListener(this, EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK, this.onAddServerSave);
-
         this.attach(this.topMenu);
-
-        this.attachChild(this.optionsDropdown);
-        this.attachChild(this.backgroundVolumeHandler);
 
         this.element.style.display = "block";
     }
@@ -88,7 +64,6 @@ export default class MainMenu extends Component {
 
         // TOP MENU
         EventHandler.removeListener(this, EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.onTopSpOptClick);
-        EventHandler.removeListener(this, EventHandler.Event.TOPMENU_MP_OPT_CLICK, this.onTopMpOptClick);
         EventHandler.removeListener(this, EventHandler.Event.TOPMENU_OPT_OPT_CLICK, this.onTopOptOptClick);
 
         // SP MENU
@@ -97,9 +72,7 @@ export default class MainMenu extends Component {
         EventHandler.removeListener(this, EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.onSpCancelOptClick);
 
         // MP MENU
-        EventHandler.removeListener(this, EventHandler.Event.MPMENU_ADDSERVER_OPT_CLICK, this.onMpAddServerOptClick);
         EventHandler.removeListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.onMpJoinOptClick);
-        EventHandler.removeListener(this, EventHandler.Event.MPMENU_CANCEL_OPT_CLICK, this.onMpCancelOptClick);
 
         // OPT MENU
         EventHandler.removeListener(this, EventHandler.Event.OPTMENU_RETURN_OPT_CLICK, this.onOptCancelOptClick);
@@ -107,24 +80,12 @@ export default class MainMenu extends Component {
         // SPCREATE MENU
         EventHandler.removeListener(this, EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.onCreateWorldCancelClick);
 
-        // ADD SERVER MENU
-        EventHandler.removeListener(this, EventHandler.Event.ADDSERVERMENU_CANCEL_OPT_CLICK, this.onAddServerCancel);
-        EventHandler.removeListener(this, EventHandler.Event.ADDSERVERMENU_SAVE_OPT_CLICK, this.onAddServerSave);
-
-        this.detachChild(this.optionsDropdown);
-        this.detachChild(this.backgroundVolumeHandler);
-
         this.element.style.display = "";
     }
 
     // Top menu options
     private onTopSpOptClick() {
         this.attach(this.spMenu);
-        this.playSelect();
-    }
-
-    private onTopMpOptClick() {
-        this.attach(this.mpMenu);
         this.playSelect();
     }
 
@@ -149,21 +110,9 @@ export default class MainMenu extends Component {
         this.playSelect();
     }
 
-    // Multiplayer Option Handlers
-    private onMpAddServerOptClick() {
-        this.attach(this.addServerMenu);
-        this.playSelect();
-    }
-
     private onMpJoinOptClick() {
-        this.detachChild(this.mpMenu);
         this.attachedCmp = undefined;
         this.playValidate();
-    }
-
-    private onMpCancelOptClick() {
-        this.attach(this.topMenu);
-        this.playReturn();
     }
 
     // Options Option Handlers
@@ -182,16 +131,6 @@ export default class MainMenu extends Component {
     private onLoadWorldCancelClick() {
         this.attach(this.spMenu);
         this.playReturn();
-    }
-
-    private onAddServerCancel() {
-        this.attach(this.mpMenu);
-        this.playReturn();
-    }
-
-    private onAddServerSave() {
-        this.attach(this.mpMenu);
-        this.playValidate();
     }
 
     private attach(cmp: ChildComponent) {
