@@ -3,6 +3,7 @@ import EventHandler from "./EventHandler";
 
 import AlertMessageHandler from "./alert_message/AlertMessageHandler";
 import ArenaHandler from "./arena/ArenaHandler";
+import BackgroundAudioHandler from "./audio/BackgroundAudioHandler";
 import Auth from "./Auth";
 import ComponentDebugger from "./component/ComponentDebugger";
 import ConnectionScreen from "./connection_screen/ConnectionScreen";
@@ -16,6 +17,7 @@ import OverlayMenu from "./overlay_menu/OverlayMenu";
 class Game extends Component {
 
     private mainMenu: MainMenu;
+    private backgroundAudioHandler: BackgroundAudioHandler;
     private overlayMenu: OverlayMenu;
     private connectionScreen: ConnectionScreen;
     private arenaHandler: ArenaHandler;
@@ -32,6 +34,7 @@ class Game extends Component {
         this.auth = new Auth();
         this.options = new Options();
         this.mainMenu = new MainMenu();
+        this.backgroundAudioHandler = new BackgroundAudioHandler();
         this.overlayMenu = new OverlayMenu();
         this.connectionScreen = new ConnectionScreen();
         this.arenaHandler = new ArenaHandler();
@@ -56,10 +59,11 @@ class Game extends Component {
 
         this.attachComponent(this.auth);
         this.attachComponent(this.options);
-        this.attachChild(this.mainMenu);
         this.attachComponent(this.overlayMenu);
-        this.attachChild(this.alertMessageHandler);
+        this.attachComponent(this.backgroundAudioHandler);
         this.attachComponent(this.arenaHandler);
+        this.updateMenu(true);
+        this.attachChild(this.alertMessageHandler);
         this.hideLoadingScreen();
     }
 
@@ -68,11 +72,11 @@ class Game extends Component {
     }
 
     private loadSingleplayer() {
-        this.detachChild(this.mainMenu);
+        this.updateMenu(false);
     }
 
     private unloadSingleplayer() {
-        this.attachChild(this.mainMenu);
+        this.updateMenu(true);
     }
 
     private connectToMultiplayer() {
@@ -86,7 +90,7 @@ class Game extends Component {
                 break;
             }
         }
-        this.detachChild(this.mainMenu);
+        this.updateMenu(false);
         this.attachChild(this.connectionScreen);
         this.mpConnection = new MultiplayerConnection(address, this.tokenId);
         this.attachChild(this.mpConnection);
@@ -98,7 +102,7 @@ class Game extends Component {
         this.detachChild(this.mpConnection as MultiplayerConnection);
         this.detachChild(this.gameStatusHandler);
         this.mpConnection = undefined;
-        this.attachChild(this.mainMenu);
+        this.updateMenu(true);
     }
 
     private onSignIn(tokenId: string) {
@@ -111,6 +115,16 @@ class Game extends Component {
 
     private hideLoadingScreen() {
         DomHandler.getElement(".loading-screen").style.display = "none";
+    }
+
+    private updateMenu(enable: boolean) {
+        if (enable) {
+            this.attachChild(this.mainMenu);
+            EventHandler.callEvent(EventHandler.Event.AUDIO_MENU);
+        } else {
+            this.detachChild(this.mainMenu);
+            EventHandler.callEvent(EventHandler.Event.AUDIO_GAME);
+        }
     }
 }
 

@@ -15,7 +15,7 @@
     display: none;
 }
 
-.overlay-menu .menu-volume-control,
+.overlay-menu .volume-mute,
 .overlay-menu .menu-options,
 .overlay-menu .fullscreen-toggle {
     position: absolute;
@@ -26,7 +26,7 @@
     pointer-events: auto;
 }
 
-.overlay-menu .menu-volume-control {
+.overlay-menu .volume-mute {
     right: 5vmin;
 }
 
@@ -34,7 +34,7 @@
     right: 9vmin;
 }
 
-.overlay-menu .menu-volume-control:hover,
+.overlay-menu .volume-mute:hover,
 .overlay-menu .menu-options:hover,
 .overlay-menu .fullscreen-toggle:hover {
     cursor: pointer;

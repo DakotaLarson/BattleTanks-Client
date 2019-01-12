@@ -5,6 +5,7 @@ enum Global {
     GAME_MENU_OPEN,
     OPTIONS_OPEN,
     ANGLE_BUTTON_DOWN,
+    AUDIO_ENABLED,
 }
 
 export default class Globals {

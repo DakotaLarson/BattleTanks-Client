@@ -81,21 +81,11 @@
 
 <!-- MAIN MENU -->
 <div class="menu main-menu no-select">
+        
     <div class="auth-container">
         <span id="google-auth-btn"></span>
         <span id="auth-signout">Sign out</span>
     </div>
-    
-    <!-- <div class="options-dropdown">
-        <div class="options-dropdown-header">
-                <span id="options-dropdown-username"></span>
-                <span class="arrow-down"></span>
-        </div>
-        <div class="options-dropdown-list">
-            <span class="menu-selection" id="options-dropdown-option--options">Options</span><br/>
-
-        </div>
-    </div> -->
     <img class="main-menu-header" src="./res/menu/header.png" draggable="false"/>
     <!-- TOP MENU -->
     <div class="menu-section" id="main-menu-top">
@@ -273,11 +263,9 @@ Be heard <a href="http://bit.ly/2QbTqoa" target="_blank">here</a>!
         <img id="fullscreen-toggle-on" draggable="false" src="./res/gui/fullscreen.svg">
         <img id="fullscreen-toggle-off" draggable="false" src="./res/gui/fullscreen-exit.svg">
     </div>
-    <img class="menu-volume-control" draggable="false"/>
+    <img class="volume-mute" draggable="false"/>
     <img class="menu-options" draggable="false" src="./res/menu/gear.svg"/>
-    <audio id="mainmenu-background-audio" preload="auto" loop>
-        <source src="./res/audio/menu/background.mp3" type="audio/mpeg"/>
-    </audio>
+    
 </div>
 
 <!-- OPTIONS MENU -->
@@ -343,6 +331,10 @@ Be heard <a href="http://bit.ly/2QbTqoa" target="_blank">here</a>!
     <span class="menu-selection" id="opt-opt-close">Save &amp; Close</span><br/>
     <span class="options-tip">Tip: Hold ctrl &amp; primary mouse button to alter camera angle in game</span>
 </div>
+
+<audio id="audioElt" preload="auto" loop>
+    <source src="./res/audio/menu/background.mp3" type="audio/mpeg"/>
+</audio>
 
 <canvas id="game-canvas" width="0" height="0"></canvas>
 

@@ -1,8 +1,8 @@
-import ChildComponent from "../component/ChildComponent";
+import Component from "../component/Component";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
-export default class FullscreenToggle extends ChildComponent {
+export default class FullscreenToggle extends Component {
 
     private container: HTMLElement;
 
@@ -29,13 +29,6 @@ export default class FullscreenToggle extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.DOM_FULLSCREEN_ENABLED, this.onFullscreenEnable);
         EventHandler.addListener(this, EventHandler.Event.DOM_FULLSCREEN_DISABLED, this.onFullscreenDisable);
 
-    }
-
-    public disable() {
-        this.container.style.display = "";
-        EventHandler.removeListener(this, EventHandler.Event.DOM_GUI_MOUSEDOWN, this.onMousedown);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_FULLSCREEN_ENABLED, this.onFullscreenEnable);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_FULLSCREEN_DISABLED, this.onFullscreenDisable);
     }
 
     private onMousedown(event: MouseEvent) {

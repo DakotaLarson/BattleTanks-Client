@@ -102,7 +102,7 @@ export default class ArenaHandler extends Component {
 
         EventHandler.addListener(this, EventHandler.Event.OPTIONS_OPEN, this.onOptionsOpen);
 
-        this.attachChild(this.audioHandler);
+        this.attachComponent(this.audioHandler);
     }
 
     private attachSingleplayerArena(worldData: any) {

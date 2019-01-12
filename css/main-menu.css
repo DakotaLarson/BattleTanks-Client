@@ -110,24 +110,6 @@
     margin-bottom: 25vh;
 }
 
-.main-menu .menu-volume-control,
-.main-menu .menu-options {
-    position: absolute;
-    width: 5vmin;
-    height: 5vmin;
-    right: 15vw;
-    top: 1vmin;
-}
-
-.main-menu .menu-options {
-    right: 8vw;
-}
-
-.main-menu .menu-volume-control:hover ,
-.main-menu .menu-options {
-    cursor: pointer;
-}
-
 .main-menu .feedback-request {
     position: absolute;
     left: 2.5vmin;
