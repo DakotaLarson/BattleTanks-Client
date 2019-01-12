@@ -391,7 +391,8 @@ export default class ScenePlayerHandler extends Component {
     private playSound(player: IPlayerObj, buffer: AudioBuffer) {
 
         const volume = Options.options.gameVolume;
-        if (volume) {
+        const enabled = Globals.getGlobal(Globals.Global.AUDIO_ENABLED);
+        if (enabled && volume) {
             const head = player.head;
 
             const audio = new PositionalAudio(this.audioListener);
