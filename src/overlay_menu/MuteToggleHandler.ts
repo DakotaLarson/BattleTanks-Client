@@ -9,6 +9,9 @@ export default class MuteToggleHandler extends ChildComponent {
     private static readonly VOLUME_OFF_SRC = "./res/menu/sound_off.svg";
 
     private volumeElt: HTMLImageElement;
+    private volumeSuggestionElt: HTMLElement;
+
+    private suggestionTimer: number | undefined;
 
     private enabled: boolean;
 
@@ -16,10 +19,11 @@ export default class MuteToggleHandler extends ChildComponent {
         super();
 
         this.volumeElt = DomHandler.getElement(".volume-mute", parent) as HTMLImageElement;
+        this.volumeSuggestionElt = DomHandler.getElement(".volume-suggestion");
 
-        const storageValue = localStorage.getItem("audioElabled");
+        const storageValue = localStorage.getItem("audioEnabled");
         if (storageValue === null) {
-            localStorage.setItem("audioElabled", "true");
+            localStorage.setItem("audioEnabled", "true");
             this.enabled = true;
         } else {
             this.enabled = storageValue === "true";
@@ -40,21 +44,24 @@ export default class MuteToggleHandler extends ChildComponent {
     }
 
     private onMouseDown(event: MouseEvent) {
-        if (event.target === this.volumeElt) {
+        if (event.target === this.volumeElt || event.target === this.volumeSuggestionElt) {
             if (this.enabled) {
-                localStorage.setItem("menuBackgroundAudio", "false");
+                localStorage.setItem("audioEnabled", "false");
                 this.volumeElt.src = MuteToggleHandler.VOLUME_OFF_SRC;
                 EventHandler.callEvent(EventHandler.Event.AUDIO_DISABLED);
                 Globals.setGlobal(Globals.Global.AUDIO_ENABLED, false);
                 this.enabled = false;
             } else {
-                localStorage.setItem("menuBackgroundAudio", "true");
+                localStorage.setItem("audioEnabled", "true");
                 this.volumeElt.src = MuteToggleHandler.VOLUME_ON_SRC;
                 EventHandler.callEvent(EventHandler.Event.AUDIO_ENABLED);
                 Globals.setGlobal(Globals.Global.AUDIO_ENABLED, true);
                 this.enabled = true;
             }
             DomHandler.setInterference(true);
+            window.clearTimeout(this.suggestionTimer);
+            this.suggestionTimer = undefined;
+            this.volumeSuggestionElt.classList.remove("volume-suggestion-visible");
         }
     }
 
@@ -63,5 +70,12 @@ export default class MuteToggleHandler extends ChildComponent {
         Globals.setGlobal(Globals.Global.AUDIO_ENABLED, false);
         EventHandler.callEvent(EventHandler.Event.AUDIO_DISABLED);
         this.enabled = false;
+        this.suggestionTimer = window.setTimeout(() => {
+            this.volumeSuggestionElt.classList.add("volume-suggestion-visible");
+            this.suggestionTimer = window.setTimeout(() => {
+                this.volumeSuggestionElt.classList.remove("volume-suggestion-visible");
+                this.suggestionTimer = undefined;
+            }, 10000);
+        }, 1500);
     }
 }

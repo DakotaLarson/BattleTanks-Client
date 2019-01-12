@@ -26,16 +26,50 @@
     pointer-events: auto;
 }
 
-.overlay-menu .volume-mute {
+.overlay-menu .fullscreen-toggle {
     right: 5vmin;
 }
 
-.overlay-menu .fullscreen-toggle {
+.overlay-menu .volume-mute {
     right: 9vmin;
+}
+
+.overlay-menu .volume-suggestion {
+    position: absolute;
+    top: 1vmin;
+    right: 13vmin;
+    pointer-events: auto;
+    font-size: 2.25vmin;
+    background: #ffffff;
+    color: #202020;
+    height: 2.5vmin;
+    padding: 0 0.5vmin;
+    pointer-events: auto;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 1s, opacity 1s linear;
+}
+.overlay-menu .volume-suggestion-visible {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 1s linear;
+}
+
+.overlay-menu .volume-suggestion::after{
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    margin-top: -1.25vmin;
+    border-width: 1.25vmin;
+    border-style: solid;
+    border-color: transparent transparent transparent #ffffff;
+    pointer-events: auto;
 }
 
 .overlay-menu .volume-mute:hover,
 .overlay-menu .menu-options:hover,
-.overlay-menu .fullscreen-toggle:hover {
+.overlay-menu .fullscreen-toggle:hover,
+.overlay-menu .volume-suggestion:hover {
     cursor: pointer;
 }
