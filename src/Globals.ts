@@ -3,6 +3,8 @@ enum Global {
     CAMERA_IS_FOLLOWING,
     CHAT_OPEN,
     GAME_MENU_OPEN,
+    OPTIONS_OPEN,
+    ANGLE_BUTTON_DOWN,
 }
 
 export default class Globals {

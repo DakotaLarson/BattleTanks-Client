@@ -6,7 +6,6 @@ import AudioType from "../audio/AudioType";
 import ChildComponent from "../component/ChildComponent";
 import CreateWorldMenu from "./CreateArenaMenu";
 import LoadWorldMenu from "./LoadArenaMenu";
-import OptionsMenu from "./OptionsMenu";
 import SingleplayerMenu from "./SingleplayerMenu";
 import TopMenu from "./TopMenu";
 
@@ -16,7 +15,6 @@ export default class MainMenu extends Component {
 
     private topMenu: TopMenu;
     private spMenu: SingleplayerMenu;
-    private optMenu: OptionsMenu;
     private createMenu: CreateWorldMenu;
     private loadMenu: LoadWorldMenu;
 
@@ -28,7 +26,6 @@ export default class MainMenu extends Component {
 
         this.topMenu = new TopMenu(this.element);
         this.spMenu = new SingleplayerMenu(this.element);
-        this.optMenu = new OptionsMenu(this.element);
         this.createMenu = new CreateWorldMenu(this.element);
         this.loadMenu = new LoadWorldMenu(this.element);
     }
@@ -36,7 +33,6 @@ export default class MainMenu extends Component {
 
         // TOP MENU
         EventHandler.addListener(this, EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.onTopSpOptClick);
-        EventHandler.addListener(this, EventHandler.Event.TOPMENU_OPT_OPT_CLICK, this.onTopOptOptClick);
 
         // SP MENU
         EventHandler.addListener(this, EventHandler.Event.SPMENU_LOAD_OPT_CLICK, this.onSpLoadOptClick);
@@ -64,7 +60,6 @@ export default class MainMenu extends Component {
 
         // TOP MENU
         EventHandler.removeListener(this, EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.onTopSpOptClick);
-        EventHandler.removeListener(this, EventHandler.Event.TOPMENU_OPT_OPT_CLICK, this.onTopOptOptClick);
 
         // SP MENU
         EventHandler.removeListener(this, EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.onSpCreateOptClick);
@@ -86,11 +81,6 @@ export default class MainMenu extends Component {
     // Top menu options
     private onTopSpOptClick() {
         this.attach(this.spMenu);
-        this.playSelect();
-    }
-
-    private onTopOptOptClick() {
-        this.attach(this.optMenu);
         this.playSelect();
     }
 

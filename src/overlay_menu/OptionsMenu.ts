@@ -2,6 +2,7 @@ import Component from "../component/Component";
 import DomEventHandler from "../DomEventHandler";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
+import Globals from "../Globals";
 
 export default class OptionsMenu extends Component {
 
@@ -60,7 +61,7 @@ export default class OptionsMenu extends Component {
 
         this.usernameElt = DomHandler.getElement("#option-value-username", this.element) as HTMLInputElement;
 
-        this.returnBtn = DomHandler.getElement("#opt-opt-return", this.element);
+        this.returnBtn = DomHandler.getElement("#opt-opt-close", this.element);
 
         this.isListening = false;
 
@@ -69,6 +70,7 @@ export default class OptionsMenu extends Component {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_GUI_MOUSEDOWN, this.onGearMouseDown);
+        Globals.setGlobal(Globals.Global.OPTIONS_OPEN, false);
     }
 
     private onGearMouseDown(event: MouseEvent) {
@@ -89,8 +91,10 @@ export default class OptionsMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReloadClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onRamClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onShootClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onChatOpenClick);
+
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
 
         DomEventHandler.addListener(this, this.gameVolumeValueElt, "change", this.onGameVolumeChange);
         DomEventHandler.addListener(this, this.menuVolumeValueElt, "change", this.onMenuVolumeChange);
@@ -101,6 +105,9 @@ export default class OptionsMenu extends Component {
         DomEventHandler.addListener(this, this.controlsStandardValueElt, "change", this.onStandardControlsChange);
 
         DomEventHandler.addListener(this, this.usernameElt, "change", this.onUsernameChange);
+
+        EventHandler.callEvent(EventHandler.Event.OPTIONS_OPEN);
+        Globals.setGlobal(Globals.Global.OPTIONS_OPEN, true);
 
         this.element.style.display = "block";
     }
@@ -116,8 +123,10 @@ export default class OptionsMenu extends Component {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReloadClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onRamClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onShootClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onChatOpenClick);
+
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
 
         DomEventHandler.removeListener(this, this.gameVolumeValueElt, "change", this.onGameVolumeChange);
         DomEventHandler.removeListener(this, this.menuVolumeValueElt, "change", this.onMenuVolumeChange);
@@ -129,8 +138,8 @@ export default class OptionsMenu extends Component {
 
         DomEventHandler.removeListener(this, this.usernameElt, "change", this.onUsernameChange);
 
+        Globals.setGlobal(Globals.Global.OPTIONS_OPEN, false);
         this.isListening = false;
-
         this.element.style.display = "";
     }
 
@@ -227,6 +236,12 @@ export default class OptionsMenu extends Component {
             if (!this.isListening) {
                 this.closeOptions();
             }
+        }
+    }
+
+    private onKeyUp(event: KeyboardEvent) {
+        if (event.code === "Escape" && Globals.getGlobal(Globals.Global.OPTIONS_OPEN) && !this.isListening) {
+            this.closeOptions();
         }
     }
 

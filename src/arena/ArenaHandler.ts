@@ -100,6 +100,8 @@ export default class ArenaHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.detachMultiplayerArena);
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.detachMultiplayerArena);
 
+        EventHandler.addListener(this, EventHandler.Event.OPTIONS_OPEN, this.onOptionsOpen);
+
         this.attachChild(this.audioHandler);
     }
 
@@ -188,12 +190,18 @@ export default class ArenaHandler extends Component {
     }
 
     private onEscape() {
-        if (!Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
+        if (!Globals.getGlobal(Globals.Global.CHAT_OPEN) && !Globals.getGlobal(Globals.Global.OPTIONS_OPEN)) {
             if (Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
                 this.closeGameMenu(true);
             } else {
                 this.openGameMenu();
             }
+        }
+    }
+
+    private onOptionsOpen() {
+        if (!Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+            this.openGameMenu();
         }
     }
 

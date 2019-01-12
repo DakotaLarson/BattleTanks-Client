@@ -2,6 +2,7 @@ import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 
 import {Spherical} from "three";
+import Globals from "../../Globals";
 import Options from "../../Options";
 
 enum ButtonState {
@@ -13,7 +14,6 @@ enum ButtonState {
 export default class CameraControls extends Component {
 
     public zoomOnly: boolean;
-    private angleButtonDown: boolean;
 
     private spherical: Spherical;
 
@@ -27,12 +27,12 @@ export default class CameraControls extends Component {
 
         this.state = -1;
         this.zoomOnly = false;
-        this.angleButtonDown = false;
+        Globals.setGlobal(Globals.Global.ANGLE_BUTTON_DOWN, false);
     }
 
     public enable() {
         this.state = -1;
-        this.angleButtonDown = false;
+        Globals.setGlobal(Globals.Global.ANGLE_BUTTON_DOWN, false);
 
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
@@ -72,7 +72,7 @@ export default class CameraControls extends Component {
         if (this.state === -1) {
             switch (event.button) {
                 case 0:
-                    if (!this.zoomOnly || this.angleButtonDown) {
+                    if (!this.zoomOnly || Globals.getGlobal(Globals.Global.ANGLE_BUTTON_DOWN)) {
                         this.state = ButtonState.PRIMARY;
                     }
                     break;
@@ -90,7 +90,7 @@ export default class CameraControls extends Component {
 
     private onMouseUp() {
         this.state = -1;
-        this.angleButtonDown = false;
+        Globals.setGlobal(Globals.Global.ANGLE_BUTTON_DOWN, false);
     }
 
     private onMouseMove(event: MouseEvent) {
@@ -114,18 +114,18 @@ export default class CameraControls extends Component {
 
     private onKeyUp(event: KeyboardEvent) {
         if (event.key === "Control" && this.zoomOnly) {
-            this.angleButtonDown = false;
+            Globals.setGlobal(Globals.Global.ANGLE_BUTTON_DOWN, false);
         }
     }
 
     private onKeyDown(event: KeyboardEvent) {
         if (event.key === "Control" && this.zoomOnly) {
-            this.angleButtonDown = true;
+            Globals.setGlobal(Globals.Global.ANGLE_BUTTON_DOWN, true);
         }
     }
 
     private onRotation = (deltaX: number, deltaY: number) => {
-        if (!this.angleButtonDown) {
+        if (! Globals.getGlobal(Globals.Global.ANGLE_BUTTON_DOWN)) {
             this.spherical.theta -= deltaX * Math.PI / 180 / 3;
         }
         this.spherical.phi -= deltaY * Math.PI / 180 / 5;

@@ -40,6 +40,8 @@ export default class Chat extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         EventHandler.addListener(this, EventHandler.Event.CHAT_UPDATE, this.onChatUpdate);
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.hideChat);
+        EventHandler.addListener(this, EventHandler.Event.OPTIONS_OPEN, this.onOptionsOpen);
+
         this.previewContainer.style.display = "block";
     }
 
@@ -47,6 +49,8 @@ export default class Chat extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         EventHandler.removeListener(this, EventHandler.Event.CHAT_UPDATE, this.onChatUpdate);
         EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.hideChat);
+        EventHandler.removeListener(this, EventHandler.Event.OPTIONS_OPEN, this.onOptionsOpen);
+
         this.clearMessages();
 
         this.hideChat();
@@ -62,6 +66,12 @@ export default class Chat extends ChildComponent {
             this.hideChat();
         } else if (event.code === "Enter" && Globals.getGlobal(Globals.Global.CHAT_OPEN) && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
             this.sendMessage();
+            this.hideChat();
+        }
+    }
+
+    private onOptionsOpen() {
+        if (Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
             this.hideChat();
         }
     }
