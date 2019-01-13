@@ -1,12 +1,13 @@
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 
-export default class ServerPlayercount extends ChildComponent {
+export default class ServerPlayerCount extends ChildComponent {
 
-    private static PING_TEXT = "Pinging...";
-    private static OFFLINE_TEXT = "Offline";
-    private static ONLINE_SINGULAR = "player online";
-    private static ONLINE_PLURAL = "players online";
+    private static readonly PING_TEXT = "Connecting";
+    private static readonly ONLINE_TEXT = "Connected";
+    private static readonly ONLINE_SINGULAR = " player connected";
+    private static readonly ONLINE_PLURAL = " players connected";
+    private static readonly ERROR_TEXT = "Error";
 
     private parentElt: HTMLElement;
     private textElt: HTMLElement;
@@ -20,7 +21,7 @@ export default class ServerPlayercount extends ChildComponent {
     }
 
     public enable() {
-        this.textElt.textContent = ServerPlayercount.PING_TEXT;
+        this.textElt.textContent = ServerPlayerCount.PING_TEXT;
         this.pingServer();
     }
 
@@ -50,14 +51,23 @@ export default class ServerPlayercount extends ChildComponent {
     }
 
     private onOpen() {
-        console.log("opened");
+        this.textElt.textContent = ServerPlayerCount.ONLINE_TEXT;
     }
 
     private onMessage(event: any) {
-        console.log(event);
+        const playerCount = parseInt(event.data, 10);
+        if (!isNaN(playerCount)) {
+            if (playerCount === 1) {
+                this.textElt.textContent = playerCount +  ServerPlayerCount.ONLINE_SINGULAR;
+            } else {
+                this.textElt.textContent = playerCount + ServerPlayerCount.ONLINE_PLURAL;
+            }
+        } else {
+            this.textElt.textContent = ServerPlayerCount.ONLINE_TEXT;
+        }
     }
 
-    private onError(error: any) {
-        console.warn(error);
+    private onError() {
+        this.textElt.textContent = ServerPlayerCount.ERROR_TEXT;
     }
 }
