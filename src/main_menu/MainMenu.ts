@@ -6,7 +6,7 @@ import AudioType from "../audio/AudioType";
 import ChildComponent from "../component/ChildComponent";
 import CreateWorldMenu from "./CreateArenaMenu";
 import LoadWorldMenu from "./LoadArenaMenu";
-import ServerPlayercount from "./ServerPlayercount";
+import ServerPlayerCount from "./ServerPlayerCount";
 import SingleplayerMenu from "./SingleplayerMenu";
 import TopMenu from "./TopMenu";
 
@@ -19,7 +19,7 @@ export default class MainMenu extends Component {
     private createMenu: CreateWorldMenu;
     private loadMenu: LoadWorldMenu;
 
-    private serverPlayercount: ServerPlayercount;
+    private serverPlayercount: ServerPlayerCount;
 
     private attachedCmp: ChildComponent | undefined;
 
@@ -32,7 +32,7 @@ export default class MainMenu extends Component {
         this.createMenu = new CreateWorldMenu(this.element);
         this.loadMenu = new LoadWorldMenu(this.element);
 
-        this.serverPlayercount = new ServerPlayercount(this.element);
+        this.serverPlayercount = new ServerPlayerCount(this.element);
     }
     public enable() {
 
