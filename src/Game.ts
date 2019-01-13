@@ -82,13 +82,9 @@ class Game extends Component {
     private connectToMultiplayer() {
         let address = "ws://" + location.hostname + ":8000";
         const host = location.hostname;
-        const gaeHostnames = ["battletanks.app", "github.io", "appspot.com"];
-
-        for (const hostname of gaeHostnames) {
-            if (host.includes(hostname)) {
-                address = "wss://battle-tanks-server.herokuapp.com";
-                break;
-            }
+        const prodHostname = "battletanks.app";
+        if (host.includes(prodHostname)) {
+            address = "wss://battle-tanks-server.herokuapp.com";
         }
         this.updateMenu(false);
         this.attachChild(this.connectionScreen);

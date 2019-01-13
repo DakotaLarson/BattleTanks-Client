@@ -64,33 +64,6 @@
     margin-top: 5vmin;
 }
 
-.main-menu .server-list {
-    height: 50vh;
-    width: 33vw;
-    overflow: auto;
-    display: inline-block;
-}
-
-.main-menu .server-opt-parent {
-    box-sizing: border-box;
-    margin: 2vmin;
-    padding: 1vmin;
-}
-
-.main-menu .server-opt-selected {
-    border: solid 1px white;
-}
-
-.main-menu .server-opt-name,
-.main-menu .server-opt-address {
-    margin-bottom: 1vmin;
-}
-
-.main-menu .server-opt-address {
-    color: #A0A0A0;
-    font-size: 2vmin;
-}
-
 .discord-container {
     position: absolute;
     bottom: 2.5vmin;
@@ -143,4 +116,14 @@
 
 .main-menu #auth-signout:hover {
     cursor: pointer;
+}
+
+.main-menu .server-playercount {
+    display: inline-block;
+    position: absolute;
+    left: 15vw;
+    top: 1vmin;
+    font-size: 2vmin;
+    height: 2.5vmin;
+    line-height: 2.5vmin;
 }

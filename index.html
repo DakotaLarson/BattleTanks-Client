@@ -86,6 +86,10 @@
         <span id="google-auth-btn"></span>
         <span id="auth-signout">Sign out</span>
     </div>
+    <div class="server-playercount">
+        <span>Server Status: </span>
+        <span id="playercount-text"></span>
+    </div>
     <img class="main-menu-header" src="./res/menu/header.png" draggable="false"/>
     <!-- TOP MENU -->
     <div class="menu-section" id="main-menu-top">
@@ -342,11 +346,12 @@ Be heard <a href="http://bit.ly/2QbTqoa" target="_blank">here</a>!
 <script src="./polyfill/encoding.js"></script>
 <script src="./polyfill/encoding-indexes.js"></script>
 <script src="./polyfill/keyboard.js"></script>
+<script src="./polyfill/eventsource.js"></script>
 <script src="./systemjs/system.js"></script>
 <script>
     const config = {
         map: {
-            three: "https://cdnjs.cloudflare.com/ajax/libs/three.js/99/three.js"
+            three: "https://cdnjs.cloudflare.com/ajax/libs/three.js/100/three.js"
         },
         packages: {
             build: {
