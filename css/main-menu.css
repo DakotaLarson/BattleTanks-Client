@@ -10,7 +10,12 @@
     max-width: 1250px;
     max-height: 512px;
     height: 33vh;
+    margin-bottom: 0.5vh;
+}
+.main-menu .game-suggestion {
     margin-bottom: 2.5vh;
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 4vmin;
 }
 .main-menu .menu-input {
     outline: none;
@@ -89,11 +94,11 @@
     bottom: 2.5vmin;
     width: 33vw;
     font-family: 'Inconsolata', sans-serif;
-    font-size: 2vmin;
+    font-size: 2.5vmin;
     text-align: left;
 }
 .main-menu .feedback-greeting {
-    font-size: 3vmin;
+    font-size: 4vmin;
 }
 .main-menu .feedback-request a {
     color: #00b9ff;
