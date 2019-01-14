@@ -15,7 +15,21 @@
 .main-menu .game-suggestion {
     margin-bottom: 2.5vh;
     font-family: 'Inconsolata', sans-serif;
-    font-size: 4vmin;
+    font-size: 2vmin;
+    background-color: #ffffff;
+    color: #101010;
+    display: inline-block;
+    padding: 1vmin;
+}
+.main-menu .game-suggestion-visible {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 1s linear;
+}
+.main-menu .game-suggestion-hidden {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 1s, opacity 1s linear;
 }
 .main-menu .menu-input {
     outline: none;

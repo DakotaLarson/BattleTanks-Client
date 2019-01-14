@@ -5,6 +5,7 @@ import EventHandler from "../EventHandler";
 import AudioType from "../audio/AudioType";
 import ChildComponent from "../component/ChildComponent";
 import CreateWorldMenu from "./CreateArenaMenu";
+import GameSuggestion from "./GameSuggestion";
 import LoadWorldMenu from "./LoadArenaMenu";
 import ServerPlayerCount from "./ServerPlayerCount";
 import SingleplayerMenu from "./SingleplayerMenu";
@@ -20,6 +21,7 @@ export default class MainMenu extends Component {
     private loadMenu: LoadWorldMenu;
 
     private serverPlayercount: ServerPlayerCount;
+    private gameSuggestion: GameSuggestion;
 
     private attachedCmp: ChildComponent | undefined;
 
@@ -33,6 +35,7 @@ export default class MainMenu extends Component {
         this.loadMenu = new LoadWorldMenu(this.element);
 
         this.serverPlayercount = new ServerPlayerCount(this.element);
+        this.gameSuggestion = new GameSuggestion(this.element);
     }
     public enable() {
 
@@ -59,6 +62,7 @@ export default class MainMenu extends Component {
         this.attach(this.topMenu);
 
         this.attachChild(this.serverPlayercount);
+        this.attachChild(this.gameSuggestion);
 
         this.element.style.display = "block";
     }
@@ -83,6 +87,7 @@ export default class MainMenu extends Component {
         EventHandler.removeListener(this, EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.onCreateWorldCancelClick);
 
         this.detachChild(this.serverPlayercount);
+        this.detachChild(this.gameSuggestion);
 
         this.element.style.display = "";
     }
