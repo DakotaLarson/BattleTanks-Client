@@ -19,19 +19,19 @@
 .overlay-menu .menu-options,
 .overlay-menu .fullscreen-toggle {
     position: absolute;
-    width: 2.5vmin;
-    height: 2.5vmin;
-    right: 1vmin;
-    top: 1vmin;
+    width: 3.5vmin;
+    height: 3.5vmin;
+    right: 2.5vmin;
+    top: 2.5vmin;
     pointer-events: auto;
 }
 
 .overlay-menu .fullscreen-toggle {
-    right: 5vmin;
+    right: 7vmin;
 }
 
 .overlay-menu .volume-mute {
-    right: 9vmin;
+    right: 11.5vmin;
 }
 
 .overlay-menu .volume-suggestion {

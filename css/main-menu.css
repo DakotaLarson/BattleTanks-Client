@@ -110,6 +110,7 @@
     font-family: 'Inconsolata', sans-serif;
     font-size: 2.5vmin;
     text-align: left;
+    margin: 0;
 }
 .main-menu .feedback-greeting {
     font-size: 4vmin;
@@ -119,8 +120,8 @@
 }
 .main-menu .auth-container {
     position: absolute;
-    top: 1vmin;
-    left: 1vmin;
+    top: 2.5vmin;
+    left: 2.5vmin;
     display: inline-block;
     text-align: center;
 }
