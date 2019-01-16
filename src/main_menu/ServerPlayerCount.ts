@@ -34,7 +34,8 @@ export default class ServerPlayerCount extends ChildComponent {
         let address = "http://" + location.hostname + ":8000";
         const host = location.hostname;
         const prodHostname = "battletanks.app";
-        if (host.includes(prodHostname)) {
+        const stagingHostname = "github.io";
+        if (host.includes(prodHostname) || host.includes(stagingHostname)) {
             address = "https://battle-tanks-server.herokuapp.com";
         }
         this.eventSource = new EventSource(address + "/playercount");
