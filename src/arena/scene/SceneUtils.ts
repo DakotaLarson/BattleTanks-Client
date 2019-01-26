@@ -31,14 +31,14 @@ export default class SceneUtils {
     }
 
     public createLights() {
-        const hemiLight = new HemisphereLight( 0xffffff, 0xffffff, 0.6 );
+        const hemiLight = new HemisphereLight(0xffffff, 0xffffff, 0.85);
         hemiLight.color.setHSL(0.6, 1, 0.6);
         hemiLight.groundColor.setHSL(0.095, 1, 0.75);
         hemiLight.position.copy(this.getCenter().setY(50));
 
-        const dirLight = new DirectionalLight( 0xffffff, 1 );
-        dirLight.color.setHSL( 0.1, 1, 0.95 );
-        dirLight.position.set(45, 30, 25);
+        const dirLight = new DirectionalLight(0xffffff, 0.75);
+        dirLight.color.setHSL(0.1, 1, 0.95);
+        dirLight.position.copy(this.getCenter().clone().add(new Vector3(0, 25, 0)));
         dirLight.target.position.copy(this.getCenter());
         return [dirLight, dirLight.target, hemiLight];
     }

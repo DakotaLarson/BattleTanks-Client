@@ -36,8 +36,8 @@
 
 .overlay-menu .volume-suggestion {
     position: absolute;
-    top: 1vmin;
-    right: 13vmin;
+    top: 3vmin;
+    right: 17vmin;
     pointer-events: auto;
     font-size: 2.25vmin;
     background: #ffffff;
