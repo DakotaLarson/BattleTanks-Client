@@ -7,7 +7,7 @@ import PacketSender from "./PacketSender";
 
 export default class MultiplayerConnection extends Component {
 
-    private static readonly PROTOCOL = "battletanks-1";
+    private static readonly PROTOCOL = "battletanks-2";
 
     private static readonly CLIENT_OUTDATED_CODE = 4001;
     private static readonly SERVER_OUTDATED_CODE = 4002;
