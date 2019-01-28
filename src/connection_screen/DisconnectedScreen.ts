@@ -38,7 +38,6 @@ export default class DisconnectedScreen extends Component {
     }
 
     private onReason(reason: string) {
-        console.log("reason");
         this.reasonElt.textContent = reason;
     }
 }

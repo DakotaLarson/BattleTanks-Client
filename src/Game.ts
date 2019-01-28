@@ -83,7 +83,7 @@ class Game extends Component {
         let address = "ws://" + location.hostname + ":8000";
         const host = location.hostname;
         const prodHostname = "battletanks.app";
-        const stagingHostname = "github.io";
+        const stagingHostname = "dakotalarson.github.io";
         if (host.includes(prodHostname) || host.includes(stagingHostname)) {
             address = "wss://battle-tanks-server.herokuapp.com";
         }

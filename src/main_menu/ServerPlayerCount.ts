@@ -1,3 +1,4 @@
+import { Server } from "https";
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 
@@ -5,8 +6,10 @@ export default class ServerPlayerCount extends ChildComponent {
 
     private static readonly PING_TEXT = "Connecting";
     private static readonly ONLINE_TEXT = "Connected";
-    private static readonly ONLINE_SINGULAR = " player connected";
-    private static readonly ONLINE_PLURAL = " players connected";
+    private static readonly ONLINE_SINGULAR = " player online, ";
+    private static readonly ONLINE_PLURAL = " players online, ";
+    private static readonly ACTIVE_SINGULAR = " active user";
+    private static readonly ACTIVE_PLURAL = " active users";
     private static readonly ERROR_TEXT = "Error";
 
     private parentElt: HTMLElement;
@@ -34,7 +37,7 @@ export default class ServerPlayerCount extends ChildComponent {
         let address = "http://" + location.hostname + ":8000";
         const host = location.hostname;
         const prodHostname = "battletanks.app";
-        const stagingHostname = "github.io";
+        const stagingHostname = "dakotalarson.github.io";
         if (host.includes(prodHostname) || host.includes(stagingHostname)) {
             address = "https://battle-tanks-server.herokuapp.com";
         }
@@ -56,15 +59,28 @@ export default class ServerPlayerCount extends ChildComponent {
     }
 
     private onMessage(event: any) {
-        const playerCount = parseInt(event.data, 10);
-        if (!isNaN(playerCount)) {
-            if (playerCount === 1) {
-                this.textElt.textContent = playerCount +  ServerPlayerCount.ONLINE_SINGULAR;
+        const values = event.data.split(",");
+        if (values.length === 2) {
+            const playerCount = parseInt(values[0], 10);
+            const activeUserCount = parseInt(values[1], 10) + playerCount;
+
+            let str = "";
+
+            if (!isNaN(playerCount) && !isNaN(activeUserCount)) {
+                if (playerCount === 1) {
+                    str += playerCount +  ServerPlayerCount.ONLINE_SINGULAR;
+                } else {
+                    str += playerCount + ServerPlayerCount.ONLINE_PLURAL;
+                }
+                if (activeUserCount === 1) {
+                    str += activeUserCount + ServerPlayerCount.ACTIVE_SINGULAR;
+                } else {
+                    str += activeUserCount + ServerPlayerCount.ACTIVE_PLURAL;
+                }
             } else {
-                this.textElt.textContent = playerCount + ServerPlayerCount.ONLINE_PLURAL;
+                str = ServerPlayerCount.ONLINE_TEXT;
             }
-        } else {
-            this.textElt.textContent = ServerPlayerCount.ONLINE_TEXT;
+            this.textElt.textContent = str;
         }
     }
 
