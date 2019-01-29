@@ -8,6 +8,8 @@ html, body{
 }
 #game-canvas{
     display: block;
+    position: absolute;
+    top: 0;
 }
 .no-select{
     -webkit-user-select: none;

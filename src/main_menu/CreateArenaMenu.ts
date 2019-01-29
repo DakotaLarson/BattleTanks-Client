@@ -3,7 +3,7 @@ import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
 const MAX_DIMENSION = 1000;
-const MIN_DIMENSION = 5;
+const MIN_DIMENSION = 3;
 
 export default class CreateWorldMenu extends Component {
 

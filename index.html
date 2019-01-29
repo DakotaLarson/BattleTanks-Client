@@ -54,6 +54,9 @@
 
 </head>
 <body>
+
+<canvas id="game-canvas" width="0" height="0"></canvas>
+
 <!-- LOADING SCREEN -->
 <div class="loading-screen">
     <div class="loading">
@@ -95,7 +98,7 @@
         <span>Server Status: </span>
         <span id="playercount-text"></span>
     </div>
-    <img class="main-menu-header" src="./res/menu/header.png" draggable="false"/><br/>
+    <img class="main-menu-header" src="./res/menu/header-transparent.png" draggable="false"/><br/>
     <div class="game-suggestion game-suggestion-hidden"></div>
     <!-- TOP MENU -->
     <div class="menu-section" id="main-menu-top">
@@ -343,8 +346,6 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
 <audio id="audioElt" preload="auto" loop>
     <source src="./res/audio/menu/background.mp3" type="audio/mpeg"/>
 </audio>
-
-<canvas id="game-canvas" width="0" height="0"></canvas>
 
 <script src="./polyfill/encoding.js"></script>
 <script src="./polyfill/encoding-indexes.js"></script>

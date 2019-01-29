@@ -4,6 +4,7 @@
     justify-content: center;
     color: #ffffff;
     font-size: 5vmin;
+    position: absolute;
 }
 
 .connection-screen .stats-parent {

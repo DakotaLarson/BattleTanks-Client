@@ -1,6 +1,7 @@
 /* Main Menu */
 .main-menu {
     background: #202020;
+    position: absolute;
 }
 .main-menu .opt-title {
     font-size: 4vmin;
