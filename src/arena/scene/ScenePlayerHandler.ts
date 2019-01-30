@@ -118,6 +118,10 @@ export default class ScenePlayerHandler extends Component {
         }
     }
 
+    public addMenuPlayer() {
+        this.addPlayer(0, new Vector4(2, 0, 2, Math.PI / 4), "", 0xf0f0c0, false);
+    }
+
     private onPlayerAddition(data: any) {
         const name = Options.options.username;
         this.addPlayer(data.id, data.pos, name, data.color, false);

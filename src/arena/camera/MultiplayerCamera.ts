@@ -1,9 +1,9 @@
 import {PerspectiveCamera, Vector3} from "three";
-import DomHandler from "../../../DomHandler";
-import EventHandler from "../../../EventHandler";
-import Globals from "../../../Globals";
-import Camera from "../Camera";
-import CameraToggleHandler from "../CameraToggleHandler";
+import DomHandler from "../../DomHandler";
+import EventHandler from "../../EventHandler";
+import Globals from "../../Globals";
+import Camera from "./Camera";
+import CameraToggleHandler from "./CameraToggleHandler";
 
 export default class MultiplayerCamera extends Camera {
 

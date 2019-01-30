@@ -1,6 +1,6 @@
 import {PerspectiveCamera, Scene, WebGLRenderer} from "three";
 
-import Component from "./component/ChildComponent";
+import Component from "./component/Component";
 import DomHandler from "./DomHandler";
 import EventHandler from "./EventHandler";
 
@@ -19,18 +19,14 @@ export default class Renderer extends Component {
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.scene = scene;
         this.camera = camera;
-        this.onResize();
 
+        EventHandler.addListener(this, EventHandler.Event.DOM_RESIZE, this.onResize);
+        this.onResize();
+        this.render();
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_RESIZE, this.onResize);
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.render, EventHandler.Level.HIGH);
-    }
-
-    public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_RESIZE, this.onResize);
-        EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.render, EventHandler.Level.HIGH);
     }
 
     public render() {

@@ -1,6 +1,6 @@
 import { PerspectiveCamera} from "three";
-import EventHandler from "../../../EventHandler";
-import Camera from "../Camera";
+import EventHandler from "../../EventHandler";
+import Camera from "./Camera";
 
 export default class SingleplayerCamera extends Camera {
 

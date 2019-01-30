@@ -1,6 +1,7 @@
 import Component from "./component/Component";
 import EventHandler from "./EventHandler";
 
+import { PerspectiveCamera } from "three";
 import AlertMessageHandler from "./alert_message/AlertMessageHandler";
 import ArenaHandler from "./arena/ArenaHandler";
 import BackgroundAudioHandler from "./audio/BackgroundAudioHandler";
@@ -31,13 +32,14 @@ class Game extends Component {
 
     constructor() {
         super();
+        const perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
         this.auth = new Auth();
         this.options = new Options();
-        this.mainMenu = new MainMenu();
+        this.mainMenu = new MainMenu(perspectiveCamera);
         this.backgroundAudioHandler = new BackgroundAudioHandler();
         this.overlayMenu = new OverlayMenu();
         this.connectionScreen = new ConnectionScreen();
-        this.arenaHandler = new ArenaHandler();
+        this.arenaHandler = new ArenaHandler(perspectiveCamera);
         this.gameStatusHandler = new GameStatusHandler();
         this.alertMessageHandler = new AlertMessageHandler();
     }

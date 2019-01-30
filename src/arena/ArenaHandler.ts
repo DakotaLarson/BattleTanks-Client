@@ -13,8 +13,8 @@ import Renderer from "../Renderer";
 import MultiplayerArena from "./arena/MultiplayerArena";
 import SingleplayerArena from "./arena/SinglePlayerArena";
 import ArenaDownloadHandler from "./ArenaDownloadHandler";
-import MultiplayerCamera from "./camera/multiplayer/MultiplayerCamera";
-import SingleplayerCamera from "./camera/singleplayer/SingleplayerCamera";
+import MultiplayerCamera from "./camera/MultiplayerCamera";
+import SingleplayerCamera from "./camera/SingleplayerCamera";
 import PowerupCollisionHandler from "./powerup/PowerupCollisionHandler";
 import ProjectileHandler from "./ProjectileHandler";
 import SceneHandler from "./scene/SceneHandler";
@@ -47,12 +47,11 @@ export default class ArenaHandler extends Component {
     private isSingleplayer: boolean;
     private arenaAttached: boolean;
 
-    constructor() {
+    constructor(perspectiveCamera: PerspectiveCamera) {
         super();
 
         Globals.setGlobal(Globals.Global.CAMERA_IS_FOLLOWING, true);
 
-        const perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
         Globals.setGlobal(Globals.Global.CAMERA, perspectiveCamera);
 
         const audioListener = new AudioListener();
@@ -103,6 +102,7 @@ export default class ArenaHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.OPTIONS_OPEN, this.onOptionsOpen);
 
         this.attachComponent(this.audioHandler);
+        this.attachComponent(this.renderer);
     }
 
     private attachSingleplayerArena(worldData: any) {
@@ -160,7 +160,6 @@ export default class ArenaHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE, this.onEscape);
 
         this.attachChild(this.sceneHandler);
-        this.attachChild(this.renderer);
         this.arenaAttached = true;
     }
 
@@ -173,9 +172,8 @@ export default class ArenaHandler extends Component {
             EventHandler.removeListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE, this.onEscape);
 
             this.detachChild(this.sceneHandler);
-            this.detachChild(this.renderer);
 
-            if (Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
+            if (this.isGameMenuOpen()) {
                 this.closeGameMenu(false);
             }
 
@@ -190,24 +188,31 @@ export default class ArenaHandler extends Component {
     }
 
     private onEscape() {
-        if (!Globals.getGlobal(Globals.Global.CHAT_OPEN) && !Globals.getGlobal(Globals.Global.OPTIONS_OPEN)) {
-            if (Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
-                this.closeGameMenu(true);
-            } else {
+        if (this.arenaAttached) {
+            if (!this.isChatOpen() && !this.isOptionsOpen()) {
+                if (this.isGameMenuOpen()) {
+                    this.closeGameMenu(true);
+                } else {
+                    this.openGameMenu();
+                }
+            }
+        }
+
+    }
+
+    private onOptionsOpen() {
+        if (this.arenaAttached) {
+            if (!this.isGameMenuOpen()) {
                 this.openGameMenu();
             }
         }
     }
 
-    private onOptionsOpen() {
-        if (!Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
-            this.openGameMenu();
-        }
-    }
-
     private onBlur() {
-        if (!Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
-            this.openGameMenu();
+        if (this.arenaAttached) {
+            if (!this.isGameMenuOpen()) {
+                this.openGameMenu();
+            }
         }
     }
 
@@ -236,5 +241,17 @@ export default class ArenaHandler extends Component {
         Globals.setGlobal(Globals.Global.GAME_MENU_OPEN, true);
 
         EventHandler.callEvent(EventHandler.Event.GAMEMENU_OPEN);
+    }
+
+    private isGameMenuOpen() {
+        return Globals.getGlobal(Globals.Global.GAME_MENU_OPEN);
+    }
+
+    private isChatOpen() {
+        return Globals.getGlobal(Globals.Global.CHAT_OPEN);
+    }
+
+    private isOptionsOpen() {
+        return Globals.getGlobal(Globals.Global.OPTIONS_OPEN);
     }
 }

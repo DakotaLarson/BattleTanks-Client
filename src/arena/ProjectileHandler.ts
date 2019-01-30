@@ -30,7 +30,7 @@ export default class ProjectileHandler extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.PROJECTILE_LAUNCH, this.onLaunch);
         EventHandler.addListener(this, EventHandler.Event.PROJECTILE_MOVE, this.onMove);
         EventHandler.addListener(this, EventHandler.Event.PROJECTILE_REMOVAL, this.onRemoval);
-        EventHandler.addListener(this, EventHandler.Event.PROJECTILE_CLEAR, this.onClear);
+        EventHandler.addListener(this, EventHandler.Event.PROJECTILE_CLEAR, this.clearProjectiles);
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
     }
 
@@ -38,8 +38,9 @@ export default class ProjectileHandler extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.PROJECTILE_LAUNCH, this.onLaunch);
         EventHandler.removeListener(this, EventHandler.Event.PROJECTILE_MOVE, this.onMove);
         EventHandler.removeListener(this, EventHandler.Event.PROJECTILE_REMOVAL, this.onRemoval);
-        EventHandler.removeListener(this, EventHandler.Event.PROJECTILE_CLEAR, this.onClear);
+        EventHandler.removeListener(this, EventHandler.Event.PROJECTILE_CLEAR, this.clearProjectiles);
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
+        this.clearProjectiles();
     }
 
     private onLaunch(data: any) {
@@ -69,7 +70,7 @@ export default class ProjectileHandler extends ChildComponent {
         }
     }
 
-    private onClear() {
+    private clearProjectiles() {
         const iterator = this.projectiles.values();
         let next = iterator.next();
         while (!next.done) {

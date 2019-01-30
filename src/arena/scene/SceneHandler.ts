@@ -63,6 +63,8 @@ export default class SceneHandler extends Component {
         this.sceneUtils = new SceneUtils(this);
         this.sceneVisualsHandler = new SceneVisualsHandler(this, this.scene);
         this.scenePowerupHandler = new ScenePowerupHandler(this.scene);
+
+        this.renderMenuScene();
     }
 
     public enable() {
@@ -83,6 +85,7 @@ export default class SceneHandler extends Component {
         this.detachChild(this.scenePowerupHandler);
 
         this.clearScene();
+        this.renderMenuScene();
     }
 
     public getScene() {
@@ -159,6 +162,20 @@ export default class SceneHandler extends Component {
 
     public updateSpawnVisuals() {
         this.sceneVisualsHandler.update();
+    }
+
+    private renderMenuScene() {
+        this.width = 5;
+        this.height = 5;
+
+        this.floor = this.sceneUtils.createFloor();
+        this.lines = this.sceneUtils.createLines();
+        this.lights = this.sceneUtils.createLights();
+
+        this.scene.add(this.lines);
+        this.scene.add(this.floor);
+        this.scene.add.apply(this.scene, this.lights);
+        this.scenePlayerHandler.addMenuPlayer();
     }
 
     private onSceneUpdate(data: any) {

@@ -2,6 +2,8 @@ import Component from "../component/Component";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
+import { PerspectiveCamera } from "three";
+import MenuCamera from "../arena/camera/MenuCamera";
 import AudioType from "../audio/AudioType";
 import ChildComponent from "../component/ChildComponent";
 import CreateWorldMenu from "./CreateArenaMenu";
@@ -22,10 +24,11 @@ export default class MainMenu extends Component {
 
     private serverPlayercount: ServerPlayerCount;
     private gameSuggestion: GameSuggestion;
+    private menuCamera: MenuCamera;
 
     private attachedCmp: ChildComponent | undefined;
 
-    constructor() {
+    constructor(camera: PerspectiveCamera) {
         super();
         this.element = DomHandler.getElement(".main-menu");
 
@@ -36,6 +39,7 @@ export default class MainMenu extends Component {
 
         this.serverPlayercount = new ServerPlayerCount(this.element);
         this.gameSuggestion = new GameSuggestion(this.element);
+        this.menuCamera = new MenuCamera(camera);
     }
     public enable() {
 
@@ -63,6 +67,7 @@ export default class MainMenu extends Component {
 
         this.attachChild(this.serverPlayercount);
         this.attachChild(this.gameSuggestion);
+        this.attachChild(this.menuCamera);
 
         this.element.style.display = "block";
     }
@@ -88,6 +93,7 @@ export default class MainMenu extends Component {
 
         this.detachChild(this.serverPlayercount);
         this.detachChild(this.gameSuggestion);
+        this.detachChild(this.menuCamera);
 
         this.element.style.display = "";
     }

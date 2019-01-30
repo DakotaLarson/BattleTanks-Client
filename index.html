@@ -102,35 +102,44 @@
     <div class="game-suggestion game-suggestion-hidden"></div>
     <!-- TOP MENU -->
     <div class="menu-section" id="main-menu-top">
-        <span class="menu-selection menu-selection-xl play-btn" id="top-opt-mp">Play</span><br/>
-        <span class="menu-selection" id="top-opt-sp">Create Arena</span><br/>
+        <div class="top-menu-section">
+                <span class="menu-selection menu-selection-xl play-btn" id="top-opt-mp">Play</span><br/>
+                <span class="menu-selection" id="top-opt-sp">Create Arena</span>
+        </div>
+        
     </div>
     <!-- SINGLEPLAYER MENU -->
     <div class="menu-section" id="main-menu-sp">
-        <span class="menu-selection" id="sp-opt-create">Create New</span><br/>
-        <span class="menu-selection" id="sp-opt-load">Load Existing</span><br/>
-        <span class="menu-selection" id="sp-opt-cancel">Cancel</span>
+        <div class="top-menu-section">
+            <span class="menu-selection" id="sp-opt-create">Create New</span><br/>
+            <span class="menu-selection" id="sp-opt-load">Load Existing</span><br/>
+            <span class="menu-selection" id="sp-opt-cancel">Cancel</span>
+        </div>
     </div>
     <!-- SINGLEPLAYER CREATE MENU -->
     <div class="menu-section" id="sp-menu-create">
-        <input type="number" min="5" max="1000" class="menu-input menu-number-input" id="create-opt-width" placeholder="Width"/><br/>
-        <input type="number" min="5" max="1000" class="menu-input menu-number-input" id="create-opt-height" placeholder="Height"/><br/>
-        <span class="menu-selection" id="create-opt-create">Create</span>
-        <span class="menu-selection" id="create-opt-cancel">Cancel</span><br/>
-        <span class="menu-error" id="create-opt-error"></span>
+        <div class="top-menu-section">
+                <input type="number" min="5" max="1000" class="menu-input menu-number-input" id="create-opt-width" placeholder="Width"/><br/>
+                <input type="number" min="5" max="1000" class="menu-input menu-number-input" id="create-opt-height" placeholder="Height"/><br/>
+                <span class="menu-selection" id="create-opt-create">Create</span>
+                <span class="menu-selection" id="create-opt-cancel">Cancel</span><br/>
+                <span class="menu-error" id="create-opt-error"></span>
+        </div>
     </div>
     <!-- SINGLEPLAYER LOAD MENU -->
     <div class="menu-section" id="sp-menu-load">
-        <input type="file" class="" id="load-opt-file" accept=".json"/>
-        <div class="menu-file-input">
-            <label for="load-opt-file" class="menu-selection menu-file-choose" id="menu-file-choose">Choose File</label><br/>
-            <span class="menu-or">OR</span><br/>
-            <span class="menu-drop">Drag &amp; Drop here</span>
-            <span class="menu-file-name"></span>
-        </div><br/>
-        <span class="menu-selection" id="load-opt-load">Load</span>
-        <span class="menu-selection" id="load-opt-cancel">Cancel</span><br/>
-        <span class="menu-error" id="load-opt-error"></span>
+        <div class="top-menu-section">
+                <input type="file" class="" id="load-opt-file" accept=".json"/>
+                <div class="menu-file-input">
+                    <label for="load-opt-file" class="menu-selection menu-file-choose" id="menu-file-choose">Choose File</label><br/>
+                    <span class="menu-or">OR</span><br/>
+                    <span class="menu-drop">Drag &amp; Drop here</span>
+                    <span class="menu-file-name"></span>
+                </div><br/>
+                <span class="menu-selection" id="load-opt-load">Load</span>
+                <span class="menu-selection" id="load-opt-cancel">Cancel</span><br/>
+                <span class="menu-error" id="load-opt-error"></span>
+        </div>
     </div>
     <!-- SOCIAL LINKS -->
     <p class="feedback-request">
@@ -142,33 +151,6 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
         <a class="discord-ref" href="https://discord.gg/7J5ZJUQ" target="_blank">
             <img class="discord-image" draggable="false" src="./res/social/discord.svg" alt="BattleTanks Discord">
         </a>
-    </div>
-</div>
-
-<!-- CONNECTION SCREEN -->
-<div class="menu connection-screen no-select">
-    <div class="menu-section section-connecting">
-        <span class="message">Connecting...</span><br/>
-        <span class="menu-selection option-disconnect">Disconnect</span>
-    </div>
-    <div class="menu-section section-disconnected">
-        <span class="message">Disconnected</span><br/>
-        <span class="menu-selection option-disconnect">Disconnect</span><br/>
-        <span class="disconnected-reason"></span>
-    </div>
-    <div class="menu-section section-connected">
-        <span class="message">Connected</span><br/>
-        <span class="menu-selection option-disconnect">Disconnect</span>
-    </div>
-    <div class="menu-section section-waiting">
-        <div class="last-match-statistics"></div><br/>
-        <span class="message">Waiting for more players...</span><br/>
-        <span class="menu-selection option-disconnect">Disconnect</span>
-    </div>
-    <div class="menu-section section-starting">
-        <div class="last-match-statistics"></div><br/>
-        <span class="message">Match starting up!</span><br/>
-        <span class="menu-selection option-disconnect">Disconnect</span>
     </div>
 </div>
 
@@ -270,6 +252,34 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
         <span class="menu-selection" id="game-menu-mp-cancel">Return To Game</span>
     </div>
 </div>
+
+<!-- CONNECTION SCREEN -->
+<div class="menu connection-screen no-select">
+        <div class="menu-section section-connecting">
+            <span class="message">Connecting...</span><br/>
+            <span class="menu-selection option-disconnect">Disconnect</span>
+        </div>
+        <div class="menu-section section-disconnected">
+            <span class="message">Disconnected</span><br/>
+            <span class="menu-selection option-disconnect">Disconnect</span><br/>
+            <span class="disconnected-reason"></span>
+        </div>
+        <div class="menu-section section-connected">
+            <span class="message">Connected</span><br/>
+            <span class="menu-selection option-disconnect">Disconnect</span>
+        </div>
+        <div class="menu-section section-waiting">
+            <div class="last-match-statistics"></div><br/>
+            <span class="message">Waiting for more players...</span><br/>
+            <span class="menu-selection option-disconnect">Disconnect</span>
+        </div>
+        <div class="menu-section section-starting">
+            <div class="last-match-statistics"></div><br/>
+            <span class="message">Match starting up!</span><br/>
+            <span class="menu-selection option-disconnect">Disconnect</span>
+        </div>
+    </div>
+
 <!-- OVERLAY MENU -->
 <div class="menu overlay-menu">
     <span class="volume-suggestion no-select">Tap to unmute</span>

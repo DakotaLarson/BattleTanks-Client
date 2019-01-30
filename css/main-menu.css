@@ -1,6 +1,5 @@
 /* Main Menu */
 .main-menu {
-    background: #202020;
     position: absolute;
 }
 .main-menu .opt-title {
@@ -98,9 +97,22 @@
 .main-menu .discord-ref {
     display: inline-block;
 }
-
+.top-menu-section {
+    display: inline-block;
+    position: absolute;
+    left: 75%;
+    transform: translate(-50%);
+}
 .main-menu .play-btn {
-    margin-bottom: 25vh;
+    margin-top: 5vh;
+    margin-bottom: 15vh;
+    background-color: green;
+}
+
+.main-menu .play-btn:hover {
+    background-color: lime;
+    border-color: white;
+    color: white;
 }
 
 .main-menu .feedback-request {
