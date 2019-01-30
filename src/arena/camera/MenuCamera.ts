@@ -1,5 +1,6 @@
 import { PerspectiveCamera, Spherical, Vector3 } from "three";
 import ChildComponent from "../../component/ChildComponent";
+import DomHandler from "../../DomHandler";
 import EventHandler from "../../EventHandler";
 
 export default class MenuCamera extends ChildComponent {
@@ -22,11 +23,14 @@ export default class MenuCamera extends ChildComponent {
     public enable() {
         this.resetCameraPosition();
         this.camera.position.setFromSpherical(this.cameraPosition).add(this.tankPosition);
+
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
+        EventHandler.addListener(this, EventHandler.Event.DOM_RESIZE, this.onResize);
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_RESIZE, this.onResize);
     }
 
     private onUpdate(delta: number) {
@@ -40,10 +44,17 @@ export default class MenuCamera extends ChildComponent {
         this.cameraPosition = new Spherical(3, Math.PI / 3, Math.random() * Math.PI * 2);
         this.updateCameraTargetPosition();
     }
+
     private updateCameraTargetPosition() {
         const targetSpherical = this.cameraPosition.clone();
         targetSpherical.radius = 1.5;
         targetSpherical.theta += Math.PI;
         this.cameraTargetPosition.setFromSpherical(targetSpherical).add(this.tankPosition);
+    }
+
+    private onResize() {
+        const dimensions = DomHandler.getDisplayDimensions();
+        this.camera.aspect = dimensions.width / dimensions.height;
+        this.camera.updateProjectionMatrix();
     }
 }
