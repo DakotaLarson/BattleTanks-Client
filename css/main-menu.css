@@ -41,7 +41,7 @@
     margin-bottom: 3vmin;
 }
 .main-menu .menu-input:focus {
-    border-color: green;
+    border-color: #02b757;
 }
 .main-menu .menu-number-input {
     width: 9vmin;
@@ -78,7 +78,7 @@
 }
 .main-menu .menu-file-name {
     display: inline-block;
-    color: green;
+    color: #02b757;
     font-size: 5vmin;
     margin-top: 5vmin;
 }
@@ -106,11 +106,11 @@
 .main-menu .play-btn {
     margin-top: 5vh;
     margin-bottom: 15vh;
-    background-color: green;
+    background-color: #02b757;
 }
 
 .main-menu .play-btn:hover {
-    background-color: lime;
+    background-color: #02ea6e;
     border-color: white;
     color: white;
 }
@@ -155,7 +155,7 @@
     display: inline-block;
     position: absolute;
     left: 15vw;
-    top: 1vmin;
+    top: 2.5vmin;
     font-size: 2vmin;
     height: 2.5vmin;
     line-height: 2.5vmin;

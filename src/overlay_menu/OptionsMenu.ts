@@ -6,7 +6,7 @@ import Globals from "../Globals";
 
 export default class OptionsMenu extends Component {
 
-    private element: HTMLElement;
+    private parentElt: HTMLElement;
     private gearElt: HTMLElement;
     private returnBtn: HTMLElement;
 
@@ -37,31 +37,31 @@ export default class OptionsMenu extends Component {
     constructor(overlay: HTMLElement) {
         super();
         this.gearElt = DomHandler.getElement(".menu-options", overlay);
-        this.element = DomHandler.getElement(".options-menu");
+        this.parentElt = DomHandler.getElement(".options-menu-parent");
 
-        this.chatEnabledElt = DomHandler.getElement("#option-enabled-chat", this.element) as HTMLInputElement;
-        this.killfeedEnabledElt = DomHandler.getElement("#option-enabled-killfeed", this.element) as HTMLInputElement;
+        this.chatEnabledElt = DomHandler.getElement("#option-enabled-chat", this.parentElt) as HTMLInputElement;
+        this.killfeedEnabledElt = DomHandler.getElement("#option-enabled-killfeed", this.parentElt) as HTMLInputElement;
 
-        this.forwardValueElt = DomHandler.getElement("#option-value-forward", this.element);
-        this.backwardValueElt = DomHandler.getElement("#option-value-backward", this.element);
-        this.leftValueElt = DomHandler.getElement("#option-value-left", this.element);
-        this.rightValueElt = DomHandler.getElement("#option-value-right", this.element);
-        this.reloadValueElt = DomHandler.getElement("#option-value-reload", this.element);
-        this.ramValueElt = DomHandler.getElement("#option-value-ram", this.element);
-        this.shootValueElt = DomHandler.getElement("#option-value-shoot", this.element);
-        this.chatOpenValueElt = DomHandler.getElement("#option-value-chatopen", this.element);
+        this.forwardValueElt = DomHandler.getElement("#option-value-forward", this.parentElt);
+        this.backwardValueElt = DomHandler.getElement("#option-value-backward", this.parentElt);
+        this.leftValueElt = DomHandler.getElement("#option-value-left", this.parentElt);
+        this.rightValueElt = DomHandler.getElement("#option-value-right", this.parentElt);
+        this.reloadValueElt = DomHandler.getElement("#option-value-reload", this.parentElt);
+        this.ramValueElt = DomHandler.getElement("#option-value-ram", this.parentElt);
+        this.shootValueElt = DomHandler.getElement("#option-value-shoot", this.parentElt);
+        this.chatOpenValueElt = DomHandler.getElement("#option-value-chatopen", this.parentElt);
 
-        this.gameVolumeValueElt = DomHandler.getElement("#option-value-volume-game", this.element) as HTMLInputElement;
-        this.menuVolumeValueElt = DomHandler.getElement("#option-value-volume-menu", this.element) as HTMLInputElement;
-        this.mouseValueElt = DomHandler.getElement("#option-value-mouse", this.element) as HTMLInputElement;
-        this.rotationValueElt = DomHandler.getElement("#option-value-rotation", this.element) as HTMLInputElement;
-        this.cameraAngleValueElt = DomHandler.getElement("#option-value-camera-angle", this.element) as HTMLInputElement;
-        this.controlsSimpleValueElt = DomHandler.getElement("#option-value-controls-simple", this.element) as HTMLInputElement;
-        this.controlsStandardValueElt = DomHandler.getElement("#option-value-controls-standard", this.element) as HTMLInputElement;
+        this.gameVolumeValueElt = DomHandler.getElement("#option-value-volume-game", this.parentElt) as HTMLInputElement;
+        this.menuVolumeValueElt = DomHandler.getElement("#option-value-volume-menu", this.parentElt) as HTMLInputElement;
+        this.mouseValueElt = DomHandler.getElement("#option-value-mouse", this.parentElt) as HTMLInputElement;
+        this.rotationValueElt = DomHandler.getElement("#option-value-rotation", this.parentElt) as HTMLInputElement;
+        this.cameraAngleValueElt = DomHandler.getElement("#option-value-camera-angle", this.parentElt) as HTMLInputElement;
+        this.controlsSimpleValueElt = DomHandler.getElement("#option-value-controls-simple", this.parentElt) as HTMLInputElement;
+        this.controlsStandardValueElt = DomHandler.getElement("#option-value-controls-standard", this.parentElt) as HTMLInputElement;
 
-        this.usernameElt = DomHandler.getElement("#option-value-username", this.element) as HTMLInputElement;
+        this.usernameElt = DomHandler.getElement("#option-value-username", this.parentElt) as HTMLInputElement;
 
-        this.returnBtn = DomHandler.getElement("#opt-opt-close", this.element);
+        this.returnBtn = DomHandler.getElement("#opt-opt-close", this.parentElt);
 
         this.isListening = false;
 
@@ -106,10 +106,12 @@ export default class OptionsMenu extends Component {
 
         DomEventHandler.addListener(this, this.usernameElt, "change", this.onUsernameChange);
 
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onOptionsParentClick);
+
         EventHandler.callEvent(EventHandler.Event.OPTIONS_OPEN);
         Globals.setGlobal(Globals.Global.OPTIONS_OPEN, true);
 
-        this.element.style.display = "block";
+        this.parentElt.style.display = "block";
     }
 
     private closeOptions() {
@@ -138,9 +140,19 @@ export default class OptionsMenu extends Component {
 
         DomEventHandler.removeListener(this, this.usernameElt, "change", this.onUsernameChange);
 
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onOptionsParentClick);
+
         Globals.setGlobal(Globals.Global.OPTIONS_OPEN, false);
         this.isListening = false;
-        this.element.style.display = "";
+        this.parentElt.style.display = "";
+    }
+
+    private onOptionsParentClick(event: MouseEvent) {
+        if (event.target === this.parentElt) {
+            if (!this.isListening) {
+                this.closeOptions();
+            }
+        }
     }
 
     private onChatEnabledChange() {

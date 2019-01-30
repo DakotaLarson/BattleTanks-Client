@@ -1,3 +1,7 @@
+.options-menu-parent {
+    position: absolute;
+}
+
 .options-menu {
     position: absolute;
     overflow-y: auto;
@@ -40,7 +44,7 @@
 }
 
 .options-menu .active{
-    background: green;
+    background: #02b757;
 }
 
 .options-tip {
