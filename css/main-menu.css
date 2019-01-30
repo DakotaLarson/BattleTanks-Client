@@ -160,3 +160,20 @@
     height: 2.5vmin;
     line-height: 2.5vmin;
 }
+
+.main-menu .partners-link {
+    position: absolute;
+    top: 2.5vmin;
+    left: 75%;
+    transform: translate(-50%);
+    font-size: 3vmin;
+    padding: 0 0.5vmin;
+    border: solid 1px #ffffff;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.main-menu .partners-link:hover {
+    cursor: pointer;
+    background-color: #02b757;
+}
