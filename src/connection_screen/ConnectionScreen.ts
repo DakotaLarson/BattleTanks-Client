@@ -126,6 +126,9 @@ export default class ConnectionScreen extends ChildComponent {
         parent.appendChild(this.createStatisticsTitle());
         parent.appendChild(this.createStatisticMarkup("Status", stats.win ? "Win" : "Loss", true, true));
 
+        parent.appendChild(this.createStatisticMarkup("Points Earned", stats.points));
+        parent.appendChild(this.createStatisticMarkup("Currency Earned", stats.currency, true));
+
         parent.appendChild(this.createStatisticMarkup("Kills", stats.kills));
         parent.appendChild(this.createStatisticMarkup("Shots", stats.shots, true));
 

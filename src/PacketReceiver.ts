@@ -158,6 +158,8 @@ const receiveMatchStatistics = (rawStats: number[]) => {
         hits: rawStats[8],
         kills: rawStats[9],
         deaths: rawStats[10],
+        points: rawStats[11],
+        currency: rawStats[12],
     };
 
     EventHandler.callEvent(EventHandler.Event.MATCH_STATISTICS_RECEPTION, statistics);
