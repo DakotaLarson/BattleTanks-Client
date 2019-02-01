@@ -364,11 +364,11 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
 <script src="./polyfill/encoding-indexes.js"></script>
 <script src="./polyfill/keyboard.js"></script>
 <script src="./polyfill/eventsource.js"></script>
-<script src="./systemjs/system.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.21.2/system.js"></script>
 <script>
     const config = {
         map: {
-            three: "https://cdnjs.cloudflare.com/ajax/libs/three.js/100/three.js"
+            three: "https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three.js"
         },
         packages: {
             build: {
@@ -377,7 +377,7 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
         } 
     }
     SystemJS.config(config);
-    SystemJS.import("./build/Game.js");
+    System.import("./build/Game.js");
 </script>
 <script>
     function onAuthInit() {
