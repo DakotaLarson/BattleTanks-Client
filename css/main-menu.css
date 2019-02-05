@@ -41,7 +41,7 @@
     margin-bottom: 3vmin;
 }
 .main-menu .menu-input:focus {
-    border-color: #02b757;
+    border-color: #02ea6e;
 }
 .main-menu .menu-number-input {
     width: 9vmin;
@@ -78,7 +78,7 @@
 }
 .main-menu .menu-file-name {
     display: inline-block;
-    color: #02b757;
+    color: #02ea6e;
     font-size: 5vmin;
     margin-top: 5vmin;
 }
@@ -175,5 +175,39 @@
 
 .main-menu .partners-link:hover {
     cursor: pointer;
-    background-color: #02b757;
+    background-color: #02ea6e;
+}
+
+.main-menu .player-stats {
+    position: absolute;
+    left: 5vw;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #101010;
+    text-transform: capitalize;
+    padding: 2.5vmin;
+    border: solid 1px #ffffff;
+}
+.main-menu .player-stats-container {
+    display: inline-grid;
+    grid-template-columns: auto auto;
+    justify-items: left;
+    grid-gap: 5px;
+    font-size: 2.5vmin;
+    font-family: 'Inconsolata', sans-serif;
+}
+
+.main-menu .player-stat-title {
+    justify-self: right;
+}
+
+.main-menu .player-stats-title {
+    font-size: 5vmin;
+    margin-bottom: 2.5vmin;
+}
+
+.main-menu .player-stats-message {
+    font-size: 2.5vmin;
+    font-family: 'Inconsolata', sans-serif;
+    text-transform: none;
 }

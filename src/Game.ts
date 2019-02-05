@@ -10,6 +10,7 @@ import ComponentDebugger from "./component/ComponentDebugger";
 import ConnectionScreen from "./connection_screen/ConnectionScreen";
 import DomHandler from "./DomHandler";
 import GameStatusHandler from "./GameStatusHandler";
+import Globals from "./Globals";
 import MainMenu from "./main_menu/MainMenu";
 import MultiplayerConnection from "./MultiplayerConnection";
 import Options from "./Options";
@@ -59,6 +60,8 @@ class Game extends Component {
         EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
 
+        this.setHost();
+
         this.attachComponent(this.auth);
         this.attachComponent(this.options);
         this.attachComponent(this.overlayMenu);
@@ -82,13 +85,7 @@ class Game extends Component {
     }
 
     private connectToMultiplayer() {
-        let address = "ws://" + location.hostname + ":8000";
-        const host = location.hostname;
-        const prodHostname = "battletanks.app";
-        const stagingHostname = "dakotalarson.github.io";
-        if (host.includes(prodHostname) || host.includes(stagingHostname)) {
-            address = "wss://battle-tanks-server.herokuapp.com";
-        }
+        const address = "ws" + Globals.getGlobal(Globals.Global.HOST);
         this.updateMenu(false);
         this.attachChild(this.connectionScreen);
         this.mpConnection = new MultiplayerConnection(address, this.tokenId);
@@ -124,6 +121,17 @@ class Game extends Component {
             this.detachChild(this.mainMenu);
             EventHandler.callEvent(EventHandler.Event.AUDIO_GAME);
         }
+    }
+
+    private setHost() {
+        let address = "://" + location.hostname + ":8000";
+        const host = location.hostname;
+        const prodHostname = "battletanks.app";
+        const stagingHostname = "dakotalarson.github.io";
+        if (host.includes(prodHostname) || host.includes(stagingHostname)) {
+            address = "s://battle-tanks-server.herokuapp.com";
+        }
+        Globals.setGlobal(Globals.Global.HOST, address);
     }
 }
 

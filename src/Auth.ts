@@ -1,6 +1,7 @@
 import Component from "./component/Component";
 import DomHandler from "./DomHandler";
 import EventHandler from "./EventHandler";
+import Globals from "./Globals";
 
 export default class Auth extends Component {
 
@@ -50,6 +51,7 @@ export default class Auth extends Component {
     private onSignoutClick(event: MouseEvent) {
         if (event.target === this.signoutBtn) {
             gapi.auth2.getAuthInstance().signOut();
+            Globals.setGlobal(Globals.Global.AUTH_TOKEN, undefined);
             EventHandler.callEvent(EventHandler.Event.SIGN_OUT);
             this.updateSignoutBtn(false);
             console.log("Signed out");
@@ -70,7 +72,10 @@ export default class Auth extends Component {
         window.clearTimeout(this.taskId);
         const refreshTime = authResponse.expires_at - Date.now() - Auth.REFRESH_PADDING;
         const token = authResponse.id_token;
+
+        Globals.setGlobal(Globals.Global.AUTH_TOKEN, token);
         EventHandler.callEvent(EventHandler.Event.SIGN_IN, token);
+
         this.taskId = window.setTimeout(() => {
             gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse().then(this.updateToken.bind(this)).catch(this.onFailure.bind(this));
         }, refreshTime);

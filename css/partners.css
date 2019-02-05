@@ -7,6 +7,7 @@ html, body {
 h1 {
     font-size: 7.5vmin;
     color: #ffffff;
+    font-family: 'Bombardier', sans-serif;
 }
 
 .partner-parent {
@@ -35,7 +36,7 @@ h1 {
 }
 
 .partner-parent a:hover {
-    background-color: #02b757;
+    background-color: #02ea6e;
     cursor: pointer;
 }
 

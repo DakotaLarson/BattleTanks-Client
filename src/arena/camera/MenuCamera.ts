@@ -5,7 +5,7 @@ import EventHandler from "../../EventHandler";
 
 export default class MenuCamera extends ChildComponent {
 
-    private static readonly CAMERA_SPEED = 0.25;
+    private static readonly CAMERA_SPEED = 0.15;
 
     private camera: PerspectiveCamera;
     private tankPosition: Vector3;
@@ -34,6 +34,7 @@ export default class MenuCamera extends ChildComponent {
     }
 
     private onUpdate(delta: number) {
+        delta = Math.min(delta, 0.05);
         this.cameraPosition.theta += MenuCamera.CAMERA_SPEED * delta;
         this.camera.position.setFromSpherical(this.cameraPosition).add(this.tankPosition);
         this.updateCameraTargetPosition();

@@ -1,4 +1,5 @@
 enum Global {
+    HOST,
     CAMERA,
     CAMERA_IS_FOLLOWING,
     CHAT_OPEN,
@@ -6,6 +7,7 @@ enum Global {
     OPTIONS_OPEN,
     ANGLE_BUTTON_DOWN,
     AUDIO_ENABLED,
+    AUTH_TOKEN,
 }
 
 export default class Globals {

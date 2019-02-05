@@ -1,5 +1,6 @@
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import Globals from "../Globals";
 
 export default class ServerPlayerCount extends ChildComponent {
 
@@ -33,13 +34,7 @@ export default class ServerPlayerCount extends ChildComponent {
     }
 
     private pingServer() {
-        let address = "http://" + location.hostname + ":8000";
-        const host = location.hostname;
-        const prodHostname = "battletanks.app";
-        const stagingHostname = "dakotalarson.github.io";
-        if (host.includes(prodHostname) || host.includes(stagingHostname)) {
-            address = "https://battle-tanks-server.herokuapp.com";
-        }
+        const address = "http" + Globals.getGlobal(Globals.Global.HOST);
         this.eventSource = new EventSource(address + "/playercount");
         this.eventSource.onopen = this.onOpen.bind(this);
         this.eventSource.onmessage = this.onMessage.bind(this);

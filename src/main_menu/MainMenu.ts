@@ -9,6 +9,7 @@ import ChildComponent from "../component/ChildComponent";
 import CreateWorldMenu from "./CreateArenaMenu";
 import GameSuggestion from "./GameSuggestion";
 import LoadWorldMenu from "./LoadArenaMenu";
+import PlayerStats from "./PlayerStats";
 import ServerPlayerCount from "./ServerPlayerCount";
 import SingleplayerMenu from "./SingleplayerMenu";
 import TopMenu from "./TopMenu";
@@ -24,6 +25,7 @@ export default class MainMenu extends Component {
 
     private serverPlayercount: ServerPlayerCount;
     private gameSuggestion: GameSuggestion;
+    private playerStats: PlayerStats;
     private menuCamera: MenuCamera;
 
     private attachedCmp: ChildComponent | undefined;
@@ -39,6 +41,7 @@ export default class MainMenu extends Component {
 
         this.serverPlayercount = new ServerPlayerCount(this.element);
         this.gameSuggestion = new GameSuggestion(this.element);
+        this.playerStats = new PlayerStats(this.element);
         this.menuCamera = new MenuCamera(camera);
     }
     public enable() {
@@ -67,6 +70,7 @@ export default class MainMenu extends Component {
 
         this.attachChild(this.serverPlayercount);
         this.attachChild(this.gameSuggestion);
+        this.attachChild(this.playerStats);
         this.attachChild(this.menuCamera);
 
         this.element.style.display = "block";
@@ -93,6 +97,7 @@ export default class MainMenu extends Component {
 
         this.detachChild(this.serverPlayercount);
         this.detachChild(this.gameSuggestion);
+        this.detachChild(this.playerStats);
         this.detachChild(this.menuCamera);
 
         this.element.style.display = "";
