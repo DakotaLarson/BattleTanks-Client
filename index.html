@@ -51,7 +51,7 @@
     <link rel="stylesheet" type="text/css" href="./css/alert-message.css"/>
     <link rel="stylesheet" type="text/css" href="./css/options-menu.css"/>
     <link rel="stylesheet" type="text/css" href="./css/joystick.css"/>
-
+    <link rel="stylesheet" type="text/css" href="./css/username-menu.css"/>
 </head>
 <body>
 
@@ -102,7 +102,7 @@
     <a href="./partners.html" target="_blank" class="partners-link">Partners</a><br/>
     <div class="game-suggestion game-suggestion-hidden"></div>
     <div class="player-stats">
-        <div class="player-stats-title">Your Stats</div>
+        <h2 class="player-stats-title">Your Stats</h2>
         <div class="player-stats-container"></div>
         <div class="player-stats-message"></div>
     </div>
@@ -301,54 +301,62 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
 <!-- OPTIONS MENU -->
 <div class="options-menu-parent menu">
     <div class="options-menu">
-        <input id="option-value-username" class="menu-text-input" maxlength="16" size="16" placeholder="Username"><br/>
+        <h2>Options</h2>
         <div class='options-parent'>
-            <span class="option-title">Chat</span>
+
+            <div class="option-title username-parent">
+                <span class="username-change">Update</span>
+                <span>Username:</span>
+            </div>
+            <span class="username-value">Test NameAAAAAAA</span>
+            
+
+            <span class="option-title">Chat:</span>
             <input type="checkbox" id="option-enabled-chat">
     
-            <span class="option-title">Killfeed</span>
+            <span class="option-title">Killfeed:</span>
             <input type="checkbox" id="option-enabled-killfeed">
     
-            <span class="option-title">Forward</span>
+            <span class="option-title">Forward:</span>
             <span class="option-value option-listening-value" id="option-value-forward"></span>
     
-            <span class="option-title">Backward</span>
+            <span class="option-title">Backward:</span>
             <span class="option-value option-listening-value" id="option-value-backward"></span>
     
-            <span class="option-title">Rotate Left</span>
+            <span class="option-title">Rotate Left:</span>
             <span class="option-value option-listening-value" id="option-value-left"></span>
     
-            <span class="option-title">Rotate Right</span>
+            <span class="option-title">Rotate Right:</span>
             <span class="option-value option-listening-value" id="option-value-right"></span>
     
-            <span class="option-title">Reload</span>
+            <span class="option-title">Reload:</span>
             <span class="option-value option-listening-value" id="option-value-reload"></span>
     
-            <span class="option-title">Ramming Speed</span>
+            <span class="option-title">Ramming Speed:</span>
             <span class="option-value option-listening-value" id="option-value-ram"></span>
     
-            <span class="option-title">Shoot</span>
+            <span class="option-title">Shoot:</span>
             <span class="option-value option-listening-value" id="option-value-shoot"></span>
     
-            <span class="option-title">Open Chat</span>
+            <span class="option-title">Open Chat:</span>
             <span class="option-value option-listening-value" id="option-value-chatopen"></span>
     
-            <span class="option-title">Game Volume</span>
+            <span class="option-title">Game Volume:</span>
             <input type="range" id="option-value-volume-game" class="option-value option-range-value" min="0" max="1" step="any"/>
     
-            <span class="option-title">Menu Volume</span>
+            <span class="option-title">Menu Volume:</span>
             <input type="range" id="option-value-volume-menu" class="option-value option-range-value" min="0" max="1" step="any"/>
      
-            <span class="option-title">Mouse Sensitivity</span>
+            <span class="option-title">Mouse Sensitivity:</span>
             <input type="range" id="option-value-mouse" class="option-value option-range-value" min="0.1" max="1" step="any"/>
     
-            <span class="option-title">Rotation Sensitivity</span>
+            <span class="option-title">Rotation Sensitivity:</span>
             <input type="range" id="option-value-rotation" class="option-value option-range-value" min="0.5" max="1.5" step="any"/>
             
-            <span class="option-title">Camera Angle</span>
+            <span class="option-title">Camera Angle:</span>
             <input type="range" id="option-value-camera-angle" class="option-value option-range-value" min="0" max="1" step="any"/>
     
-            <span class="option-title">Controls</span>
+            <span class="option-title">Controls:</span>
             <div class="option-value-radio">
                 <input type="radio" id="option-value-controls-simple" class="option-value option-radio-value" name="controls-option"/>
                 <span>Simple</span><br/>
@@ -358,6 +366,17 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
         </div><br/>
         <span class="menu-selection" id="opt-opt-close">Save &amp; Close</span><br/>
         <span class="options-tip">Tip: Hold ctrl &amp; primary mouse button to alter camera angle in game</span>
+    </div>
+</div>
+
+<!-- USERNAME MENU -->
+<div class="username-menu-parent menu">
+    <div class="username-menu no-select">
+        <h2>Update Username</h2>
+        <input type="text" class="username-input" size="16" maxlength="16"><br/>
+        <span class="menu-selection" id="username-save">Save &amp; Close</span>
+        <span class="menu-selection" id="username-cancel">Cancel</span>
+
     </div>
 </div>
 

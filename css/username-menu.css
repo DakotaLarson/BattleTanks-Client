@@ -1,0 +1,30 @@
+.username-menu-parent {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.25);
+}
+.username-menu {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #101010;
+    padding: 2.5vmin;
+    border: solid 1px #ffffff;
+}
+
+.username-menu h2 {
+    font-size: 7.5vmin;
+    margin: 0 0 2.5vmin 0;
+    font-weight: normal;
+}
+
+.username-menu .username-input {
+    background: none;
+    font-size: 5vmin;
+    border: solid 1px #ffffff;
+    margin: 0 0 2.5vmin 0;
+    outline: none;
+    padding: 1vmin 0.5vmin;
+    color: #ffffff;
+    font-family: 'Inconsolata', sans-serif;
+}

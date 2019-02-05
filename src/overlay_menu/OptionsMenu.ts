@@ -10,6 +10,8 @@ export default class OptionsMenu extends Component {
     private gearElt: HTMLElement;
     private returnBtn: HTMLElement;
 
+    private usernameChangeElt: HTMLElement;
+
     private chatEnabledElt: HTMLInputElement;
     private killfeedEnabledElt: HTMLInputElement;
 
@@ -30,14 +32,14 @@ export default class OptionsMenu extends Component {
     private controlsSimpleValueElt: HTMLInputElement;
     private controlsStandardValueElt: HTMLInputElement;
 
-    private usernameElt: HTMLInputElement;
-
     private isListening: boolean;
 
     constructor(overlay: HTMLElement) {
         super();
         this.gearElt = DomHandler.getElement(".menu-options", overlay);
         this.parentElt = DomHandler.getElement(".options-menu-parent");
+
+        this.usernameChangeElt = DomHandler.getElement(".username-change", this.parentElt);
 
         this.chatEnabledElt = DomHandler.getElement("#option-enabled-chat", this.parentElt) as HTMLInputElement;
         this.killfeedEnabledElt = DomHandler.getElement("#option-enabled-killfeed", this.parentElt) as HTMLInputElement;
@@ -59,8 +61,6 @@ export default class OptionsMenu extends Component {
         this.controlsSimpleValueElt = DomHandler.getElement("#option-value-controls-simple", this.parentElt) as HTMLInputElement;
         this.controlsStandardValueElt = DomHandler.getElement("#option-value-controls-standard", this.parentElt) as HTMLInputElement;
 
-        this.usernameElt = DomHandler.getElement("#option-value-username", this.parentElt) as HTMLInputElement;
-
         this.returnBtn = DomHandler.getElement("#opt-opt-close", this.parentElt);
 
         this.isListening = false;
@@ -70,6 +70,8 @@ export default class OptionsMenu extends Component {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_GUI_MOUSEDOWN, this.onGearMouseDown);
+        EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
+        EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
         Globals.setGlobal(Globals.Global.OPTIONS_OPEN, false);
     }
 
@@ -80,7 +82,16 @@ export default class OptionsMenu extends Component {
         }
     }
 
+    private onSignIn() {
+        this.usernameChangeElt.style.display = "inline";
+    }
+
+    private onSignOut() {
+        this.usernameChangeElt.style.display = "";
+    }
+
     private openOptions() {
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onUsernameUpdateClick);
         DomEventHandler.addListener(this, this.chatEnabledElt, "change", this.onChatEnabledChange);
         DomEventHandler.addListener(this, this.killfeedEnabledElt, "change", this.onKillfeedEnabledChange);
 
@@ -104,8 +115,6 @@ export default class OptionsMenu extends Component {
         DomEventHandler.addListener(this, this.controlsSimpleValueElt, "change", this.onSimpleControlsChange);
         DomEventHandler.addListener(this, this.controlsStandardValueElt, "change", this.onStandardControlsChange);
 
-        DomEventHandler.addListener(this, this.usernameElt, "change", this.onUsernameChange);
-
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onOptionsParentClick);
 
         EventHandler.callEvent(EventHandler.Event.OPTIONS_OPEN);
@@ -115,8 +124,9 @@ export default class OptionsMenu extends Component {
     }
 
     private closeOptions() {
-        DomEventHandler.addListener(this, this.chatEnabledElt, "change", this.onChatEnabledChange);
-        DomEventHandler.addListener(this, this.killfeedEnabledElt, "change", this.onKillfeedEnabledChange);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onUsernameUpdateClick);
+        DomEventHandler.removeListener(this, this.chatEnabledElt, "change", this.onChatEnabledChange);
+        DomEventHandler.removeListener(this, this.killfeedEnabledElt, "change", this.onKillfeedEnabledChange);
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onBackwardClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onForwardClick);
@@ -138,8 +148,6 @@ export default class OptionsMenu extends Component {
         DomEventHandler.removeListener(this, this.controlsSimpleValueElt, "change", this.onSimpleControlsChange);
         DomEventHandler.removeListener(this, this.controlsStandardValueElt, "change", this.onStandardControlsChange);
 
-        DomEventHandler.removeListener(this, this.usernameElt, "change", this.onUsernameChange);
-
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onOptionsParentClick);
 
         Globals.setGlobal(Globals.Global.OPTIONS_OPEN, false);
@@ -152,6 +160,12 @@ export default class OptionsMenu extends Component {
             if (!this.isListening) {
                 this.closeOptions();
             }
+        }
+    }
+
+    private onUsernameUpdateClick(event: MouseEvent) {
+        if (event.target === this.usernameChangeElt) {
+            EventHandler.callEvent(EventHandler.Event.USERNAME_OPT_CHANGE_CLICK);
         }
     }
 
@@ -294,15 +308,6 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    private onUsernameChange() {
-        let value = this.usernameElt.value;
-        if (!value) {
-            value = "Guest";
-            this.usernameElt.value = "Guest";
-        }
-        this.saveChange("username", value);
-    }
-
     // key = human readable
     // code = more precise
     private listenForInput(element: HTMLElement) {
@@ -371,10 +376,6 @@ export default class OptionsMenu extends Component {
                 element.value = "" + value;
             };
 
-            const setTextValue = (value: string, element: HTMLInputElement) => {
-                element.value = value ? value : "";
-            };
-
             setCheckedValue("chatEnabled", this.chatEnabledElt);
             setCheckedValue("killfeedEnabled", this.killfeedEnabledElt);
 
@@ -399,11 +400,41 @@ export default class OptionsMenu extends Component {
                 this.controlsStandardValueElt.checked = true;
             }
 
-            setTextValue(options.username, this.usernameElt);
-
         } else {
             console.warn("No options to read from. Were they deleted?");
         }
+    }
+
+    private getUsername(authToken: string) {
+        return new Promise((resolve, reject) => {
+            if (!authToken) {
+                authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
+            }
+            if (authToken) {
+                const address = "http" + Globals.getGlobal(Globals.Global.HOST);
+                const body = JSON.stringify({
+                    token: authToken,
+                });
+
+                fetch(address + "/playerusername", {
+                    method: "post",
+                    mode: "cors",
+                    credentials: "omit",
+                    body,
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                }).then((response: Response) => {
+                    return response.text();
+                }).then((username: string) => {
+                    resolve(username);
+                }).catch((err) => {
+                    reject(err);
+                });
+            } else {
+                resolve();
+            }
+        });
     }
 
     private saveChange(attribute: string, data: any) {

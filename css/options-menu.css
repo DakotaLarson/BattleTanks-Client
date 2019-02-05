@@ -1,5 +1,6 @@
 .options-menu-parent {
     position: absolute;
+    background-color: rgba(0, 0, 0, 0.25);
 }
 
 .options-menu {
@@ -21,8 +22,15 @@
     justify-items: left;
     grid-gap: 5px 5px;
     font-size: 3vmin;
-    
+    font-family: 'Inconsolata', sans-serif;
 }
+
+.options-menu h2 {
+    font-size: 7.5vmin;
+    margin: 0 0 2.5vmin 0;
+    font-weight: normal;
+}
+
 .options-menu .option-title{
     justify-self: right;
 }
@@ -54,4 +62,24 @@
 
 .options-menu .option-value-radio {
     text-align: left;
+}
+
+.options-menu .username-parent {
+    position: relative;
+}
+
+.options-menu .username-change {
+    position: absolute;
+    top: 50%;
+    left: -55%;
+    font-size: 2vmin;
+    transform: translateY(-50%);
+    border: solid 1px #ffffff;
+    padding: 0.25vmin;
+    display: none;
+}
+
+.options-menu .username-change:hover {
+    background-color: #02ea6e;
+    cursor: pointer;
 }

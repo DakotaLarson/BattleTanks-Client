@@ -185,6 +185,9 @@ enum Event {
     AUDIO_MENU,
     AUDIO_GAME,
     AUDIO_FAILURE,
+
+    // USERNAME
+    USERNAME_OPT_CHANGE_CLICK,
 }
 
 enum Level {

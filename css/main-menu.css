@@ -203,7 +203,8 @@
 
 .main-menu .player-stats-title {
     font-size: 5vmin;
-    margin-bottom: 2.5vmin;
+    margin: 0 0 1vmin 0;
+    font-weight: normal;
 }
 
 .main-menu .player-stats-message {
