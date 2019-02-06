@@ -123,7 +123,7 @@ export default class ScenePlayerHandler extends Component {
     }
 
     private onPlayerAddition(data: any) {
-        const name = Options.options.username;
+        const name = Globals.getGlobal(Globals.Global.USERNAME);
         this.addPlayer(data.id, data.pos, name, data.color, false);
     }
 

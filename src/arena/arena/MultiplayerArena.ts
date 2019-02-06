@@ -1,5 +1,5 @@
 import EventHandler from "../../EventHandler";
-import Options from "../../Options";
+import Globals from "../../Globals";
 import PlayerCollisionHandler from "../collision/PlayerCollisionHandler";
 import ConnectedPlayer from "../player/ConnectedPlayer";
 import Player from "../player/Player";
@@ -139,7 +139,7 @@ export default class MultiplayerArena extends Arena {
     private getKillfeedPlayerDetails(id: number, livesRemaining: number) {
         if (id === MultiplayerArena.OOB_ID) {
             return {
-                name: Options.options.username,
+                name: Globals.getGlobal(Globals.Global.USERNAME),
                 color: (this.player as Player).color,
                 isSelf: true,
                 livesRemaining,
@@ -147,7 +147,7 @@ export default class MultiplayerArena extends Arena {
         }
         if (this.player && this.player.id === id) {
             return {
-                name: Options.options.username,
+                name: Globals.getGlobal(Globals.Global.USERNAME),
                 color: this.player.color,
                 isSelf: true,
                 livesRemaining,

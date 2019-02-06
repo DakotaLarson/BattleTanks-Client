@@ -69,14 +69,15 @@ export default class Auth extends Component {
     }
 
     private updateToken(authResponse: gapi.auth2.AuthResponse) {
+        const token = authResponse.id_token;
         window.clearTimeout(this.taskId);
         const refreshTime = authResponse.expires_at - Date.now() - Auth.REFRESH_PADDING;
-        const token = authResponse.id_token;
 
         Globals.setGlobal(Globals.Global.AUTH_TOKEN, token);
         EventHandler.callEvent(EventHandler.Event.SIGN_IN, token);
 
         this.taskId = window.setTimeout(() => {
+            console.log("Reloading Auth Response");
             gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse().then(this.updateToken.bind(this)).catch(this.onFailure.bind(this));
         }, refreshTime);
     }

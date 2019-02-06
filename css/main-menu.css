@@ -212,3 +212,9 @@
     font-family: 'Inconsolata', sans-serif;
     text-transform: none;
 }
+
+.main-menu .play-as-guest {
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 3vmin;
+    display: none;
+}

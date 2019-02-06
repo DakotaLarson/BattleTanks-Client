@@ -70,7 +70,7 @@ export default class UsernameMenu extends ChildComponent {
         let name = this.inputElt.value;
         if (name) {
             name = name.trim();
-            if (name.length < UsernameMenu.MINIMUM_LENGTH || name.length > UsernameMenu.MAXIMUM_LENGTH) {
+            if (this.isNameInvalid(name)) {
                 this.updateVisuals(false, true, false);
                 this.lastValidName = undefined;
             } else {
@@ -180,5 +180,9 @@ export default class UsernameMenu extends ChildComponent {
             this.saveBtn.classList.add("disabled");
             this.cancelBtn.classList.remove("disabled");
         }
+    }
+
+    private isNameInvalid(name: string) {
+        return name.length < UsernameMenu.MINIMUM_LENGTH || name.length > UsernameMenu.MAXIMUM_LENGTH || name.toLowerCase().startsWith("guest") || name.toLowerCase().startsWith("player");
     }
 }

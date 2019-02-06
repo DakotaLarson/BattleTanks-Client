@@ -101,10 +101,6 @@ export default class Options extends Component {
         }
 
         localStorage.setItem("userOptions", JSON.stringify(Options.options));
-
-        if (!Options.options.username) {
-            Options.options.username = "Guest";
-        }
     }
 
     // key = human readable
@@ -122,10 +118,6 @@ export default class Options extends Component {
             storedOptions[attribute] = data;
             Options.options[attribute] = data;
             localStorage.setItem("userOptions", JSON.stringify(storedOptions));
-            if (!storedOptions.username) {
-                storedOptions.username = "Guest";
-            }
-            EventHandler.callEvent(EventHandler.Event.OPTIONS_USERNAME_UPDATE, storedOptions.username);
         }
     }
 }

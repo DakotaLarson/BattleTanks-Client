@@ -1,13 +1,12 @@
 import Component from "./component/ChildComponent";
 import DomEventHandler from "./DomEventHandler";
 import EventHandler from "./EventHandler";
-import Options from "./Options";
 import PacketReceiver from "./PacketReceiver";
 import PacketSender from "./PacketSender";
 
 export default class MultiplayerConnection extends Component {
 
-    private static readonly PROTOCOL = "battletanks-4";
+    private static readonly PROTOCOL = "battletanks-5";
 
     private static readonly CLIENT_OUTDATED_CODE = 4001;
     private static readonly SERVER_OUTDATED_CODE = 4002;
@@ -54,8 +53,7 @@ export default class MultiplayerConnection extends Component {
 
     private initHandshake() {
         EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_OPEN);
-        const name = Options.options.username;
-        PacketSender.sendPlayerJoin(name, this.tokenId);
+        PacketSender.sendPlayerJoin(this.tokenId);
     }
 
     private onClose(event: any) {

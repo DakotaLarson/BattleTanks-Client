@@ -8,27 +8,34 @@
         "max-line-length": false,
         "no-console": false,
         "object-literal-sort-keys": false,
-        "no-null-keyword": true
+        "no-null-keyword": true,
+        "no-shadowed-variable": [
+            true,
+            {
+              "temporalDeadZone": false
+            }
+        ],
+        "member-ordering": [
+            true,
+            {
+                "order": [
+                    "public-static-field",
+                    "private-static-field",                  
+                    "public-instance-field",
+                    "protected-instance-field",
+                    "private-instance-field",
+                    "public-constructor",
+                    "protected-constructor",
+                    "private-constructor",
+                    "public-static-method",
+                    "protected-static-method",
+                    "private-static-method",
+                    "public-instance-method",
+                    "protected-instance-method",
+                    "private-instance-method"
+                ]
+            }
+        ]
     },
-    "member-ordering": [
-        true,
-        {
-            "order": [
-                "public-static-field",
-                "private-static-field",                  
-                "public-instance-field",
-                "protected-instance-field",
-                "private-instance-field",
-                "public-constructor",
-                "protected-constructor",
-                "private-constructor",
-                "public-static-method",
-                "protected-static-method",
-                "private-static-method",
-                "public-instance-method",
-                "protected-instance-method",
-                "private-instance-method"
-            ]
-        }
-    ]
+    "rulesDirectory": []
 }

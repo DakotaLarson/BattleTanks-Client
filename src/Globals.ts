@@ -8,6 +8,7 @@ enum Global {
     ANGLE_BUTTON_DOWN,
     AUDIO_ENABLED,
     AUTH_TOKEN,
+    USERNAME,
 }
 
 export default class Globals {
@@ -16,6 +17,8 @@ export default class Globals {
         return Global;
     }
 
+    private static values: Map<Global, any> = new Map();
+
     public static setGlobal(global: Global, value: any) {
         Globals.values.set(global, value);
     }
@@ -23,6 +26,4 @@ export default class Globals {
     public static getGlobal(global: Global) {
         return Globals.values.get(global);
     }
-
-    private static values: Map<Global, any> = new Map();
 }

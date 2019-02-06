@@ -23,8 +23,8 @@ export default class PlayerStats extends ChildComponent {
     }
 
     public disable() {
-        EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
-        EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
+        EventHandler.removeListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
+        EventHandler.removeListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
         this.clearStatsElt();
     }
 

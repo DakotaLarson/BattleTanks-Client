@@ -2,6 +2,7 @@ import {Vector3, Vector4} from "three";
 import Powerup from "./arena/powerup/Powerup";
 import AudioType from "./audio/AudioType";
 import EventHandler from "./EventHandler";
+import Globals from "./Globals";
 
 const decoder = new TextDecoder();
 
@@ -17,6 +18,10 @@ const receiveGameStatus = (data: number) => {
 
 const receiveAlert = (message: string) => {
     EventHandler.callEvent(EventHandler.Event.ALERT_MESSAGE_REQUEST, message);
+};
+
+const receivePlayerName = (name: string) => {
+    Globals.setGlobal(Globals.Global.USERNAME, name);
 };
 
 const receivePlayerAdd = (data: string) => {
@@ -231,6 +236,7 @@ handlers.push(receiveGameStatus);
 
 handlers.push(receiveAlert);
 
+handlers.push(receivePlayerName);
 handlers.push(receivePlayerAdd);
 handlers.push(receivePlayerMove);
 handlers.push(receivePlayerRemove);

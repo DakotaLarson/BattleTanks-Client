@@ -1,7 +1,7 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
-import Options from "../Options";
+import Globals from "../Globals";
 
 export default class TopMenu extends Component {
 
@@ -9,25 +9,36 @@ export default class TopMenu extends Component {
     private spBtn: HTMLElement;
     private mpBtn: HTMLElement;
 
+    private asGuestElt: HTMLElement;
+
     constructor(mainMenu: HTMLElement) {
         super();
         this.element = DomHandler.getElement("#main-menu-top", mainMenu);
 
         this.spBtn = DomHandler.getElement("#top-opt-sp", this.element);
         this.mpBtn = DomHandler.getElement("#top-opt-mp", this.element);
+        this.asGuestElt = DomHandler.getElement(".play-as-guest", this.element);
     }
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onSPOption);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onMPOption);
+        EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
+        EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
 
+        if (!Globals.getGlobal(Globals.Global.AUTH_TOKEN)) {
+            this.asGuestElt.style.display = "block";
+        }
         this.element.style.display = "block";
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onSPOption);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onMPOption);
+        EventHandler.removeListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
+        EventHandler.removeListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
 
+        this.asGuestElt.style.display = "";
         this.element.style.display = "";
     }
 
@@ -40,27 +51,15 @@ export default class TopMenu extends Component {
 
     private onMPOption(event: MouseEvent) {
         if (event.target === this.mpBtn) {
-            this.getUsername();
             EventHandler.callEvent(EventHandler.Event.MPMENU_JOIN_OPT_CLICK);
         }
     }
 
-    private getUsername() {
-        if (!localStorage.getItem("hasUsernamePrompt") && Options.options.username === "Guest") {
-            const username = window.prompt("Do you want a custom username? You can change this later in 'Options' (Accessed by the top right dropdown menu).", "Guest");
-            if (username && username !== "Guest") {
-                let trimmedName = username.trim();
-                if (trimmedName) {
-                    if (trimmedName.length > 16) {
-                        trimmedName = trimmedName.substring(0, 16);
-                    }
-                    EventHandler.callEvent(EventHandler.Event.OPTIONS_UPDATE, {
-                        attribute: "username",
-                        data: trimmedName,
-                    });
-                }
-            }
-        }
-        localStorage.setItem("hasUsernamePrompt", "true");
+    private onSignIn() {
+        this.asGuestElt.style.display = "";
+    }
+
+    private onSignOut() {
+        this.asGuestElt.style.display = "block";
     }
 }
