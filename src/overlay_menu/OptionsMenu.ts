@@ -11,6 +11,7 @@ export default class OptionsMenu extends Component {
     private returnBtn: HTMLElement;
 
     private usernameChangeElt: HTMLElement;
+    private usernameValueElt: HTMLElement;
 
     private chatEnabledElt: HTMLInputElement;
     private killfeedEnabledElt: HTMLInputElement;
@@ -40,6 +41,7 @@ export default class OptionsMenu extends Component {
         this.parentElt = DomHandler.getElement(".options-menu-parent");
 
         this.usernameChangeElt = DomHandler.getElement(".username-change", this.parentElt);
+        this.usernameValueElt = DomHandler.getElement(".username-value", this.parentElt);
 
         this.chatEnabledElt = DomHandler.getElement("#option-enabled-chat", this.parentElt) as HTMLInputElement;
         this.killfeedEnabledElt = DomHandler.getElement("#option-enabled-killfeed", this.parentElt) as HTMLInputElement;
@@ -72,7 +74,11 @@ export default class OptionsMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_GUI_MOUSEDOWN, this.onGearMouseDown);
         EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
+        EventHandler.addListener(this, EventHandler.Event.USERNAME_MENU_CLOSE, this.onUsernameMenuClose);
         Globals.setGlobal(Globals.Global.OPTIONS_OPEN, false);
+
+        const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
+        this.updateUsername(authToken);
     }
 
     private onGearMouseDown(event: MouseEvent) {
@@ -82,12 +88,19 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    private onSignIn() {
-        this.usernameChangeElt.style.display = "inline";
+    private onSignIn(token: string) {
+        this.updateUsername(token);
     }
 
     private onSignOut() {
-        this.usernameChangeElt.style.display = "";
+        this.updateUsername();
+    }
+
+    private onUsernameMenuClose(name?: string) {
+        if (name) {
+            const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
+            this.updateUsername(authToken);
+        }
     }
 
     private openOptions() {
@@ -405,35 +418,40 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    private getUsername(authToken: string) {
-        return new Promise((resolve, reject) => {
-            if (!authToken) {
-                authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
-            }
-            if (authToken) {
-                const address = "http" + Globals.getGlobal(Globals.Global.HOST);
-                const body = JSON.stringify({
-                    token: authToken,
-                });
+    private updateUsername(token?: string) {
+        if (token) {
+            this.usernameChangeElt.style.display = "inline";
+            this.getUsername(token).then((username) => {
+                this.usernameValueElt.textContent = username;
+            });
+        } else {
+            this.usernameChangeElt.style.display = "";
+            this.usernameValueElt.textContent = "Signed out";
+        }
+    }
 
-                fetch(address + "/playerusername", {
-                    method: "post",
-                    mode: "cors",
-                    credentials: "omit",
-                    body,
-                    headers: {
-                        "content-type": "application/json",
-                    },
-                }).then((response: Response) => {
-                    return response.text();
-                }).then((username: string) => {
-                    resolve(username);
-                }).catch((err) => {
-                    reject(err);
-                });
-            } else {
-                resolve();
-            }
+    private getUsername(authToken: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const address = "http" + Globals.getGlobal(Globals.Global.HOST);
+            const body = JSON.stringify({
+                token: authToken,
+            });
+
+            fetch(address + "/playerusername", {
+                method: "post",
+                mode: "cors",
+                credentials: "omit",
+                body,
+                headers: {
+                    "content-type": "application/json",
+                },
+            }).then((response: Response) => {
+                return response.text();
+            }).then((username: string) => {
+                resolve(username);
+            }).catch((err) => {
+                reject(err);
+            });
         });
     }
 

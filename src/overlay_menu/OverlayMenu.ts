@@ -27,6 +27,7 @@ export default class OverlayMenu extends Component {
     public enable() {
 
         EventHandler.addListener(this, EventHandler.Event.USERNAME_OPT_CHANGE_CLICK, this.onUsernameChangeClick);
+        EventHandler.addListener(this, EventHandler.Event.USERNAME_MENU_CLOSE, this.onUsernameMenuClose);
 
         this.attachComponent(this.muteToggleHandler);
         this.attachComponent(this.fullscreenToggle);
@@ -36,5 +37,9 @@ export default class OverlayMenu extends Component {
 
     private onUsernameChangeClick() {
         this.attachChild(this.usernameMenu);
+    }
+
+    private onUsernameMenuClose() {
+        this.detachChild(this.usernameMenu);
     }
 }

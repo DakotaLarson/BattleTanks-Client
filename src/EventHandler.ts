@@ -188,6 +188,7 @@ enum Event {
 
     // USERNAME
     USERNAME_OPT_CHANGE_CLICK,
+    USERNAME_MENU_CLOSE,
 }
 
 enum Level {
