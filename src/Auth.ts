@@ -59,9 +59,14 @@ export default class Auth extends Component {
     }
 
     private onSuccess(googleUser: gapi.auth2.GoogleUser) {
-        console.log("Signed in as: " + googleUser.getBasicProfile().getName());
-        this.updateToken(googleUser.getAuthResponse());
-        this.updateSignoutBtn(true);
+        this.authenticateToken(googleUser.getAuthResponse().id_token).then(() => {
+            console.log("Signed in as: " + googleUser.getBasicProfile().getName());
+            this.updateToken(googleUser.getAuthResponse());
+            this.updateSignoutBtn(true);
+        }).catch((err) => {
+            console.log(err);
+            gapi.auth2.getAuthInstance().signOut();
+        });
     }
 
     private onFailure(error: any) {
@@ -88,5 +93,32 @@ export default class Auth extends Component {
         } else {
             this.signoutBtn.style.display = "";
         }
+    }
+
+    private authenticateToken(token: string) {
+        return new Promise((resolve, reject) => {
+            const address = "http" + Globals.getGlobal(Globals.Global.HOST);
+            const body = JSON.stringify({
+                token,
+            });
+
+            fetch(address + "/playerauth", {
+                method: "post",
+                mode: "cors",
+                credentials: "omit",
+                body,
+                headers: {
+                    "content-type": "application/json",
+                },
+            }).then((response: Response) => {
+                if (response.status === 200) {
+                    resolve();
+                } else {
+                    reject("Unexpected status: " + response.status);
+                }
+            }).catch((err) => {
+                reject(err);
+            });
+        });
     }
 }

@@ -17,7 +17,7 @@ export default class TopMenu extends Component {
 
         this.spBtn = DomHandler.getElement("#top-opt-sp", this.element);
         this.mpBtn = DomHandler.getElement("#top-opt-mp", this.element);
-        this.asGuestElt = DomHandler.getElement(".play-as-guest", this.element);
+        this.asGuestElt = DomHandler.getElement(".play-as-guest", this.mpBtn);
     }
 
     public enable() {
@@ -50,7 +50,7 @@ export default class TopMenu extends Component {
     }
 
     private onMPOption(event: MouseEvent) {
-        if (event.target === this.mpBtn) {
+        if (event.target === this.mpBtn || this.mpBtn.contains((event.target) as Node)) {
             EventHandler.callEvent(EventHandler.Event.MPMENU_JOIN_OPT_CLICK);
         }
     }

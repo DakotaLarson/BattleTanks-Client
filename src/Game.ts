@@ -29,8 +29,6 @@ class Game extends Component {
     private options: Options;
     private auth: Auth;
 
-    private tokenId: string | undefined;
-
     constructor() {
         super();
         const perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
@@ -56,9 +54,6 @@ class Game extends Component {
 
         EventHandler.addListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.disconnectFromMultiplayer);
         EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.disconnectFromMultiplayer);
-
-        EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
-        EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
 
         this.setHost();
 
@@ -88,7 +83,7 @@ class Game extends Component {
         const address = "ws" + Globals.getGlobal(Globals.Global.HOST);
         this.updateMenu(false);
         this.attachChild(this.connectionScreen);
-        this.mpConnection = new MultiplayerConnection(address, this.tokenId);
+        this.mpConnection = new MultiplayerConnection(address, Globals.getGlobal(Globals.Global.AUTH_TOKEN));
         this.attachChild(this.mpConnection);
         this.attachChild(this.gameStatusHandler);
     }
@@ -99,14 +94,6 @@ class Game extends Component {
         this.detachChild(this.gameStatusHandler);
         this.mpConnection = undefined;
         this.updateMenu(true);
-    }
-
-    private onSignIn(tokenId: string) {
-        this.tokenId = tokenId;
-    }
-
-    private onSignOut() {
-        this.tokenId = undefined;
     }
 
     private hideLoadingScreen() {
