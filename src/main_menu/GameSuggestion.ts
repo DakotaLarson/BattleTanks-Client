@@ -3,7 +3,7 @@ import DomHandler from "../DomHandler";
 
 export default class GameSuggestion extends ChildComponent {
 
-    private static readonly MESSAGE_INTERVAL = 5000;
+    private static readonly MESSAGE_INTERVAL = 7500;
 
     private element: HTMLElement;
     private messages: string[];
@@ -22,6 +22,8 @@ export default class GameSuggestion extends ChildComponent {
             "Pick up powerups to gain an advantage!",
             "Remember you only respawn twice... Be careful!",
             "You are protected for 3 seconds after you spawn. Make it count!",
+            "You can select a unique username in the options menu when you sign in!",
+            "Your messages are brighter in chat when you sign in!",
         ];
     }
 
