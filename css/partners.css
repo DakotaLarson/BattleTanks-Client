@@ -5,9 +5,10 @@ html, body {
 }
 
 h1 {
-    font-size: 7.5vmin;
+    font-size: 10vmin;
     color: #ffffff;
     font-family: 'Bombardier', sans-serif;
+    font-weight: normal;
 }
 
 .partner-parent {
