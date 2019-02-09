@@ -56,6 +56,7 @@ export default class CreationToolPanel extends Component {
 
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
 
+        this.mode = Mode.CAMERA;
         this.updateHTMLClasses();
 
         this.parentElt.style.display = "inline-block";

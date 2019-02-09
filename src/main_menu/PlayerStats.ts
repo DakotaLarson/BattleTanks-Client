@@ -17,9 +17,7 @@ export default class PlayerStats extends ChildComponent {
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
-        this.getStats().then((stats) => {
-            this.renderStats(stats);
-        });
+        this.retrieveStats();
     }
 
     public disable() {
@@ -29,14 +27,18 @@ export default class PlayerStats extends ChildComponent {
     }
 
     private onSignIn(token: string) {
-        // get new stats
-        this.getStats(token).then((stats) => {
-            this.renderStats(stats);
-        });
+        this.retrieveStats(token);
     }
 
     private onSignOut() {
         this.renderStats(undefined);
+    }
+
+    private retrieveStats(token?: string) {
+        this.getStats(token).then((stats) => {
+            this.formatStats(stats);
+            this.renderStats(stats);
+        });
     }
 
     private renderStats(stats: any) {
@@ -53,6 +55,23 @@ export default class PlayerStats extends ChildComponent {
         } else {
             this.clearStatsElt();
             this.statsMessageElt.textContent = "Sign in to save your stats";
+        }
+    }
+
+    private formatStats(stats: any) {
+        if (stats.kills !== undefined) {
+            let kdRatio = stats.kills;
+            if (stats.deaths) {
+                kdRatio =  Math.round(kdRatio / stats.deaths * 100) / 100;
+            }
+            stats["K/D Ratio"] = kdRatio;
+        }
+        if (stats.hits !== undefined) {
+            let accuracy = stats.hits * 100;
+            if (stats.shots) {
+                accuracy = Math.round(accuracy / stats.shots);
+            }
+            stats.accuracy = accuracy + "%";
         }
     }
 
