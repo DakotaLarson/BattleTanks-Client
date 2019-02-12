@@ -36,8 +36,12 @@ export default class PlayerStats extends ChildComponent {
 
     private retrieveStats(token?: string) {
         this.getStats(token).then((stats) => {
-            this.formatStats(stats);
+            if (stats) {
+                this.formatStats(stats);
+            }
             this.renderStats(stats);
+        }).catch((err) => {
+            console.log(err);
         });
     }
 
