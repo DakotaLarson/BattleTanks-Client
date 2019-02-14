@@ -194,6 +194,7 @@
 
 .main-menu .leaderboard {
     right: 2.5vw;
+    padding: 0;
 }
 
 .main-menu .player-stats-container,
@@ -208,6 +209,7 @@
 
 .main-menu .leaderboard-container {
     font-size: 2vmin;
+    margin: 0 2.5vmin;
 }
 
 .main-menu .player-stat-title,
@@ -231,6 +233,28 @@
     margin-top: 2.5vmin;
 }
 
+.main-menu .leaderboard-selection-parent {
+    display: flex;
+    justify-content: space-between;
+}
+
+.main-menu .leaderboard-selection {
+    width: 25%;
+    padding: 1vmin 0;
+    margin-bottom: 1vmin;
+}
+
+.main-menu .leaderboard-selection:hover {
+    background-color: #02b757;
+    cursor: pointer;
+}
+.main-menu .leaderboard-selection-selected {
+    background-color: #02ea6e;
+}
+
+.main-menu .leaderboard-selection-selected:hover {
+    background-color: #02ea6e;
+}
 .main-menu .player-stats-message {
     font-size: 2.5vmin;
     font-family: 'Inconsolata', sans-serif;
