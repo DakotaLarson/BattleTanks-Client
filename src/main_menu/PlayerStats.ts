@@ -5,13 +5,13 @@ import Globals from "../Globals";
 
 export default class PlayerStats extends ChildComponent {
 
-    private statsContainerElt: HTMLElement;
-    private statsMessageElt: HTMLElement;
+    private containerElt: HTMLElement;
+    private messageElt: HTMLElement;
 
     constructor(menuElt: HTMLElement) {
         super();
-        this.statsContainerElt = DomHandler.getElement(".player-stats-container", menuElt);
-        this.statsMessageElt = DomHandler.getElement(".player-stats-message", menuElt);
+        this.containerElt = DomHandler.getElement(".player-stats-container", menuElt);
+        this.messageElt = DomHandler.getElement(".player-stats-message", menuElt);
     }
 
     public enable() {
@@ -47,18 +47,19 @@ export default class PlayerStats extends ChildComponent {
 
     private renderStats(stats: any) {
         if (stats) {
-            this.statsMessageElt.textContent = "";
-            for (const stat in stats) {
-                if (stat) {
-                    const titleElt = this.createStatElt(stat, true);
-                    const dataElt = this.createStatElt(stats[stat], false);
-                    this.statsContainerElt.appendChild(titleElt);
-                    this.statsContainerElt.appendChild(dataElt);
+            this.messageElt.textContent = "";
+            const statTitles = ["rank", "victories", "defeats", "points", "kills", "deaths", "K/D Ratio", "shots", "hits", "accuracy"];
+            for (const title of statTitles) {
+                if (stats[title]) {
+                    const titleElt = this.createStatElt(title, true);
+                    const dataElt = this.createStatElt(stats[title], false);
+                    this.containerElt.appendChild(titleElt);
+                    this.containerElt.appendChild(dataElt);
                 }
             }
         } else {
             this.clearStatsElt();
-            this.statsMessageElt.textContent = "Sign in to save your stats";
+            this.messageElt.textContent = "Sign in to save your stats";
         }
     }
 
@@ -92,14 +93,15 @@ export default class PlayerStats extends ChildComponent {
     }
 
     private clearStatsElt() {
-        while (this.statsContainerElt.firstChild) {
-            this.statsContainerElt.removeChild(this.statsContainerElt.firstChild);
+        while (this.containerElt.firstChild) {
+            this.containerElt.removeChild(this.containerElt.firstChild);
         }
-        this.statsMessageElt.textContent = "";
+        this.messageElt.textContent = "";
     }
+
     private getStats(authToken?: string) {
         this.clearStatsElt();
-        this.statsMessageElt.textContent = "Loading...";
+        this.messageElt.textContent = "Loading...";
         return new Promise((resolve, reject) => {
             if (!authToken) {
                 authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);

@@ -178,17 +178,26 @@
     background-color: #02ea6e;
 }
 
-.main-menu .player-stats {
+.main-menu .player-stats,
+.main-menu .leaderboard {
     position: absolute;
-    left: 5vw;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 15vh;
     background-color: #101010;
     text-transform: capitalize;
     padding: 2.5vmin;
     border: solid 1px #ffffff;
 }
-.main-menu .player-stats-container {
+
+.main-menu .player-stats {
+    left: 2.5vw;
+}
+
+.main-menu .leaderboard {
+    right: 2.5vw;
+}
+
+.main-menu .player-stats-container,
+.main-menu .leaderboard-container {
     display: inline-grid;
     grid-template-columns: auto auto;
     justify-items: left;
@@ -197,14 +206,29 @@
     font-family: 'Inconsolata', sans-serif;
 }
 
-.main-menu .player-stat-title {
+.main-menu .leaderboard-container {
+    font-size: 2vmin;
+}
+
+.main-menu .player-stat-title,
+.main-menu .leaderboard-entry-title {
     justify-self: right;
 }
 
-.main-menu .player-stats-title {
+.main-menu .player-stats-title,
+.main-menu .leaderboard-title {
     font-size: 5vmin;
     margin: 0 0 1vmin 0;
     font-weight: normal;
+}
+
+.main-menu .leaderboard-title  {
+    font-size: 3.5vmin;
+}
+
+.main-menu .leaderboard-rank-container {
+    font-size: 2.5vmin;
+    margin-top: 2.5vmin;
 }
 
 .main-menu .player-stats-message {

@@ -94,28 +94,40 @@
         <span id="google-auth-btn"></span>
         <span id="auth-signout">Sign out</span>
     </div>
+    
     <div class="server-playercount">
         <span>Server Status: </span>
         <span id="playercount-text"></span>
     </div>
+
     <img class="main-menu-header" src="./res/menu/header-transparent.png" draggable="false"/>
+
     <a href="./partners.html" target="_blank" class="partners-link">Partners</a><br/>
+    
     <div class="game-suggestion game-suggestion-hidden"></div>
+
     <div class="player-stats">
         <h2 class="player-stats-title">Your Stats</h2>
         <div class="player-stats-container"></div>
         <div class="player-stats-message"></div>
     </div>
+
+    <div class="leaderboard">
+        <h2 class="leaderboard-title">Leaderboard</h2>
+        <div class="leaderboard-container"></div>
+        <div class="leaderboard-rank-container"></div>
+        <div class="leaderboard-message"></div>
+    </div>
+
     <!-- TOP MENU -->
     <div class="menu-section" id="main-menu-top">
         <div class="top-menu-section">
-                <span class="menu-selection menu-selection-xl play-btn" id="top-opt-mp">
-                    <div>Play</div>
-                    <div class="play-as-guest">(As Guest)</div>
-                </span><br/>
-                <span class="menu-selection" id="top-opt-sp">Create Arena</span>
+            <span class="menu-selection menu-selection-xl play-btn" id="top-opt-mp">
+                <div>Play</div>
+                <div class="play-as-guest">(As Guest)</div>
+            </span><br/>
+            <span class="menu-selection" id="top-opt-sp">Create Arena</span>
         </div>
-        
     </div>
     <!-- SINGLEPLAYER MENU -->
     <div class="menu-section" id="main-menu-sp">
@@ -128,26 +140,26 @@
     <!-- SINGLEPLAYER CREATE MENU -->
     <div class="menu-section" id="sp-menu-create">
         <div class="top-menu-section">
-                <input type="number" min="5" max="1000" class="menu-input menu-number-input" id="create-opt-width" placeholder="Width"/><br/>
-                <input type="number" min="5" max="1000" class="menu-input menu-number-input" id="create-opt-height" placeholder="Height"/><br/>
-                <span class="menu-selection" id="create-opt-create">Create</span>
-                <span class="menu-selection" id="create-opt-cancel">Cancel</span><br/>
-                <span class="menu-error" id="create-opt-error"></span>
+            <input type="number" min="5" max="1000" class="menu-input menu-number-input" id="create-opt-width" placeholder="Width"/><br/>
+            <input type="number" min="5" max="1000" class="menu-input menu-number-input" id="create-opt-height" placeholder="Height"/><br/>
+            <span class="menu-selection" id="create-opt-create">Create</span>
+            <span class="menu-selection" id="create-opt-cancel">Cancel</span><br/>
+            <span class="menu-error" id="create-opt-error"></span>
         </div>
     </div>
     <!-- SINGLEPLAYER LOAD MENU -->
     <div class="menu-section" id="sp-menu-load">
         <div class="top-menu-section">
-                <input type="file" class="" id="load-opt-file" accept=".json"/>
-                <div class="menu-file-input">
-                    <label for="load-opt-file" class="menu-selection menu-file-choose" id="menu-file-choose">Choose File</label><br/>
-                    <span class="menu-or">OR</span><br/>
-                    <span class="menu-drop">Drag &amp; Drop here</span>
-                    <span class="menu-file-name"></span>
-                </div><br/>
-                <span class="menu-selection" id="load-opt-load">Load</span>
-                <span class="menu-selection" id="load-opt-cancel">Cancel</span><br/>
-                <span class="menu-error" id="load-opt-error"></span>
+            <input type="file" class="" id="load-opt-file" accept=".json"/>
+            <div class="menu-file-input">
+                <label for="load-opt-file" class="menu-selection menu-file-choose" id="menu-file-choose">Choose File</label><br/>
+                <span class="menu-or">OR</span><br/>
+                <span class="menu-drop">Drag &amp; Drop here</span>
+                <span class="menu-file-name"></span>
+            </div><br/>
+            <span class="menu-selection" id="load-opt-load">Load</span>
+            <span class="menu-selection" id="load-opt-cancel">Cancel</span><br/>
+            <span class="menu-error" id="load-opt-error"></span>
         </div>
     </div>
     <!-- SOCIAL LINKS -->
@@ -189,7 +201,6 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
         <div class="create-world-mode-toggle no-select" id="creation-tool-powerup-health">Health Powerup (D)</div>
         <div class="create-world-mode-toggle no-select" id="creation-tool-powerup-speed">Speed Powerup (F)</div>
         <div class="create-world-mode-toggle no-select" id="creation-tool-powerup-ammo">Ammo Powerup (G)</div>
-
     </div>
 
     <div class="killfeed-container gui-element no-select"></div>
@@ -378,7 +389,6 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
         <input type="text" class="username-input" size="16" maxlength="16"><br/>
         <span class="menu-selection disabled" id="username-save">Save &amp; Close</span>
         <span class="menu-selection" id="username-cancel">Cancel</span>
-
     </div>
 </div>
 
