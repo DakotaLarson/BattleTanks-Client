@@ -78,7 +78,8 @@ export default class ServerPlayerCount extends ChildComponent {
         }
     }
 
-    private onError() {
+    private onError(err: any) {
+        console.log(err);
         this.textElt.textContent = ServerPlayerCount.ERROR_TEXT;
     }
 }

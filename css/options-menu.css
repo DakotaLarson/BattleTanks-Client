@@ -7,8 +7,6 @@
     position: absolute;
     overflow-y: auto;
     max-height: 90vh;
-    height: auto;
-    width: auto;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);

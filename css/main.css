@@ -3,8 +3,11 @@ html, body{
     background-color: black;
     font-family: 'Bombardier', sans-serif;
     height: 100%;
-    overflow-x: hidden;
-    overflow-y: hidden;
+    overflow: hidden;
+    overscroll-behavior: none;
+    position: fixed;
+    height: 100%;
+    width: 100%;
 }
 #game-canvas{
     display: block;

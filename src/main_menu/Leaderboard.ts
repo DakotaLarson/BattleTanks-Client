@@ -5,17 +5,20 @@ import Globals from "../Globals";
 
 export default class Leaderboard extends ChildComponent {
 
+    private static readonly SELECTION_COOLDOWN = 1000;
+
     private messageElt: HTMLElement;
     private containerElt: HTMLElement;
     private rankElt: HTMLElement;
 
-    private daySelectionElt: HTMLElement;
-    private weekSelectionElt: HTMLElement;
-    private monthSelectionElt: HTMLElement;
-    private allTimeSelectionElt: HTMLElement;
+    private selection1Elt: HTMLElement;
+    private selection2Elt: HTMLElement;
+    private selection3Elt: HTMLElement;
+    private selection4Elt: HTMLElement;
 
     private selectedElt: HTMLElement;
     private selectedLeaderboard: number;
+    private lastSelectionTime: number;
 
     constructor(menuElt: HTMLElement) {
         super();
@@ -24,15 +27,16 @@ export default class Leaderboard extends ChildComponent {
         this.containerElt = DomHandler.getElement(".leaderboard-container", menuElt);
         this.rankElt = DomHandler.getElement(".leaderboard-rank-container", menuElt);
 
-        this.daySelectionElt = DomHandler.getElement("#leaderboard-selection-1");
-        this.weekSelectionElt = DomHandler.getElement("#leaderboard-selection-2");
-        this.monthSelectionElt = DomHandler.getElement("#leaderboard-selection-3");
-        this.allTimeSelectionElt = DomHandler.getElement("#leaderboard-selection-4");
+        this.selection1Elt = DomHandler.getElement("#leaderboard-selection-1");
+        this.selection2Elt = DomHandler.getElement("#leaderboard-selection-2");
+        this.selection3Elt = DomHandler.getElement("#leaderboard-selection-3");
+        this.selection4Elt = DomHandler.getElement("#leaderboard-selection-4");
 
-        this.selectedElt = this.daySelectionElt;
+        this.selectedElt = this.selection1Elt;
         this.selectedLeaderboard = 1;
+        this.lastSelectionTime = performance.now();
 
-        this.daySelectionElt.classList.add("leaderboard-selection-selected");
+        this.selection1Elt.classList.add("leaderboard-selection-selected");
     }
 
     public enable() {
@@ -51,7 +55,7 @@ export default class Leaderboard extends ChildComponent {
         this.clearLeaderboardRank();
 
         this.selectedLeaderboard = 1;
-        this.updateSelectedElement(this.daySelectionElt);
+        this.updateSelectedElement(this.selection1Elt);
     }
 
     private onSignIn(token: string) {
@@ -63,28 +67,29 @@ export default class Leaderboard extends ChildComponent {
     }
 
     private onClick(event: MouseEvent) {
-        if (event.target !== this.selectedElt) {
-            if (event.target === this.daySelectionElt) {
+        if (performance.now() - this.lastSelectionTime > Leaderboard.SELECTION_COOLDOWN && event.target !== this.selectedElt) {
+            if (event.target === this.selection1Elt) {
                 this.selectedLeaderboard = 1;
                 this.updateLeaderboards();
-                this.updateSelectedElement(this.daySelectionElt);
-            } else if (event.target === this.weekSelectionElt) {
+                this.updateSelectedElement(this.selection1Elt);
+            } else if (event.target === this.selection2Elt) {
                 this.selectedLeaderboard = 2;
                 this.updateLeaderboards();
-                this.updateSelectedElement(this.weekSelectionElt);
-            } else if (event.target === this.monthSelectionElt) {
+                this.updateSelectedElement(this.selection2Elt);
+            } else if (event.target === this.selection3Elt) {
                 this.selectedLeaderboard = 3;
                 this.updateLeaderboards();
-                this.updateSelectedElement(this.monthSelectionElt);
-            } else if (event.target === this.allTimeSelectionElt) {
+                this.updateSelectedElement(this.selection3Elt);
+            } else if (event.target === this.selection4Elt) {
                 this.selectedLeaderboard = 4;
                 this.updateLeaderboards();
-                this.updateSelectedElement(this.allTimeSelectionElt);
+                this.updateSelectedElement(this.selection4Elt);
             }
         }
     }
 
     private updateLeaderboards() {
+        this.lastSelectionTime = performance.now();
         this.getLeaderboard();
         const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
         if (authToken) {
