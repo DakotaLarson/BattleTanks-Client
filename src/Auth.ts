@@ -64,7 +64,7 @@ export default class Auth extends Component {
             this.updateToken(googleUser.getAuthResponse());
             this.updateSignoutBtn(true);
         }).catch((err) => {
-            console.log(err);
+            console.error(err);
             gapi.auth2.getAuthInstance().signOut();
         });
     }

@@ -9,7 +9,6 @@ export default class Leaderboard extends ChildComponent {
 
     private messageElt: HTMLElement;
     private containerElt: HTMLElement;
-    private rankElt: HTMLElement;
 
     private selection1Elt: HTMLElement;
     private selection2Elt: HTMLElement;
@@ -25,7 +24,6 @@ export default class Leaderboard extends ChildComponent {
 
         this.messageElt = DomHandler.getElement(".leaderboard-message", menuElt);
         this.containerElt = DomHandler.getElement(".leaderboard-container", menuElt);
-        this.rankElt = DomHandler.getElement(".leaderboard-rank-container", menuElt);
 
         this.selection1Elt = DomHandler.getElement("#leaderboard-selection-1");
         this.selection2Elt = DomHandler.getElement("#leaderboard-selection-2");
@@ -52,7 +50,6 @@ export default class Leaderboard extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
         this.clearLeaderboard();
-        this.clearLeaderboardRank();
 
         this.selectedLeaderboard = 1;
         this.updateSelectedElement(this.selection1Elt);
@@ -63,7 +60,7 @@ export default class Leaderboard extends ChildComponent {
     }
 
     private onSignOut() {
-        this.clearLeaderboardRank();
+        this.updateLeaderboards();
     }
 
     private onClick(event: MouseEvent) {
@@ -90,11 +87,12 @@ export default class Leaderboard extends ChildComponent {
 
     private updateLeaderboards() {
         this.lastSelectionTime = performance.now();
-        this.getLeaderboard();
-        const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
-        if (authToken) {
-            this.getLeaderboardRank(authToken);
-        }
+        this.getLeaderboard().then(() => {
+            const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
+            if (authToken) {
+                this.getLeaderboardRank(authToken);
+            }
+        });
     }
 
     private clearLeaderboard() {
@@ -104,53 +102,89 @@ export default class Leaderboard extends ChildComponent {
         this.messageElt.textContent = "";
     }
 
-    private clearLeaderboardRank() {
-        this.rankElt.textContent = "";
-    }
-
     private getLeaderboard() {
-        this.clearLeaderboard();
-        this.messageElt.textContent = "Loading...";
-        this.retrieveLeaderboard(this.selectedLeaderboard).then((data) => {
-            this.renderLeaderboard(data);
-            this.messageElt.textContent = "";
-        }).catch((err) => {
-            console.error(err);
+        return new Promise((resolve) => {
+            this.clearLeaderboard();
+            this.messageElt.textContent = "Loading...";
+            this.retrieveLeaderboard(this.selectedLeaderboard).then((data: any) => {
+                this.updateLeaderboardTitle(this.selectedLeaderboard, data.lastReset);
+                this.renderLeaderboard(data.leaderboard);
+                this.messageElt.textContent = "";
+                resolve();
+            }).catch((err) => {
+                console.error(err);
+            });
         });
     }
 
     private getLeaderboardRank(token: string) {
-        this.rankElt.textContent = "Loading...";
-        this.retrieveLeaderboardRank(this.selectedLeaderboard, token).then((rank) => {
-            this.rankElt.textContent = "Your rank: " + rank;
+        this.retrieveLeaderboardRank(this.selectedLeaderboard, token).then((rankData) => {
+
+            let rankElts = this.containerElt.querySelectorAll(".leaderboard-entry-" + rankData.rank);
+
+            if (!rankElts.length) {
+                const numberElt = this.createLeaderboardElt("" + (rankData.rank), rankData.rank);
+                const usernameElt = this.createLeaderboardElt("You", rankData.rank);
+                const dataElt = this.createLeaderboardElt(rankData.points, rankData.rank);
+
+                this.containerElt.appendChild(numberElt);
+                this.containerElt.appendChild(usernameElt);
+                this.containerElt.appendChild(dataElt);
+
+                rankElts = this.containerElt.querySelectorAll(".leaderboard-entry-" + rankData.rank);
+            }
+
+            for (const rankElt of Array.from(rankElts)) {
+                (rankElt as HTMLElement).style.color = "#02b757";
+            }
+
         }).catch((err) => {
             console.error(err);
-            this.rankElt.textContent = "Internal error";
         });
     }
 
-    private renderLeaderboard(data: any) {
-        for (const entry of data) {
-            const titleElt = this.createLeaderboardElt(entry.username, true);
-            const dataElt = this.createLeaderboardElt(entry.points, false);
-            this.containerElt.appendChild(titleElt);
-            this.containerElt.appendChild(dataElt);
+    private updateLeaderboardTitle(column: number, lastReset: number) {
+        if (column === 1) {
+            if (lastReset) {
+                this.selection1Elt.textContent = (lastReset + 1) + " Hours";
+            } else {
+                this.selection1Elt.textContent = "Hour";
+            }
+        } else if (column === 2) {
+            if (lastReset) {
+                this.selection2Elt.textContent = (lastReset + 1) + " Weeks";
+            } else {
+                this.selection2Elt.textContent = "Week";
+            }
+        } else if (column === 3) {
+            if (lastReset) {
+                this.selection3Elt.textContent = (lastReset + 1) + " Months";
+            } else {
+                this.selection3Elt.textContent = "Month";
+            }
         }
     }
 
-    private createLeaderboardElt(text: string, isTitle: boolean) {
-        const element = document.createElement("div");
-        if (isTitle) {
-            element.textContent = text + ":";
-            element.classList.add("leaderboard-entry", "leaderboard-entry-title");
-        } else {
-            element.textContent = text;
-            element.classList.add("leaderboard-entry");
+    private renderLeaderboard(data: any[]) {
+        for (let i = data.length; i > 0;  i --) {
+            const numberElt = this.createLeaderboardElt("" + i, i);
+            const usernameElt = this.createLeaderboardElt(data[i - 1].username, i);
+            const dataElt = this.createLeaderboardElt(data[i - 1].points, i);
+
+            this.containerElt.insertBefore(dataElt, this.containerElt.firstChild);
+            this.containerElt.insertBefore(usernameElt, this.containerElt.firstChild);
+            this.containerElt.insertBefore(numberElt, this.containerElt.firstChild);
         }
+    }
+
+    private createLeaderboardElt(text: string, rankId: number) {
+        const element = document.createElement("div");
+        element.textContent = text;
+        element.classList.add("leaderboard-entry", "leaderboard-entry-" + rankId);
         return element;
     }
 
-    private retrieveLeaderboard(leaderboard: number) {
+    private retrieveLeaderboard(leaderboard: number): Promise<any[]> {
         return new Promise((resolve, reject) => {
             const address = "http" + Globals.getGlobal(Globals.Global.HOST);
             const body = JSON.stringify({
@@ -167,7 +201,7 @@ export default class Leaderboard extends ChildComponent {
                 },
             }).then((response: Response) => {
                 return response.json();
-            }).then((stats: any) => {
+            }).then((stats: any[]) => {
                 resolve(stats);
             }).catch((err) => {
                 reject(err);
@@ -175,7 +209,7 @@ export default class Leaderboard extends ChildComponent {
         });
     }
 
-    private retrieveLeaderboardRank(leaderboard: number, token: string) {
+    private retrieveLeaderboardRank(leaderboard: number, token: string): Promise<any> {
         return new Promise((resolve, reject) => {
             const address = "http" + Globals.getGlobal(Globals.Global.HOST);
             const body = JSON.stringify({
@@ -191,13 +225,9 @@ export default class Leaderboard extends ChildComponent {
                     "content-type": "application/json",
                 },
             }).then((response: Response) => {
-                return response.text();
-            }).then((rank: any) => {
-                if (isNaN(rank)) {
-                    reject("Response is not a number: " + rank);
-                } else {
-                    resolve(rank);
-                }
+                return response.json();
+            }).then((data: any) => {
+                resolve(data);
             }).catch((err) => {
                 reject(err);
             });
