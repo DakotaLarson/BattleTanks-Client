@@ -50,7 +50,7 @@
 }
 
 .options-menu .active{
-    background: #02b757;
+    background: #03c95f;
 }
 
 .options-tip {
@@ -78,6 +78,6 @@
 }
 
 .options-menu .username-change:hover {
-    background-color: #02ea6e;
+    background-color: #03c95f;
     cursor: pointer;
 }

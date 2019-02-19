@@ -135,7 +135,7 @@ export default class Leaderboard extends ChildComponent {
             }
 
             for (const rankElt of Array.from(rankElts)) {
-                (rankElt as HTMLElement).style.color = "#02b757";
+                (rankElt as HTMLElement).style.color = "#03c95f";
             }
 
         }).catch((err) => {

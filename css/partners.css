@@ -37,16 +37,16 @@ h1 {
 }
 
 .partner-parent a:hover {
-    background-color: #02ea6e;
+    background-color: #03c95f;
     cursor: pointer;
 }
 
 .partner-parent .more-games {
     position: absolute;
     right: 2.5vmin;
-    background-color: #02b757;
+    background-color: #03c95f;
 }
 
 .partner-parent .more-games:hover {
-    background-color: #02ea6e;
+    background-color: #03c95f;
 }

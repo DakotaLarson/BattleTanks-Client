@@ -45,8 +45,8 @@ html, body{
     cursor: pointer;
 }
 .menu-selection:hover{
-    background-color: #02ea6e;
-    border-color: #02ea6e;
+    background-color: #03c95f;
+    border-color: #03c95f;
 }
 .menu-selection-xl{
     font-size: 10vmin;
@@ -65,5 +65,5 @@ html, body{
     outline: none;
 }
 .menu-text-input:focus{
-    border-color: #02ea6e;
+    border-color: #03c95f;
 }

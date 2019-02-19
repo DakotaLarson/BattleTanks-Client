@@ -7,7 +7,7 @@ import Globals from "../Globals";
 export default class UsernameMenu extends ChildComponent {
 
     private static readonly INPUT_COLOR = "#ffffff";
-    private static readonly VALID_COLOR = "#02ea6e";
+    private static readonly VALID_COLOR = "#03c95f";
     private static readonly INVALID_COLOR = "#ea1d02";
     private static readonly UPDATING_COLOR = "#3802ea";
 

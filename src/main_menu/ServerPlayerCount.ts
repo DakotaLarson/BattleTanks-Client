@@ -6,10 +6,8 @@ export default class ServerPlayerCount extends ChildComponent {
 
     private static readonly PING_TEXT = "Connecting";
     private static readonly ONLINE_TEXT = "Connected";
-    private static readonly ONLINE_SINGULAR = " player online, ";
-    private static readonly ONLINE_PLURAL = " players online, ";
-    private static readonly ACTIVE_SINGULAR = " active user";
-    private static readonly ACTIVE_PLURAL = " active users";
+    private static readonly IN_GAME = " playing + ";
+    private static readonly CONNECTED = " connected";
     private static readonly ERROR_TEXT = "Error";
 
     private parentElt: HTMLElement;
@@ -56,21 +54,14 @@ export default class ServerPlayerCount extends ChildComponent {
         const values = event.data.split(",");
         if (values.length === 2) {
             const playerCount = parseInt(values[0], 10);
-            const activeUserCount = parseInt(values[1], 10) + playerCount;
+            const activeUserCount = parseInt(values[1], 10);
 
             let str = "";
 
             if (!isNaN(playerCount) && !isNaN(activeUserCount)) {
-                if (playerCount === 1) {
-                    str += playerCount +  ServerPlayerCount.ONLINE_SINGULAR;
-                } else {
-                    str += playerCount + ServerPlayerCount.ONLINE_PLURAL;
-                }
-                if (activeUserCount === 1) {
-                    str += activeUserCount + ServerPlayerCount.ACTIVE_SINGULAR;
-                } else {
-                    str += activeUserCount + ServerPlayerCount.ACTIVE_PLURAL;
-                }
+                str += playerCount + ServerPlayerCount.IN_GAME;
+                str += activeUserCount + ServerPlayerCount.CONNECTED;
+
             } else {
                 str = ServerPlayerCount.ONLINE_TEXT;
             }

@@ -41,7 +41,7 @@
     margin-bottom: 3vmin;
 }
 .main-menu .menu-input:focus {
-    border-color: #02ea6e;
+    border-color: #03c95f;
 }
 .main-menu .menu-number-input {
     width: 9vmin;
@@ -78,7 +78,7 @@
 }
 .main-menu .menu-file-name {
     display: inline-block;
-    color: #02ea6e;
+    color: #03c95f;
     font-size: 5vmin;
     margin-top: 5vmin;
 }
@@ -105,11 +105,11 @@
 }
 .main-menu .play-btn {
     margin-top: 10vh;
-    background-color: #02b757;
+    background-color: #03b053;
 }
 
 .main-menu .play-btn:hover {
-    background-color: #02ea6e;
+    background-color: #03c95f;
     border-color: white;
     color: white;
 }
@@ -178,7 +178,7 @@
 
 .main-menu .partners-link:hover {
     cursor: pointer;
-    background-color: #02ea6e;
+    background-color: #03c95f;
 }
 
 .main-menu .player-stats,
@@ -249,15 +249,15 @@
 }
 
 .main-menu .leaderboard-selection:hover {
-    background-color: #02b757;
+    background-color: #03b053;
     cursor: pointer;
 }
 .main-menu .leaderboard-selection-selected {
-    background-color: #02ea6e;
+    background-color: #03c95f;
 }
 
 .main-menu .leaderboard-selection-selected:hover {
-    background-color: #02ea6e;
+    background-color: #03c95f;
 }
 .main-menu .player-stats-message,
 .main-menu .leaderboard-message {
