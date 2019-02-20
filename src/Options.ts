@@ -19,6 +19,9 @@ export default class Options extends Component {
         if (!("killfeedEnabled" in Options.options)) {
             Options.options.killfeedEnabled = true;
         }
+        if (!("metricsEnabled" in Options.options)) {
+            Options.options.metricsEnabled = true;
+        }
         if (!("forward" in Options.options)) {
             Options.options.forward = {
                 key: "w",

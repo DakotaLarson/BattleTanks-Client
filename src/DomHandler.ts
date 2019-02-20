@@ -100,9 +100,10 @@ const events = new Map([
     ["touchstart", EventHandler.Event.DOM_TOUCHSTART],
     ["touchmove", EventHandler.Event.DOM_TOUCHMOVE],
     ["touchend", EventHandler.Event.DOM_TOUCHEND],
+    ["unload", EventHandler.Event.DOM_UNLOAD],
 ]);
 
-const windowEventTitles = ["resize", "blur", "focus", "click"];
+const windowEventTitles = ["resize", "blur", "focus", "click", "unload"];
 const guiBlockedEvents = new Map([
     ["mouseup", [EventHandler.Event.DOM_GUI_MOUSEUP, EventHandler.Event.DOM_MOUSEUP]],
     ["mousedown", [EventHandler.Event.DOM_GUI_MOUSEDOWN, EventHandler.Event.DOM_MOUSEDOWN]],

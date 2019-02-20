@@ -28,6 +28,7 @@ enum Event {
     DOM_FOCUS,
     DOM_WHEEL,
     DOM_CONTEXTMENU,
+    DOM_UNLOAD,
 
     // TOP MENU
     TOPMENU_SP_OPT_CLICK,
