@@ -38,7 +38,7 @@ export default class Auth extends Component {
         };
 
         // @ts-ignore Custom attribute
-        if (window.isAuthInitialized) {
+        if (window.authInitialized) {
             initializeAuth();
         } else {
             // @ts-ignore Custom method

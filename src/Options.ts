@@ -100,7 +100,7 @@ export default class Options extends Component {
         }
 
         if (!("controls" in Options.options)) {
-            Options.options.controls = "simple";
+            Options.options.controls = "standard";
         }
 
         localStorage.setItem("userOptions", JSON.stringify(Options.options));

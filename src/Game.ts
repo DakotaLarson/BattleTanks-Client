@@ -12,6 +12,7 @@ import DomHandler from "./DomHandler";
 import GameStatusHandler from "./GameStatusHandler";
 import Globals from "./Globals";
 import MainMenu from "./main_menu/MainMenu";
+import Metrics from "./Metrics";
 import MultiplayerConnection from "./MultiplayerConnection";
 import Options from "./Options";
 import OverlayMenu from "./overlay_menu/OverlayMenu";
@@ -28,6 +29,7 @@ class Game extends Component {
     private alertMessageHandler: AlertMessageHandler;
     private options: Options;
     private auth: Auth;
+    private metrics: Metrics;
 
     constructor() {
         super();
@@ -41,6 +43,7 @@ class Game extends Component {
         this.arenaHandler = new ArenaHandler(perspectiveCamera);
         this.gameStatusHandler = new GameStatusHandler();
         this.alertMessageHandler = new AlertMessageHandler();
+        this.metrics = new Metrics();
     }
     public enable() {
         EventHandler.callEvent(EventHandler.Event.GAME_START);
@@ -65,6 +68,7 @@ class Game extends Component {
         this.updateMenu(true);
         this.attachChild(this.alertMessageHandler);
         this.hideLoadingScreen();
+        this.attachComponent(this.metrics);
     }
 
     public update(delta: number) {

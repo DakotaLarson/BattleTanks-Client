@@ -9,23 +9,31 @@ html, body{
     height: 100%;
     width: 100%;
 }
+
+.grecaptcha-badge {
+    visibility: collapse !important; 
+}
+
 #game-canvas{
     display: block;
     position: absolute;
     top: 0;
 }
+
 .no-select{
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
 }
+
 .text-select{
     -webkit-user-select: text;
     -moz-user-select: text;
     -ms-user-select: text;
     user-select: text;
 }
+
 .menu{
     height: 100%;
     width: 100%;
@@ -33,9 +41,11 @@ html, body{
     text-align: center;
     display: none;
 }
+
 .menu-section{
     display: none;
 }
+
 .menu-selection, .menu-text-input{
     font-size: 5vmin;
     margin: 1vmin;
@@ -44,26 +54,31 @@ html, body{
     padding: 0 1vmin;
     cursor: pointer;
 }
+
 .menu-selection:hover{
     background-color: #03c95f;
     border-color: #03c95f;
 }
+
 .menu-selection-xl{
     font-size: 10vmin;
     padding: 2vmin 3vmin;
 }
+
 .menu-selection.disabled{
     color: #707070 !important;
     background: none !important;
     border-color: #707070 !important;
     cursor: default !important;
 }
+
 .menu-text-input{
     font-family: 'Bombardier', sans-serif;
     background: none;
     color: #ffffff;
     outline: none;
 }
+
 .menu-text-input:focus{
     border-color: #03c95f;
 }

@@ -423,11 +423,13 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
 <script src="./polyfill/encoding-indexes.js"></script>
 <script src="./polyfill/keyboard.js"></script>
 <script src="./polyfill/eventsource.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ua-parser-js@0/dist/ua-parser.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.21.2/system.js"></script>
 <script>
     const config = {
         map: {
-            three: "https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three.js"
+            three: "https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three.js",
         },
         packages: {
             build: {
@@ -440,13 +442,22 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
 </script>
 <script>
     function onAuthInit() {
-        if(window.initAuth) {
+        if(window.initializeAuth) {
             window.initializeAuth();
         } else {
-            window.isAuthInitialized = true;
+            window.authInitialized = true;
+        }
+    }
+
+    function onRecaptchaInit() {
+        if(window.initializeRecaptcha) {
+            window.initializeRecaptcha();
+        } else {
+            window.recaptchaInitialized = true;
         }
     }
 </script>
 <script async defer src="https://apis.google.com/js/api.js" onload="onAuthInit()"></script>
+<script async defer src="https://www.google.com/recaptcha/api.js?render=6Lc4vJIUAAAAAApr2YjCYP_QuU3Y-SR64rNB4XqJ" onload="onRecaptchaInit()"></script>
 </body>
 </html>
