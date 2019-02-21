@@ -58,6 +58,8 @@ class Game extends Component {
         EventHandler.addListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.disconnectFromMultiplayer);
         EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.disconnectFromMultiplayer);
 
+        EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
+
         this.setHost();
 
         this.attachComponent(this.auth);
@@ -68,11 +70,19 @@ class Game extends Component {
         this.updateMenu(true);
         this.attachChild(this.alertMessageHandler);
         this.hideLoadingScreen();
-        this.attachComponent(this.metrics);
+        if (Options.options.metricsEnabled) {
+            this.attachChild(this.metrics);
+        }
     }
 
     public update(delta: number) {
         EventHandler.callEvent(EventHandler.Event.GAME_ANIMATION_UPDATE, delta);
+    }
+
+    private onOptionsUpdate(event: any) {
+        if (event.attribute === "metricsEnabled" && !event.data) {
+            this.detachChild(this.metrics);
+        }
     }
 
     private loadSingleplayer() {

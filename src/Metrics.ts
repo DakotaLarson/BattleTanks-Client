@@ -1,14 +1,16 @@
-import { Path } from "three";
-import Component from "./component/Component";
+import ChildComponent from "./component/ChildComponent";
 import EventHandler from "./EventHandler";
 import Globals from "./Globals";
 import Options from "./Options";
 
 declare const grecaptcha: any;
 
-export default class Metrics extends Component {
+export default class Metrics extends ChildComponent {
 
     private static readonly EXECUTION_INTERVAL = 30000;
+
+    private static readonly DEV_SITE_KEY = "6Lej3pIUAAAAAF8gQOBaIv9X827CO94rz3dfNtZS";
+    private static readonly PROD_SITE_KEY = "6LfQ3pIUAAAAAI3mqIAJNjmJIoaVbsUkmS8mMFz3";
 
     private browser: string;
     private os: string;
@@ -56,7 +58,10 @@ export default class Metrics extends Component {
             localStorage.setItem("visits", "1");
             this.visits = 1;
         } else {
-            localStorage.setItem("visits", "" + ++ visits);
+            if (!sessionStorage.getItem("newSession")) {
+                localStorage.setItem("visits", "" + ++ visits);
+                sessionStorage.setItem("newSession", "true");
+            }
             this.visits = visits;
         }
 
@@ -72,12 +77,22 @@ export default class Metrics extends Component {
 
     public enable() {
 
+        let key = Metrics.DEV_SITE_KEY;
+        const host = location.hostname;
+        const prodHostname = "battletanks.app";
+        const stagingHostname = "dakotalarson.github.io";
+        if (host.includes(prodHostname) || host.includes(stagingHostname)) {
+            key = Metrics.PROD_SITE_KEY;
+        }
+
         const initializeRecaptcha = () => {
 
-            this.execute();
-            window.setInterval(() => {
-                this.execute();
-            }, Metrics.EXECUTION_INTERVAL);
+            grecaptcha.ready(() => {
+                this.execute(key);
+                window.setInterval(() => {
+                    this.execute(key);
+                }, Metrics.EXECUTION_INTERVAL);
+            });
         };
 
         // @ts-ignore Custom attribute
@@ -88,9 +103,7 @@ export default class Metrics extends Component {
             window.initializeRecaptcha = initializeRecaptcha;
         }
 
-        window.onbeforeunload = () => {
-            this.onUnload();
-        };
+        EventHandler.addListener(this, EventHandler.Event.DOM_BEFOREUNLOAD, this.onUnload);
 
         EventHandler.addListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.onMPConnect);
 
@@ -101,6 +114,20 @@ export default class Metrics extends Component {
 
         EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
+    }
+
+    public disable() {
+        EventHandler.removeListener(this, EventHandler.Event.DOM_BEFOREUNLOAD, this.onUnload);
+
+        EventHandler.removeListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.onMPConnect);
+
+        EventHandler.removeListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.onMPDisconnect);
+        EventHandler.removeListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.onMPDisconnect);
+
+        EventHandler.removeListener(this, EventHandler.Event.MATCH_STATISTICS_RECEPTION, this.onStatsReception);
+
+        EventHandler.removeListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
+        EventHandler.removeListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
     }
 
     private onMPConnect() {
@@ -138,7 +165,6 @@ export default class Metrics extends Component {
             os: this.os,
             device: this.device,
             sessionTime: this.sessionTime,
-            currentGameTime: this.currentGameTime,
             gameTime: this.gameTime,
             matchCount: this.matchCount,
             audio: this.audio,
@@ -152,11 +178,9 @@ export default class Metrics extends Component {
         navigator.sendBeacon(address + "/metrics", blob);
     }
 
-    private execute() {
-        grecaptcha.ready(() => {
-            grecaptcha.execute("6Lc4vJIUAAAAAApr2YjCYP_QuU3Y-SR64rNB4XqJ", {action: "metrics"}).then((token: string) => {
-                this.token = token;
-            });
+    private execute(key: string) {
+        grecaptcha.execute(key , {action: "metrics"}).then((token: string) => {
+            this.token = token;
         });
     }
 }
