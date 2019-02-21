@@ -115,7 +115,7 @@ export default class UsernameMenu extends ChildComponent {
     }
 
     private onCancelClick(event: MouseEvent) {
-        if (event.target === this.cancelBtn && !this.cancelBtn.classList.contains("disabled")) {
+        if ((event.target === this.cancelBtn || event.target === this.parentElt) && !this.cancelBtn.classList.contains("disabled")) {
             EventHandler.callEvent(EventHandler.Event.USERNAME_MENU_CLOSE);
         }
     }
