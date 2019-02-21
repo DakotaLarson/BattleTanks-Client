@@ -197,6 +197,7 @@
 .main-menu .leaderboard {
     right: 2.5vw;
     padding: 0;
+    min-width: 12.5vw;
 }
 
 .main-menu .player-stats-container,
@@ -245,6 +246,7 @@
     width: 25%;
     padding: 1vmin 0;
     margin-bottom: 1vmin;
+    font-size: 1.75vmin;
 }
 
 .main-menu .leaderboard-selection:hover {
