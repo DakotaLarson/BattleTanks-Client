@@ -12,10 +12,10 @@ enum State {
 
 export default class BackgroundAudioHandler extends Component {
 
-    private static readonly MAIN_MENU_AUDIO_SRC = "/res/audio/music/main_menu";
-    private static readonly CONNECTION_MENU_AUDIO_SRC = "/res/audio/music/connection_menu";
-    private static readonly SPECTATING_AUDIO_SRC = "/res/audio/music/spectating";
-    private static readonly LIVE_AUDIO_SRC = "/res/audio/music/live";
+    private static readonly MAIN_MENU_AUDIO_SRC = "res/audio/music/main_menu";
+    private static readonly CONNECTION_MENU_AUDIO_SRC = "res/audio/music/connection_menu";
+    private static readonly SPECTATING_AUDIO_SRC = "res/audio/music/spectating";
+    private static readonly LIVE_AUDIO_SRC = "res/audio/music/live";
 
     private audioContext: AudioContext;
 
