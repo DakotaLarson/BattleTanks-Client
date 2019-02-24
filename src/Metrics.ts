@@ -87,6 +87,13 @@ export default class Metrics extends ChildComponent {
             this.key = Metrics.PROD_SITE_KEY;
         }
 
+        const recaptchaScript = document.createElement("script");
+        recaptchaScript.setAttribute("async", "");
+        recaptchaScript.setAttribute("defer", "");
+        recaptchaScript.setAttribute("src", "https://www.google.com/recaptcha/api.js?render=" + this.key);
+        recaptchaScript.setAttribute("onload", "onRecaptchaInit()");
+        document.body.appendChild(recaptchaScript);
+
         const initializeRecaptcha = () => {
 
             grecaptcha.ready(() => {
