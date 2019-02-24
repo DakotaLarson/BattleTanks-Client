@@ -7,7 +7,7 @@ import ArenaHandler from "./arena/ArenaHandler";
 import BackgroundAudioHandler from "./audio/BackgroundAudioHandler";
 import Auth from "./Auth";
 import ComponentDebugger from "./component/ComponentDebugger";
-import ConnectionScreen from "./connection_screen/ConnectionScreen";
+import ConnectionMenu from "./connection_menu/ConnectionMenu";
 import DomHandler from "./DomHandler";
 import GameStatusHandler from "./GameStatusHandler";
 import Globals from "./Globals";
@@ -22,7 +22,7 @@ class Game extends Component {
     private mainMenu: MainMenu;
     private backgroundAudioHandler: BackgroundAudioHandler;
     private overlayMenu: OverlayMenu;
-    private connectionScreen: ConnectionScreen;
+    private connectionScreen: ConnectionMenu;
     private arenaHandler: ArenaHandler;
     private mpConnection: MultiplayerConnection | undefined;
     private gameStatusHandler: GameStatusHandler;
@@ -39,7 +39,7 @@ class Game extends Component {
         this.mainMenu = new MainMenu(perspectiveCamera);
         this.backgroundAudioHandler = new BackgroundAudioHandler();
         this.overlayMenu = new OverlayMenu();
-        this.connectionScreen = new ConnectionScreen();
+        this.connectionScreen = new ConnectionMenu();
         this.arenaHandler = new ArenaHandler(perspectiveCamera);
         this.gameStatusHandler = new GameStatusHandler();
         this.alertMessageHandler = new AlertMessageHandler();
@@ -55,7 +55,7 @@ class Game extends Component {
 
         EventHandler.addListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.connectToMultiplayer);
 
-        EventHandler.addListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.disconnectFromMultiplayer);
+        EventHandler.addListener(this, EventHandler.Event.CONNECTION_MENU_DISCONNECT, this.disconnectFromMultiplayer);
         EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.disconnectFromMultiplayer);
 
         EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
@@ -117,10 +117,8 @@ class Game extends Component {
     private updateMenu(enable: boolean) {
         if (enable) {
             this.attachChild(this.mainMenu);
-            EventHandler.callEvent(EventHandler.Event.AUDIO_MENU);
         } else {
             this.detachChild(this.mainMenu);
-            EventHandler.callEvent(EventHandler.Event.AUDIO_GAME);
         }
     }
 

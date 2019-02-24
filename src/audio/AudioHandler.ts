@@ -11,7 +11,7 @@ export default class AudioHandler extends Component {
     private audioListener: AudioListener;
     private buffers: Map<string, AudioBuffer>;
 
-    private enabled: boolean;
+    private useMP3: boolean;
 
     constructor(audioListener: AudioListener) {
         super();
@@ -19,17 +19,23 @@ export default class AudioHandler extends Component {
         const audioLoader = new AudioLoader();
         this.buffers = new Map();
 
-        this.enabled = false;
+        // @ts-ignore Safari is lagging behind.
+        if (window.webkitAudioContext) {
+            this.useMP3 = true;
+        } else {
+            this.useMP3 = false;
+        }
 
         /* tslint:disable */
+        
         for (const audioFile in AudioType) {
             if (audioFile.startsWith("GAME")) {
                 // @ts-ignore Disregard extra arguments.
-                audioLoader.load(location.pathname + AudioType[audioFile], (buffer: AudioBuffer) => {
+                audioLoader.load(this.getFullPath(audioFile), (buffer: AudioBuffer) => {
                     this.buffers.set(audioFile, buffer);
                 });
             } else {
-                new Audio(location.pathname + AudioType[audioFile]);
+                new Audio(this.getFullPath(audioFile));
             }
         }
         /* tslint:enable */
@@ -37,13 +43,10 @@ export default class AudioHandler extends Component {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.AUDIO_REQUEST, this.onAudioRequest);
-        EventHandler.addListener(this, EventHandler.Event.AUDIO_ENABLED, this.onAudioEnabled);
-        EventHandler.addListener(this, EventHandler.Event.AUDIO_DISABLED, this.onAudioDisabled);
-        this.enabled = Globals.getGlobal(Globals.Global.AUDIO_ENABLED);
     }
 
     private onAudioRequest(audio: AudioType) {
-        if (this.enabled && Options.options.gameVolume) {
+        if (Globals.getGlobal(Globals.Global.AUDIO_ENABLED) && Options.options.effectsVolume) {
             if (audio.startsWith("GAME")) {
                 const buffer = this.buffers.get(audio);
                 if (buffer) {
@@ -52,29 +55,30 @@ export default class AudioHandler extends Component {
                     console.warn("Attempting to play buffer: " + audio);
                 }
             } else {
-                this.playElement(location.pathname + audio);
+                const extension = this.useMP3 ?  ".mp3" : ".ogg";
+                this.playElement(location.pathname + audio + extension);
             }
         }
-    }
-
-    private onAudioEnabled() {
-        this.enabled = true;
-    }
-
-    private onAudioDisabled() {
-        this.enabled = false;
     }
 
     private playBuffer(buffer: AudioBuffer) {
         const audio = new ThreeAudio(this.audioListener);
         audio.setBuffer(buffer);
-        audio.setVolume(Options.options.gameVolume);
+        audio.setVolume(Options.options.effectsVolume);
         audio.play();
     }
 
     private playElement(path: string) {
         const audio = new Audio(path);
-        audio.volume = Options.options.gameVolume;
+        audio.volume = Options.options.effectsVolume;
         audio.play();
+    }
+
+    private getFullPath(audioFile: any) {
+        if (this.useMP3) {
+            return location.pathname + AudioType[audioFile] + ".mp3";
+        } else {
+            return location.pathname + AudioType[audioFile] + ".ogg";
+        }
     }
 }

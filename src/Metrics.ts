@@ -107,7 +107,7 @@ export default class Metrics extends ChildComponent {
 
         EventHandler.addListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.onMPConnect);
 
-        EventHandler.addListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.onMPDisconnect);
+        EventHandler.addListener(this, EventHandler.Event.CONNECTION_MENU_DISCONNECT, this.onMPDisconnect);
         EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.onMPDisconnect);
 
         EventHandler.addListener(this, EventHandler.Event.MATCH_STATISTICS_RECEPTION, this.onStatsReception);
@@ -121,7 +121,7 @@ export default class Metrics extends ChildComponent {
 
         EventHandler.removeListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.onMPConnect);
 
-        EventHandler.removeListener(this, EventHandler.Event.CONNECTION_SCREEN_DISCONNECT, this.onMPDisconnect);
+        EventHandler.removeListener(this, EventHandler.Event.CONNECTION_MENU_DISCONNECT, this.onMPDisconnect);
         EventHandler.removeListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.onMPDisconnect);
 
         EventHandler.removeListener(this, EventHandler.Event.MATCH_STATISTICS_RECEPTION, this.onStatsReception);
@@ -179,8 +179,12 @@ export default class Metrics extends ChildComponent {
     }
 
     private execute(key: string) {
-        grecaptcha.execute(key , {action: "metrics"}).then((token: string) => {
-            this.token = token;
-        });
+        try {
+            grecaptcha.execute(key , {action: "metrics"}).then((token: string) => {
+                this.token = token;
+            });
+        } catch (err) {
+            console.log(err);
+        }
     }
 }

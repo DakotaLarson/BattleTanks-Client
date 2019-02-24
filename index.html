@@ -46,7 +46,7 @@
     <link rel="stylesheet" type="text/css" href="./css/gui.css"/>
     <link rel="stylesheet" type="text/css" href="./css/debug-panel.css"/>
     <link rel="stylesheet" type="text/css" href="./css/main-menu.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/connection-screen.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/connection-menu.css"/>
     <link rel="stylesheet" type="text/css" href="./css/create-world-mode-toggle.css"/>
     <link rel="stylesheet" type="text/css" href="./css/alert-message.css"/>
     <link rel="stylesheet" type="text/css" href="./css/options-menu.css"/>
@@ -59,6 +59,7 @@
 
 <!-- LOADING SCREEN -->
 <div class="loading-screen">
+    <img class="loading-screen-header" src="./res/menu/header-transparent.png" draggable="false"/>
     <div class="loading">
         <div class="finger finger-1">
             <div class="finger-item">
@@ -133,17 +134,71 @@
                 <div>Play</div>
                 <div class="play-as-guest">(As Guest)</div>
             </span><br/>
-            <span class="tutorial-link tutorial-link-xl" id="play-tutorial-link">How to play</span><br/>
+            <span class="tutorial-link tutorial-link-xl" id="play-tutorial-link">How to Play</span><br/>
             <span class="menu-selection create-btn" id="top-opt-sp">Create Arena</span><br/>
             <span class="tutorial-link" id="create-tutorial-link">What is this?</span>
         </div>
         <div class="menu tutorial-parent">
             <div class="tutorial-container">
                 <div class="tutorial-content tutorial-play">
-                    <p>How to Play</p>
+                        <h2>How to Play</h2>
+                    
+                        <div class="tutorial-text">BattleTanks is a 2.5D tank shooter where two teams compete in a team eliminiation gamemode!</div>
+
+                        <h3>Default Controls</h3>
+                        <div class="tutorial-controls">
+                            <div><span class="tutorial-controls-highlight">W</span> - Forward</div>
+                            <div><span class="tutorial-controls-highlight">Mouse</span> - Shoot</div>
+                            
+                            <div><span class="tutorial-controls-highlight">S</span> - Backward</div>
+                            <div><span class="tutorial-controls-highlight">R</span> - Reload</div>
+
+                            <div><span class="tutorial-controls-highlight">A</span> - Rotate Left</div>
+                            <div><span class="tutorial-controls-highlight">E</span> - Ramming Speed</div>
+
+                            <div><span class="tutorial-controls-highlight">D</span> - Rotate Right</div>
+                            <div><span class="tutorial-controls-highlight">Enter</span> - Chat</div>
+                        </div>
+
+                        <h3>Player Details</h3>
+                        <div class="tutorial-text">Hits to Kill: <span class="tutorial-controls-highlight">5</span></div>
+                        <div class="tutorial-text">Lives: <span class="tutorial-controls-highlight">3</span></div>
+                        <div class="tutorial-text">Points per Hit: <span class="tutorial-controls-highlight">1</span></div>
+                        <div class="tutorial-text">Points per Kill: <span class="tutorial-controls-highlight">2</span></div>
+
                 </div>
                 <div class="tutorial-content tutorial-create">
-                    <p>How to Create an Arena</p>
+                    <h2>Creating an Arena</h2>
+                    
+                    <div class="tutorial-text">You can create an arena and submit it on our <a href="https://discord.gg/7J5ZJUQ">Discord Server</a>!</div>
+                    
+                    <h3>Guidelines</h3>
+                    <div class="tutorial-text">
+                        Arenas should have at least four (4) team spawns per team. Currently, all arenas can be used by up to eight (8) people.
+                    </div>
+                    <div class="tutorial-text">
+                        Additionally, please avoid one (1) block "hallways". These are currently difficult to traverse when driving.
+                    </div>
+
+                    <h3>Creation Tips</h3>
+                    <div class="tutorial-text">
+                        I recommend odd dimensions so there is a center block in the arena.
+                    </div>
+                    <div class="tutorial-text">
+                        The tools you use can be selected by a hotkey instead of having to use your mouse.
+                    </div>
+                    <div class="tutorial-text">
+                        <strong>Remember</strong> Your primary mouse button creates an entity; your secondary mouse button removes an entity if there is one of that type at the position you are selecting.
+                    </div>
+
+                    <h3>Submission &amp; Reward</h3>
+                    <div class="tutorial-text">
+                        Upon submission to the <a href="https://discord.gg/7J5ZJUQ">Discord Server</a>, I will reivew your arena and offer feedback if necessary. If all looks good, then I will include your arena with the next release of BattleTanks!
+                    </div>
+                    <div class="tutorial-text">
+                        Upon approval of your arena, you will granted access to the "Arena Creators" role on the Discord server! I will also note you as the author of the arena so appropriate credit can be made visible in future releases.
+                    </div>
+
                 </div>
                 <span class="menu-selection tutorial-close">Close</span>
             </div>
@@ -294,7 +349,7 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
 </div>
 
 <!-- CONNECTION SCREEN -->
-<div class="menu connection-screen no-select">
+<div class="menu connection-menu no-select">
         <div class="menu-section section-connecting">
             <span class="message">Connecting...</span><br/>
             <span class="menu-selection option-disconnect">Disconnect</span>
@@ -377,11 +432,11 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
             <span class="option-title">Open Chat:</span>
             <span class="option-value option-listening-value" id="option-value-chatopen"></span>
     
-            <span class="option-title">Game Volume:</span>
-            <input type="range" id="option-value-volume-game" class="option-value option-range-value" min="0" max="1" step="any"/>
+            <span class="option-title">Music Volume:</span>
+            <input type="range" id="option-value-volume-music" class="option-value option-range-value" min="0" max="1" step="any"/>
     
-            <span class="option-title">Menu Volume:</span>
-            <input type="range" id="option-value-volume-menu" class="option-value option-range-value" min="0" max="1" step="any"/>
+            <span class="option-title">Effects Volume:</span>
+            <input type="range" id="option-value-volume-effects" class="option-value option-range-value" min="0" max="1" step="any"/>
      
             <span class="option-title">Mouse Sensitivity:</span>
             <input type="range" id="option-value-mouse" class="option-value option-range-value" min="0.1" max="1" step="any"/>
@@ -414,10 +469,6 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
         <span class="menu-selection" id="username-cancel">Cancel</span>
     </div>
 </div>
-
-<audio id="audioElt" preload="auto" loop>
-    <source src="./res/audio/menu/background.mp3" type="audio/mpeg"/>
-</audio>
 
 <script src="./polyfill/encoding.js"></script>
 <script src="./polyfill/encoding-indexes.js"></script>

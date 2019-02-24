@@ -69,6 +69,7 @@ const receivePlayerShield = (shield: number) => {
 
 const receivePlayerSpectating = () => {
     EventHandler.callEvent(EventHandler.Event.PLAYER_SPECTATING);
+    EventHandler.callEvent(EventHandler.Event.BACKGROUND_AUDIO_SPECTATING);
 };
 
 const receivePlayerSpeedMultiplier = (multiplier: number) => {

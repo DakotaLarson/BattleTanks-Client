@@ -79,12 +79,12 @@ export default class Options extends Component {
             };
         }
 
-        if (!("gameVolume" in Options.options)) {
-            Options.options.gameVolume = 0.5;
+        if (!("musicVolume" in Options.options)) {
+            Options.options.musicVolume = 0.5;
         }
 
-        if (!("menuVolume" in Options.options)) {
-            Options.options.menuVolume = 0.5;
+        if (!("effectsVolume" in Options.options)) {
+            Options.options.effectsVolume = 0.5;
         }
 
         if (!("mouseSensitivity" in Options.options)) {

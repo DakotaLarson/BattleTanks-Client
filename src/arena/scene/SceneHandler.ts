@@ -169,10 +169,10 @@ export default class SceneHandler extends Component {
         this.height = 5;
 
         this.floor = this.sceneUtils.createFloor();
-        this.lines = this.sceneUtils.createLines();
+        // this.lines = this.sceneUtils.createLines();
         this.lights = this.sceneUtils.createLights();
 
-        this.scene.add(this.lines);
+        // this.scene.add(this.lines);
         this.scene.add(this.floor);
         this.scene.add.apply(this.scene, this.lights);
         this.scenePlayerHandler.addMenuPlayer();
@@ -185,7 +185,9 @@ export default class SceneHandler extends Component {
         this.clearScene();
 
         this.floor = this.sceneUtils.createFloor();
-        this.lines = this.sceneUtils.createLines();
+        if (!data.fromServer) {
+            this.lines = this.sceneUtils.createLines();
+        }
         this.lights = this.sceneUtils.createLights();
 
         const blockPositions = this.sceneUtils.parsePositionData(data.blockPositions);
@@ -201,7 +203,9 @@ export default class SceneHandler extends Component {
 
         this.updateBlocks(blockPositions);
 
-        this.scene.add(this.lines as LineSegments);
+        if (this.lines) {
+            this.scene.add(this.lines);
+        }
         this.scene.add(this.floor);
         this.scene.add(this.blocks as Mesh);
         this.scene.add.apply(this.scene, this.lights);

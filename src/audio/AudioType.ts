@@ -1,18 +1,18 @@
 enum AudioType {
-    GAME_WIN = "res/audio/game/win.wav",
-    GAME_LOSE = "res/audio/game/lose.wav",
-    GAME_SHOOT = "res/audio/game/shoot.mp3",
-    GAME_HIT = "res/audio/game/hit-orig.mp3",
-    GAME_HIT_HIGH = "res/audio/game/hit-high.mp3",
-    GAME_DAMAGE = "res/audio/game/damage.mp3",
-    GAME_DEATH_RESPAWN = "res/audio/game/death-respawn.mp3",
-    GAME_DEATH_NORESPAWN = "res/audio/game/death-no-respawn.mp3",
-    POWERUP = "res/audio/game/powerup.mp3",
+    GAME_WIN = "res/audio/effects/game/win",
+    GAME_LOSE = "res/audio/effects/game/lose",
+    GAME_SHOOT = "res/audio/effects/game/shoot",
+    GAME_HIT = "res/audio/effects/game/hit_orig",
+    GAME_HIT_HIGH = "res/audio/effects/game/hit_high",
+    GAME_DAMAGE = "res/audio/effects/game/damage",
+    GAME_DEATH_RESPAWN = "res/audio/effects/game/death_respawn",
+    GAME_DEATH_NORESPAWN = "res/audio/effects/game/death_no_respawn",
+    POWERUP = "res/audio/effects/game/powerup",
 
-    MENU_BACK = "res/audio/menu/menu-back.wav",
-    MENU_HOVER = "res/audio/menu/menu-hover.wav",
-    MENU_SELECT = "res/audio/menu/menu-select.wav",
-    MENU_VALIDATE = "res/audio/menu/menu-validate.wav",
+    MENU_BACK = "res/audio/effects/menu/back",
+    MENU_HOVER = "res/audio/effects/menu/hover",
+    MENU_SELECT = "res/audio/effects/menu/select",
+    MENU_VALIDATE = "res/audio/effects/menu/validate",
 }
 
 export default AudioType;

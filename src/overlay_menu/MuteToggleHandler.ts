@@ -30,6 +30,7 @@ export default class MuteToggleHandler extends ChildComponent {
         }
     }
 
+    // Enabled before BackgroundAudioHandler
     public enable() {
         if (this.enabled) {
             this.volumeElt.src = MuteToggleHandler.VOLUME_ON_SRC;

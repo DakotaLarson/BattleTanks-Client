@@ -26,8 +26,8 @@ export default class OptionsMenu extends Component {
     private shootValueElt: HTMLElement;
     private chatOpenValueElt: HTMLElement;
 
-    private gameVolumeValueElt: HTMLInputElement;
-    private menuVolumeValueElt: HTMLInputElement;
+    private musicVolumeValueElt: HTMLInputElement;
+    private effectsVolumeValueElt: HTMLInputElement;
     private mouseValueElt: HTMLInputElement;
     private rotationValueElt: HTMLInputElement;
     private cameraAngleValueElt: HTMLInputElement;
@@ -57,8 +57,8 @@ export default class OptionsMenu extends Component {
         this.shootValueElt = DomHandler.getElement("#option-value-shoot", this.parentElt);
         this.chatOpenValueElt = DomHandler.getElement("#option-value-chatopen", this.parentElt);
 
-        this.gameVolumeValueElt = DomHandler.getElement("#option-value-volume-game", this.parentElt) as HTMLInputElement;
-        this.menuVolumeValueElt = DomHandler.getElement("#option-value-volume-menu", this.parentElt) as HTMLInputElement;
+        this.musicVolumeValueElt = DomHandler.getElement("#option-value-volume-music", this.parentElt) as HTMLInputElement;
+        this.effectsVolumeValueElt = DomHandler.getElement("#option-value-volume-effects", this.parentElt) as HTMLInputElement;
         this.mouseValueElt = DomHandler.getElement("#option-value-mouse", this.parentElt) as HTMLInputElement;
         this.rotationValueElt = DomHandler.getElement("#option-value-rotation", this.parentElt) as HTMLInputElement;
         this.cameraAngleValueElt = DomHandler.getElement("#option-value-camera-angle", this.parentElt) as HTMLInputElement;
@@ -123,8 +123,8 @@ export default class OptionsMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
 
-        DomEventHandler.addListener(this, this.gameVolumeValueElt, "change", this.onGameVolumeChange);
-        DomEventHandler.addListener(this, this.menuVolumeValueElt, "change", this.onMenuVolumeChange);
+        DomEventHandler.addListener(this, this.musicVolumeValueElt, "change", this.onMusicVolumeChange);
+        DomEventHandler.addListener(this, this.effectsVolumeValueElt, "change", this.onEffectsVolumeChange);
         DomEventHandler.addListener(this, this.mouseValueElt, "change", this.onMouseChange);
         DomEventHandler.addListener(this, this.rotationValueElt, "change", this.onRotationSensitivityChange);
         DomEventHandler.addListener(this, this.cameraAngleValueElt, "change", this.onCameraAngleChange);
@@ -157,8 +157,8 @@ export default class OptionsMenu extends Component {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
 
-        DomEventHandler.removeListener(this, this.gameVolumeValueElt, "change", this.onGameVolumeChange);
-        DomEventHandler.removeListener(this, this.menuVolumeValueElt, "change", this.onMenuVolumeChange);
+        DomEventHandler.removeListener(this, this.musicVolumeValueElt, "change", this.onMusicVolumeChange);
+        DomEventHandler.removeListener(this, this.effectsVolumeValueElt, "change", this.onEffectsVolumeChange);
         DomEventHandler.removeListener(this, this.mouseValueElt, "change", this.onMouseChange);
         DomEventHandler.removeListener(this, this.rotationValueElt, "change", this.onRotationSensitivityChange);
         DomEventHandler.removeListener(this, this.cameraAngleValueElt, "change", this.onCameraAngleChange);
@@ -292,14 +292,14 @@ export default class OptionsMenu extends Component {
         }
     }
 
-    private onGameVolumeChange() {
-        const value = Number(this.gameVolumeValueElt.value);
-        this.saveChange("gameVolume", value);
+    private onMusicVolumeChange() {
+        const value = Number(this.musicVolumeValueElt.value);
+        this.saveChange("musicVolume", value);
     }
 
-    private onMenuVolumeChange() {
-        const value = Number(this.menuVolumeValueElt.value);
-        this.saveChange("menuVolume", value);
+    private onEffectsVolumeChange() {
+        const value = Number(this.effectsVolumeValueElt.value);
+        this.saveChange("effectsVolume", value);
     }
 
     private onMouseChange() {
@@ -410,8 +410,8 @@ export default class OptionsMenu extends Component {
             setOption("ram", this.ramValueElt);
             setOption("chatOpen", this.chatOpenValueElt);
 
-            setRangeValue(options.gameVolume, this.gameVolumeValueElt);
-            setRangeValue(options.menuVolume, this.menuVolumeValueElt);
+            setRangeValue(options.musicVolume, this.musicVolumeValueElt);
+            setRangeValue(options.effectsVolume, this.effectsVolumeValueElt);
             setRangeValue(options.mouseSensitivity, this.mouseValueElt);
             setRangeValue(options.rotationSensitivity, this.rotationValueElt);
             setRangeValue(options.cameraAngle, this.cameraAngleValueElt);

@@ -26,6 +26,7 @@ export default class GameStatusHandler extends Component {
                 break;
             case GameStatus.RUNNING:
                 EventHandler.callEvent(EventHandler.Event.GAME_STATUS_RUNNING);
+                EventHandler.callEvent(EventHandler.Event.BACKGROUND_AUDIO_LIVE);
                 break;
         }
     }
