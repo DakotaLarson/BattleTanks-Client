@@ -47,8 +47,15 @@ export default class ScenePlayerHandler extends Component {
 
         const audioLoader = new AudioLoader();
 
+        let extension;
+        // @ts-ignore Safari is behind the times.
+        if (window.webkitAudioContext) {
+            extension = ".mp3";
+        } else {
+            extension = ".ogg";
+        }
         // @ts-ignore Disregard additional arguments
-        audioLoader.load(location.pathname + "res/audio/game/shoot.mp3", (buffer: AudioBuffer) => {
+        audioLoader.load(location.pathname + "res/audio/effects/game/shoot" + extension, (buffer: AudioBuffer) => {
             this.shootSoundBuffer = buffer;
         });
 

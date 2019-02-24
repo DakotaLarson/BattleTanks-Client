@@ -29,6 +29,8 @@ export default class Metrics extends ChildComponent {
     private referrer: string;
 
     private token: string | undefined;
+    private recaptchaTask: number | undefined;
+    private key: string | undefined;
 
     constructor() {
         super();
@@ -77,21 +79,18 @@ export default class Metrics extends ChildComponent {
 
     public enable() {
 
-        let key = Metrics.DEV_SITE_KEY;
+        this.key = Metrics.DEV_SITE_KEY;
         const host = location.hostname;
         const prodHostname = "battletanks.app";
         const stagingHostname = "dakotalarson.github.io";
         if (host.includes(prodHostname) || host.includes(stagingHostname)) {
-            key = Metrics.PROD_SITE_KEY;
+            this.key = Metrics.PROD_SITE_KEY;
         }
 
         const initializeRecaptcha = () => {
 
             grecaptcha.ready(() => {
-                this.execute(key);
-                window.setInterval(() => {
-                    this.execute(key);
-                }, Metrics.EXECUTION_INTERVAL);
+                this.executeRecaptcha();
             });
         };
 
@@ -114,6 +113,9 @@ export default class Metrics extends ChildComponent {
 
         EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
+
+        EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
+        EventHandler.addListener(this, EventHandler.Event.DOM_FOCUS, this.onFocus);
     }
 
     public disable() {
@@ -128,6 +130,11 @@ export default class Metrics extends ChildComponent {
 
         EventHandler.removeListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.removeListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
+
+        EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_FOCUS, this.onFocus);
+
+        window.clearInterval(this.recaptchaTask);
     }
 
     private onMPConnect() {
@@ -176,6 +183,25 @@ export default class Metrics extends ChildComponent {
         })], {type: "text/plain"});
 
         navigator.sendBeacon(address + "/metrics", blob);
+    }
+
+    private onBlur() {
+        window.clearInterval(this.recaptchaTask);
+        this.recaptchaTask = undefined;
+    }
+
+    private onFocus() {
+        if (this.recaptchaTask) {
+            window.clearInterval(this.recaptchaTask);
+        }
+        this.executeRecaptcha();
+    }
+
+    private executeRecaptcha() {
+        this.execute(this.key as string);
+        this.recaptchaTask = window.setInterval(() => {
+            this.execute(this.key as string);
+        }, Metrics.EXECUTION_INTERVAL);
     }
 
     private execute(key: string) {
