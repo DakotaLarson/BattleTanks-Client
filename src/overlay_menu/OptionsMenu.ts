@@ -16,6 +16,7 @@ export default class OptionsMenu extends Component {
     private chatEnabledElt: HTMLInputElement;
     private killfeedEnabledElt: HTMLInputElement;
     private metricsEnabledElt: HTMLInputElement;
+    private gridlinesEnabledElt: HTMLInputElement;
 
     private forwardValueElt: HTMLElement;
     private backwardValueElt: HTMLElement;
@@ -47,6 +48,7 @@ export default class OptionsMenu extends Component {
         this.chatEnabledElt = DomHandler.getElement("#option-enabled-chat", this.parentElt) as HTMLInputElement;
         this.killfeedEnabledElt = DomHandler.getElement("#option-enabled-killfeed", this.parentElt) as HTMLInputElement;
         this.metricsEnabledElt = DomHandler.getElement("#option-enabled-metrics", this.parentElt) as HTMLInputElement;
+        this.gridlinesEnabledElt = DomHandler.getElement("#option-enabled-gridlines", this.parentElt) as HTMLInputElement;
 
         this.forwardValueElt = DomHandler.getElement("#option-value-forward", this.parentElt);
         this.backwardValueElt = DomHandler.getElement("#option-value-backward", this.parentElt);
@@ -110,6 +112,7 @@ export default class OptionsMenu extends Component {
         DomEventHandler.addListener(this, this.chatEnabledElt, "change", this.onChatEnabledChange);
         DomEventHandler.addListener(this, this.killfeedEnabledElt, "change", this.onKillfeedEnabledChange);
         DomEventHandler.addListener(this, this.metricsEnabledElt, "change", this.onMetricsEnabledChange);
+        DomEventHandler.addListener(this, this.gridlinesEnabledElt, "change", this.onGridlinesEnabledChange);
 
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onBackwardClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onForwardClick);
@@ -144,6 +147,7 @@ export default class OptionsMenu extends Component {
         DomEventHandler.removeListener(this, this.chatEnabledElt, "change", this.onChatEnabledChange);
         DomEventHandler.removeListener(this, this.killfeedEnabledElt, "change", this.onKillfeedEnabledChange);
         DomEventHandler.removeListener(this, this.metricsEnabledElt, "change", this.onMetricsEnabledChange);
+        DomEventHandler.removeListener(this, this.gridlinesEnabledElt, "change", this.onGridlinesEnabledChange);
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onBackwardClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onForwardClick);
@@ -196,6 +200,10 @@ export default class OptionsMenu extends Component {
 
     private onMetricsEnabledChange() {
         this.saveChange("metricsEnabled", this.metricsEnabledElt.checked);
+    }
+
+    private onGridlinesEnabledChange() {
+        this.saveChange("gridlinesEnabled", this.gridlinesEnabledElt.checked);
     }
 
     private onForwardClick(event: MouseEvent) {
@@ -400,6 +408,7 @@ export default class OptionsMenu extends Component {
             setCheckedValue("chatEnabled", this.chatEnabledElt);
             setCheckedValue("killfeedEnabled", this.killfeedEnabledElt);
             setCheckedValue("metricsEnabled", this.metricsEnabledElt);
+            setCheckedValue("gridlinesEnabled", this.gridlinesEnabledElt);
 
             setOption("forward", this.forwardValueElt);
             setOption("backward", this.backwardValueElt);

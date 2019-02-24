@@ -2,6 +2,7 @@ import {AudioListener, BoxGeometry, Color, Geometry, LineSegments, Mesh, MeshLam
 
 import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
+import Options from "../../Options";
 import BlockCollisionHandler from "../collision/BlockCollisionHandler";
 import ScenePlayerHandler from "./ScenePlayerHandler";
 import ScenePowerupHandler from "./ScenePowerupHandler";
@@ -29,6 +30,8 @@ export default class SceneHandler extends Component {
     public width: number;
     public height: number;
 
+    private newArena: boolean;
+
     private scene: Scene;
 
     private lines: LineSegments | undefined;
@@ -44,6 +47,8 @@ export default class SceneHandler extends Component {
         super();
         this.width = 0;
         this.height = 0;
+
+        this.newArena = false;
 
         this.blockPositions = [];
 
@@ -65,6 +70,9 @@ export default class SceneHandler extends Component {
         this.scenePowerupHandler = new ScenePowerupHandler(this.scene);
 
         this.renderMenuScene();
+
+        // Create in constructor to handle main menu alterations, when component is disabled.
+        EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
     }
 
     public enable() {
@@ -77,6 +85,7 @@ export default class SceneHandler extends Component {
     }
 
     public disable() {
+        this.newArena = false;
         EventHandler.removeListener(this, EventHandler.Event.SP_GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onSceneUpdate);
 
@@ -164,15 +173,28 @@ export default class SceneHandler extends Component {
         this.sceneVisualsHandler.update();
     }
 
+    private onOptionsUpdate(event: any) {
+        if (event.attribute === "gridlinesEnabled" && !this.newArena) {
+            if (event.data) {
+                this.scene.add(this.lines as LineSegments);
+            } else {
+                this.scene.remove(this.lines as LineSegments);
+            }
+        }
+    }
+
     private renderMenuScene() {
         this.width = 5;
         this.height = 5;
 
         this.floor = this.sceneUtils.createFloor();
-        // this.lines = this.sceneUtils.createLines();
+
+        this.lines = this.sceneUtils.createLines();
         this.lights = this.sceneUtils.createLights();
 
-        // this.scene.add(this.lines);
+        if (Options.options.gridlinesEnabled) {
+            this.scene.add(this.lines);
+        }
         this.scene.add(this.floor);
         this.scene.add.apply(this.scene, this.lights);
         this.scenePlayerHandler.addMenuPlayer();
@@ -182,12 +204,12 @@ export default class SceneHandler extends Component {
         this.width = data.width + 2;
         this.height = data.height + 2;
 
+        this.newArena = !data.fromServer;
+
         this.clearScene();
 
         this.floor = this.sceneUtils.createFloor();
-        if (!data.fromServer) {
-            this.lines = this.sceneUtils.createLines();
-        }
+        this.lines = this.sceneUtils.createLines();
         this.lights = this.sceneUtils.createLights();
 
         const blockPositions = this.sceneUtils.parsePositionData(data.blockPositions);
@@ -203,7 +225,7 @@ export default class SceneHandler extends Component {
 
         this.updateBlocks(blockPositions);
 
-        if (this.lines) {
+        if (Options.options.gridlinesEnabled || !data.fromServer) {
             this.scene.add(this.lines);
         }
         this.scene.add(this.floor);

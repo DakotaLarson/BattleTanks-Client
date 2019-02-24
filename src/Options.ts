@@ -22,6 +22,9 @@ export default class Options extends Component {
         if (!("metricsEnabled" in Options.options)) {
             Options.options.metricsEnabled = true;
         }
+        if (!("gridlinesEnabled" in Options.options)) {
+            Options.options.gridlinesEnabled = false;
+        }
         if (!("forward" in Options.options)) {
             Options.options.forward = {
                 key: "w",
