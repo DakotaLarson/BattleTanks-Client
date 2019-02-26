@@ -92,7 +92,8 @@ export default class Killfeed extends ChildComponent {
             if (isOOB) {
                 element.textContent = " went out of bounds";
             } else {
-                element.textContent = " left the game";
+                // TODO: Replace with other form of self elimination
+                // element.textContent = " left the game";
             }
         } else {
             element.textContent = " killed ";
