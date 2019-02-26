@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, BoxGeometry, CylinderGeometry, DoubleSide, Font, FontLoader, Geometry, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, Scene, Shape, ShapeBufferGeometry, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BackSide, BoxGeometry, CylinderGeometry, DoubleSide, Font, FontLoader, FrontSide, Geometry, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, Scene, Shape, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
 import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
@@ -10,9 +10,15 @@ interface IPlayerObj {
     nameplate?: Mesh;
     healthBar?: Group;
     shieldBar?: Group;
+    protectionSphere?: Group;
 }
 
 export default class ScenePlayerHandler extends Component {
+
+    private static readonly HEALTH_BAR_OFFSET = new Vector3(0, 0.65, 0);
+    private static readonly SHIELD_BAR_OFFSET = new Vector3(0, 0.725, 0);
+    private static readonly NAMEPLATE_OFFSET = new Vector3(0, 0.8, 0);
+    private static readonly PROTECTION_SPHERE_OFFSET = new Vector3(0.5, 0, 0.5);
 
     private scene: Scene;
     private camera: PerspectiveCamera;
@@ -32,10 +38,6 @@ export default class ScenePlayerHandler extends Component {
     private controlledPlayerId: number;
 
     private playerOffset: Vector3;
-
-    private healthBarOffset = 0.65;
-    private shieldBarOffset = 0.725;
-    private nameplateOffset = 0.8;
 
     constructor(scene: Scene, audioListener: AudioListener) {
         super();
@@ -82,6 +84,9 @@ export default class ScenePlayerHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_REMOVAL, this.removePlayer);
         EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_MOVE, this.onPlayerMove);
 
+        EventHandler.addListener(this, EventHandler.Event.PROTECTION_START, this.onProtectionStart);
+        EventHandler.addListener(this, EventHandler.Event.PROTECTION_END, this.onProtectionEnd);
+
         EventHandler.addListener(this, EventHandler.Event.PLAYER_SHOOT, this.onShoot);
         EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_SHOOT, this.onShoot);
 
@@ -97,6 +102,9 @@ export default class ScenePlayerHandler extends Component {
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_ADDITION, this.onConnectedPlayerAddition);
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_REMOVAL, this.removePlayer);
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_MOVE, this.onPlayerMove);
+
+        EventHandler.removeListener(this, EventHandler.Event.PROTECTION_START, this.onProtectionStart);
+        EventHandler.removeListener(this, EventHandler.Event.PROTECTION_END, this.onProtectionEnd);
 
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_SHOOT, this.onShoot);
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_SHOOT, this.onShoot);
@@ -119,6 +127,9 @@ export default class ScenePlayerHandler extends Component {
             }
             if (playerObj.shieldBar) {
                 this.scene.remove(playerObj.shieldBar);
+            }
+            if (playerObj.protectionSphere) {
+                this.scene.remove(playerObj.protectionSphere);
             }
 
             playerValue = playerValues.next();
@@ -147,6 +158,7 @@ export default class ScenePlayerHandler extends Component {
             const nameplate = playerObj.nameplate;
             const healthBar = playerObj.healthBar;
             const shieldBar = playerObj.shieldBar;
+            const protectionSphere = playerObj.protectionSphere;
 
             head.position.copy(pos).add(this.playerOffset);
             head.rotation.y = data.headRot;
@@ -158,21 +170,25 @@ export default class ScenePlayerHandler extends Component {
 
             if (nameplate) {
                 const nameplatePos = nameplate.position;
-                nameplatePos.copy(pos).add(this.playerOffset).add(new Vector3(0, this.nameplateOffset, 0));
+                nameplatePos.copy(pos).add(this.playerOffset).add(ScenePlayerHandler.NAMEPLATE_OFFSET);
 
                 nameplate.lookAt(cameraPos);
             }
             if (healthBar) {
                 const healthBarPos = healthBar.position;
-                healthBarPos.copy(pos).add(this.playerOffset).add(new Vector3(0, this.healthBarOffset, 0));
+                healthBarPos.copy(pos).add(this.playerOffset).add(ScenePlayerHandler.HEALTH_BAR_OFFSET);
 
                 healthBar.lookAt(cameraPos);
             }
             if (shieldBar) {
                 const shieldBarPos = shieldBar.position;
-                shieldBarPos.copy(pos).add(this.playerOffset).add(new Vector3(0, this.shieldBarOffset, 0));
+                shieldBarPos.copy(pos).add(this.playerOffset).add(ScenePlayerHandler.SHIELD_BAR_OFFSET);
 
                 shieldBar.lookAt(cameraPos);
+            }
+            if (protectionSphere) {
+                const protectionSpherePos = protectionSphere.position;
+                protectionSpherePos.copy(pos).add(ScenePlayerHandler.PROTECTION_SPHERE_OFFSET);
             }
         }
     }
@@ -193,6 +209,11 @@ export default class ScenePlayerHandler extends Component {
             if (obj.shieldBar) {
                 this.scene.remove(obj.shieldBar);
             }
+
+            if (obj.protectionSphere) {
+                this.scene.remove(obj.protectionSphere);
+            }
+
             this.players.delete(data.id);
             if (this.controlledPlayerId === data.id) {
                 this.controlledPlayerId = -1;
@@ -249,15 +270,15 @@ export default class ScenePlayerHandler extends Component {
 
         if (isConnectedPlayer) {
             const nameplateMesh = this.generateNameplate(name);
-            nameplateMesh.position.copy(bodyPos).add(this.playerOffset).add(new Vector3(0, this.nameplateOffset, 0));
+            nameplateMesh.position.copy(bodyPos).add(this.playerOffset).add(ScenePlayerHandler.NAMEPLATE_OFFSET);
             this.scene.add(nameplateMesh);
 
             const healthBar = this.generateHealthBar(1);
-            healthBar.position.copy(bodyPos).add(this.playerOffset).add(new Vector3(0, this.healthBarOffset, 0));
+            healthBar.position.copy(bodyPos).add(this.playerOffset).add(ScenePlayerHandler.HEALTH_BAR_OFFSET);
             this.scene.add(healthBar);
 
             const shieldBar = this.generateShieldBar(0);
-            shieldBar.position.copy(bodyPos).add(this.playerOffset).add(new Vector3(0, this.shieldBarOffset, 0));
+            shieldBar.position.copy(bodyPos).add(this.playerOffset).add(ScenePlayerHandler.SHIELD_BAR_OFFSET);
             this.scene.add(shieldBar);
 
             playerObj = {
@@ -299,7 +320,7 @@ export default class ScenePlayerHandler extends Component {
 
             healthBar = this.generateHealthBar(data.health);
 
-            healthBar.position.copy(playerObj.body.position).add(new Vector3(0, this.healthBarOffset, 0));
+            healthBar.position.copy(playerObj.body.position).add(ScenePlayerHandler.HEALTH_BAR_OFFSET);
 
             healthBar.lookAt(this.camera.position);
 
@@ -318,12 +339,31 @@ export default class ScenePlayerHandler extends Component {
 
             shieldBar = this.generateShieldBar(data.shield);
 
-            shieldBar.position.copy(playerObj.body.position).add(new Vector3(0, this.shieldBarOffset, 0));
+            shieldBar.position.copy(playerObj.body.position).add(ScenePlayerHandler.SHIELD_BAR_OFFSET);
 
             shieldBar.lookAt(this.camera.position);
 
             this.scene.add(shieldBar);
             playerObj.shieldBar = shieldBar;
+        }
+    }
+
+    private onProtectionStart(id: number) {
+
+        const playerObj = this.players.get(id);
+        if (playerObj) {
+            const sphere = this.generateProtectionSphere();
+            sphere.position.copy(playerObj.body.position).add(ScenePlayerHandler.PROTECTION_SPHERE_OFFSET);
+            this.scene.add(sphere);
+            playerObj.protectionSphere = sphere;
+        }
+    }
+
+    private onProtectionEnd(id: number) {
+        const playerObj = this.players.get(id);
+        if (playerObj && playerObj.protectionSphere) {
+            this.scene.remove(playerObj.protectionSphere);
+            playerObj.protectionSphere = undefined;
         }
     }
 
@@ -396,6 +436,30 @@ export default class ScenePlayerHandler extends Component {
 
         group.add(containerMesh, barMesh);
 
+        return group;
+    }
+
+    private generateProtectionSphere() {
+        const sphereGeo = new SphereGeometry(1.25, 12, 12, 0, Math.PI);
+        const sphere1Material = new MeshLambertMaterial({
+            color: 0xf0f0f0,
+            transparent: true,
+            side: BackSide,
+        });
+        const sphere2Material = new MeshLambertMaterial({
+            color: 0xf0f0f0,
+            transparent: true,
+            side: FrontSide,
+        });
+        sphere1Material.opacity = 0.5;
+        sphere2Material.opacity = 0.5;
+        const sphere1Obj = new Mesh(sphereGeo, sphere1Material);
+        const sphere2Obj = new Mesh(sphereGeo, sphere2Material);
+        sphere1Obj.rotateX(-Math.PI / 2);
+        sphere2Obj.rotateX(-Math.PI / 2);
+
+        const group = new Group();
+        group.add(sphere1Obj, sphere2Obj);
         return group;
     }
 

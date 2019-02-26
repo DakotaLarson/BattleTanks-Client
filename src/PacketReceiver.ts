@@ -150,6 +150,14 @@ const receiveConnectedPlayerShield = (data: any) => {
     });
 };
 
+const receiveProtectionStart = (id: number) => {
+    EventHandler.callEvent(EventHandler.Event.PROTECTION_START, id);
+};
+
+const receiveProtectionEnd = (id: number) => {
+    EventHandler.callEvent(EventHandler.Event.PROTECTION_END, id);
+};
+
 const receiveMatchStatistics = (rawStats: number[]) => {
     const win = rawStats[0] ? true : false;
     const statistics = {
@@ -257,6 +265,9 @@ handlers.push(receiveConnectedPlayerRemove);
 handlers.push(receiveConnectedPlayerShoot);
 handlers.push(receiveConnectedPlayerHealth);
 handlers.push(receiveConnectedPlayerShield);
+
+handlers.push(receiveProtectionStart);
+handlers.push(receiveProtectionEnd);
 
 handlers.push(receiveMatchStatistics);
 

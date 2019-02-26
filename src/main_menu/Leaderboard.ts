@@ -108,8 +108,13 @@ export default class Leaderboard extends ChildComponent {
             this.messageElt.textContent = "Loading...";
             this.retrieveLeaderboard(this.selectedLeaderboard).then((data: any) => {
                 this.updateLeaderboardTitle(this.selectedLeaderboard, data.lastReset);
-                this.renderLeaderboard(data.leaderboard);
-                this.messageElt.textContent = "";
+                if (data.leaderboard.length) {
+                    this.renderLeaderboard(data.leaderboard);
+                    this.messageElt.textContent = "";
+                } else {
+                    this.messageElt.textContent = "No data here";
+                }
+
                 resolve();
             }).catch((err) => {
                 console.error(err);
@@ -120,9 +125,14 @@ export default class Leaderboard extends ChildComponent {
 
     private getLeaderboardRank(token: string) {
         this.retrieveLeaderboardRank(this.selectedLeaderboard, token).then((rankData) => {
+
             let rankElts = this.containerElt.querySelectorAll(".leaderboard-entry-" + rankData.id);
 
             if (!rankElts.length) {
+                if (!this.containerElt.firstChild) {
+                    // There is no leaderboard data to compare to.
+                    return;
+                }
                 const numberElt = this.createLeaderboardElt(rankData.rank, rankData.id);
                 const usernameElt = this.createLeaderboardElt(rankData.username, rankData.id);
                 const dataElt = this.createLeaderboardElt(rankData.points, rankData.id);
