@@ -8,6 +8,7 @@ import DebugPanel from "./DebugPanel";
 import HealthBar from "./HealthBar";
 import Joystick from "./Joystick";
 import Killfeed from "./Killfeed";
+import PlayerList from "./PlayerList";
 import RamBar from "./RamBar";
 import ShieldBar from "./ShieldBar";
 
@@ -16,7 +17,6 @@ export default class GUI extends Component {
     private element: HTMLElement;
 
     private debugPanel: DebugPanel;
-    // private fullscreenToggle: FullscreenToggle;
     private healthBar: HealthBar;
     private shieldBar: ShieldBar;
     private ramBar: RamBar;
@@ -24,13 +24,13 @@ export default class GUI extends Component {
     private killfeed: Killfeed;
     private joystick: Joystick;
     private chat: Chat;
+    private playerList: PlayerList;
 
     constructor() {
         super();
         this.element = DomHandler.getElement(".gui");
 
         this.debugPanel = new DebugPanel(this.element);
-        // this.fullscreenToggle = new FullscreenToggle(this.element);
         this.ammoDisplay = new AmmoDisplay(this.element);
         this.healthBar = new HealthBar(this.element);
         this.shieldBar = new ShieldBar(this.element);
@@ -38,6 +38,7 @@ export default class GUI extends Component {
         this.killfeed = new Killfeed(this.element);
         this.joystick = new Joystick(this.element);
         this.chat = new Chat(this.element);
+        this.playerList = new PlayerList(this.element);
     }
 
     public enable() {
@@ -47,7 +48,6 @@ export default class GUI extends Component {
         EventHandler.addListener(this, EventHandler.Event.PLAYER_SPECTATING, this.onPlayerRemoval);
 
         this.attachChild(this.debugPanel);
-        // this.attachChild(this.fullscreenToggle);
 
         if (Options.options.killfeedEnabled) {
             this.attachChild(this.killfeed);
@@ -56,6 +56,7 @@ export default class GUI extends Component {
             this.attachChild(this.chat);
         }
 
+        this.attachChild(this.playerList);
         this.element.style.display = "block";
     }
 
@@ -66,9 +67,9 @@ export default class GUI extends Component {
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_SPECTATING, this.onPlayerRemoval);
 
         this.detachChild(this.debugPanel);
-        // this.detachChild(this.fullscreenToggle);
         this.detachChild(this.killfeed);
         this.detachChild(this.chat);
+        this.detachChild(this.playerList);
 
         this.element.style.display = "";
     }

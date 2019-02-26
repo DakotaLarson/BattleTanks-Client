@@ -26,6 +26,7 @@ export default class OptionsMenu extends Component {
     private ramValueElt: HTMLElement;
     private shootValueElt: HTMLElement;
     private chatOpenValueElt: HTMLElement;
+    private playerListValueElt: HTMLElement;
 
     private musicVolumeValueElt: HTMLInputElement;
     private effectsVolumeValueElt: HTMLInputElement;
@@ -58,6 +59,7 @@ export default class OptionsMenu extends Component {
         this.ramValueElt = DomHandler.getElement("#option-value-ram", this.parentElt);
         this.shootValueElt = DomHandler.getElement("#option-value-shoot", this.parentElt);
         this.chatOpenValueElt = DomHandler.getElement("#option-value-chatopen", this.parentElt);
+        this.playerListValueElt = DomHandler.getElement("#option-value-playerlist", this.parentElt);
 
         this.musicVolumeValueElt = DomHandler.getElement("#option-value-volume-music", this.parentElt) as HTMLInputElement;
         this.effectsVolumeValueElt = DomHandler.getElement("#option-value-volume-effects", this.parentElt) as HTMLInputElement;
@@ -122,6 +124,7 @@ export default class OptionsMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onRamClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onShootClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onChatOpenClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onPlayerListClick);
 
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
@@ -157,6 +160,7 @@ export default class OptionsMenu extends Component {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onRamClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onShootClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onChatOpenClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onPlayerListClick);
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
@@ -281,6 +285,16 @@ export default class OptionsMenu extends Component {
             if (!this.isListening) {
                 this.listenForInput(this.chatOpenValueElt).then((data) => {
                     this.saveChange("chatOpen", data);
+                });
+            }
+        }
+    }
+
+    private onPlayerListClick(event: MouseEvent) {
+        if (event.target === this.playerListValueElt) {
+            if (!this.isListening) {
+                this.listenForInput(this.playerListValueElt).then((data) => {
+                    this.saveChange("playerList", data);
                 });
             }
         }
@@ -418,6 +432,7 @@ export default class OptionsMenu extends Component {
             setOption("reload", this.reloadValueElt);
             setOption("ram", this.ramValueElt);
             setOption("chatOpen", this.chatOpenValueElt);
+            setOption("playerList", this.playerListValueElt);
 
             setRangeValue(options.musicVolume, this.musicVolumeValueElt);
             setRangeValue(options.effectsVolume, this.effectsVolumeValueElt);

@@ -92,6 +92,14 @@ const receivePlayerAmmoStatus = (data: number[]) => {
     EventHandler.callEvent(EventHandler.Event.PLAYER_AMMO_STATUS, dataObj);
 };
 
+const receiveConnectedPlayerJoin = (data: string) => {
+    EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_JOIN, JSON.parse(data));
+};
+
+const receiveConnectedPlayerLeave = (data: string) => {
+    EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_LEAVE, JSON.parse(data));
+};
+
 const receiveConnectedPlayerAdd = (data: string) => {
     const playerData = JSON.parse(data);
     const pos = new Vector4(playerData.pos[0], playerData.pos[1], playerData.pos[2], playerData.pos[3]);
@@ -259,9 +267,11 @@ handlers.push(receivePlayerSpeedMultiplier);
 handlers.push(receivePlayerPowerupPickup);
 handlers.push(receivePlayerRam);
 
+handlers.push(receiveConnectedPlayerJoin);
+handlers.push(receiveConnectedPlayerLeave);
 handlers.push(receiveConnectedPlayerAdd);
-handlers.push(receiveConnectedPlayerMove);
 handlers.push(receiveConnectedPlayerRemove);
+handlers.push(receiveConnectedPlayerMove);
 handlers.push(receiveConnectedPlayerShoot);
 handlers.push(receiveConnectedPlayerHealth);
 handlers.push(receiveConnectedPlayerShield);

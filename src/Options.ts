@@ -82,6 +82,14 @@ export default class Options extends Component {
             };
         }
 
+        if (!("playerList" in Options.options)) {
+            Options.options.playerList = {
+                key: "Tab",
+                code: "Tab",
+                isMouse: false,
+            };
+        }
+
         if (!("musicVolume" in Options.options)) {
             Options.options.musicVolume = 0.5;
         }
