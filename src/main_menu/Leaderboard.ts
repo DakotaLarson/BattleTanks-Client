@@ -113,25 +113,25 @@ export default class Leaderboard extends ChildComponent {
                 resolve();
             }).catch((err) => {
                 console.error(err);
+                this.messageElt.textContent = "Error";
             });
         });
     }
 
     private getLeaderboardRank(token: string) {
         this.retrieveLeaderboardRank(this.selectedLeaderboard, token).then((rankData) => {
-
-            let rankElts = this.containerElt.querySelectorAll(".leaderboard-entry-" + rankData.rank);
+            let rankElts = this.containerElt.querySelectorAll(".leaderboard-entry-" + rankData.id);
 
             if (!rankElts.length) {
-                const numberElt = this.createLeaderboardElt("" + (rankData.rank), rankData.rank);
-                const usernameElt = this.createLeaderboardElt("You", rankData.rank);
-                const dataElt = this.createLeaderboardElt(rankData.points, rankData.rank);
+                const numberElt = this.createLeaderboardElt(rankData.rank, rankData.id);
+                const usernameElt = this.createLeaderboardElt(rankData.username, rankData.id);
+                const dataElt = this.createLeaderboardElt(rankData.points, rankData.id);
 
                 this.containerElt.appendChild(numberElt);
                 this.containerElt.appendChild(usernameElt);
                 this.containerElt.appendChild(dataElt);
 
-                rankElts = this.containerElt.querySelectorAll(".leaderboard-entry-" + rankData.rank);
+                rankElts = this.containerElt.querySelectorAll(".leaderboard-entry-" + rankData.id);
             }
 
             for (const rankElt of Array.from(rankElts)) {
@@ -166,15 +166,32 @@ export default class Leaderboard extends ChildComponent {
     }
 
     private renderLeaderboard(data: any[]) {
-        for (let i = data.length; i > 0;  i --) {
-            const numberElt = this.createLeaderboardElt("" + i, i);
-            const usernameElt = this.createLeaderboardElt(data[i - 1].username, i);
-            const dataElt = this.createLeaderboardElt(data[i - 1].points, i);
+        if (data.length) {
 
-            this.containerElt.insertBefore(dataElt, this.containerElt.firstChild);
-            this.containerElt.insertBefore(usernameElt, this.containerElt.firstChild);
-            this.containerElt.insertBefore(numberElt, this.containerElt.firstChild);
+            let lastEntryPoints = data[0].points;
+            let lastEntryRank = 1;
+            data[0].rank = lastEntryRank;
+
+            for (let i = 1; i < data.length; i ++) {
+                if (data[i].points === lastEntryPoints) {
+                    data[i].rank = lastEntryRank;
+                } else {
+                    lastEntryPoints = data[i].points;
+                    data[i].rank = ++ lastEntryRank;
+                }
+            }
+
+            for (let i = data.length; i > 0;  i --) {
+                const numberElt = this.createLeaderboardElt("" + data[i - 1].rank, data[i - 1].id);
+                const usernameElt = this.createLeaderboardElt(data[i - 1].username, data[i - 1].id);
+                const dataElt = this.createLeaderboardElt(data[i - 1].points, data[i - 1].id);
+
+                this.containerElt.insertBefore(dataElt, this.containerElt.firstChild);
+                this.containerElt.insertBefore(usernameElt, this.containerElt.firstChild);
+                this.containerElt.insertBefore(numberElt, this.containerElt.firstChild);
+            }
         }
+
     }
 
     private createLeaderboardElt(text: string, rankId: number) {

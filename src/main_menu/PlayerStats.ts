@@ -50,7 +50,7 @@ export default class PlayerStats extends ChildComponent {
             this.messageElt.textContent = "";
             const statTitles = ["rank", "victories", "defeats", "points", "kills", "deaths", "K/D Ratio", "shots", "hits", "accuracy"];
             for (const title of statTitles) {
-                if (stats[title]) {
+                if (stats[title] !== undefined) {
                     const titleElt = this.createStatElt(title, true);
                     const dataElt = this.createStatElt(stats[title], false);
                     this.containerElt.appendChild(titleElt);
