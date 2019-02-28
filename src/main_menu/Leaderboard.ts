@@ -156,9 +156,9 @@ export default class Leaderboard extends ChildComponent {
     private updateLeaderboardTitle(column: number, lastReset: number) {
         if (column === 1) {
             if (lastReset) {
-                this.selection1Elt.textContent = (lastReset + 1) + " Hours";
+                this.selection1Elt.textContent = (lastReset + 1) + " Days";
             } else {
-                this.selection1Elt.textContent = "Hour";
+                this.selection1Elt.textContent = "Day";
             }
         } else if (column === 2) {
             if (lastReset) {
