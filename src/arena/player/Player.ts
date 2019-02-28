@@ -155,17 +155,6 @@ export default class Player extends Component {
         this.onInputUp(event.button);
     }
 
-    private onMouseMove(event: MouseEvent) {
-        const delta = event.movementX / 365 * Options.options.mouseSensitivity;
-        if (!this.isOverlayOpen()) {
-            if (this.usingSimpleControls()) {
-                this.frameDelta -= delta;
-            } else {
-                this.headRotation -= delta;
-            }
-        }
-    }
-
     private onInputDown(code: string | number) {
         if (code === Options.options.forward.code) {
             this.movingForward = true;
