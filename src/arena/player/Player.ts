@@ -87,13 +87,7 @@ export default class Player extends Component {
 
         EventHandler.addListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
-        EventHandler.addListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
-
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
-
-        if (!this.usingStandardControls()) {
-            EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
-        }
 
         this.movementVelocity = 0;
         this.rotationVelocity = 0;
@@ -110,9 +104,6 @@ export default class Player extends Component {
         this.speedMultiplier = 1;
 
         PacketSender.sendPlayerMove(this.position, this.movementVelocity, this.rotationVelocity, this.bodyRotation, this.headRotation);
-        if (!this.usingStandardControls() && !DomHandler.hasPointerLock()) {
-            DomHandler.requestPointerLock();
-        }
     }
 
     public disable() {
@@ -132,13 +123,7 @@ export default class Player extends Component {
 
         EventHandler.removeListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
-        EventHandler.removeListener(this, EventHandler.Event.CAMERA_TOGGLE, this.onCameraToggle);
-
         EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
-
-        if (!this.usingStandardControls()) {
-            EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
-        }
 
         PacketSender.sendReloadMoveToggle(false);
         this.movingLastFrame = false;
@@ -182,10 +167,6 @@ export default class Player extends Component {
     }
 
     private onInputDown(code: string | number) {
-        if (!this.usingStandardControls() && !DomHandler.hasPointerLock() && !this.isOverlayOpen() && code !== "Escape") {
-            DomHandler.requestPointerLock();
-        }
-
         if (code === Options.options.forward.code) {
             this.movingForward = true;
         } else if (code === Options.options.backward.code) {
@@ -266,7 +247,7 @@ export default class Player extends Component {
         const blockCollision = BlockCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, Player.X_OFFSET, Player.Z_OFFSET);
         potentialPosition.sub(blockCollision);
 
-        if (this.usingStandardControls() && !this.isOverlayOpen()) {
+        if (!this.isOverlayOpen()) {
             this.computeTurretRotation();
         }
 
@@ -280,11 +261,7 @@ export default class Player extends Component {
         this.position.copy(this.getInternalPosition(potentialPosition));
         this.bodyRotation = potentialRotation;
 
-        if (this.usingSimpleControls()) {
-            this.headRotation = potentialRotation;
-        } else {
-            this.headRotation += rotationDiff;
-        }
+        this.headRotation += rotationDiff;
 
         const movementData = {
             id: this.id,
@@ -322,18 +299,6 @@ export default class Player extends Component {
         this.headRotation = angle;
     }
 
-    private onCameraToggle() {
-        if (!this.isOverlayOpen()) {
-            if (this.usingStandardControls()) {
-                EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
-                DomHandler.exitPointerLock();
-            } else {
-                EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMouseMove);
-                // dupe pointer lock request opens game menu; Request is sent in MultiplayerCamera class.
-            }
-        }
-    }
-
     private onMultiplier(multiplier: number) {
         this.speedMultiplier = multiplier;
     }
@@ -343,14 +308,6 @@ export default class Player extends Component {
         setTimeout(() => {
             this.rammingSpeedEnabled = false;
         }, time);
-    }
-
-    private usingStandardControls() {
-        return Globals.getGlobal(Globals.Global.CAMERA_IS_FOLLOWING) && !this.usingSimpleControls();
-    }
-
-    private usingSimpleControls() {
-        return Options.options.controls === "simple";
     }
 
     private onBlur() {
