@@ -194,7 +194,7 @@ export default class Player extends Component {
             this.rotatingLeft = true;
         } else if (code === Options.options.right.code) {
             this.rotatingRight = true;
-        } else if (code === Options.options.shoot.code && !this.isOverlayOpen() && !Globals.getGlobal(Globals.Global.ANGLE_BUTTON_DOWN)) {
+        } else if (code === Options.options.shoot.code && !this.isOverlayOpen()) {
             PacketSender.sendPlayerShoot();
         } else if (code === Options.options.reload.code && !this.isOverlayOpen()) {
             PacketSender.sendReloadRequest();

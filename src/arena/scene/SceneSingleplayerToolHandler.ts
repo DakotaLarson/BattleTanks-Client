@@ -31,6 +31,8 @@ export default class SceneSingleplayerToolHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.POWERUP_TOOL_SECONDARY, this.onPowerupSecondary);
 
         EventHandler.addListener(this, EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
+
+        EventHandler.addListener(this, EventHandler.Event.CREATION_TOOL_SPECTATING_POSITION_UPDATE, this.onSpectatingPositionUpdate);
     }
 
     public disable() {
@@ -44,6 +46,8 @@ export default class SceneSingleplayerToolHandler extends Component {
         EventHandler.removeListener(this, EventHandler.Event.POWERUP_TOOL_SECONDARY, this.onPowerupSecondary);
 
         EventHandler.removeListener(this, EventHandler.Event.RENDERER_RENDER_PREPARE, this.onBeforeRender);
+
+        EventHandler.removeListener(this, EventHandler.Event.CREATION_TOOL_SPECTATING_POSITION_UPDATE, this.onSpectatingPositionUpdate);
     }
 
     private onBCTPrimary() {
@@ -194,6 +198,11 @@ export default class SceneSingleplayerToolHandler extends Component {
                 }
             }
         }
+    }
+
+    private onSpectatingPositionUpdate(data: any) {
+        this.parent.spectatePos = data.position;
+        this.parent.spectateTarget = data.target;
     }
 
     private isPositionBlock(pos: Vector3) {

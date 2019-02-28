@@ -16,6 +16,9 @@ export default class SceneHandler extends Component {
 
     public blockPositions: Vector3[];
 
+    public spectatePos: Vector3;
+    public spectateTarget: Vector3;
+
     public teamASpawnPositions: Vector4[];
     public teamBSpawnPositions: Vector4[];
 
@@ -51,6 +54,9 @@ export default class SceneHandler extends Component {
         this.newArena = false;
 
         this.blockPositions = [];
+
+        this.spectatePos = new Vector3();
+        this.spectateTarget = new Vector3();
 
         this.teamASpawnPositions = [];
         this.teamBSpawnPositions = [];
@@ -223,6 +229,14 @@ export default class SceneHandler extends Component {
         this.speedPowerupPositions = this.sceneUtils.parsePositionData(data.speedPowerupPositions) || [];
         this.ammoPowerupPositions = this.sceneUtils.parsePositionData(data.ammoPowerupPositions) || [];
 
+        if (data.spectate) {
+            this.spectatePos = new Vector3(data.spectate[0], data.spectate[1], data.spectate[2]);
+            this.spectateTarget = new Vector3(data.spectate[3], data.spectate[4], data.spectate[5]);
+        } else {
+            this.spectatePos = new Vector3();
+            this.spectateTarget = new Vector3();
+        }
+
         this.updateBlocks(blockPositions);
 
         if (Options.options.gridlinesEnabled || !data.fromServer) {
@@ -244,6 +258,14 @@ export default class SceneHandler extends Component {
         const healthPowerupPositions = this.sceneUtils.generatePositionData(this.healthPowerupPositions);
         const speedPowerupPositions = this.sceneUtils.generatePositionData(this.speedPowerupPositions);
         const ammoPowerupPositions = this.sceneUtils.generatePositionData(this.ammoPowerupPositions);
+        const spectate = [
+            this.spectatePos.x,
+            this.spectatePos.y,
+            this.spectatePos.z,
+            this.spectateTarget.x,
+            this.spectateTarget.y,
+            this.spectateTarget.z,
+        ];
 
         const saveObject = {
             width: this.width - 2,
@@ -255,6 +277,7 @@ export default class SceneHandler extends Component {
             healthPowerupPositions,
             speedPowerupPositions,
             ammoPowerupPositions,
+            spectate,
         };
         EventHandler.callEvent(EventHandler.Event.ARENA_SAVE_REQUEST, saveObject);
     }

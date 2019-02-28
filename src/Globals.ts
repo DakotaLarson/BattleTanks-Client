@@ -5,7 +5,6 @@ enum Global {
     CHAT_OPEN,
     GAME_MENU_OPEN,
     OPTIONS_OPEN,
-    ANGLE_BUTTON_DOWN,
     AUDIO_ENABLED,
     AUTH_TOKEN,
     USERNAME,

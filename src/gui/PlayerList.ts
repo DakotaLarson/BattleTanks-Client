@@ -1,4 +1,3 @@
-import { Key } from "readline";
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
@@ -36,7 +35,6 @@ export default class PlayerList extends ChildComponent {
     }
 
     private onPlayerJoin(event: any) {
-        console.log(event);
         if (event.sendMessage) {
             this.sendMessage(event.name, " joined the game!");
         }
@@ -44,7 +42,6 @@ export default class PlayerList extends ChildComponent {
     }
 
     private onPlayerLeave(event: any) {
-        console.log(event);
         if (event.sendMessage) {
             this.sendMessage(event.name, " left the game.");
         }

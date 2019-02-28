@@ -17,6 +17,7 @@ export default class CreationToolPanel extends Component {
     private healthPowerupToggleElt: HTMLElement;
     private speedPowerupToggleElt: HTMLElement;
     private ammoPowerupToggleElt: HTMLElement;
+    private spectatingPositionElt: HTMLElement;
 
     private mode: number;
 
@@ -34,6 +35,7 @@ export default class CreationToolPanel extends Component {
         this.healthPowerupToggleElt = DomHandler.getElement("#creation-tool-powerup-health", this.parentElt);
         this.speedPowerupToggleElt = DomHandler.getElement("#creation-tool-powerup-speed", this.parentElt);
         this.ammoPowerupToggleElt = DomHandler.getElement("#creation-tool-powerup-ammo", this.parentElt);
+        this.spectatingPositionElt = DomHandler.getElement("#creation-tool-spectating-position", this.parentElt);
 
         this.mode = Mode.CAMERA;
 
@@ -117,6 +119,9 @@ export default class CreationToolPanel extends Component {
                 if (this.mode !== Mode.AMMO_POWERUP) {
                     EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_TOGGLE_AMMO);
                 }
+            } else if (event.target === this.spectatingPositionElt) {
+                EventHandler.callEvent(EventHandler.Event.CREATION_TOOL_SPECTATING_POSITION_INPUT);
+                this.updateSpectatingPositionElt();
             }
         }
     }
@@ -262,6 +267,13 @@ export default class CreationToolPanel extends Component {
                 elt.classList.remove("create-world-toggle-enabled");
             }
         }
+    }
+
+    private updateSpectatingPositionElt() {
+        this.spectatingPositionElt.classList.add("create-world-toggle-enabled");
+        setTimeout(() => {
+            this.spectatingPositionElt.classList.remove("create-world-toggle-enabled");
+        }, 500);
     }
 
     private hasOverlay() {

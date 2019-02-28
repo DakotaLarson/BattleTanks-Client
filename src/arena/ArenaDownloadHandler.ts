@@ -15,6 +15,7 @@ export default class ArenaDownloadHandler extends ChildComponent {
     private errorElt: HTMLElement;
 
     private titleValueElt: HTMLInputElement;
+    private authorValueElt: HTMLInputElement;
     private minValueElt: HTMLInputElement;
     private maxValueElt: HTMLInputElement;
 
@@ -27,6 +28,7 @@ export default class ArenaDownloadHandler extends ChildComponent {
         this.parent = DomHandler.getElement("#download-menu");
 
         this.titleValueElt = DomHandler.getElement("#download-option-title") as HTMLInputElement;
+        this.authorValueElt = DomHandler.getElement("#download-option-author") as HTMLInputElement;
         this.minValueElt = DomHandler.getElement("#download-option-min") as HTMLInputElement;
         this.maxValueElt = DomHandler.getElement("#download-option-max") as HTMLInputElement;
 
@@ -71,6 +73,7 @@ export default class ArenaDownloadHandler extends ChildComponent {
             this.arenaData = undefined;
 
             this.titleValueElt.value = "";
+            this.authorValueElt.value = "";
             this.minValueElt.value = "";
             this.maxValueElt.value = "";
             this.errorElt.textContent = "";
@@ -89,9 +92,10 @@ export default class ArenaDownloadHandler extends ChildComponent {
     private onDownloadClick(event: MouseEvent) {
         if (event.target === this.downloadBtn) {
             const titleValue = this.titleValueElt.value.trim();
+            const authorValue = this.authorValueElt.value.trim();
             const minValue = Number(this.minValueElt.value);
             const maxValue = Number(this.maxValueElt.value);
-            if (isNaN(minValue) || isNaN(maxValue) || !titleValue) {
+            if (isNaN(minValue) || isNaN(maxValue) || !titleValue || !authorValue) {
                 this.errorElt.textContent = "Invalid value(s)";
             } else if (minValue < ArenaDownloadHandler.MIN_VALUE || minValue > ArenaDownloadHandler.MAX_VALUE - ArenaDownloadHandler.MAX_OFFSET) {
                     this.errorElt.textContent = "Minimum value must be between " + ArenaDownloadHandler.MIN_VALUE + " - " + (ArenaDownloadHandler.MAX_VALUE - ArenaDownloadHandler.MAX_OFFSET);
@@ -100,6 +104,7 @@ export default class ArenaDownloadHandler extends ChildComponent {
                         this.errorElt.textContent = "Maximum value must be between " + (ArenaDownloadHandler.MIN_VALUE + ArenaDownloadHandler.MAX_OFFSET) + " - " + ArenaDownloadHandler.MAX_VALUE;
             } else {
                 this.arenaData.title = titleValue;
+                this.arenaData.author = authorValue;
                 this.arenaData.minimumPlayerCount = minValue;
                 this.arenaData.maximumPlayerCount = maxValue;
 
