@@ -7,7 +7,7 @@ export default class MultiplayerCamera extends Camera {
 
     private static readonly FOLLOWING_POSITION = new Spherical(3, Math.PI / 3, 0);
 
-    private cameraFrozen: boolean;
+    private lookingBehind: boolean;
 
     private switchTask: number | undefined;
 
@@ -16,14 +16,14 @@ export default class MultiplayerCamera extends Camera {
 
         this.spherical = MultiplayerCamera.FOLLOWING_POSITION.clone();
 
-        this.cameraFrozen = false;
+        this.lookingBehind = false;
 
     }
 
     public enable() {
         super.enable();
 
-        this.cameraFrozen = false;
+        this.lookingBehind = false;
 
         EventHandler.addListener(this, EventHandler.Event.PLAYER_ADDITION, this.onPlayerAddition);
         EventHandler.addListener(this, EventHandler.Event.PLAYER_REMOVAL, this.onPlayerRemoval);
@@ -78,7 +78,7 @@ export default class MultiplayerCamera extends Camera {
         this.spherical.copy(MultiplayerCamera.FOLLOWING_POSITION);
         this.target = new Vector3(data.pos.x + 0.5, data.pos.y, data.pos.z + 0.5);
 
-        this.moveCamera(data.pos.w, data.pos.w);
+        this.moveCamera(data.pos.w, 0, true);
         window.clearTimeout(this.switchTask);
     }
 
@@ -94,40 +94,45 @@ export default class MultiplayerCamera extends Camera {
     private onPlayerMove(data: any) {
         this.target = new Vector3(data.pos.x + 0.5, data.pos.y, data.pos.z + 0.5);
 
-        this.moveCamera(data.bodyRot, data.headRot);
+        this.moveCamera(data.bodyRot, data.delta, false);
     }
 
     private onOverlayOpen() {
-        this.cameraFrozen = false;
+        this.updateLookingBehind(false);
     }
 
     private onMouseDown(event: MouseEvent) {
         if (event.button === 2 && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
-            this.cameraFrozen = true;
+            this.updateLookingBehind(true);
         }
     }
 
     private onMouseUp(event: MouseEvent) {
         if (event.button === 2) {
-            this.cameraFrozen = false;
+            this.updateLookingBehind(false);
         }
     }
 
-    private moveCamera(bodyRot: number, headRot: number) {
-        // if (this.usingFollowingCamera()) {
-        if (!this.cameraFrozen) {
-            this.spherical.theta = bodyRot + Math.PI;
-            this.camera.position.setFromSpherical(this.spherical);
-            this.camera.position.add(this.target);
-
-            this.camera.lookAt(this.target);
+    private moveCamera(bodyRot: number, delta: number, snap: boolean) {
+        let theta;
+        if (this.lookingBehind) {
+            theta = bodyRot;
+        } else {
+            theta = bodyRot + Math.PI;
         }
-        // } else {
-        //     const camPos = this.target.clone();
-        //     camPos.add(new Vector3(0.25 * Math.sin(headRot), 0.85, 0.25 * Math.cos(headRot))); // Move to front of "head"
-        //     this.camera.position.copy(camPos);
-        //     this.camera.rotation.setFromVector3(new Vector3(0, headRot + Math.PI, 0));
-        //     this.cameraFrozen = false;
-        // }
+        this.spherical.theta = theta;
+        const finalPosition = new Vector3().setFromSpherical(this.spherical).add(this.target);
+        if (snap) {
+            this.camera.position.copy(finalPosition);
+        } else {
+            const smoothedPosition = new Vector3().lerpVectors(this.camera.position, finalPosition, delta * 10);
+            this.camera.position.copy(smoothedPosition);
+        }
+        this.camera.lookAt(this.target);
+    }
+
+    private updateLookingBehind(value: boolean) {
+        this.lookingBehind = value;
+        EventHandler.callEvent(EventHandler.Event.PLAYER_LOOKING_BEHIND, value);
     }
 }

@@ -245,6 +245,10 @@ const receivePowerupApplication = (powerupId: number) => {
     }
 };
 
+const receivePong = () => {
+    EventHandler.callEvent(EventHandler.Event.DEBUG_PONG);
+};
+
 const handlers: any[] = [];
 handlers.push(receiveArena);
 
@@ -294,6 +298,8 @@ handlers.push(receiveChatMessage);
 handlers.push(receivePowerupAddition);
 handlers.push(receivePowerupRemoval);
 handlers.push(receivePowerupApplication);
+
+handlers.push(receivePong);
 
 enum DataType {
     NUMBER,

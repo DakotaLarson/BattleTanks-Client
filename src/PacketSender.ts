@@ -10,6 +10,7 @@ enum Packet {
     CHAT_MESSAGE,
     POWERUP_PICKUP,
     RAM_COLLISION,
+    PING,
 }
 
 enum DataType {
@@ -139,6 +140,11 @@ export default class PacketSender {
 
     public static sendRamCollision(playerId: number) {
         const data = constructData(Packet.RAM_COLLISION, playerId, DataType.NUMBER);
+        send(data);
+    }
+
+    public static ping() {
+        const data = constructData(Packet.PING, undefined, DataType.HEADER_ONLY);
         send(data);
     }
 

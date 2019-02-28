@@ -23,7 +23,6 @@ export default class Metrics extends ChildComponent {
     private matchCount: number;
     private audio: boolean;
     private authenticated: boolean;
-    private controls: string;
 
     private visits: number;
     private referrer: string;
@@ -53,7 +52,6 @@ export default class Metrics extends ChildComponent {
         this.matchCount = 0;
         this.audio = false;
         this.authenticated = false;
-        this.controls = "";
 
         let visits = parseInt((localStorage.getItem("visits") as string), 10);
         if (isNaN(visits)) {
@@ -171,7 +169,6 @@ export default class Metrics extends ChildComponent {
         this.gameTime = Math.round(this.gameTime / 1000);
         this.sessionTime = Math.round((performance.now() - this.sessionTime) / 1000);
         this.audio = Globals.getGlobal(Globals.Global.AUDIO_ENABLED);
-        this.controls = Options.options.controls;
 
         const address = "http" + Globals.getGlobal(Globals.Global.HOST);
         const blob = new Blob([JSON.stringify({
@@ -183,7 +180,6 @@ export default class Metrics extends ChildComponent {
             matchCount: this.matchCount,
             audio: this.audio,
             authenticated: this.authenticated,
-            controls: this.controls,
             visits: this.visits,
             referrer: this.referrer,
             token: this.token,

@@ -18,7 +18,6 @@ export default class GameSuggestion extends ChildComponent {
             "Holding down the secondary mouse button locks the camera!",
             "Press 'Enter' to chat with other players!",
             "Want the full immersive experience? Go fullscreen!",
-            "Want to move your turret independently? Switch to standard controls in the options menu!",
             "Pick up powerups to gain an advantage!",
             "Remember you only respawn twice... Be careful!",
             "You are protected for 3 seconds after you spawn. Make it count!",

@@ -143,10 +143,7 @@ class Game extends Component {
 
     let prevTime = performance.now();
     let prevTickTime = performance.now();
-    let latestRenderTime = 0;
     let prevDebugTime = prevTime;
-    let debugRenderTime = 0;
-    let debugComputeTime = 0;
     let debugFPSCount = 0;
 
     const update = () => {
@@ -171,27 +168,15 @@ class Game extends Component {
 
         const currentDebugTime = performance.now();
         computeAndRenderTime = currentDebugTime - computeAndRenderTime;
-        debugRenderTime += latestRenderTime;
-        debugComputeTime += computeAndRenderTime - latestRenderTime;
         debugFPSCount ++;
         prevTime = currentTime;
 
     };
     update();
-    EventHandler.addListener(undefined, EventHandler.Event.RENDERER_RENDER_COMPLETE, (time) => {
-        latestRenderTime = time;
-    });
 
     const outputDebugData = () => {
-        const idleTime = 1000 - debugRenderTime - debugComputeTime;
-        const debugData = {
-            fps: debugFPSCount,
-            rendering: debugRenderTime,
-            computation: debugComputeTime,
-            idle: idleTime,
-        };
-        EventHandler.callEvent(EventHandler.Event.GAME_DEBUG_OUTPUT, debugData);
-        debugRenderTime = debugComputeTime = debugFPSCount = 0;
+        EventHandler.callEvent(EventHandler.Event.DEBUG_FPS, debugFPSCount);
+        debugFPSCount = 0;
     };
 
     EventHandler.addListener(undefined, EventHandler.Event.DOM_KEYUP, (event) => {

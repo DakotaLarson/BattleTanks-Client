@@ -6,9 +6,9 @@ import EventHandler from "./EventHandler";
 
 export default class Renderer extends Component {
 
-    public renderer: WebGLRenderer;
-    public scene: Scene;
-    public camera: PerspectiveCamera;
+    private renderer: WebGLRenderer;
+    private scene: Scene;
+    private camera: PerspectiveCamera;
 
     constructor(scene: Scene, camera: PerspectiveCamera) {
         super();
@@ -27,6 +27,9 @@ export default class Renderer extends Component {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.render, EventHandler.Level.HIGH);
+        setInterval(() => {
+            this.sendDebugData();
+        }, 1000);
     }
 
     public render() {
@@ -35,16 +38,14 @@ export default class Renderer extends Component {
         this.renderer.render(this.scene, this.camera);
         time = performance.now() - time;
         EventHandler.callEvent(EventHandler.Event.RENDERER_RENDER_COMPLETE, time);
-        // console.log(this.renderer.info);
-
-        // info.memory.geometries
-        // info.memory.textures
-        // info.render.calls
-        // info.render.triangles
     }
 
     public onResize() {
         const dimensions = DomHandler.getDisplayDimensions();
         this.renderer.setSize(dimensions.width, dimensions.height);
+    }
+
+    private sendDebugData() {
+        EventHandler.callEvent(EventHandler.Event.DEBUG_RENDER, this.renderer.info.render.calls);
     }
 }

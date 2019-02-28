@@ -13,9 +13,10 @@ export default class Player extends Component {
 
     public static radius = Math.sqrt(Math.pow(0.5, 2) + Math.pow(0.75, 2));
 
-    private static readonly MOVEMENT_SPEED = 5;
-    private static readonly ROTATION_SPEED = 2.5;
+    private static readonly MOVEMENT_SPEED = 4;
+    private static readonly ROTATION_SPEED = 2;
     private static readonly RAMMING_SPEED_MULTI = 2;
+    private static readonly DECREASE_MULTIPLIER = 4;
 
     private static readonly X_OFFSET = 0.5;
     private static readonly Z_OFFSET = 0.75;
@@ -43,6 +44,8 @@ export default class Player extends Component {
 
     private frameDelta: number;
 
+    private lookingBehind: boolean;
+
     constructor(id: number, color: number, pos: Vector4) {
         super();
         this.id = id;
@@ -67,6 +70,8 @@ export default class Player extends Component {
         this.speedMultiplier = 1;
 
         this.frameDelta = 0;
+
+        this.lookingBehind = false;
     }
 
     public enable() {
@@ -89,6 +94,8 @@ export default class Player extends Component {
 
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
 
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_LOOKING_BEHIND, this.onLookingBehind);
+
         this.movementVelocity = 0;
         this.rotationVelocity = 0;
 
@@ -102,6 +109,8 @@ export default class Player extends Component {
         this.rammingSpeedEnabled = false;
 
         this.speedMultiplier = 1;
+
+        this.lookingBehind = false;
 
         PacketSender.sendPlayerMove(this.position, this.movementVelocity, this.rotationVelocity, this.bodyRotation, this.headRotation);
     }
@@ -124,6 +133,8 @@ export default class Player extends Component {
         EventHandler.removeListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
+
+        EventHandler.removeListener(this, EventHandler.Event.PLAYER_LOOKING_BEHIND, this.onLookingBehind);
 
         PacketSender.sendReloadMoveToggle(false);
         this.movingLastFrame = false;
@@ -186,15 +197,14 @@ export default class Player extends Component {
     }
 
     private onUpdate(delta: number) {
-        const decreaseMultiplier = 10;
-        let increaseMultiplier = decreaseMultiplier * this.speedMultiplier;
+        let increaseMultiplier = Player.DECREASE_MULTIPLIER * this.speedMultiplier;
         if (this.rammingSpeedEnabled) {
             increaseMultiplier *= Player.RAMMING_SPEED_MULTI;
         }
 
         // Velocity always goes to 0 with this calculation.
-        this.movementVelocity -= this.movementVelocity * decreaseMultiplier * delta;
-        this.rotationVelocity -= this.rotationVelocity * decreaseMultiplier * delta;
+        this.movementVelocity -= this.movementVelocity * Player.DECREASE_MULTIPLIER * delta;
+        this.rotationVelocity -= this.rotationVelocity * Player.DECREASE_MULTIPLIER * delta;
 
         if (this.movingForward && !this.movingBackward && !this.isOverlayOpen()) {
             this.movementVelocity += Player.MOVEMENT_SPEED * delta * increaseMultiplier;
@@ -237,7 +247,11 @@ export default class Player extends Component {
         potentialPosition.sub(blockCollision);
 
         if (!this.isOverlayOpen()) {
-            this.computeTurretRotation();
+            if (!this.lookingBehind) {
+                this.computeTurretRotation();
+            } else {
+                this.headRotation += rotationDiff;
+            }
         }
 
         if (playerCollision.playerId) {
@@ -250,14 +264,13 @@ export default class Player extends Component {
         this.position.copy(this.getInternalPosition(potentialPosition));
         this.bodyRotation = potentialRotation;
 
-        this.headRotation += rotationDiff;
-
         const movementData = {
             id: this.id,
             pos: this.position,
             bodyRot: this.bodyRotation,
             headRot: this.headRotation,
             fromServer: false,
+            delta,
         };
 
         const movingThisFrame = this.movingForward || this.movingBackward;
@@ -272,20 +285,6 @@ export default class Player extends Component {
 
     private onTick() {
         PacketSender.sendPlayerMove(this.position, this.movementVelocity, this.rotationVelocity, this.bodyRotation, this.headRotation);
-    }
-
-    private computeTurretRotation() {
-        const ray: Ray = RaycastHandler.getRaycaster().ray;
-        const intersection = new Vector3();
-        const playerPosition = this.position.clone().add(new Vector3(0.5, 0, 0.5));
-        ray.intersectPlane(new Plane(new Vector3(0, 1, 0), -0.75), intersection);
-        const slope = (playerPosition.x - intersection.x) / (playerPosition.z - intersection.z);
-        let angle = Math.atan(slope);
-
-        if (playerPosition.z > intersection.z) {
-            angle += Math.PI;
-        }
-        this.headRotation = angle;
     }
 
     private onMultiplier(multiplier: number) {
@@ -311,6 +310,24 @@ export default class Player extends Component {
 
         this.rotatingLeft = false;
         this.rotatingRight = false;
+    }
+
+    private onLookingBehind(lookingBehind: boolean) {
+        this.lookingBehind = lookingBehind;
+    }
+
+    private computeTurretRotation() {
+        const ray: Ray = RaycastHandler.getRaycaster().ray;
+        const intersection = new Vector3();
+        const playerPosition = this.position.clone().add(new Vector3(0.5, 0, 0.5));
+        ray.intersectPlane(new Plane(new Vector3(0, 1, 0), -0.75), intersection);
+        const slope = (playerPosition.x - intersection.x) / (playerPosition.z - intersection.z);
+        let angle = Math.atan(slope);
+
+        if (playerPosition.z > intersection.z) {
+            angle += Math.PI;
+        }
+        this.headRotation = angle;
     }
 
     private isOverlayOpen() {
