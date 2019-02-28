@@ -33,8 +33,6 @@ export default class OptionsMenu extends Component {
     private mouseValueElt: HTMLInputElement;
     private rotationValueElt: HTMLInputElement;
     private cameraAngleValueElt: HTMLInputElement;
-    private controlsSimpleValueElt: HTMLInputElement;
-    private controlsStandardValueElt: HTMLInputElement;
 
     private isListening: boolean;
 
@@ -66,8 +64,6 @@ export default class OptionsMenu extends Component {
         this.mouseValueElt = DomHandler.getElement("#option-value-mouse", this.parentElt) as HTMLInputElement;
         this.rotationValueElt = DomHandler.getElement("#option-value-rotation", this.parentElt) as HTMLInputElement;
         this.cameraAngleValueElt = DomHandler.getElement("#option-value-camera-angle", this.parentElt) as HTMLInputElement;
-        this.controlsSimpleValueElt = DomHandler.getElement("#option-value-controls-simple", this.parentElt) as HTMLInputElement;
-        this.controlsStandardValueElt = DomHandler.getElement("#option-value-controls-standard", this.parentElt) as HTMLInputElement;
 
         this.returnBtn = DomHandler.getElement("#opt-opt-close", this.parentElt);
 
@@ -134,8 +130,6 @@ export default class OptionsMenu extends Component {
         DomEventHandler.addListener(this, this.mouseValueElt, "change", this.onMouseChange);
         DomEventHandler.addListener(this, this.rotationValueElt, "change", this.onRotationSensitivityChange);
         DomEventHandler.addListener(this, this.cameraAngleValueElt, "change", this.onCameraAngleChange);
-        DomEventHandler.addListener(this, this.controlsSimpleValueElt, "change", this.onSimpleControlsChange);
-        DomEventHandler.addListener(this, this.controlsStandardValueElt, "change", this.onStandardControlsChange);
 
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onOptionsParentClick);
 
@@ -170,8 +164,6 @@ export default class OptionsMenu extends Component {
         DomEventHandler.removeListener(this, this.mouseValueElt, "change", this.onMouseChange);
         DomEventHandler.removeListener(this, this.rotationValueElt, "change", this.onRotationSensitivityChange);
         DomEventHandler.removeListener(this, this.cameraAngleValueElt, "change", this.onCameraAngleChange);
-        DomEventHandler.removeListener(this, this.controlsSimpleValueElt, "change", this.onSimpleControlsChange);
-        DomEventHandler.removeListener(this, this.controlsStandardValueElt, "change", this.onStandardControlsChange);
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onOptionsParentClick);
 
@@ -339,18 +331,6 @@ export default class OptionsMenu extends Component {
         this.saveChange("cameraAngle", value);
     }
 
-    private onSimpleControlsChange() {
-        if (this.controlsSimpleValueElt.checked) {
-            this.saveChange("controls", "simple");
-        }
-    }
-
-    private onStandardControlsChange() {
-        if (this.controlsStandardValueElt.checked) {
-            this.saveChange("controls", "standard");
-        }
-    }
-
     // key = human readable
     // code = more precise
     private listenForInput(element: HTMLElement) {
@@ -439,13 +419,6 @@ export default class OptionsMenu extends Component {
             setRangeValue(options.mouseSensitivity, this.mouseValueElt);
             setRangeValue(options.rotationSensitivity, this.rotationValueElt);
             setRangeValue(options.cameraAngle, this.cameraAngleValueElt);
-
-            if (options.controls === "simple") {
-                this.controlsSimpleValueElt.checked = true;
-            } else if (options.controls === "standard") {
-                this.controlsStandardValueElt.checked = true;
-            }
-
         } else {
             console.warn("No options to read from. Were they deleted?");
         }

@@ -1,7 +1,6 @@
 enum Global {
     HOST,
     CAMERA,
-    CAMERA_IS_FOLLOWING,
     CHAT_OPEN,
     GAME_MENU_OPEN,
     OPTIONS_OPEN,

@@ -50,8 +50,6 @@ export default class ArenaHandler extends Component {
     constructor(perspectiveCamera: PerspectiveCamera) {
         super();
 
-        Globals.setGlobal(Globals.Global.CAMERA_IS_FOLLOWING, true);
-
         Globals.setGlobal(Globals.Global.CAMERA, perspectiveCamera);
 
         const audioListener = new AudioListener();
