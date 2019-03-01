@@ -88,7 +88,7 @@ export default class MultiplayerArena extends Arena {
         if (!data.interpolated) {
             const player = this.connectedPlayers.get(data.id);
             if (player) {
-                player.updatePosition(data.pos, data.movementVelocity, data.rotationVelocity, data.bodyRot, data.headRot);
+                player.updatePosition(data.pos, data.movementVelocity, data.rotationVelocity, data.bodyRot, data.headRot, data.ramResponse);
             }
         }
     }

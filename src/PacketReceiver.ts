@@ -71,6 +71,14 @@ const receivePlayerSpectating = () => {
     EventHandler.callEvent(EventHandler.Event.BACKGROUND_AUDIO_SPECTATING);
 };
 
+const receivePlayerAmmoStatus = (data: number[]) => {
+    const dataObj = {
+        ammoCount: data[0],
+        reloadPercentage: data[1],
+    };
+    EventHandler.callEvent(EventHandler.Event.PLAYER_AMMO_STATUS, dataObj);
+};
+
 const receivePlayerSpeedMultiplier = (multiplier: number) => {
     EventHandler.callEvent(EventHandler.Event.PLAYER_SPEED_MULTIPLIER, multiplier);
 };
@@ -83,12 +91,9 @@ const receivePlayerRam = (time: number) => {
     EventHandler.callEvent(EventHandler.Event.PLAYER_RAM, time);
 };
 
-const receivePlayerAmmoStatus = (data: number[]) => {
-    const dataObj = {
-        ammoCount: data[0],
-        reloadPercentage: data[1],
-    };
-    EventHandler.callEvent(EventHandler.Event.PLAYER_AMMO_STATUS, dataObj);
+const receivePlayerRamResponse = (rawVec: number[]) => {
+    const vec = new Vector3(rawVec[0], rawVec[1], rawVec[2]);
+    EventHandler.callEvent(EventHandler.Event.PLAYER_RAM_RESPONSE, vec);
 };
 
 const receiveConnectedPlayerJoin = (data: string) => {
@@ -125,6 +130,10 @@ const receiveConnectedPlayerMove = (data: any) => {
     const rotationVelocity = data.body[4];
     const bodyRot = data.body[5];
     const headRot = data.body[6];
+    let ramResponse;
+    if (data.body.length === 10) {
+        ramResponse = new Vector3(data.body[7], data.body[8], data.body[9]);
+    }
     EventHandler.callEvent(EventHandler.Event.CONNECTED_PLAYER_MOVE, {
         id: playerId,
         pos,
@@ -132,6 +141,7 @@ const receiveConnectedPlayerMove = (data: any) => {
         rotationVelocity,
         bodyRot,
         headRot,
+        ramResponse,
     });
 };
 
@@ -269,6 +279,7 @@ handlers.push(receivePlayerAmmoStatus);
 handlers.push(receivePlayerSpeedMultiplier);
 handlers.push(receivePlayerPowerupPickup);
 handlers.push(receivePlayerRam);
+handlers.push(receivePlayerRamResponse);
 
 handlers.push(receiveConnectedPlayerJoin);
 handlers.push(receiveConnectedPlayerLeave);

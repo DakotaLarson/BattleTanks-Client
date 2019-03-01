@@ -20,6 +20,8 @@ export default class ConnectedPlayer extends ChildComponent {
 
     private headRotation: number;
 
+    private ramResponse: Vector3 | undefined;
+
     constructor(id: number, name: string, color: number, pos: Vector4, headRot: number) {
         super();
 
@@ -37,12 +39,13 @@ export default class ConnectedPlayer extends ChildComponent {
         this.headRotation = headRot;
     }
 
-    public updatePosition(pos: Vector3, movementVelocity: number, rotationVelocity: number, bodyRot: number, headRot: number) {
+    public updatePosition(pos: Vector3, movementVelocity: number, rotationVelocity: number, bodyRot: number, headRot: number, ramResponse: Vector3 | undefined) {
         this.position = pos;
         this.movementVelocity = movementVelocity;
         this.rotationVelocity = rotationVelocity;
         this.bodyRotation = bodyRot;
         this.headRotation = headRot;
+        this.ramResponse = ramResponse;
     }
 
     public enable() {
@@ -62,11 +65,17 @@ export default class ConnectedPlayer extends ChildComponent {
     }
 
     private onFrame(delta: number) {
-        const potentialRotation = (this.bodyRotation + delta * this.rotationVelocity);
-
+        let potentialRotation = (this.bodyRotation + delta * this.rotationVelocity);
         const potentialPosition = this.getCenterPosition();
-        potentialPosition.x += delta * this.movementVelocity * Math.sin(potentialRotation),
-        potentialPosition.z += delta * this.movementVelocity * Math.cos(potentialRotation);
+
+        if (this.ramResponse) {
+            potentialPosition.x += delta * this.movementVelocity * this.ramResponse.x;
+            potentialPosition.z += delta * this.movementVelocity * this.ramResponse.z;
+            potentialRotation = this.bodyRotation;
+        } else {
+            potentialPosition.x += delta * this.movementVelocity * Math.sin(potentialRotation),
+            potentialPosition.z += delta * this.movementVelocity * Math.cos(potentialRotation);
+        }
 
         // Do not run collision detection on other players
 

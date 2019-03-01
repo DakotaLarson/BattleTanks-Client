@@ -44,6 +44,7 @@ export default class Player extends Component {
     private frameDelta: number;
 
     private lookingBehind: boolean;
+    private ramResponse: Vector3 | undefined;
 
     constructor(id: number, color: number, pos: Vector4) {
         super();
@@ -88,6 +89,7 @@ export default class Player extends Component {
         EventHandler.addListener(this, EventHandler.Event.PLAYER_SPEED_MULTIPLIER, this.onMultiplier);
 
         EventHandler.addListener(this, EventHandler.Event.PLAYER_RAM, this.onRam);
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_RAM_RESPONSE, this.onRamResponse);
 
         EventHandler.addListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
@@ -128,6 +130,7 @@ export default class Player extends Component {
 
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_SPEED_MULTIPLIER, this.onMultiplier);
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_RAM, this.onRam);
+        EventHandler.removeListener(this, EventHandler.Event.PLAYER_RAM_RESPONSE, this.onRamResponse);
 
         EventHandler.removeListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
@@ -216,13 +219,13 @@ export default class Player extends Component {
             this.rotationVelocity -=  Player.ROTATION_SPEED * delta * increaseMultiplier * Options.options.rotationSensitivity;
         }
 
-        const moving = this.movingForward && this.movingBackward && this.rotatingLeft && this.rotatingRight;
+        const moving = this.movingForward || this.movingBackward || this.rotatingLeft || this.rotatingRight;
 
-        if (!moving && Math.abs(this.movementVelocity) < 0.005) {
+        if (!moving && Math.abs(this.movementVelocity) < 0.01) {
             this.movementVelocity = 0;
         }
 
-        if (!moving && Math.abs(this.rotationVelocity) < 0.005) {
+        if (!moving && Math.abs(this.rotationVelocity) < 0.01) {
             this.rotationVelocity = 0;
         }
 
@@ -238,14 +241,21 @@ export default class Player extends Component {
         }
 
         const potentialPosition = this.getCenterPosition();
-        potentialPosition.x += delta * this.movementVelocity * Math.sin(potentialRotation),
-        potentialPosition.z += delta * this.movementVelocity * Math.cos(potentialRotation);
+        if (this.ramResponse) {
+            potentialPosition.x += delta * this.movementVelocity * this.ramResponse.x;
+            potentialPosition.z += delta * this.movementVelocity * this.ramResponse.z;
+            potentialRotation = this.bodyRotation;
+        } else {
+            potentialPosition.x += delta * this.movementVelocity * Math.sin(potentialRotation),
+            potentialPosition.z += delta * this.movementVelocity * Math.cos(potentialRotation);
+        }
 
         const playerCollision = PlayerCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, Player.X_OFFSET, Player.Z_OFFSET, this.id);
         potentialPosition.sub(playerCollision.correction);
 
         const blockCollision = BlockCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, Player.X_OFFSET, Player.Z_OFFSET);
         potentialPosition.sub(blockCollision.correction);
+
         if (blockCollision.sandwiched) {
             if (blockCollision.sandwiched === 1) {
                 if (potentialRotation < Math.PI) {
@@ -313,6 +323,14 @@ export default class Player extends Component {
         setTimeout(() => {
             this.rammingSpeedEnabled = false;
         }, time);
+    }
+
+    private onRamResponse(vec: Vector3) {
+        this.ramResponse = vec;
+        this.movementVelocity = 50;
+        setTimeout(() => {
+            this.ramResponse = undefined;
+        }, 1000);
     }
 
     private onBlur() {
