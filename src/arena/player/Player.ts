@@ -1,6 +1,5 @@
 import { Plane, Ray, Vector3, Vector4 } from "three";
 import Component from "../../component/ChildComponent";
-import DomHandler from "../../DomHandler";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
 import Options from "../../Options";
@@ -139,7 +138,6 @@ export default class Player extends Component {
         PacketSender.sendReloadMoveToggle(false);
         this.movingLastFrame = false;
         this.rammingSpeedEnabled = false;
-        DomHandler.exitPointerLock();
     }
 
     public getCenterPosition() {
@@ -234,7 +232,10 @@ export default class Player extends Component {
         }
         this.frameDelta = 0;
 
-        const potentialRotation = this.bodyRotation + rotationDiff;
+        let potentialRotation = (this.bodyRotation + rotationDiff) % (2 * Math.PI);
+        if (potentialRotation < 0) {
+            potentialRotation = 2 * Math.PI - potentialRotation;
+        }
 
         const potentialPosition = this.getCenterPosition();
         potentialPosition.x += delta * this.movementVelocity * Math.sin(potentialRotation),
@@ -244,7 +245,23 @@ export default class Player extends Component {
         potentialPosition.sub(playerCollision.correction);
 
         const blockCollision = BlockCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, Player.X_OFFSET, Player.Z_OFFSET);
-        potentialPosition.sub(blockCollision);
+        potentialPosition.sub(blockCollision.correction);
+        if (blockCollision.sandwiched) {
+            if (blockCollision.sandwiched === 1) {
+                if (potentialRotation < Math.PI) {
+                    potentialRotation = Math.PI / 2;
+                } else if (potentialRotation > Math.PI) {
+                    potentialRotation = 3 * Math.PI / 2;
+                }
+
+            } else if (blockCollision.sandwiched === -1) {
+                if (potentialRotation > Math.PI / 2 && potentialRotation < 3 * Math.PI / 2 ) {
+                    potentialRotation = Math.PI;
+                } else if (potentialRotation < Math.PI / 2 || potentialRotation > 3 * Math.PI / 2) {
+                    potentialRotation = 0;
+                }
+            }
+        }
 
         if (!this.isOverlayOpen()) {
             if (!this.lookingBehind) {
@@ -321,13 +338,15 @@ export default class Player extends Component {
         const intersection = new Vector3();
         const playerPosition = this.position.clone().add(new Vector3(0.5, 0, 0.5));
         ray.intersectPlane(new Plane(new Vector3(0, 1, 0), -0.75), intersection);
-        const slope = (playerPosition.x - intersection.x) / (playerPosition.z - intersection.z);
-        let angle = Math.atan(slope);
+        if (!intersection.equals(new Vector3())) {
+            const slope = (playerPosition.x - intersection.x) / (playerPosition.z - intersection.z);
+            let angle = Math.atan(slope);
 
-        if (playerPosition.z > intersection.z) {
-            angle += Math.PI;
+            if (playerPosition.z > intersection.z) {
+                angle += Math.PI;
+            }
+            this.headRotation = angle;
         }
-        this.headRotation = angle;
     }
 
     private isOverlayOpen() {

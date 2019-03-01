@@ -5,7 +5,7 @@ import Camera from "./Camera";
 
 export default class MultiplayerCamera extends Camera {
 
-    private static readonly FOLLOWING_POSITION = new Spherical(3, Math.PI / 3, 0);
+    private static readonly FOLLOWING_POSITION = new Spherical(3, Math.PI / 3.125, 0);
 
     private lookingBehind: boolean;
 

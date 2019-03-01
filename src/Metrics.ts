@@ -1,7 +1,6 @@
 import ChildComponent from "./component/ChildComponent";
 import EventHandler from "./EventHandler";
 import Globals from "./Globals";
-import Options from "./Options";
 
 declare const grecaptcha: any;
 

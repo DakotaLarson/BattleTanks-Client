@@ -4,6 +4,8 @@ import Player from "../player/Player";
 import CollisionUtils from "./CollisionUtils";
 
 export default class PlayerCollisionHandler {
+
+    private static players: Array<ConnectedPlayer | Player> = [];
     public static getCollision(pos: Vector3, rot: number, offsetX: number, offsetZ: number, id: number) {
 
         const testPlayers: Array<ConnectedPlayer | Player> = new Array();
@@ -59,6 +61,4 @@ export default class PlayerCollisionHandler {
     public static clearPlayers() {
         PlayerCollisionHandler.players = [];
     }
-
-    private static players: Array<ConnectedPlayer | Player> = [];
 }
