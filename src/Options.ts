@@ -102,10 +102,6 @@ export default class Options extends Component {
             Options.options.rotationSensitivity = 0.75;
         }
 
-        if (!("cameraAngle" in Options.options)) {
-            Options.options.cameraAngle = 0.65;
-        }
-
         localStorage.setItem("userOptions", JSON.stringify(Options.options));
     }
 
