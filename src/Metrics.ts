@@ -108,10 +108,9 @@ export default class Metrics extends ChildComponent {
 
         EventHandler.addListener(this, EventHandler.Event.DOM_BEFOREUNLOAD, this.onUnload);
 
-        EventHandler.addListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.onMPConnect);
+        EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECT_REQUEST, this.onMPConnect);
 
-        EventHandler.addListener(this, EventHandler.Event.CONNECTION_MENU_DISCONNECT, this.onMPDisconnect);
-        EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.onMPDisconnect);
+        EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_DISCONNECT_REQUEST, this.onMPDisconnect);
 
         EventHandler.addListener(this, EventHandler.Event.MATCH_STATISTICS_RECEPTION, this.onStatsReception);
 
@@ -125,10 +124,9 @@ export default class Metrics extends ChildComponent {
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_BEFOREUNLOAD, this.onUnload);
 
-        EventHandler.removeListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.onMPConnect);
+        EventHandler.removeListener(this, EventHandler.Event.MULTIPLAYER_CONNECT_REQUEST, this.onMPConnect);
 
-        EventHandler.removeListener(this, EventHandler.Event.CONNECTION_MENU_DISCONNECT, this.onMPDisconnect);
-        EventHandler.removeListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.onMPDisconnect);
+        EventHandler.removeListener(this, EventHandler.Event.MULTIPLAYER_DISCONNECT_REQUEST, this.onMPDisconnect);
 
         EventHandler.removeListener(this, EventHandler.Event.MATCH_STATISTICS_RECEPTION, this.onStatsReception);
 

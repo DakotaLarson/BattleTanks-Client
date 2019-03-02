@@ -31,6 +31,8 @@ class Game extends Component {
     private auth: Auth;
     private metrics: Metrics;
 
+    private connectedToMultiplayer: boolean;
+
     constructor() {
         super();
         const perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
@@ -44,6 +46,7 @@ class Game extends Component {
         this.gameStatusHandler = new GameStatusHandler();
         this.alertMessageHandler = new AlertMessageHandler();
         this.metrics = new Metrics();
+        this.connectedToMultiplayer = false;
     }
     public enable() {
         EventHandler.callEvent(EventHandler.Event.GAME_START);
@@ -53,14 +56,15 @@ class Game extends Component {
 
         EventHandler.addListener(this, EventHandler.Event.SP_GAMEMENU_RETURN_TO_MAIN_REQUEST, this.unloadSingleplayer);
 
-        EventHandler.addListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.connectToMultiplayer);
+        EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECT_REQUEST, this.connectToMultiplayer);
 
-        EventHandler.addListener(this, EventHandler.Event.CONNECTION_MENU_DISCONNECT, this.disconnectFromMultiplayer);
-        EventHandler.addListener(this, EventHandler.Event.MP_GAMEMENU_DISCONNECT, this.disconnectFromMultiplayer);
+        EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_DISCONNECT_REQUEST, this.disconnectFromMultiplayer);
 
         EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
 
-        this.setHost();
+        if (!this.setHost()) {
+            EventHandler.addListener(this, EventHandler.Event.DOM_VISIBILITYCHANGE, this.onVisibilityChange);
+        }
 
         this.attachComponent(this.auth);
         this.attachComponent(this.options);
@@ -100,6 +104,7 @@ class Game extends Component {
         this.mpConnection = new MultiplayerConnection(address, Globals.getGlobal(Globals.Global.AUTH_TOKEN));
         this.attachChild(this.mpConnection);
         this.attachChild(this.gameStatusHandler);
+        this.connectedToMultiplayer = true;
     }
 
     private disconnectFromMultiplayer() {
@@ -108,6 +113,7 @@ class Game extends Component {
         this.detachChild(this.gameStatusHandler);
         this.mpConnection = undefined;
         this.updateMenu(true);
+        this.connectedToMultiplayer = false;
     }
 
     private hideLoadingScreen() {
@@ -123,14 +129,23 @@ class Game extends Component {
     }
 
     private setHost() {
+        let isLocal = true;
         let address = "://" + location.hostname + ":8000";
         const host = location.hostname;
         const prodHostname = "battletanks.app";
         const stagingHostname = "dakotalarson.github.io";
         if (host.includes(prodHostname) || host.includes(stagingHostname)) {
             address = "s://battle-tanks-server.herokuapp.com";
+            isLocal = false;
         }
         Globals.setGlobal(Globals.Global.HOST, address);
+        return isLocal;
+    }
+
+    private onVisibilityChange() {
+        if (document.hidden && this.connectedToMultiplayer) {
+            EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_DISCONNECT_REQUEST);
+        }
     }
 }
 

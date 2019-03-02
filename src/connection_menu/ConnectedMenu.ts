@@ -26,7 +26,7 @@ export default class ConnectedScreen extends Component {
 
     private onDisconnect(event: MouseEvent) {
         if (event.target === this.disconnectElt) {
-            EventHandler.callEvent(EventHandler.Event.CONNECTION_MENU_DISCONNECT);
+            EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_DISCONNECT_REQUEST);
         }
     }
 }

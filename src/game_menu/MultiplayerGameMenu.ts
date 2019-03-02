@@ -31,7 +31,7 @@ export default class MultiplayerGameMenu extends Component {
         if (event.target === this.cancelBtn) {
             EventHandler.callEvent(EventHandler.Event.GAMEMENU_CLOSE_REQUEST);
         } else if (event.target === this.disconnectBtn) {
-            EventHandler.callEvent(EventHandler.Event.MP_GAMEMENU_DISCONNECT);
+            EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_DISCONNECT_REQUEST);
         }
     }
 }

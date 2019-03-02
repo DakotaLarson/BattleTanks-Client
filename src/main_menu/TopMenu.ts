@@ -77,7 +77,7 @@ export default class TopMenu extends Component {
 
     private onPlayClick(event: MouseEvent) {
         if (event.target === this.playBtn || this.playBtn.contains((event.target) as Node)) {
-            EventHandler.callEvent(EventHandler.Event.MPMENU_JOIN_OPT_CLICK);
+            EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECT_REQUEST);
         }
     }
 

@@ -101,6 +101,7 @@ const events = new Map([
     ["touchmove", EventHandler.Event.DOM_TOUCHMOVE],
     ["touchend", EventHandler.Event.DOM_TOUCHEND],
     ["beforeunload", EventHandler.Event.DOM_BEFOREUNLOAD],
+    ["visibilitychange", EventHandler.Event.DOM_VISIBILITYCHANGE],
 ]);
 
 const windowEventTitles = ["resize", "blur", "focus", "click", "beforeunload"];

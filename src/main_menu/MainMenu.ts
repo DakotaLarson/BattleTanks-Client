@@ -58,7 +58,7 @@ export default class MainMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.onSpCreateOptClick);
 
         // MP MENU
-        EventHandler.addListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.onMpJoinOptClick);
+        EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECT_REQUEST, this.onMpJoinOptClick);
 
         // OPT MENU
         EventHandler.addListener(this, EventHandler.Event.OPTMENU_RETURN_OPT_CLICK, this.onOptCancelOptClick);
@@ -91,7 +91,7 @@ export default class MainMenu extends Component {
         EventHandler.removeListener(this, EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.onSpCancelOptClick);
 
         // MP MENU
-        EventHandler.removeListener(this, EventHandler.Event.MPMENU_JOIN_OPT_CLICK, this.onMpJoinOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.MULTIPLAYER_CONNECT_REQUEST, this.onMpJoinOptClick);
 
         // OPT MENU
         EventHandler.removeListener(this, EventHandler.Event.OPTMENU_RETURN_OPT_CLICK, this.onOptCancelOptClick);
