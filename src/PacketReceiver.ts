@@ -84,11 +84,12 @@ const receivePlayerSpeedMultiplier = (multiplier: number) => {
 };
 
 const receivePlayerPowerupPickup = () => {
-    EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, AudioType.POWERUP);
+    EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, AudioType.GAME_POWERUP);
 };
 
 const receivePlayerRam = (time: number) => {
     EventHandler.callEvent(EventHandler.Event.PLAYER_RAM, time);
+    EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, AudioType.GAME_LAUNCH);
 };
 
 const receivePlayerRamResponse = (rawVec: number[]) => {
@@ -197,7 +198,8 @@ const receiveMatchStatistics = (rawStats: number[]) => {
 };
 
 const receiveAudio = (value: string) => {
-    EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, value);
+    // @ts-ignore Not numerical enum.
+    EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, AudioType[value]);
 };
 
 const receiveCooldownTime = (time: number) => {

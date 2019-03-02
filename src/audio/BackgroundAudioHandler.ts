@@ -34,6 +34,8 @@ export default class BackgroundAudioHandler extends Component {
     private enabled: boolean;
     private useMP3: boolean;
 
+    private playerLive: boolean;
+
     constructor() {
         super();
 
@@ -56,6 +58,7 @@ export default class BackgroundAudioHandler extends Component {
 
         this.playAudioOnLoad = true;
         this.enabled = false;
+        this.playerLive = false;
     }
 
     // Enabled after MuteToggleHandler
@@ -69,6 +72,8 @@ export default class BackgroundAudioHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.BACKGROUND_AUDIO_CONNECTION_MENU, this.onAudioConnectionMenu);
         EventHandler.addListener(this, EventHandler.Event.BACKGROUND_AUDIO_SPECTATING, this.onAudioSpectating);
         EventHandler.addListener(this, EventHandler.Event.BACKGROUND_AUDIO_LIVE, this.onAudioLive);
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_ADDITION, this.onPlayerAddition);
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_REMOVAL, this.onPlayerRemoval);
 
         EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
 
@@ -143,9 +148,30 @@ export default class BackgroundAudioHandler extends Component {
         }
     }
 
+    private onPlayerAddition() {
+        this.playerLive = true;
+        this.updateGain();
+    }
+
+    private onPlayerRemoval() {
+        this.playerLive = false;
+        this.updateGain();
+    }
+
     private onOptionsUpdate(event: any) {
         if (event.attribute === "musicVolume") {
-            this.gainNode.gain.value = event.data;
+            this.updateGain(event.data);
+        }
+    }
+
+    private updateGain(value?: number) {
+        if (value === undefined) {
+            value = Options.options.musicVolume as number;
+        }
+        if (this.playerLive) {
+            this.gainNode.gain.value = value / 3;
+        } else {
+            this.gainNode.gain.value = value;
         }
     }
 
@@ -197,6 +223,7 @@ export default class BackgroundAudioHandler extends Component {
     }
 
     private startBufferSource(audioBuffer: AudioBuffer) {
+        this.updateGain();
         const bufferSource = this.audioContext.createBufferSource();
         bufferSource.connect(this.gainNode);
         bufferSource.buffer = audioBuffer;

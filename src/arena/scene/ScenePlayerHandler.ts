@@ -472,7 +472,6 @@ export default class ScenePlayerHandler extends Component {
 
             const audio = new PositionalAudio(this.audioListener);
             audio.setVolume(volume);
-
             head.add(audio);
 
             audio.onEnded = () => {

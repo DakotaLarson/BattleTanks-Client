@@ -32,7 +32,7 @@ export default class AudioHandler extends Component {
             if (audioFile.startsWith("GAME")) {
                 // @ts-ignore Disregard extra arguments.
                 audioLoader.load(this.getFullPath(audioFile), (buffer: AudioBuffer) => {
-                    this.buffers.set(audioFile, buffer);
+                    this.buffers.set(AudioType[audioFile], buffer);
                 });
             } else {
                 new Audio(this.getFullPath(audioFile));
@@ -47,13 +47,9 @@ export default class AudioHandler extends Component {
 
     private onAudioRequest(audio: AudioType) {
         if (Globals.getGlobal(Globals.Global.AUDIO_ENABLED) && Options.options.effectsVolume) {
-            if (audio.startsWith("GAME")) {
-                const buffer = this.buffers.get(audio);
-                if (buffer) {
-                    this.playBuffer(buffer);
-                } else {
-                    console.warn("Attempting to play buffer: " + audio);
-                }
+            const buffer = this.buffers.get(audio);
+            if (buffer) {
+                this.playBuffer(buffer);
             } else {
                 const extension = this.useMP3 ?  ".mp3" : ".ogg";
                 this.playElement(location.pathname + audio + extension);

@@ -7,7 +7,8 @@ enum AudioType {
     GAME_DAMAGE = "res/audio/effects/game/damage",
     GAME_DEATH_RESPAWN = "res/audio/effects/game/death_respawn",
     GAME_DEATH_NORESPAWN = "res/audio/effects/game/death_no_respawn",
-    POWERUP = "res/audio/effects/game/powerup",
+    GAME_POWERUP = "res/audio/effects/game/powerup",
+    GAME_LAUNCH = "res/audio/effects/game/launch",
 
     MENU_BACK = "res/audio/effects/menu/back",
     MENU_HOVER = "res/audio/effects/menu/hover",

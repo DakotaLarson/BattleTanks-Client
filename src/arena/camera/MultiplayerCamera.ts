@@ -76,7 +76,7 @@ export default class MultiplayerCamera extends Camera {
 
     private onPlayerAddition(data: any) {
         this.spherical.copy(MultiplayerCamera.FOLLOWING_POSITION);
-        this.target = new Vector3(data.pos.x + 0.5, data.pos.y, data.pos.z + 0.5);
+        this.target = new Vector3(data.pos.x + 0.5, data.pos.y + 0.25, data.pos.z + 0.5);
 
         this.moveCamera(data.pos.w, 0, true);
         window.clearTimeout(this.switchTask);
@@ -92,7 +92,7 @@ export default class MultiplayerCamera extends Camera {
     }
 
     private onPlayerMove(data: any) {
-        this.target = new Vector3(data.pos.x + 0.5, data.pos.y, data.pos.z + 0.5);
+        this.target = new Vector3(data.pos.x + 0.5, data.pos.y + 0.25, data.pos.z + 0.5);
 
         this.moveCamera(data.bodyRot, data.delta, false);
     }
