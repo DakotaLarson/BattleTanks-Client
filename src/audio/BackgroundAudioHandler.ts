@@ -12,7 +12,8 @@ enum State {
 
 export default class BackgroundAudioHandler extends Component {
 
-    private static readonly MAIN_MENU_AUDIO_SRC = "res/audio/music/main_menu";
+    private static readonly MAIN_MENU_A_AUDIO_SRC = "res/audio/music/main_menu_a";
+    private static readonly MAIN_MENU_B_AUDIO_SRC = "res/audio/music/main_menu_b";
     private static readonly CONNECTION_MENU_AUDIO_SRC = "res/audio/music/connection_menu";
     private static readonly SPECTATING_AUDIO_SRC = "res/audio/music/spectating";
     private static readonly LIVE_AUDIO_SRC = "res/audio/music/live";
@@ -176,7 +177,11 @@ export default class BackgroundAudioHandler extends Component {
     }
 
     private getAudioBuffers() {
-        this.getAudioBuffer(this.getFullSource(BackgroundAudioHandler.MAIN_MENU_AUDIO_SRC)).then((audioBuffer: AudioBuffer) => {
+        let src = BackgroundAudioHandler.MAIN_MENU_A_AUDIO_SRC;
+        if (Math.random() < 0.5) {
+            src = BackgroundAudioHandler.MAIN_MENU_B_AUDIO_SRC;
+        }
+        this.getAudioBuffer(this.getFullSource(src)).then((audioBuffer: AudioBuffer) => {
             this.mainMenuAudioBuffer = audioBuffer;
             if (this.enabled && this.playAudioOnLoad && this.state === State.MAIN_MENU) {
                 this.playAudioBuffer(audioBuffer);
