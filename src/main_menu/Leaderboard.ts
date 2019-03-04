@@ -30,11 +30,17 @@ export default class Leaderboard extends ChildComponent {
         this.selection3Elt = DomHandler.getElement("#leaderboard-selection-3");
         this.selection4Elt = DomHandler.getElement("#leaderboard-selection-4");
 
-        this.selectedElt = this.selection1Elt;
-        this.selectedLeaderboard = 1;
-        this.lastSelectionTime = performance.now();
+        let selectedLeaderboard = parseInt(localStorage.getItem("selectedLeaderboard") as string, 10);
+        if (isNaN(selectedLeaderboard)) {
+            selectedLeaderboard = 1;
+            localStorage.setItem("selectedLeaderboard", "" + selectedLeaderboard);
+        }
+        this.selectedLeaderboard = selectedLeaderboard;
 
-        this.selection1Elt.classList.add("leaderboard-selection-selected");
+        this.selectedElt = this.getSelectionElt(selectedLeaderboard);
+        this.selectedElt.classList.add("leaderboard-selection-selected");
+
+        this.lastSelectionTime = performance.now();
     }
 
     public enable() {
@@ -50,9 +56,6 @@ export default class Leaderboard extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
         this.clearLeaderboard();
-
-        this.selectedLeaderboard = 1;
-        this.updateSelectedElement(this.selection1Elt);
     }
 
     private onSignIn(token: string) {
@@ -66,19 +69,19 @@ export default class Leaderboard extends ChildComponent {
     private onClick(event: MouseEvent) {
         if (performance.now() - this.lastSelectionTime > Leaderboard.SELECTION_COOLDOWN && event.target !== this.selectedElt) {
             if (event.target === this.selection1Elt) {
-                this.selectedLeaderboard = 1;
+                this.updateSelectedLeaderboard(1);
                 this.updateLeaderboards();
                 this.updateSelectedElement(this.selection1Elt);
             } else if (event.target === this.selection2Elt) {
-                this.selectedLeaderboard = 2;
+                this.updateSelectedLeaderboard(2);
                 this.updateLeaderboards();
                 this.updateSelectedElement(this.selection2Elt);
             } else if (event.target === this.selection3Elt) {
-                this.selectedLeaderboard = 3;
+                this.updateSelectedLeaderboard(3);
                 this.updateLeaderboards();
                 this.updateSelectedElement(this.selection3Elt);
             } else if (event.target === this.selection4Elt) {
-                this.selectedLeaderboard = 4;
+                this.updateSelectedLeaderboard(4);
                 this.updateLeaderboards();
                 this.updateSelectedElement(this.selection4Elt);
             }
@@ -265,5 +268,24 @@ export default class Leaderboard extends ChildComponent {
         this.selectedElt.classList.remove("leaderboard-selection-selected");
         this.selectedElt = element;
         element.classList.add("leaderboard-selection-selected");
+    }
+
+    private getSelectionElt(leaderboard: number) {
+        if (leaderboard === 1) {
+            return this.selection1Elt;
+        } else if (leaderboard === 2) {
+            return this.selection2Elt;
+        } else if (leaderboard === 3) {
+            return this.selection3Elt;
+        } else if (leaderboard === 4) {
+            return this.selection4Elt;
+        } else {
+            throw new Error("Unknown leaderboard: " + leaderboard);
+        }
+    }
+
+    private updateSelectedLeaderboard(leaderboard: number) {
+        this.selectedLeaderboard = leaderboard;
+        localStorage.setItem("selectedLeaderboard", "" + leaderboard);
     }
 }
