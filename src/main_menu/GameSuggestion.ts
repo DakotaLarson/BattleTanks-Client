@@ -13,9 +13,9 @@ export default class GameSuggestion extends ChildComponent {
         super();
         this.element = DomHandler.getElement(".game-suggestion", menu);
         this.messages = [
-            "Create an arena and submit your creation on the Discord server",
+            "Create an arena and submit your creation on the Discord server!",
             "You reload 3x faster when you don't move!",
-            "Holding down the secondary mouse button locks the camera!",
+            "Hold down the secondary mouse button to look behind you!",
             "Press 'Enter' to chat with other players!",
             "Want the full immersive experience? Go fullscreen!",
             "Pick up powerups to gain an advantage!",
@@ -23,6 +23,7 @@ export default class GameSuggestion extends ChildComponent {
             "You are protected for 3 seconds after you spawn. Make it count!",
             "You can select a unique username in the options menu when you sign in!",
             "Your messages are brighter in chat when you sign in!",
+            "Ram into players with 'E' to damage and send them flying!",
         ];
     }
 

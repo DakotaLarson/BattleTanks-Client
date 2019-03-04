@@ -90,6 +90,7 @@ export default class ConnectedPlayer extends ChildComponent {
             pos: this.position,
             bodyRot: this.bodyRotation,
             headRot: this.headRotation,
+            movementVelocity: this.movementVelocity,
             interpolated: true,
         };
 

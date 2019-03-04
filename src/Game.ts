@@ -61,6 +61,7 @@ class Game extends Component {
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_DISCONNECT_REQUEST, this.disconnectFromMultiplayer);
 
         EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
+        EventHandler.addListener(this, EventHandler.Event.DOM_BEFOREUNLOAD, this.onUnload);
 
         if (!this.setHost()) {
             EventHandler.addListener(this, EventHandler.Event.DOM_VISIBILITYCHANGE, this.onVisibilityChange);
@@ -86,6 +87,12 @@ class Game extends Component {
     private onOptionsUpdate(event: any) {
         if (event.attribute === "metricsEnabled" && !event.data) {
             this.detachChild(this.metrics);
+        }
+    }
+
+    private onUnload() {
+        if (this.connectedToMultiplayer) {
+            this.detachChild(this.mpConnection as MultiplayerConnection);
         }
     }
 

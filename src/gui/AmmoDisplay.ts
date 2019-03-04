@@ -1,3 +1,4 @@
+import AudioType from "../audio/AudioType";
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
@@ -27,6 +28,8 @@ export default class AmmoDisplay extends ChildComponent {
     public enable() {
 
         EventHandler.addListener(this, EventHandler.Event.PLAYER_AMMO_STATUS, this.onAmmoStatusChange);
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_RELOAD_START, this.onReloadStart);
+        EventHandler.addListener(this, EventHandler.Event.PLAYER_RELOAD_END, this.onReloadEnd);
         this.container.style.display = "block";
 
         this.ammoCount = 0;
@@ -35,7 +38,9 @@ export default class AmmoDisplay extends ChildComponent {
     }
 
     public disable() {
-        EventHandler.addListener(this, EventHandler.Event.PLAYER_AMMO_STATUS, this.onAmmoStatusChange);
+        EventHandler.removeListener(this, EventHandler.Event.PLAYER_AMMO_STATUS, this.onAmmoStatusChange);
+        EventHandler.removeListener(this, EventHandler.Event.PLAYER_RELOAD_START, this.onReloadStart);
+        EventHandler.removeListener(this, EventHandler.Event.PLAYER_RELOAD_END, this.onReloadEnd);
         this.container.style.display = "";
     }
 
@@ -43,6 +48,14 @@ export default class AmmoDisplay extends ChildComponent {
         this.ammoCount = data.ammoCount;
         this.reloadPercentage = data.reloadPercentage;
         this.update();
+    }
+
+    private onReloadStart() {
+        EventHandler.callEvent(EventHandler.Event.AUDIO_PLAY, AudioType.GAME_RELOAD_START);
+    }
+
+    private onReloadEnd() {
+        EventHandler.callEvent(EventHandler.Event.AUDIO_PLAY, AudioType.GAME_RELOAD_END);
     }
 
     private update() {

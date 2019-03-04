@@ -1,5 +1,6 @@
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import EventHandler from "../EventHandler";
 import Globals from "../Globals";
 
 export default class ServerPlayerCount extends ChildComponent {
@@ -22,11 +23,15 @@ export default class ServerPlayerCount extends ChildComponent {
     }
 
     public enable() {
+        EventHandler.addListener(this, EventHandler.Event.DOM_BEFOREUNLOAD, this.closeEventSource);
+
         this.textElt.textContent = ServerPlayerCount.PING_TEXT;
         this.pingServer();
     }
 
     public disable() {
+        EventHandler.removeListener(this, EventHandler.Event.DOM_BEFOREUNLOAD, this.closeEventSource);
+
         this.closeEventSource();
         this.textElt.textContent = "";
     }

@@ -97,6 +97,9 @@ export default class Options extends Component {
         if (!("effectsVolume" in Options.options)) {
             Options.options.effectsVolume = 0.5;
         }
+        if (!("engineVolume" in Options.options)) {
+            Options.options.engineVolume = 0.5;
+        }
 
         if (!("rotationSensitivity" in Options.options)) {
             Options.options.rotationSensitivity = 0.75;

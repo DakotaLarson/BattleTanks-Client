@@ -297,6 +297,7 @@ export default class Player extends Component {
             bodyRot: this.bodyRotation,
             headRot: this.headRotation,
             fromServer: false,
+            movementVelocity: this.movementVelocity,
             delta,
         };
 

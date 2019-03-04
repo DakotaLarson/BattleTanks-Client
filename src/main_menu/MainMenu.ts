@@ -163,15 +163,15 @@ export default class MainMenu extends Component {
     }
 
     private playReturn() {
-        EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, AudioType.MENU_BACK);
+        EventHandler.callEvent(EventHandler.Event.AUDIO_PLAY, AudioType.MENU_BACK);
     }
 
     private playSelect() {
-        EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, AudioType.MENU_SELECT);
+        EventHandler.callEvent(EventHandler.Event.AUDIO_PLAY, AudioType.MENU_SELECT);
     }
 
     private playValidate() {
-        EventHandler.callEvent(EventHandler.Event.AUDIO_REQUEST, AudioType.MENU_VALIDATE);
+        EventHandler.callEvent(EventHandler.Event.AUDIO_PLAY, AudioType.MENU_VALIDATE);
     }
 
     // private playHover() {

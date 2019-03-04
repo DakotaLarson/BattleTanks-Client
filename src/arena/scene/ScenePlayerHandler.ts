@@ -1,37 +1,30 @@
 import { AudioBuffer, AudioListener, AudioLoader, BackSide, BoxGeometry, CylinderGeometry, DoubleSide, Font, FontLoader, FrontSide, Geometry, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, Scene, Shape, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
-import Component from "../../component/ChildComponent";
+import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
+import IPlayerObj from "../../interfaces/IPlayerObj";
 import Options from "../../Options";
+import EngineAudioHandler from "./EngineAudioHandler";
 
-interface IPlayerObj {
-    body: Mesh;
-    head: Mesh;
-    nameplate?: Mesh;
-    healthBar?: Group;
-    shieldBar?: Group;
-    protectionSphere?: Group;
-}
-
-export default class ScenePlayerHandler extends Component {
+export default class ScenePlayerHandler extends ChildComponent {
 
     private static readonly HEALTH_BAR_OFFSET = new Vector3(0, 0.65, 0);
     private static readonly SHIELD_BAR_OFFSET = new Vector3(0, 0.725, 0);
     private static readonly NAMEPLATE_OFFSET = new Vector3(0, 0.8, 0);
     private static readonly PROTECTION_SPHERE_OFFSET = new Vector3(0.5, 0, 0.5);
 
+    private static readonly PLAYER_WIDTH = 1;
+    private static readonly PLAYER_HEIGHT = 0.55;
+    private static readonly PLAYER_DEPTH = 1.5;
+
     private scene: Scene;
     private camera: PerspectiveCamera;
 
     private players: Map<number, IPlayerObj>;
 
-    private playerBodyWidth: number;
-    private playerBodyHeight: number;
-    private playerBodyDepth: number;
-
     private audioListener: AudioListener;
-
-    private shootSoundBuffer: AudioBuffer | undefined;
+    private shootAudioBuffer: AudioBuffer | undefined;
+    private engineAudioHandler: EngineAudioHandler;
 
     private font: Font | undefined;
 
@@ -45,9 +38,6 @@ export default class ScenePlayerHandler extends Component {
 
         this.scene = scene;
         this.camera = Globals.getGlobal(Globals.Global.CAMERA);
-        this.audioListener = audioListener;
-
-        const audioLoader = new AudioLoader();
 
         let extension;
         // @ts-ignore Safari is behind the times.
@@ -56,23 +46,25 @@ export default class ScenePlayerHandler extends Component {
         } else {
             extension = ".ogg";
         }
+
+        this.audioListener = audioListener;
+        const audioLoader = new AudioLoader();
+        this.engineAudioHandler = new EngineAudioHandler(audioLoader, this.audioListener, this.players, extension);
+
         // @ts-ignore Disregard additional arguments
         audioLoader.load(location.pathname + "res/audio/effects/game/shoot" + extension, (buffer: AudioBuffer) => {
-            this.shootSoundBuffer = buffer;
+            this.shootAudioBuffer = buffer;
         });
+        // @ts-ignore Disregard additional arguments
 
         const fontLoader = new FontLoader();
         fontLoader.load(location.pathname + "res/font/Bombardier_Regular.json", (font: Font) => {
             this.font = font;
         });
 
-        this.playerBodyWidth = 1;
-        this.playerBodyHeight = 0.55;
-        this.playerBodyDepth = 1.5;
-
         this.controlledPlayerId = -1;
 
-        this.playerOffset = new Vector3(0.5, this.playerBodyHeight / 2, 0.5);
+        this.playerOffset = new Vector3(0.5, ScenePlayerHandler.PLAYER_HEIGHT / 2, 0.5);
     }
 
     public enable() {
@@ -92,6 +84,8 @@ export default class ScenePlayerHandler extends Component {
 
         EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_HEALTH_CHANGE, this.onHealthChange);
         EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_SHIELD_CHANGE, this.onShieldChange);
+
+        this.attachChild(this.engineAudioHandler);
     }
 
     public disable() {
@@ -111,33 +105,35 @@ export default class ScenePlayerHandler extends Component {
 
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_HEALTH_CHANGE, this.onHealthChange);
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_SHIELD_CHANGE, this.onShieldChange);
+
+        this.detachChild(this.engineAudioHandler);
     }
 
     public clearPlayers() {
-        const playerValues = this.players.values();
-        let playerValue = playerValues.next();
-        while (!playerValue.done) {
-            const playerObj = playerValue.value;
-            this.scene.remove(playerObj.body, playerObj.head);
-            if (playerObj.nameplate) {
-                this.scene.remove(playerObj.nameplate);
+        for (const [, player] of this.players) {
+            this.scene.remove(player.body, player.head);
+            if (player.nameplate) {
+                this.scene.remove(player.nameplate);
             }
-            if (playerObj.healthBar) {
-                this.scene.remove(playerObj.healthBar);
+            if (player.healthBar) {
+                this.scene.remove(player.healthBar);
             }
-            if (playerObj.shieldBar) {
-                this.scene.remove(playerObj.shieldBar);
+            if (player.shieldBar) {
+                this.scene.remove(player.shieldBar);
             }
-            if (playerObj.protectionSphere) {
-                this.scene.remove(playerObj.protectionSphere);
+            if (player.protectionSphere) {
+                this.scene.remove(player.protectionSphere);
             }
-
-            playerValue = playerValues.next();
+            if (player.engineAudio) {
+                this.engineAudioHandler.stopEngineSound(player);
+                this.scene.remove(player.engineAudio);
+            }
         }
+        this.players.clear();
     }
 
     public addMenuPlayer() {
-        this.addPlayer(0, new Vector4(2, 0, 2, Math.PI / 4), "", 0xf0f0c0, false);
+        this.addPlayer(0, new Vector4(2, 0, 2, Math.PI / 4), "", 0xf0f0c0, false, true);
     }
 
     private onPlayerAddition(data: any) {
@@ -190,6 +186,8 @@ export default class ScenePlayerHandler extends Component {
                 const protectionSpherePos = protectionSphere.position;
                 protectionSpherePos.copy(pos).add(ScenePlayerHandler.PROTECTION_SPHERE_OFFSET);
             }
+            playerObj.movementVelocity = data.movementVelocity;
+            this.engineAudioHandler.updateEngineSound(playerObj);
         }
     }
 
@@ -218,14 +216,15 @@ export default class ScenePlayerHandler extends Component {
             if (this.controlledPlayerId === data.id) {
                 this.controlledPlayerId = -1;
             }
+            this.engineAudioHandler.stopEngineSound(obj);
         }
     }
 
-    private addPlayer(id: number, pos: Vector4, name: string, color: number, isConnectedPlayer: boolean) {
+    private addPlayer(id: number, pos: Vector4, name: string, color: number, isConnectedPlayer: boolean, noSound?: boolean) {
         const playerGeo = new Geometry();
         const playerHeadGeo = new Geometry();
 
-        const bodyGeo = new BoxGeometry(this.playerBodyWidth, this.playerBodyHeight, this.playerBodyDepth);
+        const bodyGeo = new BoxGeometry(ScenePlayerHandler.PLAYER_WIDTH, ScenePlayerHandler.PLAYER_HEIGHT, ScenePlayerHandler.PLAYER_DEPTH);
         const headGeo = new BoxGeometry(0.5, 0.35, 0.5);
         const turretGeo = new CylinderGeometry(0.0625, 0.0625, 0.75, 16, 1, true);
         turretGeo.rotateX(Math.PI / 2);
@@ -239,8 +238,8 @@ export default class ScenePlayerHandler extends Component {
             side: DoubleSide,
         });
 
-        const headOffset = new Vector3(0, this.playerBodyHeight / 2 + 0.35 / 2, 0);
-        const turretOffset = new Vector3(0, this.playerBodyHeight / 2 + 0.35 / 2, 0.25);
+        const headOffset = new Vector3(0, ScenePlayerHandler.PLAYER_HEIGHT / 2 + 0.35 / 2, 0);
+        const turretOffset = new Vector3(0, ScenePlayerHandler.PLAYER_HEIGHT / 2 + 0.35 / 2, 0.25);
 
         for (const vert of headGeo.vertices) {
             vert.add(headOffset);
@@ -284,6 +283,7 @@ export default class ScenePlayerHandler extends Component {
             playerObj = {
                 body: bodyMesh,
                 head: headMesh,
+                movementVelocity: 0,
                 nameplate: nameplateMesh,
                 healthBar,
                 shieldBar,
@@ -292,6 +292,7 @@ export default class ScenePlayerHandler extends Component {
             playerObj = {
                 body: bodyMesh,
                 head: headMesh,
+                movementVelocity: 0,
             };
         }
 
@@ -300,6 +301,10 @@ export default class ScenePlayerHandler extends Component {
         if (!isConnectedPlayer) {
             this.controlledPlayerId = id;
         }
+
+        if (!noSound) {
+            this.engineAudioHandler.startEngineSound(playerObj);
+        }
     }
 
     private onShoot(playerId?: number) {
@@ -307,7 +312,7 @@ export default class ScenePlayerHandler extends Component {
             playerId = this.controlledPlayerId;
         }
         const player = this.players.get(playerId);
-        this.playSound(player as IPlayerObj, this.shootSoundBuffer as AudioBuffer);
+        this.playSound(player as IPlayerObj, this.shootAudioBuffer as AudioBuffer);
     }
 
     private onHealthChange(data: any) {
@@ -468,15 +473,14 @@ export default class ScenePlayerHandler extends Component {
         const volume = Options.options.effectsVolume;
         const enabled = Globals.getGlobal(Globals.Global.AUDIO_ENABLED);
         if (enabled && volume) {
-            const head = player.head;
 
             const audio = new PositionalAudio(this.audioListener);
             audio.setVolume(volume);
-            head.add(audio);
+            player.head.add(audio);
 
             audio.onEnded = () => {
                 audio.isPlaying = false;
-                head.remove(audio);
+                player.head.remove(audio);
             };
 
             audio.setBuffer(buffer);

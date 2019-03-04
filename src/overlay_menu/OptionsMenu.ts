@@ -30,6 +30,7 @@ export default class OptionsMenu extends Component {
 
     private musicVolumeValueElt: HTMLInputElement;
     private effectsVolumeValueElt: HTMLInputElement;
+    private engineVolumeValueElt: HTMLInputElement;
     private rotationValueElt: HTMLInputElement;
 
     private isListening: boolean;
@@ -59,6 +60,7 @@ export default class OptionsMenu extends Component {
 
         this.musicVolumeValueElt = DomHandler.getElement("#option-value-volume-music", this.parentElt) as HTMLInputElement;
         this.effectsVolumeValueElt = DomHandler.getElement("#option-value-volume-effects", this.parentElt) as HTMLInputElement;
+        this.engineVolumeValueElt = DomHandler.getElement("#option-value-volume-engine", this.parentElt) as HTMLInputElement;
         this.rotationValueElt = DomHandler.getElement("#option-value-rotation", this.parentElt) as HTMLInputElement;
 
         this.returnBtn = DomHandler.getElement("#opt-opt-close", this.parentElt);
@@ -123,6 +125,7 @@ export default class OptionsMenu extends Component {
 
         DomEventHandler.addListener(this, this.musicVolumeValueElt, "change", this.onMusicVolumeChange);
         DomEventHandler.addListener(this, this.effectsVolumeValueElt, "change", this.onEffectsVolumeChange);
+        DomEventHandler.addListener(this, this.engineVolumeValueElt, "change", this.onEngineVolumeChange);
         DomEventHandler.addListener(this, this.rotationValueElt, "change", this.onRotationSensitivityChange);
 
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onOptionsParentClick);
@@ -155,6 +158,7 @@ export default class OptionsMenu extends Component {
 
         DomEventHandler.removeListener(this, this.musicVolumeValueElt, "change", this.onMusicVolumeChange);
         DomEventHandler.removeListener(this, this.effectsVolumeValueElt, "change", this.onEffectsVolumeChange);
+        DomEventHandler.removeListener(this, this.engineVolumeValueElt, "change", this.onEngineVolumeChange);
         DomEventHandler.removeListener(this, this.rotationValueElt, "change", this.onRotationSensitivityChange);
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onOptionsParentClick);
@@ -308,6 +312,11 @@ export default class OptionsMenu extends Component {
         this.saveChange("effectsVolume", value);
     }
 
+    private onEngineVolumeChange() {
+        const value = Number(this.engineVolumeValueElt.value);
+        this.saveChange("engineVolume", value);
+    }
+
     private onRotationSensitivityChange() {
         const value = Number(this.rotationValueElt.value);
         this.saveChange("rotationSensitivity", value);
@@ -398,6 +407,7 @@ export default class OptionsMenu extends Component {
 
             setRangeValue(options.musicVolume, this.musicVolumeValueElt);
             setRangeValue(options.effectsVolume, this.effectsVolumeValueElt);
+            setRangeValue(options.engineVolume, this.engineVolumeValueElt);
             setRangeValue(options.rotationSensitivity, this.rotationValueElt);
         } else {
             console.warn("No options to read from. Were they deleted?");
