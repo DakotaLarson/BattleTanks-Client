@@ -21,7 +21,7 @@ export default class EngineAudioHandler extends ChildComponent {
         this.players = players;
 
         // @ts-ignore ignore additional arguments
-        audioLoader.load(location.pathname + "res/audio/effects/game/engine_old" + extension, (buffer: AudioBuffer) => {
+        audioLoader.load(location.pathname + "res/audio/effects/game/engine" + extension, (buffer: AudioBuffer) => {
             this.engineAudioBuffer = buffer;
         });
     }

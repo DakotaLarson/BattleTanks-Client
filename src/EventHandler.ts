@@ -9,6 +9,7 @@ enum Event {
     DEBUG_PING,
     DEBUG_RENDER,
     DEBUG_PONG,
+    DEBUG_LATENCY,
 
     // DOM
     DOM_RESIZE,

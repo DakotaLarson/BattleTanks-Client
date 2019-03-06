@@ -1,10 +1,11 @@
-import { AudioBuffer, AudioListener, AudioLoader, BackSide, BoxGeometry, CylinderGeometry, DoubleSide, Font, FontLoader, FrontSide, Geometry, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, Scene, Shape, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BackSide, BoxGeometry, CylinderGeometry, DoubleSide, Font, FontLoader, FrontSide, Geometry, GLTF, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, Scene, Shape, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
 import IPlayerObj from "../../interfaces/IPlayerObj";
 import Options from "../../Options";
 import EngineAudioHandler from "./EngineAudioHandler";
+import ModelLoader from "./ModelLoader";
 
 export default class ScenePlayerHandler extends ChildComponent {
 
@@ -16,6 +17,8 @@ export default class ScenePlayerHandler extends ChildComponent {
     private static readonly PLAYER_WIDTH = 1;
     private static readonly PLAYER_HEIGHT = 0.55;
     private static readonly PLAYER_DEPTH = 1.5;
+
+    private modelLoader: ModelLoader;
 
     private scene: Scene;
     private camera: PerspectiveCamera;
@@ -34,6 +37,9 @@ export default class ScenePlayerHandler extends ChildComponent {
 
     constructor(scene: Scene, audioListener: AudioListener) {
         super();
+
+        this.modelLoader = new ModelLoader();
+
         this.players = new Map();
 
         this.scene = scene;
@@ -133,7 +139,20 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     public addMenuPlayer() {
-        this.addPlayer(0, new Vector4(2, 0, 2, Math.PI / 4), "", 0xf0f0c0, false, true);
+        this.modelLoader.getTurretModel().then((gltf: GLTF) => {
+            gltf.scene.position.add(new Vector3(2.5, 0, 2.5));
+            this.scene.add(gltf.scene);
+            console.log(gltf);
+        });
+        this.modelLoader.getBodyModel().then((gltf: GLTF) => {
+            gltf.scene.position.add(new Vector3(2.5, 0, 2.5));
+            this.scene.add(gltf.scene);
+        });
+        this.modelLoader.getTracksModel().then((gltf: GLTF) => {
+            gltf.scene.position.add(new Vector3(2.5, 0, 2.5));
+            this.scene.add(gltf.scene);
+        });
+        // this.addPlayer(0, new Vector4(2, 0, 2, Math.PI / 4), "", 0xf0f0c0, false, true);
     }
 
     private onPlayerAddition(data: any) {

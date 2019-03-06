@@ -494,10 +494,18 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
             build: {
                 defaultExtension: "js"
             }
-        } 
+        }
     }
     SystemJS.config(config);
-    System.import("./build/Game.js");
+    System.import("three").then((three) => {
+
+        window.THREE = three;
+        const scriptElt = document.createElement("script");
+        scriptElt.src = "./loaders/GLTFLoader.js";
+        document.body.appendChild(scriptElt);
+        
+        System.import("./build/Game.js");
+    });
 </script>
 <script>
     function onAuthInit() {

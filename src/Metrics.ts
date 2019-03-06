@@ -26,6 +26,12 @@ export default class Metrics extends ChildComponent {
     private visits: number;
     private referrer: string;
 
+    private totalFrames: number;
+    private totalFrameIntervals: number;
+
+    private totalLatency: number;
+    private totalLatencyIntervals: number;
+
     private token: string | undefined;
     private recaptchaTask: number | undefined;
     private key: string | undefined;
@@ -72,6 +78,11 @@ export default class Metrics extends ChildComponent {
             this.referrer = "";
         }
 
+        this.totalFrames = 0;
+        this.totalFrameIntervals = 0;
+
+        this.totalLatency = 0;
+        this.totalLatencyIntervals = 0;
     }
 
     public enable() {
@@ -119,6 +130,9 @@ export default class Metrics extends ChildComponent {
 
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
         EventHandler.addListener(this, EventHandler.Event.DOM_FOCUS, this.onFocus);
+
+        EventHandler.addListener(this, EventHandler.Event.DEBUG_FPS, this.onFPS);
+        EventHandler.addListener(this, EventHandler.Event.DEBUG_LATENCY, this.onPingPong);
     }
 
     public disable() {
@@ -135,6 +149,9 @@ export default class Metrics extends ChildComponent {
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
         EventHandler.removeListener(this, EventHandler.Event.DOM_FOCUS, this.onFocus);
+
+        EventHandler.removeListener(this, EventHandler.Event.DEBUG_FPS, this.onFPS);
+        EventHandler.removeListener(this, EventHandler.Event.DEBUG_LATENCY, this.onPingPong);
 
         window.clearInterval(this.recaptchaTask);
     }
@@ -163,6 +180,9 @@ export default class Metrics extends ChildComponent {
 
     private onUnload() {
 
+        const averageFPS = Math.round(this.totalFrames / (this.totalFrameIntervals || 1));
+        const averageLatency = Math.round(this.totalLatency / (this.totalLatencyIntervals || 1));
+
         this.gameTime = Math.round(this.gameTime / 1000);
         this.sessionTime = Math.round((performance.now() - this.sessionTime) / 1000);
         this.audio = Globals.getGlobal(Globals.Global.AUDIO_ENABLED);
@@ -179,6 +199,8 @@ export default class Metrics extends ChildComponent {
             authenticated: this.authenticated,
             visits: this.visits,
             referrer: this.referrer,
+            fps: averageFPS,
+            latency: averageLatency,
             token: this.token,
         })], {type: "text/plain"});
 
@@ -195,6 +217,16 @@ export default class Metrics extends ChildComponent {
             window.clearInterval(this.recaptchaTask);
         }
         this.executeRecaptcha();
+    }
+
+    private onFPS(frames: number) {
+        this.totalFrames += frames;
+        this.totalFrameIntervals ++;
+    }
+
+    private onPingPong(time: number) {
+        this.totalLatency += time;
+        this.totalLatencyIntervals ++;
     }
 
     private executeRecaptcha() {

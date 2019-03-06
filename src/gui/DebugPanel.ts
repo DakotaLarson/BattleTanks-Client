@@ -71,6 +71,7 @@ export default class DebugPanel extends Component {
     private onPong() {
         const timeDiff = Math.round(performance.now() - this.lastPingTime);
         this.pingElt.textContent = timeDiff + "ms";
+        EventHandler.callEvent(EventHandler.Event.DEBUG_LATENCY, timeDiff);
     }
 
     private startPingTask() {
