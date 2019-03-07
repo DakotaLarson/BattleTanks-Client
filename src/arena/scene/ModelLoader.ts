@@ -26,7 +26,6 @@ export default class ModelLoader {
 
     private getModel(fileName: string): Promise<GLTF> {
         return new Promise((resolve, reject) => {
-            console.log("get " + fileName);
             const cachedModel = this.models.get(fileName);
             if (cachedModel) {
                 resolve(cachedModel);

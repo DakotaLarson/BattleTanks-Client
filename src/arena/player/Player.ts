@@ -351,7 +351,7 @@ export default class Player extends Component {
         ray.intersectPlane(new Plane(new Vector3(0, 1, 0), -0.75), intersection);
         if (!intersection.equals(new Vector3())) {
             const slope = (playerPosition.x - intersection.x) / (playerPosition.z - intersection.z);
-            let angle = Math.atan(slope) + Math.PI;
+            let angle = Math.atan(slope);
 
             if (playerPosition.z > intersection.z) {
                 angle += Math.PI;
