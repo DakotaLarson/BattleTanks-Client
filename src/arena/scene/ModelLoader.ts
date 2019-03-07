@@ -1,12 +1,15 @@
-import { DoubleSide, GLTF, Material, Mesh } from "three";
+import { GLTF } from "three";
 
 export default class ModelLoader {
 
     private loader: any;
 
+    private models: Map<string, GLTF>;
+
     constructor() {
         // @ts-ignore;
         this.loader = new THREE.GLTFLoader();
+        this.models = new Map();
     }
 
     public getBodyModel() {
@@ -14,13 +17,7 @@ export default class ModelLoader {
     }
 
     public getTurretModel() {
-        return this.getModel("tank_turret").then((gltf: GLTF) => {
-            for (const child of gltf.scene.children) {
-                ((child as Mesh).material as Material).side = DoubleSide;
-            }
-            return gltf;
-
-        });
+        return this.getModel("tank_turret");
     }
 
     public getTracksModel() {
@@ -29,12 +26,20 @@ export default class ModelLoader {
 
     private getModel(fileName: string): Promise<GLTF> {
         return new Promise((resolve, reject) => {
-            this.loader.load("/res/models/" + fileName + ".glb", (result: GLTF) => {
-                resolve(result);
-            }, undefined, (err: any) => {
-                console.error(err);
-                reject(err);
-            });
+            console.log("get " + fileName);
+            const cachedModel = this.models.get(fileName);
+            if (cachedModel) {
+                resolve(cachedModel);
+            } else {
+                this.loader.load("/res/models/" + fileName + ".glb", (result: GLTF) => {
+                    // this.models.set(fileName, result);
+                    resolve(result);
+                }, undefined, (err: any) => {
+                    console.error(err);
+                    reject(err);
+                });
+            }
+
         });
     }
 }

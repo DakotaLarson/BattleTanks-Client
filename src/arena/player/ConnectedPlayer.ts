@@ -13,7 +13,7 @@ export default class ConnectedPlayer extends ChildComponent {
     public bodyRotation: number;
 
     public color: number;
-    private position: Vector3;
+    public position: Vector3;
 
     private movementVelocity: number;
     private rotationVelocity: number;
@@ -56,17 +56,9 @@ export default class ConnectedPlayer extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onFrame);
     }
 
-    public getCenterPosition() {
-        return this.position.clone().add(new Vector3(0.5, 0, 0.5));
-    }
-
-    public getInternalPosition(center: Vector3) {
-        return center.clone().sub(new Vector3(0.5, 0, 0.5));
-    }
-
     private onFrame(delta: number) {
         let potentialRotation = (this.bodyRotation + delta * this.rotationVelocity);
-        const potentialPosition = this.getCenterPosition();
+        const potentialPosition = this.position.clone();
 
         if (this.ramResponse) {
             potentialPosition.x += delta * this.movementVelocity * this.ramResponse.x;
@@ -82,7 +74,7 @@ export default class ConnectedPlayer extends ChildComponent {
         const blockCollision = BlockCollisionHandler.getCollision(potentialPosition.clone(), potentialRotation, ConnectedPlayer.X_OFFSET, ConnectedPlayer.Z_OFFSET);
         potentialPosition.sub(blockCollision.correction);
 
-        this.position.copy(this.getInternalPosition(potentialPosition));
+        this.position.copy(potentialPosition);
         this.bodyRotation = potentialRotation;
 
         const movementData = {

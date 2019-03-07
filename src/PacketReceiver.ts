@@ -243,13 +243,11 @@ const receiveChatMessage = (data: string) => {
 
 const receivePowerupAddition = (rawData: number[]) => {
     const powerup = new Powerup(rawData[0], new Vector3(rawData[1], rawData[2], rawData[3]));
-    powerup.position.add(new Vector3(0.5, 0, 0.5));
     EventHandler.callEvent(EventHandler.Event.POWERUP_ADDITION, powerup);
 };
 
 const receivePowerupRemoval = (rawData: number[]) => {
     const powerup = new Powerup(rawData[0], new Vector3(rawData[1], rawData[2], rawData[3]));
-    powerup.position.add(new Vector3(0.5, 0, 0.5));
     EventHandler.callEvent(EventHandler.Event.POWERUP_REMOVAL, powerup);
 };
 

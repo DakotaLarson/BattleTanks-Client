@@ -11,7 +11,7 @@ export default class PlayerCollisionHandler {
         const testPlayers: Array<ConnectedPlayer | Player> = new Array();
         let playerId = 0;
         for (const player of PlayerCollisionHandler.players) {
-            if (player.id !== id && player.getCenterPosition().distanceToSquared(pos) <= Math.pow(Player.radius + Player.radius, 2)) {
+            if (player.id !== id && player.position.distanceToSquared(pos) <= Math.pow(Player.radius + Player.radius, 2)) {
                 testPlayers.push(player);
             }
         }
@@ -24,7 +24,7 @@ export default class PlayerCollisionHandler {
 
                 const axes = CollisionUtils.getAxes(rot, player.bodyRotation);
 
-                const otherPlayerCornerPositions = CollisionUtils.getPlayerCorners(player.getCenterPosition(), player.bodyRotation, ConnectedPlayer.X_OFFSET, ConnectedPlayer.Z_OFFSET);
+                const otherPlayerCornerPositions = CollisionUtils.getPlayerCorners(player.position.clone(), player.bodyRotation, ConnectedPlayer.X_OFFSET, ConnectedPlayer.Z_OFFSET);
 
                 const overlaps = CollisionUtils.getOverlaps(axes, playerCornerPositions, otherPlayerCornerPositions);
                 if (overlaps) {

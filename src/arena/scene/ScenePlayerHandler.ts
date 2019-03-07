@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, BackSide, BoxGeometry, CylinderGeometry, DoubleSide, Font, FontLoader, FrontSide, Geometry, GLTF, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, Scene, Shape, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, GLTF, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, Scene, Shape, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
@@ -9,14 +9,9 @@ import ModelLoader from "./ModelLoader";
 
 export default class ScenePlayerHandler extends ChildComponent {
 
-    private static readonly HEALTH_BAR_OFFSET = new Vector3(0, 0.65, 0);
-    private static readonly SHIELD_BAR_OFFSET = new Vector3(0, 0.725, 0);
-    private static readonly NAMEPLATE_OFFSET = new Vector3(0, 0.8, 0);
-    private static readonly PROTECTION_SPHERE_OFFSET = new Vector3(0.5, 0, 0.5);
-
-    private static readonly PLAYER_WIDTH = 1;
-    private static readonly PLAYER_HEIGHT = 0.55;
-    private static readonly PLAYER_DEPTH = 1.5;
+    private static readonly HEALTH_BAR_OFFSET = new Vector3(0, 1, 0);
+    private static readonly SHIELD_BAR_OFFSET = new Vector3(0, 1.1, 0);
+    private static readonly NAMEPLATE_OFFSET = new Vector3(0, 1.2, 0);
 
     private modelLoader: ModelLoader;
 
@@ -32,8 +27,6 @@ export default class ScenePlayerHandler extends ChildComponent {
     private font: Font | undefined;
 
     private controlledPlayerId: number;
-
-    private playerOffset: Vector3;
 
     constructor(scene: Scene, audioListener: AudioListener) {
         super();
@@ -70,7 +63,6 @@ export default class ScenePlayerHandler extends ChildComponent {
 
         this.controlledPlayerId = -1;
 
-        this.playerOffset = new Vector3(0.5, ScenePlayerHandler.PLAYER_HEIGHT / 2, 0.5);
     }
 
     public enable() {
@@ -139,29 +131,16 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     public addMenuPlayer() {
-        this.modelLoader.getTurretModel().then((gltf: GLTF) => {
-            gltf.scene.position.add(new Vector3(2.5, 0, 2.5));
-            this.scene.add(gltf.scene);
-            console.log(gltf);
-        });
-        this.modelLoader.getBodyModel().then((gltf: GLTF) => {
-            gltf.scene.position.add(new Vector3(2.5, 0, 2.5));
-            this.scene.add(gltf.scene);
-        });
-        this.modelLoader.getTracksModel().then((gltf: GLTF) => {
-            gltf.scene.position.add(new Vector3(2.5, 0, 2.5));
-            this.scene.add(gltf.scene);
-        });
-        // this.addPlayer(0, new Vector4(2, 0, 2, Math.PI / 4), "", 0xf0f0c0, false, true);
+        this.addPlayer(0, new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true);
     }
 
     private onPlayerAddition(data: any) {
         const name = Globals.getGlobal(Globals.Global.USERNAME);
-        this.addPlayer(data.id, data.pos, name, data.color, false);
+        this.addPlayer(data.id, data.pos, name, false);
     }
 
     private onConnectedPlayerAddition(data: any) {
-        this.addPlayer(data.id, data.pos, data.name, data.color, true);
+        this.addPlayer(data.id, data.pos, data.name, true);
     }
 
     private onPlayerMove(data: any) {
@@ -175,35 +154,35 @@ export default class ScenePlayerHandler extends ChildComponent {
             const shieldBar = playerObj.shieldBar;
             const protectionSphere = playerObj.protectionSphere;
 
-            head.position.copy(pos).add(this.playerOffset);
+            head.position.copy(pos);
             head.rotation.y = data.headRot;
 
-            body.position.copy(pos).add(this.playerOffset);
+            body.position.copy(pos);
             body.rotation.y = data.bodyRot;
 
             const cameraPos = this.camera.position;
 
             if (nameplate) {
                 const nameplatePos = nameplate.position;
-                nameplatePos.copy(pos).add(this.playerOffset).add(ScenePlayerHandler.NAMEPLATE_OFFSET);
+                nameplatePos.copy(pos).add(ScenePlayerHandler.NAMEPLATE_OFFSET);
 
                 nameplate.lookAt(cameraPos);
             }
             if (healthBar) {
                 const healthBarPos = healthBar.position;
-                healthBarPos.copy(pos).add(this.playerOffset).add(ScenePlayerHandler.HEALTH_BAR_OFFSET);
+                healthBarPos.copy(pos).add(ScenePlayerHandler.HEALTH_BAR_OFFSET);
 
                 healthBar.lookAt(cameraPos);
             }
             if (shieldBar) {
                 const shieldBarPos = shieldBar.position;
-                shieldBarPos.copy(pos).add(this.playerOffset).add(ScenePlayerHandler.SHIELD_BAR_OFFSET);
+                shieldBarPos.copy(pos).add(ScenePlayerHandler.SHIELD_BAR_OFFSET);
 
                 shieldBar.lookAt(cameraPos);
             }
             if (protectionSphere) {
                 const protectionSpherePos = protectionSphere.position;
-                protectionSpherePos.copy(pos).add(ScenePlayerHandler.PROTECTION_SPHERE_OFFSET);
+                protectionSpherePos.copy(pos);
             }
             playerObj.movementVelocity = data.movementVelocity;
             this.engineAudioHandler.updateEngineSound(playerObj);
@@ -239,69 +218,49 @@ export default class ScenePlayerHandler extends ChildComponent {
         }
     }
 
-    private addPlayer(id: number, pos: Vector4, name: string, color: number, isConnectedPlayer: boolean, noSound?: boolean) {
-        const playerGeo = new Geometry();
-        const playerHeadGeo = new Geometry();
+    private addPlayer(id: number, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound?: boolean) {
 
-        const bodyGeo = new BoxGeometry(ScenePlayerHandler.PLAYER_WIDTH, ScenePlayerHandler.PLAYER_HEIGHT, ScenePlayerHandler.PLAYER_DEPTH);
-        const headGeo = new BoxGeometry(0.5, 0.35, 0.5);
-        const turretGeo = new CylinderGeometry(0.0625, 0.0625, 0.75, 16, 1, true);
-        turretGeo.rotateX(Math.PI / 2);
+        console.log(pos);
 
-        const bodyMaterial = new MeshLambertMaterial({
-            color,
+        const bodyGroup = new Group();
+        const headGroup = new Group();
+        this.modelLoader.getTurretModel().then((gltf: GLTF) => {
+            headGroup.add(gltf.scene);
         });
-
-        const headMaterial = new MeshLambertMaterial({
-            color,
-            side: DoubleSide,
+        this.modelLoader.getBodyModel().then((gltf: GLTF) => {
+            bodyGroup.add(gltf.scene);
         });
-
-        const headOffset = new Vector3(0, ScenePlayerHandler.PLAYER_HEIGHT / 2 + 0.35 / 2, 0);
-        const turretOffset = new Vector3(0, ScenePlayerHandler.PLAYER_HEIGHT / 2 + 0.35 / 2, 0.25);
-
-        for (const vert of headGeo.vertices) {
-            vert.add(headOffset);
-        }
-        for (const vert of turretGeo.vertices) {
-            vert.add(turretOffset);
-        }
-
-        playerHeadGeo.merge(headGeo);
-        playerHeadGeo.merge(turretGeo);
-
-        playerGeo.merge(bodyGeo);
+        this.modelLoader.getTracksModel().then((gltf: GLTF) => {
+            bodyGroup.add(gltf.scene);
+        });
 
         const bodyPos = new Vector3(pos.x, pos.y, pos.z);
+        bodyGroup.position.copy(bodyPos);
+        bodyGroup.rotation.y = pos.w;
 
-        const bodyMesh = new Mesh(playerGeo, bodyMaterial);
-        bodyMesh.position.copy(bodyPos).add(this.playerOffset);
-        bodyMesh.rotation.y = pos.w;
+        headGroup.position.copy(bodyPos);
+        headGroup.rotation.y = pos.w;
 
-        const headMesh = new Mesh(playerHeadGeo, headMaterial);
-        headMesh.position.copy(bodyPos).add(this.playerOffset);
-        headMesh.rotation.y = pos.w;
-
-        this.scene.add(bodyMesh, headMesh);
+        this.scene.add(bodyGroup, headGroup);
 
         let playerObj: IPlayerObj;
 
         if (isConnectedPlayer) {
             const nameplateMesh = this.generateNameplate(name);
-            nameplateMesh.position.copy(bodyPos).add(this.playerOffset).add(ScenePlayerHandler.NAMEPLATE_OFFSET);
+            nameplateMesh.position.copy(bodyPos).add(ScenePlayerHandler.NAMEPLATE_OFFSET);
             this.scene.add(nameplateMesh);
 
             const healthBar = this.generateHealthBar(1);
-            healthBar.position.copy(bodyPos).add(this.playerOffset).add(ScenePlayerHandler.HEALTH_BAR_OFFSET);
+            healthBar.position.copy(bodyPos).add(ScenePlayerHandler.HEALTH_BAR_OFFSET);
             this.scene.add(healthBar);
 
             const shieldBar = this.generateShieldBar(0);
-            shieldBar.position.copy(bodyPos).add(this.playerOffset).add(ScenePlayerHandler.SHIELD_BAR_OFFSET);
+            shieldBar.position.copy(bodyPos).add(ScenePlayerHandler.SHIELD_BAR_OFFSET);
             this.scene.add(shieldBar);
 
             playerObj = {
-                body: bodyMesh,
-                head: headMesh,
+                body: bodyGroup,
+                head: headGroup,
                 movementVelocity: 0,
                 nameplate: nameplateMesh,
                 healthBar,
@@ -309,8 +268,8 @@ export default class ScenePlayerHandler extends ChildComponent {
             };
         } else {
             playerObj = {
-                body: bodyMesh,
-                head: headMesh,
+                body: bodyGroup,
+                head: headGroup,
                 movementVelocity: 0,
             };
         }
@@ -377,7 +336,7 @@ export default class ScenePlayerHandler extends ChildComponent {
         const playerObj = this.players.get(id);
         if (playerObj) {
             const sphere = this.generateProtectionSphere();
-            sphere.position.copy(playerObj.body.position).add(ScenePlayerHandler.PROTECTION_SPHERE_OFFSET);
+            sphere.position.copy(playerObj.body.position);
             this.scene.add(sphere);
             playerObj.protectionSphere = sphere;
         }
@@ -464,6 +423,7 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     private generateProtectionSphere() {
+        // Two spheres are required to remove rendering artifacts.
         const sphereGeo = new SphereGeometry(1.25, 12, 12, 0, Math.PI);
         const sphere1Material = new MeshLambertMaterial({
             color: 0xf0f0f0,

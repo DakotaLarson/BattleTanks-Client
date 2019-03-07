@@ -64,7 +64,7 @@ export default class PowerupCollisionHandler extends ChildComponent {
     }
 
     private onPlayerAddition(data: any) {
-        this.playerPosition = new Vector3(data.pos.x + 0.5, data.pos.y, data.pos.z + 0.5);
+        this.playerPosition.copy(data.pos);
         this.listening = true;
     }
 
@@ -73,15 +73,15 @@ export default class PowerupCollisionHandler extends ChildComponent {
     }
 
     private onPlayerMove(data: any) {
-        this.playerPosition.copy(data.pos).add(new Vector3(0.5, 0, 0.5));
+        this.playerPosition.copy(data.pos);
     }
 
     private onTick() {
         if (this.listening) {
             for (const powerup of this.powerups) {
-                if (powerup.position.distanceToSquared(this.playerPosition) < Math.pow(Player.radius + Powerup.radius, 2)) {
-                    const pos = powerup.position.clone().add(new Vector3(-0.5, 0, -0.5));
-                    PacketSender.sendPowerupPickup([powerup.type, pos.x, pos.y, pos.z]);
+                const powerupPos = powerup.position;
+                if (powerupPos.distanceToSquared(this.playerPosition) < Math.pow(Player.radius + Powerup.radius, 2)) {
+                    PacketSender.sendPowerupPickup([powerup.type, powerupPos.x, powerupPos.y, powerupPos.z]);
                 }
             }
         }

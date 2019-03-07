@@ -143,14 +143,6 @@ export default class Player extends Component {
         this.rammingSpeedEnabled = false;
     }
 
-    public getCenterPosition() {
-        return this.position.clone().add(new Vector3(0.5, 0, 0.5));
-    }
-
-    public getInternalPosition(center: Vector3) {
-        return center.clone().sub(new Vector3(0.5, 0, 0.5));
-    }
-
     private onKeyDown(event: KeyboardEvent) {
         this.onInputDown(event.code);
     }
@@ -240,7 +232,7 @@ export default class Player extends Component {
             potentialRotation = 2 * Math.PI - potentialRotation;
         }
 
-        const potentialPosition = this.getCenterPosition();
+        const potentialPosition = this.position.clone();
         if (this.ramResponse) {
             potentialPosition.x += delta * this.movementVelocity * this.ramResponse.x;
             potentialPosition.z += delta * this.movementVelocity * this.ramResponse.z;
@@ -288,7 +280,7 @@ export default class Player extends Component {
             }
         }
 
-        this.position.copy(this.getInternalPosition(potentialPosition));
+        this.position.copy(potentialPosition);
         this.bodyRotation = potentialRotation;
 
         const movementData = {
@@ -355,11 +347,11 @@ export default class Player extends Component {
     private computeTurretRotation() {
         const ray: Ray = RaycastHandler.getRaycaster().ray;
         const intersection = new Vector3();
-        const playerPosition = this.position.clone().add(new Vector3(0.5, 0, 0.5));
+        const playerPosition = this.position.clone();
         ray.intersectPlane(new Plane(new Vector3(0, 1, 0), -0.75), intersection);
         if (!intersection.equals(new Vector3())) {
             const slope = (playerPosition.x - intersection.x) / (playerPosition.z - intersection.z);
-            let angle = Math.atan(slope);
+            let angle = Math.atan(slope) + Math.PI;
 
             if (playerPosition.z > intersection.z) {
                 angle += Math.PI;
