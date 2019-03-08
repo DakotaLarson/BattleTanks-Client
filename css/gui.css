@@ -40,7 +40,7 @@
 }
 
 .gui .health-bar {
-    background-color: red;
+    background-color: #00ff00;
 }
 
 .gui .shield-bar {
@@ -147,6 +147,23 @@
     background-color: rgba(0, 0, 0, 0.25);
 }
 
+.gui .player-list-title {
+    font-weight: bold;
+    font-size: 3vmin;
+    text-align: center;
+    border-bottom: solid 1px #ffffff;
+    margin-bottom: 1vmin;
+}
+
+.gui .player-list-container {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    grid-gap: 0.5vmin 2vmin;
+}
 .gui .player-list-entry {
-    padding: 0.5vmin;
+    padding-bottom: 0.5vmin;
+}
+
+.gui .player-list-entry:last-child {
+    padding-bottom: none;
 }

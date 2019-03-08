@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, GLTF, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, Scene, Shape, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, GLTF, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, RingGeometry, Scene, Shape, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
@@ -12,6 +12,7 @@ export default class ScenePlayerHandler extends ChildComponent {
     private static readonly HEALTH_BAR_OFFSET = new Vector3(0, 1, 0);
     private static readonly SHIELD_BAR_OFFSET = new Vector3(0, 1.1, 0);
     private static readonly NAMEPLATE_OFFSET = new Vector3(0, 1.2, 0);
+    private static readonly RING_OFFSET = new Vector3(0, 0.01, 0);
 
     private modelLoader: ModelLoader;
 
@@ -135,12 +136,11 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     private onPlayerAddition(data: any) {
-        const name = Globals.getGlobal(Globals.Global.USERNAME);
-        this.addPlayer(data.id, data.pos, name, false);
+        this.addPlayer(data.id, data.pos, name, false, false, data.color);
     }
 
     private onConnectedPlayerAddition(data: any) {
-        this.addPlayer(data.id, data.pos, data.name, true);
+        this.addPlayer(data.id, data.pos, data.name, true, false, data.color);
     }
 
     private onPlayerMove(data: any) {
@@ -218,10 +218,7 @@ export default class ScenePlayerHandler extends ChildComponent {
         }
     }
 
-    private addPlayer(id: number, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound?: boolean) {
-
-        console.log(pos);
-
+    private addPlayer(id: number, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, color?: number) {
         const bodyGroup = new Group();
         const headGroup = new Group();
         this.modelLoader.getTurretModel().then((gltf: GLTF) => {
@@ -241,14 +238,20 @@ export default class ScenePlayerHandler extends ChildComponent {
         headGroup.position.copy(bodyPos);
         headGroup.rotation.y = pos.w;
 
+        if (color) {
+            const ring = this.generateRing(color);
+            ring.position.add(ScenePlayerHandler.RING_OFFSET);
+            bodyGroup.add(ring);
+        }
+
         this.scene.add(bodyGroup, headGroup);
 
         let playerObj: IPlayerObj;
 
         if (isConnectedPlayer) {
-            const nameplateMesh = this.generateNameplate(name);
-            nameplateMesh.position.copy(bodyPos).add(ScenePlayerHandler.NAMEPLATE_OFFSET);
-            this.scene.add(nameplateMesh);
+            const nameplate = this.generateNameplate(name, color as number);
+            nameplate.position.copy(bodyPos).add(ScenePlayerHandler.NAMEPLATE_OFFSET);
+            this.scene.add(nameplate);
 
             const healthBar = this.generateHealthBar(1);
             healthBar.position.copy(bodyPos).add(ScenePlayerHandler.HEALTH_BAR_OFFSET);
@@ -262,7 +265,7 @@ export default class ScenePlayerHandler extends ChildComponent {
                 body: bodyGroup,
                 head: headGroup,
                 movementVelocity: 0,
-                nameplate: nameplateMesh,
+                nameplate,
                 healthBar,
                 shieldBar,
             };
@@ -350,7 +353,7 @@ export default class ScenePlayerHandler extends ChildComponent {
         }
     }
 
-    private generateNameplate(name: string) {
+    private generateNameplate(name: string, color: number) {
         if (this.font) {
             // @ts-ignore Types specification is not remotely correct.
             const shapes = this.font.generateShapes(name, 0.175);
@@ -361,7 +364,7 @@ export default class ScenePlayerHandler extends ChildComponent {
             geometry.translate(xMid, 0, 0);
 
             const material = new MeshBasicMaterial({
-                color: 0xffffff,
+                color,
             });
 
             const mesh = new Mesh(geometry, material);
@@ -445,6 +448,17 @@ export default class ScenePlayerHandler extends ChildComponent {
         const group = new Group();
         group.add(sphere1Obj, sphere2Obj);
         return group;
+    }
+
+    private generateRing(color: number) {
+        const ringGeo = new RingGeometry(0.85, 1, 16);
+        const ringMaterial = new MeshLambertMaterial({
+            color,
+        });
+        const ringMesh = new Mesh(ringGeo, ringMaterial);
+        ringMesh.rotateX(-Math.PI / 2);
+
+        return ringMesh;
     }
 
     private playSound(player: IPlayerObj, buffer: AudioBuffer) {

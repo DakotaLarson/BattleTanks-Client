@@ -202,9 +202,20 @@ const receiveMatchStatistics = (rawStats: number[]) => {
         currency: rawStats[12],
     };
 
-    EventHandler.callEvent(EventHandler.Event.MATCH_STATISTICS_RECEPTION, statistics);
+    EventHandler.callEvent(EventHandler.Event.STATISTICS_RECEPTION, statistics);
 };
 
+const receiveMatchStatisticsUpdate = (data: any) => {
+    const headers = new Map([[0, "points"], [1, "kills"], [2, "deaths"]]);
+    const stats: any = {
+        id: data.header,
+    };
+
+    for (let i = 0; i < data.body.length; i += 2) {
+        stats[headers.get(data.body[i]) as string] = data.body[i + 1];
+    }
+    EventHandler.callEvent(EventHandler.Event.STATISTICS_UPDATE, stats);
+};
 const receiveAudio = (value: string) => {
     // @ts-ignore Not numerical enum.
     EventHandler.callEvent(EventHandler.Event.AUDIO_PLAY, AudioType[value]);
@@ -304,6 +315,7 @@ handlers.push(receiveProtectionStart);
 handlers.push(receiveProtectionEnd);
 
 handlers.push(receiveMatchStatistics);
+handlers.push(receiveMatchStatisticsUpdate);
 
 handlers.push(receiveAudio);
 

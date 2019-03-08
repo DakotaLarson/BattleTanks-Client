@@ -156,7 +156,8 @@ enum Event {
     AUDIO_PLAY,
 
     // MATCH STATISTICS
-    MATCH_STATISTICS_RECEPTION,
+    STATISTICS_RECEPTION, // End of Match,
+    STATISTICS_UPDATE, // Live Updates
 
     // OPTIONS
     OPTIONS_OPEN,
