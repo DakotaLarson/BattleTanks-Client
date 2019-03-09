@@ -130,8 +130,11 @@
 .main-menu .feedback-greeting {
     font-size: 4vmin;
 }
-.main-menu a {
+.main-menu .standard-anchor {
     color: #00b9ff;
+}
+.main-menu .standard-anchor:hover {
+    color: #33c9ff;
 }
 .main-menu .auth-container {
     position: absolute;
@@ -151,6 +154,7 @@
 
 .main-menu #auth-signout:hover {
     cursor: pointer;
+    color: #33c9ff;
 }
 
 .main-menu .server-playercount {
@@ -185,13 +189,13 @@
     position: absolute;
     top: 15vh;
     background-color: #101010;
-    text-transform: capitalize;
     padding: 2.5vmin;
     border: solid 1px #ffffff;
 }
 
 .main-menu .player-stats {
     left: 2.5vw;
+    text-transform: capitalize;
 }
 
 .main-menu .leaderboard {
@@ -202,10 +206,10 @@
 
 .main-menu .player-stats-container,
 .main-menu .leaderboard-container {
-    display: inline-grid;
-    grid-template-columns: auto auto;
-    justify-items: left;
-    grid-gap: 0.5vmin;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    justify-items: right;
+    grid-gap: 0.5vmin 2vmin;
     font-size: 2.5vmin;
     font-family: 'Inconsolata', sans-serif;
 }
@@ -213,12 +217,10 @@
 .main-menu .leaderboard-container {
     font-size: 2vmin;
     margin: 0 2.5vmin;
-    grid-gap: 0.5vmin 2vmin;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: repeat(3, auto);
 }
-
-.main-menu .player-stat-title {
-    justify-self: right;
+.main-menu .player-stat:nth-child(odd) {
+    justify-self: left;
 }
 
 .main-menu .player-stats-title,
@@ -286,6 +288,7 @@
 
 .main-menu .tutorial-link:hover {
     cursor: pointer;
+    color: #33c9ff;
 }
 .main-menu .tutorial-link-xl {
     font-size: 2.5vmin;

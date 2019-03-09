@@ -136,9 +136,9 @@ export default class Leaderboard extends ChildComponent {
                     // There is no leaderboard data to compare to.
                     return;
                 }
-                const numberElt = this.createLeaderboardElt(rankData.rank, rankData.id);
-                const usernameElt = this.createLeaderboardElt(rankData.username, rankData.id);
-                const dataElt = this.createLeaderboardElt(rankData.points, rankData.id);
+                const numberElt = this.createLeaderboardElt(rankData.rank, rankData.id, false);
+                const usernameElt = this.createLeaderboardElt(rankData.username, rankData.id, true);
+                const dataElt = this.createLeaderboardElt(rankData.points, rankData.id, false);
 
                 this.containerElt.appendChild(numberElt);
                 this.containerElt.appendChild(usernameElt);
@@ -149,6 +149,8 @@ export default class Leaderboard extends ChildComponent {
 
             for (const rankElt of Array.from(rankElts)) {
                 (rankElt as HTMLElement).style.color = "#03c95f";
+
+                rankElt.classList.remove("profile-link");
             }
 
         }).catch((err) => {
@@ -195,9 +197,9 @@ export default class Leaderboard extends ChildComponent {
             }
 
             for (let i = data.length; i > 0;  i --) {
-                const numberElt = this.createLeaderboardElt("" + data[i - 1].rank, data[i - 1].id);
-                const usernameElt = this.createLeaderboardElt(data[i - 1].username, data[i - 1].id);
-                const dataElt = this.createLeaderboardElt(data[i - 1].points, data[i - 1].id);
+                const numberElt = this.createLeaderboardElt("" + data[i - 1].rank, data[i - 1].id, false);
+                const usernameElt = this.createLeaderboardElt(data[i - 1].username, data[i - 1].id, true);
+                const dataElt = this.createLeaderboardElt(data[i - 1].points, data[i - 1].id, false);
 
                 this.containerElt.insertBefore(dataElt, this.containerElt.firstChild);
                 this.containerElt.insertBefore(usernameElt, this.containerElt.firstChild);
@@ -207,10 +209,13 @@ export default class Leaderboard extends ChildComponent {
 
     }
 
-    private createLeaderboardElt(text: string, rankId: number) {
+    private createLeaderboardElt(text: string, rankId: number, isUsername: boolean) {
         const element = document.createElement("div");
         element.textContent = text;
         element.classList.add("leaderboard-entry", "leaderboard-entry-" + rankId);
+        if (isUsername) {
+            element.classList.add("profile-link");
+        }
         return element;
     }
 

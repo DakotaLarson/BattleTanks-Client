@@ -48,13 +48,11 @@ export default class PlayerStats extends ChildComponent {
     private renderStats(stats: any) {
         if (stats) {
             this.messageElt.textContent = "";
-            const statTitles = ["rank", "victories", "defeats", "points", "kills", "deaths", "K/D Ratio", "shots", "hits", "accuracy"];
+            const statTitles = ["points", "rank", "victories", "defeats", "V/D", "kills", "deaths", "K/D", "shots", "hits", "accuracy"];
             for (const title of statTitles) {
                 if (stats[title] !== undefined) {
-                    const titleElt = this.createStatElt(title, true);
-                    const dataElt = this.createStatElt(stats[title], false);
-                    this.containerElt.appendChild(titleElt);
-                    this.containerElt.appendChild(dataElt);
+                    this.containerElt.appendChild(this.createStatElt(title));
+                    this.containerElt.appendChild(this.createStatElt(stats[title]));
                 }
             }
         } else {
@@ -64,12 +62,19 @@ export default class PlayerStats extends ChildComponent {
     }
 
     private formatStats(stats: any) {
+        if (stats.victories !== undefined) {
+            let vdRatio = stats.victories;
+            if (stats.defeats) {
+                vdRatio = Math.round(vdRatio / stats.defeats * 100) / 100;
+            }
+            stats["V/D"] = vdRatio;
+        }
         if (stats.kills !== undefined) {
             let kdRatio = stats.kills;
             if (stats.deaths) {
-                kdRatio =  Math.round(kdRatio / stats.deaths * 100) / 100;
+                kdRatio = Math.round(kdRatio / stats.deaths * 100) / 100;
             }
-            stats["K/D Ratio"] = kdRatio;
+            stats["K/D"] = kdRatio;
         }
         if (stats.hits !== undefined) {
             let accuracy = stats.hits * 100;
@@ -80,15 +85,10 @@ export default class PlayerStats extends ChildComponent {
         }
     }
 
-    private createStatElt(title: string, isTitle: boolean) {
+    private createStatElt(title: string) {
         const element = document.createElement("div");
-        if (isTitle) {
-            element.textContent = title + ":";
-            element.classList.add("player-stat", "player-stat-title");
-        } else {
-            element.textContent = title;
-            element.classList.add("player-stat");
-        }
+        element.textContent = title;
+        element.classList.add("player-stat");
         return element;
     }
 

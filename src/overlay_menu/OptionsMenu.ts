@@ -28,6 +28,7 @@ export default class OptionsMenu extends Component {
     private chatOpenValueElt: HTMLElement;
     private playerListValueElt: HTMLElement;
 
+    private chatOpacityValueElt: HTMLInputElement;
     private musicVolumeValueElt: HTMLInputElement;
     private effectsVolumeValueElt: HTMLInputElement;
     private engineVolumeValueElt: HTMLInputElement;
@@ -58,6 +59,7 @@ export default class OptionsMenu extends Component {
         this.chatOpenValueElt = DomHandler.getElement("#option-value-chatopen", this.parentElt);
         this.playerListValueElt = DomHandler.getElement("#option-value-playerlist", this.parentElt);
 
+        this.chatOpacityValueElt = DomHandler.getElement("#option-value-chat-opacity", this.parentElt) as HTMLInputElement;
         this.musicVolumeValueElt = DomHandler.getElement("#option-value-volume-music", this.parentElt) as HTMLInputElement;
         this.effectsVolumeValueElt = DomHandler.getElement("#option-value-volume-effects", this.parentElt) as HTMLInputElement;
         this.engineVolumeValueElt = DomHandler.getElement("#option-value-volume-engine", this.parentElt) as HTMLInputElement;
@@ -123,6 +125,7 @@ export default class OptionsMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
 
+        DomEventHandler.addListener(this, this.chatOpacityValueElt, "change", this.onChatOpacityChange);
         DomEventHandler.addListener(this, this.musicVolumeValueElt, "change", this.onMusicVolumeChange);
         DomEventHandler.addListener(this, this.effectsVolumeValueElt, "change", this.onEffectsVolumeChange);
         DomEventHandler.addListener(this, this.engineVolumeValueElt, "change", this.onEngineVolumeChange);
@@ -156,6 +159,7 @@ export default class OptionsMenu extends Component {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
 
+        DomEventHandler.removeListener(this, this.chatOpacityValueElt, "change", this.onChatOpacityChange);
         DomEventHandler.removeListener(this, this.musicVolumeValueElt, "change", this.onMusicVolumeChange);
         DomEventHandler.removeListener(this, this.effectsVolumeValueElt, "change", this.onEffectsVolumeChange);
         DomEventHandler.removeListener(this, this.engineVolumeValueElt, "change", this.onEngineVolumeChange);
@@ -302,6 +306,10 @@ export default class OptionsMenu extends Component {
         }
     }
 
+    private onChatOpacityChange() {
+        const value = Number(this.chatOpacityValueElt.value);
+        this.saveChange("chatOpacity", value);
+    }
     private onMusicVolumeChange() {
         const value = Number(this.musicVolumeValueElt.value);
         this.saveChange("musicVolume", value);
@@ -405,6 +413,7 @@ export default class OptionsMenu extends Component {
             setOption("chatOpen", this.chatOpenValueElt);
             setOption("playerList", this.playerListValueElt);
 
+            setRangeValue(options.chatOpacity, this.chatOpacityValueElt);
             setRangeValue(options.musicVolume, this.musicVolumeValueElt);
             setRangeValue(options.effectsVolume, this.effectsVolumeValueElt);
             setRangeValue(options.engineVolume, this.engineVolumeValueElt);

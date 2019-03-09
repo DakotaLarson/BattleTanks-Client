@@ -16,6 +16,7 @@ import Metrics from "./Metrics";
 import MultiplayerConnection from "./MultiplayerConnection";
 import Options from "./Options";
 import OverlayMenu from "./overlay_menu/OverlayMenu";
+import ProfileViewer from "./ProfileViewer";
 
 class Game extends Component {
 
@@ -30,6 +31,7 @@ class Game extends Component {
     private options: Options;
     private auth: Auth;
     private metrics: Metrics;
+    private profileViewer: ProfileViewer;
 
     private connectedToMultiplayer: boolean;
 
@@ -47,6 +49,7 @@ class Game extends Component {
         this.alertMessageHandler = new AlertMessageHandler();
         this.metrics = new Metrics();
         this.connectedToMultiplayer = false;
+        this.profileViewer = new ProfileViewer();
     }
     public enable() {
         EventHandler.callEvent(EventHandler.Event.GAME_START);
@@ -78,6 +81,7 @@ class Game extends Component {
         if (Options.options.metricsEnabled) {
             this.attachChild(this.metrics);
         }
+        this.attachComponent(this.profileViewer);
     }
 
     public update(delta: number) {

@@ -57,6 +57,7 @@
     <link rel="stylesheet" type="text/css" href="./css/options-menu.css"/>
     <link rel="stylesheet" type="text/css" href="./css/joystick.css"/>
     <link rel="stylesheet" type="text/css" href="./css/username-menu.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/profile-viewer.css"/>
 </head>
 <body>
 
@@ -175,7 +176,7 @@
                 <div class="tutorial-content tutorial-create">
                     <h2>Creating an Arena</h2>
                     
-                    <div class="tutorial-text">You can create an arena and submit it on our <a href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>!</div>
+                    <div class="tutorial-text">You can create an arena and submit it on our <a class="standard-anchor" href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>!</div>
                     
                     <h3>Guidelines</h3>
                     <div class="tutorial-text">
@@ -198,7 +199,7 @@
 
                     <h3>Submission &amp; Reward</h3>
                     <div class="tutorial-text">
-                        Upon submission to the <a href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>, I will reivew your arena and offer feedback if necessary. If all looks good, then I will include your arena with the next release of BattleTanks!
+                        Upon submission to the <a class="standard-anchor" href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>, I will reivew your arena and offer feedback if necessary. If all looks good, then I will include your arena with the next release of BattleTanks!
                     </div>
                     <div class="tutorial-text">
                         Upon approval of your arena, you will granted access to the "Arena Creators" role on the Discord server! I will also note you as the author of the arena so appropriate credit can be made visible in future releases.
@@ -245,8 +246,8 @@
     <!-- SOCIAL LINKS -->
     <p class="feedback-request">
         <span class="feedback-greeting">Hi there!<br/></span>
-BattleTanks is being <a href="https://bit.ly/2AtVanF" target="_blank">actively&nbsp;developed</a> and I am basing future development almost entirely on feedback I receive from the growing community!<br/>
-Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
+BattleTanks is being <a class="standard-anchor" href="https://bit.ly/2AtVanF" target="_blank">actively&nbsp;developed</a> and I am basing future development almost entirely on feedback I receive from the growing community!<br/>
+Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
     </p>
     <div class="discord-container">
         <a class="discord-ref" href="https://discord.gg/7J5ZJUQ" target="_blank">
@@ -407,7 +408,7 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
 </div>
 
 <!-- OPTIONS MENU -->
-<div class="options-menu-parent menu">
+<div class="options-menu-parent menu no-select">
     <div class="options-menu">
         <h2>Options</h2>
         <div class='options-parent'>
@@ -456,7 +457,10 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
 
             <span class="option-title">List Players:</span>
             <span class="option-value option-listening-value" id="option-value-playerlist"></span>
-    
+
+            <span class="option-title">Chat Opacity:</span>
+            <input type="range" id="option-value-chat-opacity" class="option-value option-range-value" min="0" max="1" step="any"/>
+
             <span class="option-title">Music Volume:</span>
             <input type="range" id="option-value-volume-music" class="option-value option-range-value" min="0" max="1" step="any"/>
     
@@ -483,6 +487,12 @@ Let me know <a href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
         <span class="menu-selection disabled" id="username-save">Save &amp; Close</span>
         <span class="menu-selection" id="username-cancel">Cancel</span>
     </div>
+</div>
+<!-- PROFILE CONTAINER -->
+<div class="profile-parent no-select">
+    <div class="profile-header"></div>
+    <div class="profile-container"></div>
+    <div class="profile-message"></div>
 </div>
 
 <!-- POLYFILLS -->

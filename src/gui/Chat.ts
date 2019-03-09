@@ -41,6 +41,9 @@ export default class Chat extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.CHAT_UPDATE, this.onChatUpdate);
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.hideChat);
         EventHandler.addListener(this, EventHandler.Event.OPTIONS_OPEN, this.onOptionsOpen);
+        EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
+
+        this.setOpacity(this.inputElt);
 
         this.previewContainer.style.display = "block";
     }
@@ -50,6 +53,7 @@ export default class Chat extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.CHAT_UPDATE, this.onChatUpdate);
         EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.hideChat);
         EventHandler.removeListener(this, EventHandler.Event.OPTIONS_OPEN, this.onOptionsOpen);
+        EventHandler.removeListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
 
         this.clearMessages();
 
@@ -66,12 +70,6 @@ export default class Chat extends ChildComponent {
             this.hideChat();
         } else if (event.code === "Enter" && Globals.getGlobal(Globals.Global.CHAT_OPEN) && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
             this.sendMessage();
-            this.hideChat();
-        }
-    }
-
-    private onOptionsOpen() {
-        if (Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
             this.hideChat();
         }
     }
@@ -100,6 +98,22 @@ export default class Chat extends ChildComponent {
                     }, 500);
                 }
             }, 5000);
+        }
+    }
+
+    private onOptionsOpen() {
+        if (Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
+            this.hideChat();
+        }
+    }
+
+    private onOptionsUpdate(event: any) {
+        if (event.attribute === "chatOpacity") {
+            this.setOpacity(this.inputElt, event.data);
+        }
+        const messageElts = Array.from(DomHandler.getElements(".chat-message", this.container));
+        for (const elt of messageElts) {
+            this.setOpacity(elt, event.data);
         }
     }
 
@@ -158,6 +172,7 @@ export default class Chat extends ChildComponent {
 
         const messageElt = document.createElement("div");
         messageElt.classList.add("chat-message");
+        this.setOpacity(messageElt);
         for (const element of elements) {
             messageElt.appendChild(element);
         }
@@ -187,9 +202,6 @@ export default class Chat extends ChildComponent {
         this.clearMessages();
         const messageCount = this.messages.length;
         if (messageCount) {
-            // for (let i = messageCount - this.messageOffset - 1; i  > Math.min(Chat.MAX_VISIBLE_COUNT, messageCount); i --) {
-            //     this.messageContainer.insertBefore(this.messages[i], this.messageContainer.firstChild);
-            // }
             for (let i = 0; i < Math.min(Chat.MAX_VISIBLE_COUNT, messageCount); i ++) {
                 this.messageContainer.insertBefore(this.messages[messageCount - i - 1 - this.messageOffset], this.messageContainer.firstChild);
             }
@@ -204,5 +216,12 @@ export default class Chat extends ChildComponent {
             this.messageOffset = Math.min(this.messageOffset + 1, Math.max(this.messages.length - Chat.MAX_VISIBLE_COUNT, 0));
         }
         this.setMessages();
+    }
+
+    private setOpacity(elt: HTMLElement, opacity?: number) {
+        if (opacity === undefined) {
+            opacity = Math.round(Options.options.chatOpacity * 100) / 100;
+        }
+        elt.style.backgroundColor = "rgba(0, 0, 0, " + opacity + ")";
     }
 }

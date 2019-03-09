@@ -61,7 +61,7 @@ export default class PlayerList extends ChildComponent {
         if (event.sendMessage) {
             this.sendMessage(event.name, " joined the game!");
         }
-        this.addPlayer(event.id, event.name);
+        this.addPlayer(event.id, event.name, event.hasProfile);
     }
 
     private onPlayerLeave(event: any) {
@@ -125,10 +125,10 @@ export default class PlayerList extends ChildComponent {
         this.parentElt.style.display = "";
     }
 
-    private addPlayer(id: number, name: string) {
+    private addPlayer(id: number, name: string, hasProfile: boolean) {
 
         const entryClasses = [
-            "player-list-entry", // Add no additional class to first column.
+            hasProfile ? "profile-link" : "player-list-entry",
             "player-list-entry-points",
             "player-list-entry-kills",
             "player-list-entry-deaths",
