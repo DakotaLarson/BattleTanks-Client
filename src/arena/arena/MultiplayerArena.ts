@@ -10,19 +10,27 @@ export default class MultiplayerArena extends Arena {
     private static readonly OOB_ID = -1; // Out of Bounds Id
 
     private player: Player | undefined;
+    private playerId: number | undefined;
     private connectedPlayers: Map<number, ConnectedPlayer>;
+
+    private playerDetails: Map<number, any>;
 
     constructor() {
         super();
 
         this.player = undefined;
+
         this.connectedPlayers = new Map();
+        this.playerDetails = new Map();
+
         PlayerCollisionHandler.clearPlayers();
     }
 
     public enable() {
         super.enable();
 
+        EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_JOIN, this.onPlayerJoin);
+        EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_LEAVE, this.onPlayerLeave);
         EventHandler.addListener(this, EventHandler.Event.PLAYER_ADDITION, this.onPlayerAddition);
         EventHandler.addListener(this, EventHandler.Event.PLAYER_REMOVAL, this.onPlayerRemoval);
         EventHandler.addListener(this, EventHandler.Event.PLAYER_MOVE, this.onPlayerMove);
@@ -35,6 +43,8 @@ export default class MultiplayerArena extends Arena {
     public disable() {
         super.disable();
 
+        EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_JOIN, this.onPlayerJoin);
+        EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_LEAVE, this.onPlayerLeave);
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_ADDITION, this.onPlayerAddition);
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_REMOVAL, this.onPlayerRemoval);
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_MOVE, this.onPlayerMove);
@@ -44,8 +54,20 @@ export default class MultiplayerArena extends Arena {
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_REMOVAL, this.onConnectedPlayerRemoval);
 
         this.connectedPlayers.clear();
+        this.playerDetails.clear();
         PlayerCollisionHandler.clearPlayers();
         this.player = undefined;
+        this.playerId = undefined;
+    }
+
+    private onPlayerJoin(player: any) {
+        this.playerDetails.set(player.id, {
+            name: player.name,
+        });
+    }
+
+    private onPlayerLeave(player: any) {
+        this.playerDetails.delete(player.id);
     }
 
     private onPlayerAddition(data: any) {
@@ -54,8 +76,10 @@ export default class MultiplayerArena extends Arena {
             this.detachChild(this.player);
         }
         this.player = new Player(data.id, data.color, data.pos);
+        this.playerId = data.id;
         this.attachChild(this.player);
         PlayerCollisionHandler.addPlayer(this.player);
+        this.playerDetails.get(data.id).color = data.color;
     }
 
     private onPlayerRemoval(data: any) {
@@ -82,6 +106,7 @@ export default class MultiplayerArena extends Arena {
         this.connectedPlayers.set(data.id, player);
         this.attachChild(player);
         PlayerCollisionHandler.addPlayer(player);
+        this.playerDetails.get(data.id).color = data.color;
     }
 
     private onConnectedPlayerMove(data: any) {
@@ -144,25 +169,19 @@ export default class MultiplayerArena extends Arena {
                 isSelf: true,
                 livesRemaining,
             };
-        }
-        if (this.player && this.player.id === id) {
-            return {
-                name: Globals.getGlobal(Globals.Global.USERNAME),
-                color: this.player.color,
-                isSelf: true,
-                livesRemaining,
-            };
         } else {
-            const connectedPlayer = this.connectedPlayers.get(id);
-            if (connectedPlayer) {
+            const isSelf = this.playerId === id;
+            const details = this.playerDetails.get(id);
+            if (details) {
                 return {
-                    name: connectedPlayer.name,
-                    color: connectedPlayer.color,
-                    isSelf: false,
+                    name: details.name,
+                    color: details.color,
+                    isSelf,
                     livesRemaining,
                 };
+            } else {
+                return undefined;
             }
-            return undefined;
         }
     }
 }

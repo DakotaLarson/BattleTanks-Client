@@ -167,6 +167,9 @@ export default class Chat extends ChildComponent {
             const element = document.createElement("span");
             element.textContent = segment.text;
             element.style.color = this.getCSSColorString(segment.color);
+            if (segment.profileLink) {
+                element.classList.add("profile-link");
+            }
             elements.push(element);
         }
 
