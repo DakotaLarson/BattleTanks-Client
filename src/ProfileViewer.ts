@@ -68,6 +68,10 @@ export default class ProfileViewer extends Component {
             this.profileContainerElt.removeChild(this.profileContainerElt.firstChild);
         }
         this.profileMessageElt.textContent = "";
+        this.profileParentElt.style.left = "";
+        this.profileParentElt.style.right = "";
+        this.profileParentElt.style.top = "";
+        this.profileParentElt.style.bottom = "";
         this.profileParentElt.style.display = "";
         this.profileOpen = false;
     }
@@ -76,42 +80,42 @@ export default class ProfileViewer extends Component {
         while (this.profileContainerElt.firstChild) {
             this.profileContainerElt.removeChild(this.profileContainerElt.firstChild);
         }
-        this.formatStats(data);
-        const statTitles = ["points", "rank", "victories", "defeats", "V/D", "kills", "deaths", "K/D", "shots", "hits", "accuracy"];
-        for (const stat of statTitles) {
-            if (stat in data) {
-                this.profileContainerElt.appendChild(this.createStatElt(stat));
-                this.profileContainerElt.appendChild(this.createStatElt(data[stat]));
+        this.formatProfileData(data);
+        const dataTitles = ["points", "rank", "victories", "defeats", "V/D", "kills", "deaths", "K/D", "shots", "hits", "accuracy"];
+        for (const title of dataTitles) {
+            if (title in data) {
+                this.profileContainerElt.appendChild(this.createProfileDataElt(title));
+                this.profileContainerElt.appendChild(this.createProfileDataElt(data[title]));
 
             }
         }
     }
 
-    private formatStats(stats: any) {
-        if (stats.victories !== undefined) {
-            let vdRatio = stats.victories;
-            if (stats.defeats) {
-                vdRatio = Math.round(vdRatio / stats.defeats * 100) / 100;
+    private formatProfileData(data: any) {
+        if (data.victories !== undefined) {
+            let vdRatio = data.victories;
+            if (data.defeats) {
+                vdRatio = Math.round(vdRatio / data.defeats * 100) / 100;
             }
-            stats["V/D"] = vdRatio;
+            data["V/D"] = vdRatio;
         }
-        if (stats.kills !== undefined) {
-            let kdRatio = stats.kills;
-            if (stats.deaths) {
-                kdRatio = Math.round(kdRatio / stats.deaths * 100) / 100;
+        if (data.kills !== undefined) {
+            let kdRatio = data.kills;
+            if (data.deaths) {
+                kdRatio = Math.round(kdRatio / data.deaths * 100) / 100;
             }
-            stats["K/D"] = kdRatio;
+            data["K/D"] = kdRatio;
         }
-        if (stats.hits !== undefined) {
-            let accuracy = stats.hits * 100;
-            if (stats.shots) {
-                accuracy = Math.round(accuracy / stats.shots);
+        if (data.hits !== undefined) {
+            let accuracy = data.hits * 100;
+            if (data.shots) {
+                accuracy = Math.round(accuracy / data.shots);
             }
-            stats.accuracy = accuracy + "%";
+            data.accuracy = accuracy + "%";
         }
     }
 
-    private createStatElt(title: string) {
+    private createProfileDataElt(title: string) {
         const element = document.createElement("div");
         element.textContent = title;
         element.classList.add("profile-data");

@@ -37,13 +37,7 @@ export default class Auth extends Component {
             });
         };
 
-        // @ts-ignore Custom attribute
-        if (window.authInitialized) {
-            initializeAuth();
-        } else {
-            // @ts-ignore Custom method
-            window.initializeAuth = initializeAuth;
-        }
+        this.loadScript(initializeAuth);
 
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onSignoutClick);
     }
@@ -120,5 +114,15 @@ export default class Auth extends Component {
                 reject(err);
             });
         });
+    }
+
+    private loadScript(cb: () => any) {
+        const script = document.createElement("script");
+        script.setAttribute("async", "");
+        script.setAttribute("defer", "");
+
+        script.setAttribute("src", "https://apis.google.com/js/api.js");
+        document.body.appendChild(script);
+        script.onload = cb;
     }
 }

@@ -268,10 +268,6 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
         <span class="debug-data no-select">Render: <span id="debug-render"></span></span><br/>
 
     </div>
-    <div class="fullscreen-toggle gui-element no-select">
-        <img id="fullscreen-toggle-on" draggable="false" src="./res/gui/fullscreen.svg">
-        <img id="fullscreen-toggle-off" draggable="false" src="./res/gui/fullscreen-exit.svg">
-    </div>
 
     <div class="create-world-mode-toggle-parent gui-element no-select">
         <div class="create-world-mode-toggle no-select" id="creation-tool-camera">Camera (C)</div>
@@ -400,8 +396,8 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
     <span class="volume-suggestion no-select">Tap to unmute</span>
     <img class="volume-mute no-select" draggable="false"/>
     <div class="fullscreen-toggle gui-element no-select">
-        <img id="fullscreen-toggle-on" draggable="false" src="./res/gui/fullscreen.svg">
-        <img id="fullscreen-toggle-off" draggable="false" src="./res/gui/fullscreen-exit.svg">
+        <img id="fullscreen-toggle-on" draggable="false" src="./res/menu/fullscreen.svg">
+        <img id="fullscreen-toggle-off" draggable="false" src="./res/menu/fullscreen-exit.svg">
     </div>
     <img class="menu-options" draggable="false" src="./res/menu/gear.svg"/>
     
@@ -525,23 +521,5 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
         System.import("./build/Game.js");
     });
 </script>
-<script>
-    function onAuthInit() {
-        if(window.initializeAuth) {
-            window.initializeAuth();
-        } else {
-            window.authInitialized = true;
-        }
-    }
-
-    function onRecaptchaInit() {
-        if(window.initializeRecaptcha) {
-            window.initializeRecaptcha();
-        } else {
-            window.recaptchaInitialized = true;
-        }
-    }
-</script>
-<script async defer src="https://apis.google.com/js/api.js" onload="onAuthInit()"></script>
 </body>
 </html>

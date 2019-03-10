@@ -6,8 +6,6 @@ declare const grecaptcha: any;
 
 export default class Metrics extends ChildComponent {
 
-    private static readonly EXECUTION_INTERVAL = 30000;
-
     private static readonly DEV_SITE_KEY = "6Lej3pIUAAAAAF8gQOBaIv9X827CO94rz3dfNtZS";
     private static readonly PROD_SITE_KEY = "6LfQ3pIUAAAAAI3mqIAJNjmJIoaVbsUkmS8mMFz3";
 
@@ -32,8 +30,6 @@ export default class Metrics extends ChildComponent {
     private totalLatency: number;
     private totalLatencyIntervals: number;
 
-    private token: string | undefined;
-    private recaptchaTask: number | undefined;
     private key: string | undefined;
 
     constructor() {
@@ -95,27 +91,17 @@ export default class Metrics extends ChildComponent {
             this.key = Metrics.PROD_SITE_KEY;
         }
 
-        const recaptchaScript = document.createElement("script");
-        recaptchaScript.setAttribute("async", "");
-        recaptchaScript.setAttribute("defer", "");
-        recaptchaScript.setAttribute("src", "https://www.google.com/recaptcha/api.js?render=" + this.key);
-        recaptchaScript.setAttribute("onload", "onRecaptchaInit()");
-        document.body.appendChild(recaptchaScript);
-
         const initializeRecaptcha = () => {
-
             grecaptcha.ready(() => {
-                this.executeRecaptcha();
+                grecaptcha.execute(this.key , {action: "metrics"}).then((token: string) => {
+                    this.getMetricSession(token).then((session: string) => {
+                        sessionStorage.setItem("metricSession", session);
+                    });
+                });
             });
         };
 
-        // @ts-ignore Custom attribute
-        if (window.recaptchaInitialized) {
-            initializeRecaptcha();
-        } else {
-            // @ts-ignore Custom method
-            window.initializeRecaptcha = initializeRecaptcha;
-        }
+        this.loadScript(initializeRecaptcha);
 
         EventHandler.addListener(this, EventHandler.Event.DOM_BEFOREUNLOAD, this.onUnload);
 
@@ -127,9 +113,6 @@ export default class Metrics extends ChildComponent {
 
         EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
-
-        EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
-        EventHandler.addListener(this, EventHandler.Event.DOM_FOCUS, this.onFocus);
 
         EventHandler.addListener(this, EventHandler.Event.DEBUG_FPS, this.onFPS);
         EventHandler.addListener(this, EventHandler.Event.DEBUG_LATENCY, this.onPingPong);
@@ -147,13 +130,9 @@ export default class Metrics extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.removeListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
 
-        EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_FOCUS, this.onFocus);
-
         EventHandler.removeListener(this, EventHandler.Event.DEBUG_FPS, this.onFPS);
         EventHandler.removeListener(this, EventHandler.Event.DEBUG_LATENCY, this.onPingPong);
 
-        window.clearInterval(this.recaptchaTask);
     }
 
     private onMPConnect() {
@@ -188,7 +167,7 @@ export default class Metrics extends ChildComponent {
         this.audio = Globals.getGlobal(Globals.Global.AUDIO_ENABLED);
 
         const address = "http" + Globals.getGlobal(Globals.Global.HOST);
-        const blob = new Blob([JSON.stringify({
+        const metric = {
             browser: this.browser,
             os: this.os,
             device: this.device,
@@ -201,22 +180,13 @@ export default class Metrics extends ChildComponent {
             referrer: this.referrer,
             fps: averageFPS,
             latency: averageLatency,
-            token: this.token,
+        };
+        const blob = new Blob([JSON.stringify({
+            session: sessionStorage.getItem("metricSession"),
+            metric,
         })], {type: "text/plain"});
 
         navigator.sendBeacon(address + "/metrics", blob);
-    }
-
-    private onBlur() {
-        window.clearInterval(this.recaptchaTask);
-        this.recaptchaTask = undefined;
-    }
-
-    private onFocus() {
-        if (this.recaptchaTask) {
-            window.clearInterval(this.recaptchaTask);
-        }
-        this.executeRecaptcha();
     }
 
     private onFPS(frames: number) {
@@ -229,20 +199,43 @@ export default class Metrics extends ChildComponent {
         this.totalLatencyIntervals ++;
     }
 
-    private executeRecaptcha() {
-        this.execute(this.key as string);
-        this.recaptchaTask = window.setInterval(() => {
-            this.execute(this.key as string);
-        }, Metrics.EXECUTION_INTERVAL);
+    private getMetricSession(token: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const address = "http" + Globals.getGlobal(Globals.Global.HOST);
+            const payload: any = {
+                token,
+            };
+            const session = sessionStorage.getItem("metricSession");
+            if (session) {
+                payload.session = session;
+            }
+            const body = JSON.stringify(payload);
+
+            fetch(address + "/metricsession", {
+                method: "post",
+                mode: "cors",
+                credentials: "omit",
+                body,
+                headers: {
+                    "content-type": "application/json",
+                },
+            }).then((response: Response) => {
+                return response.text();
+            }).then((metricSession: string) => {
+                resolve(metricSession);
+            }).catch((err) => {
+                reject(err);
+            });
+        });
     }
 
-    private execute(key: string) {
-        try {
-            grecaptcha.execute(key , {action: "metrics"}).then((token: string) => {
-                this.token = token;
-            });
-        } catch (err) {
-            console.log(err);
-        }
+    private loadScript(cb: () => any) {
+        const recaptchaScript = document.createElement("script");
+        recaptchaScript.setAttribute("async", "");
+        recaptchaScript.setAttribute("defer", "");
+
+        recaptchaScript.setAttribute("src", "https://www.google.com/recaptcha/api.js?render=" + this.key);
+        document.body.appendChild(recaptchaScript);
+        recaptchaScript.onload = cb;
     }
 }
