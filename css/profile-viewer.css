@@ -12,11 +12,12 @@
     display: none;
     text-align: center;
     border: solid 1px #ffffff;
+    width: 20vmin;
 }
 
 .profile-parent .profile-container {
     display: inline-grid;
-    margin-top: 2.5vmin;
+    margin-top: 0.5vmin;
     grid-template-columns: repeat(2, auto);
     justify-items: right;
     grid-gap: 0.25vmin 1vmin;
@@ -31,6 +32,19 @@
     font-weight: bold;
     padding: 2vmin;
     border-bottom: solid 1px #ffffff;
+    margin-bottom: 0.5vmin;
+}
+
+.profile-parent .profile-action {
+    font-size: 1.75vmin;
+    margin: 0.5vmin 0;
+    padding: 0.25vmin 0;
+    width: 75%;
+    display: inline-block;
+    border: solid 1px #ffffff;
+}
+.profile-parent .profile-actions img {
+    height: 5vmin;
 }
 
 .profile-parent .profile-message {

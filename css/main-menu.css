@@ -202,10 +202,12 @@
     right: 2.5vw;
     padding: 0;
     min-width: 12.5vw;
+    width: 30vmin;
 }
 
 .main-menu .player-stats-container,
-.main-menu .leaderboard-container {
+.main-menu .leaderboard-container,
+.main-menu .search-container {
     display: grid;
     grid-template-columns: repeat(2, auto);
     justify-items: right;
@@ -219,7 +221,19 @@
     margin: 0 2.5vmin;
     grid-template-columns: repeat(3, auto);
 }
-.main-menu .player-stat:nth-child(odd) {
+
+.main-menu .search-container {
+    font-size: 2vmin;
+    margin: 0 2.5vmin;
+    display: none;
+}
+
+.main-menu .leaderboard-entry-username {
+    justify-self: left;
+}
+
+.main-menu .player-stat:nth-child(odd),
+.main-menu .search-result:nth-child(odd) {
     justify-self: left;
 }
 
@@ -246,15 +260,17 @@
 
 .main-menu .leaderboard-selection {
     width: 25%;
-    padding: 1vmin 0;
-    margin-bottom: 1vmin;
     font-size: 1.75vmin;
+    height: 4vmin;
+    line-height: 4vmin;
+    vertical-align: middle;
 }
 
 .main-menu .leaderboard-selection:hover {
     background-color: #03b053;
     cursor: pointer;
 }
+
 .main-menu .leaderboard-selection-selected {
     background-color: #03c95f;
 }
@@ -262,6 +278,28 @@
 .main-menu .leaderboard-selection-selected:hover {
     background-color: #03c95f;
 }
+
+.leaderboard-search {
+    padding: 0;
+}
+
+.leaderboard-search-img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.leaderboard-search-input {
+    margin: 1vmin 0;
+    background: none;
+    font-size: 2.5vmin;
+    border: solid 1px #ffffff;
+    outline: none;
+    padding: 0.5vmin 1vmin;
+    color: #ffffff;
+    font-family: 'Inconsolata', sans-serif;
+    display: none;
+}
+
 .main-menu .player-stats-message,
 .main-menu .leaderboard-message {
     font-size: 2.5vmin;
@@ -275,6 +313,7 @@
 
 .main-menu .play-as-guest {
     font-family: 'Inconsolata', sans-serif;
+
     font-size: 3vmin;
     display: none;
 }

@@ -12,6 +12,9 @@ export default class ProfileViewer extends Component {
     private profileContainerElt: HTMLElement;
     private profileMessageElt: HTMLElement;
 
+    private friendActionElt: HTMLElement;
+    private messageActionElt: HTMLElement;
+
     private profileOpen: boolean;
 
     private lastSelectionTime: number;
@@ -22,6 +25,9 @@ export default class ProfileViewer extends Component {
         this.profileHeaderElt = DomHandler.getElement(".profile-header", this.profileParentElt);
         this.profileContainerElt = DomHandler.getElement(".profile-container", this.profileParentElt);
         this.profileMessageElt = DomHandler.getElement(".profile-message", this.profileParentElt);
+
+        this.friendActionElt = DomHandler.getElement(".profile-action-friend", this.profileParentElt);
+        this.messageActionElt = DomHandler.getElement(".profile-action-message", this.profileParentElt);
 
         this.profileOpen = false;
 
@@ -54,6 +60,7 @@ export default class ProfileViewer extends Component {
 
             this.getProfileData(username).then((data: any) => {
                 this.renderProfileData(data);
+                this.displayActions();
             }).catch((err) => {
                 console.error(err);
                 this.profileMessageElt.textContent = "Error";
@@ -171,5 +178,9 @@ export default class ProfileViewer extends Component {
         }).then((stats: any[]) => {
             return stats;
         });
+    }
+
+    private displayActions() {
+        // todo
     }
 }

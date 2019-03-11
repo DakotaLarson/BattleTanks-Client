@@ -11,21 +11,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/DakotaLarson/Tanks.git"
+    "url": "https://github.com/DakotaLarson/BattleTanks-Client.git"
   },
   "author": "Dakota Larson",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/DakotaLarson/Tanks/issues"
+    "url": "https://github.com/DakotaLarson/BattleTanks-Client/issues"
   },
-  "homepage": "https://github.com/DakotaLarson/Tanks#readme",
+  "homepage": "https://github.com/DakotaLarson/BattleTanks-Client#readme",
   "dependencies": {
     "three": "^0.99.0"
   },
   "devDependencies": {
-    "@types/gapi": "0.0.36",
-    "@types/gapi.auth2": "0.0.48",
-    "@types/three": "^0.93.22",
+    "@types/gapi": "latest",
+    "@types/gapi.auth2": "latest",
+    "@types/three": "latest",
     "eslint": "^5.14.1",
     "lite-server": "latest"
   }
