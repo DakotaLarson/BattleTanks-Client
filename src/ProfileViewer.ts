@@ -13,7 +13,8 @@ export default class ProfileViewer extends Component {
     private profileMessageElt: HTMLElement;
 
     private friendActionElt: HTMLElement;
-    private messageActionElt: HTMLElement;
+    private conversationActionElt: HTMLElement;
+    private unfriendActionElt: HTMLElement;
 
     private profileOpen: boolean;
 
@@ -27,7 +28,8 @@ export default class ProfileViewer extends Component {
         this.profileMessageElt = DomHandler.getElement(".profile-message", this.profileParentElt);
 
         this.friendActionElt = DomHandler.getElement(".profile-action-friend", this.profileParentElt);
-        this.messageActionElt = DomHandler.getElement(".profile-action-message", this.profileParentElt);
+        this.conversationActionElt = DomHandler.getElement(".profile-action-conversation", this.profileParentElt);
+        this.unfriendActionElt = DomHandler.getElement(".profile-action-unfriend", this.profileParentElt);
 
         this.profileOpen = false;
 
@@ -59,6 +61,7 @@ export default class ProfileViewer extends Component {
             this.updateProfileHeader(username);
 
             this.getProfileData(username).then((data: any) => {
+                console.log(data);
                 this.renderProfileData(data);
                 this.displayActions();
             }).catch((err) => {
@@ -75,6 +78,18 @@ export default class ProfileViewer extends Component {
             this.profileContainerElt.removeChild(this.profileContainerElt.firstChild);
         }
         this.profileMessageElt.textContent = "";
+
+        this.friendActionElt.textContent = "";
+        this.friendActionElt.classList.remove("profile-action-disabled");
+        this.friendActionElt.removeAttribute("title");
+        this.friendActionElt.style.display = "";
+
+        this.conversationActionElt.classList.remove("profile-action-disabled");
+        this.conversationActionElt.removeAttribute("title");
+        this.conversationActionElt.style.display = "";
+
+        this.unfriendActionElt.style.display = "";
+
         this.profileParentElt.style.left = "";
         this.profileParentElt.style.right = "";
         this.profileParentElt.style.top = "";
@@ -84,9 +99,39 @@ export default class ProfileViewer extends Component {
     }
 
     private renderProfileData(data: any) {
+        data.friendship.friends = 2;
         while (this.profileContainerElt.firstChild) {
             this.profileContainerElt.removeChild(this.profileContainerElt.firstChild);
         }
+
+        if (data.friendship.friends === -1) {
+            this.friendActionElt.textContent = "Add Friend";
+            this.friendActionElt.classList.add("profile-action-disabled");
+            this.friendActionElt.setAttribute("title", "You cannot request to be friends.");
+        } else if (data.friendship.friends === 0) {
+            this.friendActionElt.textContent = "Add Friend";
+            this.friendActionElt.setAttribute("title", "Send a request to be friends!");
+        } else if (data.friendship.friends === 1) {
+            this.friendActionElt.textContent = "Cancel Request";
+            this.friendActionElt.setAttribute("title", "Cancel request to be friends.");
+        } else if (data.friendship.friends === 2) {
+            this.friendActionElt.textContent = "Friends!";
+            this.friendActionElt.classList.add("profile-action-enabled");
+            this.friendActionElt.setAttribute("title", "You are friends!");
+            this.unfriendActionElt.style.display = "block";
+        } else {
+            this.friendActionElt.textContent = "Error";
+        }
+
+        if (!data.friendship.conversations) {
+            this.conversationActionElt.classList.add("profile-action-disabled");
+            this.conversationActionElt.setAttribute("title", "You must be friends to send messages.");
+        } else {
+            this.conversationActionElt.setAttribute("title", "Send a message!");
+        }
+        this.friendActionElt.style.display = "inline-block";
+        this.conversationActionElt.style.display = "inline-block";
+
         this.formatProfileData(data);
         const dataTitles = ["points", "rank", "victories", "defeats", "V/D", "kills", "deaths", "K/D", "shots", "hits", "accuracy"];
         for (const title of dataTitles) {
@@ -162,21 +207,23 @@ export default class ProfileViewer extends Component {
 
     private getProfileData(username: string) {
         const address = "http" + Globals.getGlobal(Globals.Global.HOST);
-        const body = JSON.stringify({
+        const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
+        const body: any = {
             username,
-        });
+        };
+        if (token) {
+            body.token = token;
+        }
         return fetch(address + "/profile", {
             method: "post",
             mode: "cors",
             credentials: "omit",
-            body,
+            body: JSON.stringify(body),
             headers: {
                 "content-type": "application/json",
             },
         }).then((response: Response) => {
             return response.json();
-        }).then((stats: any[]) => {
-            return stats;
         });
     }
 

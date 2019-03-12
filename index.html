@@ -373,7 +373,7 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
             <span class="message">Connecting...</span><br/>
             <span class="menu-selection option-disconnect">Disconnect</span>
         </div>
-        <div class="menu-section section-disconnected">
+        <div class="menu-section section-dis connected">
             <span class="message">Disconnected</span><br/>
             <span class="menu-selection option-disconnect">Disconnect</span><br/>
             <span class="disconnected-reason"></span>
@@ -417,6 +417,18 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
                 <span>Username:</span>
             </div>
             <span class="username-value"></span>
+
+            <span class="option-title friends-title">Friend Requests:</span>
+            <div class="radio-parent friends-value-parent">
+                <input type="radio" name="friends" id="option-enabled-friends"> Enabled<br/>
+                <input type="radio" name="friends" id="option-disabled-friends"> Disabled<br/>
+            </div>
+
+            <span class="option-title conversations-title">Receive Conversations:</span>
+            <div class="radio-parent conversations-value-parent">
+                <input type="radio" name="messages" id="option-everyone-conversations"> Everyone<br/>
+                <input type="radio" name="messages" id="option-friends-conversations"> Friends<br/>
+            </div>
             
             <span class="option-title">Chat:</span>
             <input type="checkbox" id="option-enabled-chat">
@@ -490,11 +502,13 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
 <!-- PROFILE CONTAINER -->
 <div class="profile-parent no-select">
     <div class="profile-header"></div>
-    <div class="profile-action profile-action-friend">Add Friend</div>
-    <div class="profile-action profile-action-message">Send Message</div><br/>
+    <div class="profile-action profile-action-friend"></div>
+    <div class="profile-action profile-action-conversation">Send Message</div><br/>
 
     <div class="profile-container"></div>
+    <div class="profile-action-small profile-action-unfriend">Unfriend</div>
     <div class="profile-message"></div>
+    
 </div>
 
 <!-- POLYFILLS -->
@@ -502,7 +516,7 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
 <script src="./polyfill/encoding-indexes.js"></script>
 <script src="./polyfill/keyboard.js"></script>
 <script src="./polyfill/eventsource.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/ua-parser-js@0/dist/ua-parser.min.js"></script>
+<script src="./polyfill/ua-parser.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.21.2/system.js"></script>
 <script>

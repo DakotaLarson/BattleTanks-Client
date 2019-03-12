@@ -10,8 +10,19 @@ export default class OptionsMenu extends Component {
     private gearElt: HTMLElement;
     private returnBtn: HTMLElement;
 
+    private usernameParentElt: HTMLElement;
     private usernameChangeElt: HTMLElement;
     private usernameValueElt: HTMLElement;
+
+    private friendsTitleElt: HTMLElement;
+    private friendsValueParentElt: HTMLElement;
+    private friendsEnabledElt: HTMLInputElement;
+    private friendsDisabledElt: HTMLInputElement;
+
+    private conversationsTitleElt: HTMLElement;
+    private conversationsValueParentElt: HTMLElement;
+    private conversationsEveryoneElt: HTMLInputElement;
+    private conversationsFriendsElt: HTMLInputElement;
 
     private chatEnabledElt: HTMLInputElement;
     private killfeedEnabledElt: HTMLInputElement;
@@ -36,13 +47,27 @@ export default class OptionsMenu extends Component {
 
     private isListening: boolean;
 
+    private friendsEnabled: boolean;
+    private conversationsEnabled: boolean;
+
     constructor(overlay: HTMLElement) {
         super();
         this.gearElt = DomHandler.getElement(".menu-options", overlay);
         this.parentElt = DomHandler.getElement(".options-menu-parent");
 
-        this.usernameChangeElt = DomHandler.getElement(".username-change", this.parentElt);
+        this.usernameParentElt = DomHandler.getElement(".username-parent", this.parentElt);
+        this.usernameChangeElt = DomHandler.getElement(".username-change", this.usernameParentElt);
         this.usernameValueElt = DomHandler.getElement(".username-value", this.parentElt);
+
+        this.friendsTitleElt = DomHandler.getElement(".friends-title", this.parentElt);
+        this.friendsValueParentElt = DomHandler.getElement(".friends-value-parent", this.parentElt);
+        this.friendsEnabledElt = DomHandler.getElement("#option-enabled-friends", this.friendsValueParentElt) as HTMLInputElement;
+        this.friendsDisabledElt = DomHandler.getElement("#option-disabled-friends", this.friendsValueParentElt) as HTMLInputElement;
+
+        this.conversationsTitleElt = DomHandler.getElement(".conversations-title", this.parentElt);
+        this.conversationsValueParentElt = DomHandler.getElement(".conversations-value-parent", this.parentElt);
+        this.conversationsEveryoneElt = DomHandler.getElement("#option-everyone-conversations", this.conversationsValueParentElt) as HTMLInputElement;
+        this.conversationsFriendsElt = DomHandler.getElement("#option-friends-conversations", this.conversationsValueParentElt) as HTMLInputElement;
 
         this.chatEnabledElt = DomHandler.getElement("#option-enabled-chat", this.parentElt) as HTMLInputElement;
         this.killfeedEnabledElt = DomHandler.getElement("#option-enabled-killfeed", this.parentElt) as HTMLInputElement;
@@ -69,6 +94,9 @@ export default class OptionsMenu extends Component {
 
         this.isListening = false;
 
+        this.friendsEnabled = false;
+        this.conversationsEnabled = false;
+
         this.loadValuesFromStorage();
     }
 
@@ -80,7 +108,7 @@ export default class OptionsMenu extends Component {
         Globals.setGlobal(Globals.Global.OPTIONS_OPEN, false);
 
         const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
-        this.updateUsername(authToken);
+        this.updateRemoteSettings(authToken);
     }
 
     private onGearMouseDown(event: MouseEvent) {
@@ -91,11 +119,11 @@ export default class OptionsMenu extends Component {
     }
 
     private onSignIn(token: string) {
-        this.updateUsername(token);
+        this.updateRemoteSettings(token);
     }
 
     private onSignOut() {
-        this.updateUsername();
+        this.updateRemoteSettings();
     }
 
     private onUsernameMenuClose(name?: string) {
@@ -166,6 +194,31 @@ export default class OptionsMenu extends Component {
         DomEventHandler.removeListener(this, this.rotationValueElt, "change", this.onRotationSensitivityChange);
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onOptionsParentClick);
+
+        let friendsEnabled;
+        let conversationsEnabled;
+        if (this.friendsEnabledElt.checked) {
+            friendsEnabled = true;
+        } else if (this.friendsDisabledElt.checked) {
+            friendsEnabled = false;
+        }
+        if (this.conversationsEveryoneElt.checked) {
+            conversationsEnabled = true;
+        } else if (this.conversationsFriendsElt.checked) {
+            conversationsEnabled = false;
+        }
+        const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
+        if (authToken) {
+            if (friendsEnabled === undefined || conversationsEnabled === undefined) {
+                console.error("Unable to update remote social options");
+            } else {
+                if (this.friendsEnabled !== friendsEnabled || this.conversationsEnabled !== conversationsEnabled) {
+                    this.friendsEnabled = friendsEnabled;
+                    this.conversationsEnabled = conversationsEnabled;
+                    this.setSocialOptions(authToken, friendsEnabled, conversationsEnabled);
+                }
+            }
+        }
 
         Globals.setGlobal(Globals.Global.OPTIONS_OPEN, false);
         this.isListening = false;
@@ -423,40 +476,124 @@ export default class OptionsMenu extends Component {
         }
     }
 
+    private updateRemoteSettings(token?: string) {
+        this.updateUsername(token);
+        this.updateSocialOptions(token);
+    }
     private updateUsername(token?: string) {
         if (token) {
             this.usernameChangeElt.style.display = "inline";
             this.getUsername(token).then((username) => {
                 this.usernameValueElt.textContent = username;
+                this.usernameValueElt.style.color = "";
+                this.usernameParentElt.style.color = "";
             });
         } else {
             this.usernameChangeElt.style.display = "";
+            this.usernameValueElt.style.color = "#909090";
+            this.usernameParentElt.style.color = "#909090";
             this.usernameValueElt.textContent = "Signed out";
         }
     }
 
-    private getUsername(authToken: string): Promise<string> {
-        return new Promise((resolve, reject) => {
-            const address = "http" + Globals.getGlobal(Globals.Global.HOST);
-            const body = JSON.stringify({
-                token: authToken,
+    private updateSocialOptions(token?: string) {
+        if (token) {
+            this.getSocialOptions(token).then((response) => {
+                this.updateSocialMarkup(true, response.friends, response.conversations);
+                this.friendsEnabled = response.friends;
+                this.conversationsEnabled = response.conversations;
             });
+        } else {
+            this.updateSocialMarkup(false, false, false);
+        }
 
-            fetch(address + "/playerusername", {
-                method: "post",
-                mode: "cors",
-                credentials: "omit",
-                body,
-                headers: {
-                    "content-type": "application/json",
-                },
-            }).then((response: Response) => {
-                return response.text();
-            }).then((username: string) => {
-                resolve(username);
-            }).catch((err) => {
-                reject(err);
-            });
+    }
+
+    private updateSocialMarkup(enabled: boolean, friends: boolean, conversations: boolean) {
+        this.friendsTitleElt.style.color = enabled ? "" : "#909090";
+        this.friendsValueParentElt.style.color = enabled ? "" : "#909090";
+
+        this.friendsEnabledElt.checked = enabled && friends;
+        this.friendsEnabledElt.disabled = !enabled;
+
+        this.friendsDisabledElt.checked = enabled && !friends;
+        this.friendsDisabledElt.disabled = !enabled;
+
+        this.conversationsTitleElt.style.color = enabled ? "" : "#909090";
+        this.conversationsValueParentElt.style.color = enabled ? "" : "#909090";
+
+        this.conversationsEveryoneElt.checked = enabled && conversations;
+        this.conversationsEveryoneElt.disabled = !enabled;
+
+        this.conversationsFriendsElt.checked = enabled && !conversations;
+        this.conversationsFriendsElt.disabled = !enabled;
+    }
+
+    private getUsername(token: string): Promise<string> {
+        const address = "http" + Globals.getGlobal(Globals.Global.HOST);
+        const body = JSON.stringify({
+            token,
+        });
+
+        return fetch(address + "/playerusername", {
+            method: "post",
+            mode: "cors",
+            credentials: "omit",
+            body,
+            headers: {
+                "content-type": "application/json",
+            },
+        }).then((response: Response) => {
+            return response.text();
+        }).catch((err) => {
+            console.error(err);
+            return "Error";
+        });
+    }
+
+    private getSocialOptions(token: string): Promise<any> {
+        const address = "http" + Globals.getGlobal(Globals.Global.HOST);
+        const body = JSON.stringify({
+            token,
+        });
+
+        return fetch(address + "/playersocialoptions", {
+            method: "post",
+            mode: "cors",
+            credentials: "omit",
+            body,
+            headers: {
+                "content-type": "application/json",
+            },
+        }).then((response: Response) => {
+            return response.json();
+        }).catch((err) => {
+            console.error(err);
+        });
+    }
+
+    private setSocialOptions(token: string, friends: boolean, conversations: boolean) {
+        const address = "http" + Globals.getGlobal(Globals.Global.HOST);
+        const body = JSON.stringify({
+            token,
+            friends,
+            conversations,
+        });
+
+        return fetch(address + "/playersocialoptions", {
+            method: "post",
+            mode: "cors",
+            credentials: "omit",
+            body,
+            headers: {
+                "content-type": "application/json",
+            },
+        }).then((response: Response) => {
+            if (!response.ok) {
+                console.error("Error setting social options");
+            }
+        }).catch((err) => {
+            console.error(err);
         });
     }
 

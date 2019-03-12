@@ -40,13 +40,39 @@
     margin: 0.5vmin 0;
     padding: 0.25vmin 0;
     width: 75%;
-    display: inline-block;
     border: solid 1px #ffffff;
-}
-.profile-parent .profile-actions img {
-    height: 5vmin;
+    display: none;
 }
 
+.profile-parent .profile-action:hover {
+    cursor: pointer;
+    background-color: #03b053;
+}
+
+.profile-parent .profile-action-disabled {
+    color: #909090;
+    border-color: #909090;
+}
+
+.profile-parent .profile-action-disabled:hover {
+    cursor: default;
+    background: none;
+}
+
+.profile-parent .profile-action-enabled {
+    background-color: #03b053;
+}
+
+.profile-parent .profile-action-enabled:hover {
+    cursor: default;
+    background-color: #03b053;
+}
+
+.profile-action-small {
+    display: none;
+    font-size: 1.45vmin;
+    color: #ff1100;
+}
 .profile-parent .profile-message {
     font-size: 3.5vmin;
 }

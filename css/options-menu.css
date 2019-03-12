@@ -81,3 +81,7 @@
     background-color: #03c95f;
     cursor: pointer;
 }
+
+.options-menu .radio-parent {
+    text-align: left
+}
