@@ -24,7 +24,7 @@
     font-size: 1.75vmin;
     font-family: 'Inconsolata', sans-serif;
     text-transform: capitalize;
-    margin-bottom: 2vmin;
+    margin-bottom: 1vmin;
 }
 
 .profile-parent .profile-header {
@@ -68,11 +68,18 @@
     background-color: #03b053;
 }
 
-.profile-action-small {
+.profile-action-negative {
     display: none;
-    font-size: 1.45vmin;
-    color: #ff1100;
+    font-size: 1.5vmin;
+    color: #b01703;
+    margin-bottom: 0.25vmin;
 }
+
+.profile-action-negative:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 .profile-parent .profile-message {
     font-size: 3.5vmin;
 }

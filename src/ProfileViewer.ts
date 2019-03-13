@@ -14,11 +14,15 @@ export default class ProfileViewer extends Component {
 
     private friendActionElt: HTMLElement;
     private conversationActionElt: HTMLElement;
-    private unfriendActionElt: HTMLElement;
+    private negativeActionElt: HTMLElement;
 
     private profileOpen: boolean;
-
     private lastSelectionTime: number;
+
+    private selectedUsername: string | undefined;
+    private friendState: number;
+    private messageState: boolean;
+    private updatingFriendship: boolean;
 
     constructor() {
         super();
@@ -29,11 +33,14 @@ export default class ProfileViewer extends Component {
 
         this.friendActionElt = DomHandler.getElement(".profile-action-friend", this.profileParentElt);
         this.conversationActionElt = DomHandler.getElement(".profile-action-conversation", this.profileParentElt);
-        this.unfriendActionElt = DomHandler.getElement(".profile-action-unfriend", this.profileParentElt);
+        this.negativeActionElt = DomHandler.getElement(".profile-action-negative", this.profileParentElt);
 
         this.profileOpen = false;
-
         this.lastSelectionTime = performance.now();
+
+        this.friendState = -1;
+        this.messageState = false;
+        this.updatingFriendship = false;
     }
 
     public enable() {
@@ -41,11 +48,16 @@ export default class ProfileViewer extends Component {
     }
 
     private onClick(event: MouseEvent) {
+        const classList = (event.target as HTMLElement).classList;
         if (this.profileOpen) {
             if (event.target !== this.profileParentElt && !this.profileParentElt.contains(event.target as Node)) {
                 this.closeProfile();
+            } else if (event.target === this.friendActionElt && !classList.contains("profile-action-disabled") && !classList.contains("profile-action-enabled")) {
+                this.updateFriendship(true);
+            } else if (event.target === this.negativeActionElt) {
+                this.updateFriendship(false);
             }
-        } else if ((event.target as HTMLElement).classList.contains("profile-link")) {
+        } else if (classList.contains("profile-link")) {
             const currentTime = performance.now();
             if (currentTime > this.lastSelectionTime + ProfileViewer.SELECTION_COOLDOWN) {
                 this.lastSelectionTime = currentTime;
@@ -63,13 +75,13 @@ export default class ProfileViewer extends Component {
             this.getProfileData(username).then((data: any) => {
                 console.log(data);
                 this.renderProfileData(data);
-                this.displayActions();
             }).catch((err) => {
                 console.error(err);
                 this.profileMessageElt.textContent = "Error";
             });
             this.showProfileParent();
             this.profileOpen = true;
+            this.selectedUsername = username;
         }
     }
 
@@ -88,49 +100,40 @@ export default class ProfileViewer extends Component {
         this.conversationActionElt.removeAttribute("title");
         this.conversationActionElt.style.display = "";
 
-        this.unfriendActionElt.style.display = "";
+        this.negativeActionElt.style.display = "";
 
         this.profileParentElt.style.left = "";
         this.profileParentElt.style.right = "";
         this.profileParentElt.style.top = "";
         this.profileParentElt.style.bottom = "";
         this.profileParentElt.style.display = "";
+
+        this.selectedUsername = undefined;
+        this.friendState = -1;
+        this.messageState = false;
         this.profileOpen = false;
     }
 
     private renderProfileData(data: any) {
-        data.friendship.friends = 2;
         while (this.profileContainerElt.firstChild) {
             this.profileContainerElt.removeChild(this.profileContainerElt.firstChild);
         }
 
-        if (data.friendship.friends === -1) {
-            this.friendActionElt.textContent = "Add Friend";
-            this.friendActionElt.classList.add("profile-action-disabled");
-            this.friendActionElt.setAttribute("title", "You cannot request to be friends.");
-        } else if (data.friendship.friends === 0) {
-            this.friendActionElt.textContent = "Add Friend";
-            this.friendActionElt.setAttribute("title", "Send a request to be friends!");
-        } else if (data.friendship.friends === 1) {
-            this.friendActionElt.textContent = "Cancel Request";
-            this.friendActionElt.setAttribute("title", "Cancel request to be friends.");
-        } else if (data.friendship.friends === 2) {
-            this.friendActionElt.textContent = "Friends!";
-            this.friendActionElt.classList.add("profile-action-enabled");
-            this.friendActionElt.setAttribute("title", "You are friends!");
-            this.unfriendActionElt.style.display = "block";
-        } else {
-            this.friendActionElt.textContent = "Error";
-        }
+        if (data.friendship) {
+            this.friendState = data.friendship.friends;
+            this.renderFriendship(this.friendState);
 
-        if (!data.friendship.conversations) {
-            this.conversationActionElt.classList.add("profile-action-disabled");
-            this.conversationActionElt.setAttribute("title", "You must be friends to send messages.");
-        } else {
-            this.conversationActionElt.setAttribute("title", "Send a message!");
+            if (!data.friendship.conversations) {
+                this.messageState = false;
+                this.conversationActionElt.classList.add("profile-action-disabled");
+                this.conversationActionElt.setAttribute("title", "You must be friends to send messages.");
+            } else {
+                this.messageState = true;
+                this.conversationActionElt.setAttribute("title", "Send a message!");
+            }
+            this.friendActionElt.style.display = "inline-block";
+            this.conversationActionElt.style.display = "inline-block";
         }
-        this.friendActionElt.style.display = "inline-block";
-        this.conversationActionElt.style.display = "inline-block";
 
         this.formatProfileData(data);
         const dataTitles = ["points", "rank", "victories", "defeats", "V/D", "kills", "deaths", "K/D", "shots", "hits", "accuracy"];
@@ -140,6 +143,57 @@ export default class ProfileViewer extends Component {
                 this.profileContainerElt.appendChild(this.createProfileDataElt(data[title]));
 
             }
+        }
+    }
+
+    private renderFriendship(state: number) {
+        console.log(state);
+        const friendActionData = [
+            {
+                text: "Add Friend",
+                title: "You cannot request to be friends.",
+                class: "profile-action-disabled",
+            },
+            {
+                text: "Add Friend",
+                title: "Send a request to be friends!",
+            },
+            {
+                text: "Request Sent!",
+                title: "Your request has been sent!",
+                class: "profile-action-disabled",
+            },
+            {
+                text: "Accept Request",
+                title: "Accept request to be friends!",
+            },
+            {
+                text: "Friends!",
+                title: "You are friends!",
+                class: "profile-action-enabled",
+            },
+        ];
+        const negativeActionVisibleIndices = [1, 2, 3];
+        const negativeActionText = [
+            "Cancel Request",
+            "Delete Request",
+            "Unfriend",
+        ];
+
+        if (negativeActionVisibleIndices.includes(state)) {
+            this.negativeActionElt.style.display = "block";
+            this.negativeActionElt.textContent = negativeActionText[state - 1];
+        } else {
+            this.negativeActionElt.style.display = "";
+            this.negativeActionElt.textContent = "";
+        }
+
+        const eltData = friendActionData[state + 1];
+        this.friendActionElt.textContent = eltData.text;
+        this.friendActionElt.setAttribute("title", eltData.title);
+        this.friendActionElt.classList.remove("profile-action-disabled", "profile-action-enabled");
+        if (eltData.class) {
+            this.friendActionElt.classList.add(eltData.class);
         }
     }
 
@@ -227,7 +281,44 @@ export default class ProfileViewer extends Component {
         });
     }
 
-    private displayActions() {
-        // todo
+    private updateFriendship(action: boolean) {
+        return new Promise((resolve, reject) => {
+            if (!this.updatingFriendship) {
+                this.updatingFriendship = true;
+                const address = "http" + Globals.getGlobal(Globals.Global.HOST);
+                const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
+                const body = JSON.stringify({
+                    token,
+                    username: this.selectedUsername,
+                    state: this.friendState,
+                    action,
+                });
+                fetch(address + "/friend", {
+                    method: "post",
+                    mode: "cors",
+                    credentials: "omit",
+                    body,
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                }).then((response: Response) => {
+                    this.updatingFriendship = false;
+                    if (response.ok) {
+                        if (action) {
+                            this.friendState ++;
+                        } else {
+                            this.friendState = 0;
+                        }
+                        this.renderFriendship(this.friendState);
+                        resolve();
+                    } else {
+                        console.error("Unexpected response: " + response.status);
+                        reject();
+                    }
+                }).catch(reject);
+            } else {
+                reject();
+            }
+        });
     }
 }
