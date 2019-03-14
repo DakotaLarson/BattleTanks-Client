@@ -58,6 +58,7 @@
     <link rel="stylesheet" type="text/css" href="./css/joystick.css"/>
     <link rel="stylesheet" type="text/css" href="./css/username-menu.css"/>
     <link rel="stylesheet" type="text/css" href="./css/profile-viewer.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/conversation-viewer.css"/>
 </head>
 <body>
 
@@ -510,7 +511,21 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
     <div class="profile-container"></div>
     <div class="profile-action-negative">Unfriend</div>
     <div class="profile-message"></div>
-    
+</div>
+
+<!-- CONVERSATION CONTAINER -->
+<div class="conversation-parent no-select">
+    <div class="conversation-container">
+        <div class="conversation-header-container">
+            <span class="conversation-header"></span>
+            <span class="conversation-close">X</span>
+        </div>
+        <div class="conversation-message-container"></div>
+        <div class="conversation-new-message-container">
+                <input class="conversation-new-message"/>
+                <span class="converstaion-new-message-send">Send</span>
+        </div>
+    </div>
 </div>
 
 <!-- POLYFILLS -->

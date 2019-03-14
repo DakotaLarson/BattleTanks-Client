@@ -1,0 +1,69 @@
+.conversation-parent {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.25);
+    display: none;
+}
+
+.conversation-parent .conversation-container {
+    display: inline-flex;
+    flex-direction: column;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50vmin;
+    height: 50vmin;
+    text-align: center;
+    font-family: 'Inconsolata', sans-serif;
+    color: #ffffff;
+    background: #101010;
+    border: solid 1px #ffffff;
+}
+
+.conversation-parent .conversation-header-container {
+    font-size: 3.5vmin;
+    border-bottom: solid 1px #ffffff;
+}
+
+.conversation-parent .conversation-close {
+    position: absolute;
+    right: 0.5vmin;
+}
+
+.conversation-parent .conversation-close:hover {
+    cursor: pointer;
+    color: #b01703;
+}
+
+.conversation-parent .conversation-message-container {
+    flex-grow: 1;
+}
+
+.conversation-parent .conversation-new-message-container {
+    border-top: solid 1px #ffffff;
+    display: flex;
+}
+
+.conversation-parent .conversation-new-message {
+    background: none;
+    font-size: 2vmin;
+    border: none;
+    outline: none;
+    padding: 0.25vmin 0.5vmin;
+    font-family: 'Inconsolata', sans-serif;
+    color: #ffffff;
+    flex-grow: 1;
+}
+
+.conversation-parent .converstaion-new-message-send {
+    border: solid 1px;
+    padding: 0.25vmin 0.5vmin;
+    margin: 1vmin;
+}
+
+.conversation-parent .converstaion-new-message-send:hover{
+    cursor: pointer;
+    background-color: #03b053;
+}
