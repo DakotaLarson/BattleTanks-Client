@@ -20,10 +20,12 @@
     color: #ffffff;
     background: #101010;
     border: solid 1px #ffffff;
+    font-size: 1.75vmin;
 }
 
 .conversation-parent .conversation-header-container {
     font-size: 3.5vmin;
+    height: 3.75vmin;
     border-bottom: solid 1px #ffffff;
 }
 
@@ -38,12 +40,42 @@
 }
 
 .conversation-parent .conversation-message-container {
-    flex-grow: 1;
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 1vmin;
+    height: 41.75vmin;
+    overflow: auto;
+}
+
+.conversation-parent .conversation-message-content-container:first-child {
+    margin-bottom: 0;
+}
+
+.conversation-parent .conversation-message-content-container {
+    margin: 0.5vmin 0;
+    text-align: left;
+}
+
+.conversation-parent .conversation-message-content-container-sent {
+    text-align: right;
+}
+
+.conversation-parent .conversation-message-content {
+    padding: 1vmin;
+    background-color: #a0a0a0;
+    color: #000000;
+    display: inline-block;
+    max-width: 50%;
+}
+
+.conversation-parent .conversation-message-content-sent {
+    background-color: #ffffff;  
 }
 
 .conversation-parent .conversation-new-message-container {
     border-top: solid 1px #ffffff;
     display: flex;
+    height: 4.5vmin;
 }
 
 .conversation-parent .conversation-new-message {

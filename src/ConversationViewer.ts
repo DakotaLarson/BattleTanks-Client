@@ -1,4 +1,5 @@
 import ChildComponent from "./component/ChildComponent";
+import DomEventHandler from "./DomEventHandler";
 import DomHandler from "./DomHandler";
 import EventHandler from "./EventHandler";
 import Globals from "./Globals";
@@ -15,6 +16,10 @@ export default class ConversationViewer extends ChildComponent {
     private offset: number;
     private conversationPlayer: string | undefined;
 
+    private sendingMessage: boolean;
+    private retrievingMesssages: boolean;
+    private retrievedAllMessages: boolean;
+
     constructor() {
         super();
         this.parentElt = DomHandler.getElement(".conversation-parent");
@@ -25,12 +30,17 @@ export default class ConversationViewer extends ChildComponent {
         this.sendElt = DomHandler.getElement(".converstaion-new-message-send");
 
         this.offset = 0;
+
+        this.sendingMessage = false;
+        this.retrievingMesssages = false;
+        this.retrievedAllMessages = false;
     }
 
     public enable() {
 
         EventHandler.addListener(this, EventHandler.Event.DOM_GUI_MOUSEDOWN, this.onClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
+        DomEventHandler.addListener(this, this.messageContainerElt, "wheel", this.onScroll);
 
         this.getMessages(this.offset);
 
@@ -44,11 +54,16 @@ export default class ConversationViewer extends ChildComponent {
     public disable() {
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_GUI_MOUSEDOWN, this.onClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
+        DomEventHandler.removeListener(this, this.messageContainerElt, "wheel", this.onScroll);
 
         this.clearMessages();
         this.newMessageElt.value = "";
         this.parentElt.style.display = "";
         this.offset = 0;
+        this.sendingMessage = false;
+        this.retrievingMesssages = false;
+        this.retrievedAllMessages = false;
     }
 
     public updateConversationPlayer(username: string) {
@@ -71,23 +86,70 @@ export default class ConversationViewer extends ChildComponent {
         }
     }
 
+    private onScroll() {
+        if (!this.messageContainerElt.scrollTop) {
+            this.getMessages(this.offset);
+        }
+    }
+
     private sendMessage() {
         const message = this.newMessageElt.value.trim();
-        if (message) {
+        if (message && !this.sendingMessage) {
             this.sendMessageToServer(this.conversationPlayer as string, message).then((ok) => {
-                console.log(ok);
+                if (ok) {
+                    this.renderMessage(message, true);
+                    this.offset ++;
+                }
             }).catch((err) => {
                 console.error(err);
+            }).finally(() => {
+                this.newMessageElt.value = "";
             });
         }
     }
 
+    private renderMessages(messages: any[]) {
+        for (const message of messages) {
+            const messageElt = this.createMessageElt(message.body, message.sent);
+            this.messageContainerElt.appendChild(messageElt);
+        }
+    }
+
+    private renderMessage(message: string, sent: boolean) {
+        const messageElt = this.createMessageElt(message, sent);
+        this.messageContainerElt.insertBefore(messageElt, this.messageContainerElt.firstChild);
+    }
+
+    private createMessageElt(message: string, sent: boolean) {
+        const containerElt = document.createElement("div");
+        containerElt.classList.add("conversation-message-content-container");
+        if (sent) {
+            containerElt.classList.add("conversation-message-content-container-sent");
+        }
+        const messageElt = document.createElement("span");
+        messageElt.classList.add("conversation-message-content");
+        if (sent) {
+            messageElt.classList.add("conversation-message-content-sent");
+        }
+        messageElt.textContent = message;
+        containerElt.appendChild(messageElt);
+
+        return containerElt;
+    }
+
     private getMessages(offset: number) {
-        this.sendMessageToServer(this.conversationPlayer as string, undefined, offset).then((messages) => {
-            console.log(messages);
-        }).catch((err) => {
-            console.error(err);
-        });
+        if (!this.retrievingMesssages && !this.retrievedAllMessages) {
+            this.sendMessageToServer(this.conversationPlayer as string, undefined, offset).then((messages) => {
+                if (messages.length) {
+                    this.renderMessages(messages);
+                    this.offset += messages.length;
+                } else {
+                    this.retrievedAllMessages = true;
+                }
+            }).catch((err) => {
+                console.error(err);
+            });
+        }
     }
 
     private sendMessageToServer(username: string, message: string | undefined, offset?: number) {
@@ -99,9 +161,11 @@ export default class ConversationViewer extends ChildComponent {
         };
         if (message) {
             body.message = message;
+            this.sendingMessage = true;
         }
         if (offset) {
             body.offset = offset;
+            this.retrievingMesssages = true;
         }
         return fetch(address + "/messages", {
             method: "post",
@@ -113,8 +177,10 @@ export default class ConversationViewer extends ChildComponent {
             },
         }).then((response: Response) => {
             if (message) {
+                this.sendingMessage = false;
                 return response.ok;
             } else {
+                this.retrievingMesssages = false;
                 return response.json();
             }
         });

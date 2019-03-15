@@ -24,7 +24,6 @@ export default class ProfileViewer extends Component {
 
     private selectedUsername: string | undefined;
     private friendState: number;
-    private messageState: boolean;
     private updatingFriendship: boolean;
     private conversationOpen: boolean;
 
@@ -46,7 +45,6 @@ export default class ProfileViewer extends Component {
         this.lastSelectionTime = performance.now();
 
         this.friendState = -1;
-        this.messageState = false;
         this.updatingFriendship = false;
         this.conversationOpen = false;
     }
@@ -135,7 +133,6 @@ export default class ProfileViewer extends Component {
 
         this.selectedUsername = undefined;
         this.friendState = -1;
-        this.messageState = false;
         this.profileOpen = false;
     }
 
@@ -149,11 +146,9 @@ export default class ProfileViewer extends Component {
             this.renderFriendship(this.friendState);
 
             if (!data.friendship.conversations) {
-                this.messageState = false;
                 this.conversationActionElt.classList.add("profile-action-disabled");
                 this.conversationActionElt.setAttribute("title", "You must be friends to send messages.");
             } else {
-                this.messageState = true;
                 this.conversationActionElt.setAttribute("title", "Send a message!");
             }
             this.friendActionElt.style.display = "inline-block";
