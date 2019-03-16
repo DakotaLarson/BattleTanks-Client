@@ -180,9 +180,9 @@ class Game extends Component {
             prevDebugTime = currentTime;
         }
 
-        let computeAndRenderTime = currentTime;
-
         const delta = (currentTime - prevTime) / 1000;
+
+        game.update(delta);
 
         const tickTime = currentTime - prevTickTime;
         if (tickTime > TICK_INTERVAL) {
@@ -190,13 +190,8 @@ class Game extends Component {
             prevTickTime = prevTickTime + TICK_INTERVAL;
         }
 
-        game.update(delta);
-
-        const currentDebugTime = performance.now();
-        computeAndRenderTime = currentDebugTime - computeAndRenderTime;
         debugFPSCount ++;
         prevTime = currentTime;
-
     };
     update();
 
