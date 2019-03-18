@@ -201,7 +201,7 @@ class Game extends Component {
     };
 
     EventHandler.addListener(undefined, EventHandler.Event.DOM_KEYUP, (event) => {
-        if (event.code === "KeyP") {
+        if (event.target.nodeName !== "INPUT" && event.code === "KeyP") {
             ComponentDebugger.printTable();
         }
     }, EventHandler.Level.LOW);

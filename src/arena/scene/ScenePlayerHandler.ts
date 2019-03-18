@@ -110,23 +110,24 @@ export default class ScenePlayerHandler extends ChildComponent {
 
     public clearPlayers() {
         for (const [, player] of this.players) {
-            this.scene.remove(player.body, player.head);
-            if (player.nameplate) {
-                this.scene.remove(player.nameplate);
-            }
-            if (player.healthBar) {
-                this.scene.remove(player.healthBar);
-            }
-            if (player.shieldBar) {
-                this.scene.remove(player.shieldBar);
-            }
-            if (player.protectionSphere) {
-                this.scene.remove(player.protectionSphere);
-            }
-            if (player.engineAudio) {
-                this.engineAudioHandler.stopEngineSound(player);
-                this.scene.remove(player.engineAudio);
-            }
+            this.removePlayer(player, true);
+            // this.scene.remove(player.body, player.head);
+            // if (player.nameplate) {
+            //     this.scene.remove(player.nameplate);
+            // }
+            // if (player.healthBar) {
+            //     this.scene.remove(player.healthBar);
+            // }
+            // if (player.shieldBar) {
+            //     this.scene.remove(player.shieldBar);
+            // }
+            // if (player.protectionSphere) {
+            //     this.scene.remove(player.protectionSphere);
+            // }
+            // if (player.engineAudio) {
+            //     this.engineAudioHandler.stopEngineSound(player);
+            //     this.scene.remove(player.engineAudio);
+            // }
         }
         this.players.clear();
     }
@@ -189,8 +190,13 @@ export default class ScenePlayerHandler extends ChildComponent {
         }
     }
 
-    private removePlayer(data: any) {
-        const obj = this.players.get(data.id);
+    private removePlayer(data: any, isClear?: boolean) {
+        let obj;
+        if (isClear) {
+            obj = data;
+        } else {
+            obj = this.players.get(data.id);
+        }
         if (obj) {
             this.scene.remove(obj.body);
             this.scene.remove(obj.head);
@@ -210,7 +216,9 @@ export default class ScenePlayerHandler extends ChildComponent {
                 this.scene.remove(obj.protectionSphere);
             }
 
-            this.players.delete(data.id);
+            if (!isClear) {
+                this.players.delete(data.id);
+            }
             if (this.controlledPlayerId === data.id) {
                 this.controlledPlayerId = -1;
             }

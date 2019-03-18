@@ -64,7 +64,10 @@ export default class EngineAudioHandler extends ChildComponent {
     }
 
     public stopEngineSound(player: IPlayerObj) {
-        (player.engineAudio as PositionalAudio).stop();
+        if (player.engineAudio) {
+            player.engineAudio.stop();
+            player.head.remove(player.engineAudio);
+        }
     }
 
     private onAudioEnabled() {

@@ -15,9 +15,12 @@
     display: none;
 }
 
+/* Each spaced 4.5vmin right */
 .overlay-menu .volume-mute,
 .overlay-menu .menu-options,
-.overlay-menu .fullscreen-toggle {
+.overlay-menu .fullscreen-toggle,
+.overlay-menu .message-icon,
+.overlay-menu .notification-icon {
     position: absolute;
     width: 3.5vmin;
     height: 3.5vmin;
@@ -30,14 +33,25 @@
     right: 7vmin;
 }
 
-.overlay-menu .volume-mute {
+.overlay-menu .notification-icon {
     right: 11.5vmin;
 }
 
+.overlay-menu .message-icon {
+    right: 16vmin;
+}
+
+
+
+.overlay-menu .volume-mute {
+    right: 21vmin;
+}
+
+/* 5.5vmin right of volume mute */
 .overlay-menu .volume-suggestion {
     position: absolute;
     top: 3vmin;
-    right: 17vmin;
+    right: 26.5vmin;
     pointer-events: auto;
     font-size: 2.25vmin;
     background: #ffffff;
@@ -70,6 +84,8 @@
 .overlay-menu .volume-mute:hover,
 .overlay-menu .menu-options:hover,
 .overlay-menu .fullscreen-toggle:hover,
-.overlay-menu .volume-suggestion:hover {
+.overlay-menu .volume-suggestion:hover,
+.overlay-menu .message-icon:hover,
+.overlay-menu .notification-icon:hover {
     cursor: pointer;
 }

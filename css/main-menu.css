@@ -240,7 +240,7 @@
 .main-menu .player-stats-title,
 .main-menu .leaderboard-title {
     font-size: 5vmin;
-    margin: 0 0 1vmin 0;
+    margin: 1vmin 0;
     font-weight: normal;
 }
 
@@ -280,7 +280,8 @@
 }
 
 .leaderboard-search {
-    padding: 0;
+    padding: 0.25vmin 0;
+    box-sizing: border-box;
 }
 
 .leaderboard-search-img {
