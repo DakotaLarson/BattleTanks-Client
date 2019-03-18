@@ -195,6 +195,7 @@
 
 .main-menu .player-stats {
     left: 2.5vw;
+    padding: 0 2.5vmin 2.5vmin 2.5vmin;
     text-transform: capitalize;
 }
 
@@ -287,6 +288,26 @@
 .leaderboard-search-img {
     max-width: 100%;
     max-height: 100%;
+}
+
+.leaderboard-search-toggle-parent {
+    justify-content: space-evenly;
+    margin: 1vmin 0;
+    display: none;
+}
+
+.leaderboard-search-toggle-everyone,
+.leaderboard-search-toggle-friends {
+    height: 4vmin;
+    width: 50%;
+    line-height: 4vmin;
+    vertical-align: middle;
+}
+
+.leaderboard-search-toggle-everyone:hover,
+.leaderboard-search-toggle-friends:hover {
+    background-color: #03b053;
+    cursor: pointer;
 }
 
 .leaderboard-search-input {

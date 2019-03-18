@@ -73,7 +73,7 @@ export default class ConversationViewer extends ChildComponent {
 
     private onClick(event: MouseEvent) {
         DomHandler.setInterference(true);
-        if (event.target === this.closeElt) {
+        if (event.target === this.closeElt || event.target === this.parentElt) {
             EventHandler.callEvent(EventHandler.Event.CONVERSATION_CLOSE);
         } else if (event.target === this.sendElt) {
             this.sendMessage();
