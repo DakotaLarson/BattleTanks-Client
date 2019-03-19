@@ -1,0 +1,119 @@
+import Component from "../component/Component";
+import DomHandler from "../DomHandler";
+import EventHandler from "../EventHandler";
+import Globals from "../Globals";
+
+export default class ConversationList extends Component {
+
+    private icon: HTMLElement;
+
+    private parentElt: HTMLElement;
+    private containerElt: HTMLElement;
+    private messageElt: HTMLElement;
+
+    private listOpen: boolean;
+    private conversationOpen: boolean;
+
+    private conversationOffset: number;
+
+    constructor(menuElt: HTMLElement) {
+        super();
+        this.icon = DomHandler.getElement(".message-icon", menuElt);
+        this.parentElt = DomHandler.getElement(".conversation-list");
+        this.containerElt = DomHandler.getElement(".conversation-container", this.parentElt);
+        this.messageElt = DomHandler.getElement(".conversation-list-message", this.parentElt);
+
+        this.listOpen = false;
+        this.conversationOpen = false;
+        this.conversationOffset = 0;
+    }
+
+    public enable() {
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+    }
+
+    private onClick(event: MouseEvent) {
+        if (this.listOpen && !this.conversationOpen) {
+            if (event.target !== this.parentElt && !this.parentElt.contains(event.target as Node)) {
+                this.hideList();
+            }
+        } else if (event.target === this.icon) {
+            this.showList();
+        }
+    }
+
+    private showList() {
+        if (Globals.getGlobal(Globals.Global.AUTH_TOKEN)) {
+            this.messageElt.textContent = "Loading...";
+        } else {
+            this.messageElt.textContent = "Sign in to send messages";
+        }
+
+        this.fetchConversations(this.conversationOffset).then((conversations) => {
+            if (!conversations.length) {
+                this.messageElt.textContent = "No messages";
+            } else {
+                console.log(conversations);
+                for (const conversation of conversations) {
+                    const elt = this.createConversationElt(conversation.username, conversation.body);
+                    this.containerElt.appendChild(elt);
+                }
+                this.messageElt.textContent = "";
+            }
+
+        }).catch((err) => {
+            console.error(err);
+            this.messageElt.textContent = "Error";
+        });
+
+        this.parentElt.style.display = "inline-block";
+        this.listOpen = true;
+    }
+
+    private hideList() {
+        while (this.containerElt.firstChild) {
+            this.containerElt.removeChild(this.containerElt.firstChild);
+        }
+        this.parentElt.style.display = "";
+        this.messageElt.textContent = "";
+        this.listOpen = false;
+        this.conversationOffset = 0;
+    }
+
+    private createConversationElt(username: string, body: string) {
+        const parentElt = document.createElement("div");
+        parentElt.classList.add("conversation-list-child");
+
+        const usernameElt = document.createElement("div");
+        usernameElt.classList.add("conversation-list-child-username");
+        usernameElt.textContent = username;
+
+        const bodyElt = document.createElement("div");
+        bodyElt.classList.add("conversation-list-child-body");
+        bodyElt.textContent = body;
+
+        parentElt.appendChild(usernameElt);
+        parentElt.appendChild(bodyElt);
+        return parentElt;
+    }
+
+    private fetchConversations(offset: number) {
+        const address = "http" + Globals.getGlobal(Globals.Global.HOST);
+        const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
+        const body = JSON.stringify({
+            token,
+            offset,
+        });
+        return fetch(address + "/conversations", {
+            method: "post",
+            mode: "cors",
+            credentials: "omit",
+            body,
+            headers: {
+                "content-type": "application/json",
+            },
+        }).then((response: Response) => {
+            return response.json();
+        });
+    }
+}

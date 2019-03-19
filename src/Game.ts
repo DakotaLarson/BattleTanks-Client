@@ -8,6 +8,7 @@ import BackgroundAudioHandler from "./audio/BackgroundAudioHandler";
 import Auth from "./Auth";
 import ComponentDebugger from "./component/ComponentDebugger";
 import ConnectionMenu from "./connection_menu/ConnectionMenu";
+import ConversationViewer from "./ConversationViewer";
 import DomHandler from "./DomHandler";
 import GameStatusHandler from "./GameStatusHandler";
 import Globals from "./Globals";
@@ -32,6 +33,7 @@ class Game extends Component {
     private auth: Auth;
     private metrics: Metrics;
     private profileViewer: ProfileViewer;
+    private conversationViewer: ConversationViewer;
 
     private connectedToMultiplayer: boolean;
 
@@ -50,6 +52,8 @@ class Game extends Component {
         this.metrics = new Metrics();
         this.connectedToMultiplayer = false;
         this.profileViewer = new ProfileViewer();
+        this.conversationViewer = new ConversationViewer();
+
     }
     public enable() {
         EventHandler.callEvent(EventHandler.Event.GAME_START);
@@ -82,6 +86,7 @@ class Game extends Component {
             this.attachChild(this.metrics);
         }
         this.attachComponent(this.profileViewer);
+        this.attachComponent(this.conversationViewer);
     }
 
     public update(delta: number) {

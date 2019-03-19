@@ -1,5 +1,4 @@
 import Component from "./component/Component";
-import ConversationViewer from "./ConversationViewer";
 import DomHandler from "./DomHandler";
 import EventHandler from "./EventHandler";
 import Globals from "./Globals";
@@ -7,8 +6,6 @@ import Globals from "./Globals";
 export default class ProfileViewer extends Component {
 
     private static readonly SELECTION_COOLDOWN = 1500;
-
-    private conversationViewer: ConversationViewer;
 
     private profileParentElt: HTMLElement;
     private profileHeaderElt: HTMLElement;
@@ -29,8 +26,6 @@ export default class ProfileViewer extends Component {
 
     constructor() {
         super();
-
-        this.conversationViewer = new ConversationViewer();
 
         this.profileParentElt = DomHandler.getElement(".profile-parent");
         this.profileHeaderElt = DomHandler.getElement(".profile-header", this.profileParentElt);
@@ -61,8 +56,7 @@ export default class ProfileViewer extends Component {
                 if (event.target !== this.profileParentElt && !this.profileParentElt.contains(event.target as Node)) {
                     this.closeProfile();
                 } else if (event.target === this.conversationActionElt && !classList.contains("profile-action-disabled")) {
-                    this.conversationViewer.updateConversationPlayer(this.selectedUsername as string);
-                    this.attachChild(this.conversationViewer);
+                    EventHandler.callEvent(EventHandler.Event.CONVERSATION_OPEN, this.selectedUsername);
                     this.conversationOpen = true;
                 } else if (event.target === this.friendActionElt && !classList.contains("profile-action-disabled") && !classList.contains("profile-action-enabled")) {
                     this.updateFriendship(true);
@@ -87,7 +81,6 @@ export default class ProfileViewer extends Component {
     }
 
     private onConversationClose() {
-        this.detachChild(this.conversationViewer);
         this.conversationOpen = false;
     }
 

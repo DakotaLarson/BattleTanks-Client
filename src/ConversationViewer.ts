@@ -1,10 +1,10 @@
-import ChildComponent from "./component/ChildComponent";
+import Component from "./component/Component";
 import DomEventHandler from "./DomEventHandler";
 import DomHandler from "./DomHandler";
 import EventHandler from "./EventHandler";
 import Globals from "./Globals";
 
-export default class ConversationViewer extends ChildComponent {
+export default class ConversationViewer extends Component {
 
     private parentElt: HTMLElement;
     private headerElt: HTMLElement;
@@ -37,6 +37,12 @@ export default class ConversationViewer extends ChildComponent {
     }
 
     public enable() {
+        EventHandler.addListener(this, EventHandler.Event.CONVERSATION_OPEN, this.showMessages);
+    }
+
+    private showMessages(username: string) {
+        this.conversationPlayer = username;
+        this.headerElt.textContent = username;
 
         EventHandler.addListener(this, EventHandler.Event.DOM_GUI_MOUSEDOWN, this.onClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
@@ -51,7 +57,9 @@ export default class ConversationViewer extends ChildComponent {
         });
     }
 
-    public disable() {
+    private hideMessages() {
+        this.conversationPlayer = undefined;
+        this.headerElt.textContent = "";
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_GUI_MOUSEDOWN, this.onClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
@@ -64,17 +72,13 @@ export default class ConversationViewer extends ChildComponent {
         this.sendingMessage = false;
         this.retrievingMesssages = false;
         this.retrievedAllMessages = false;
-    }
-
-    public updateConversationPlayer(username: string) {
-        this.conversationPlayer = username;
-        this.headerElt.textContent = username;
+        EventHandler.callEvent(EventHandler.Event.CONVERSATION_CLOSE);
     }
 
     private onClick(event: MouseEvent) {
         DomHandler.setInterference(true);
         if (event.target === this.closeElt || event.target === this.parentElt) {
-            EventHandler.callEvent(EventHandler.Event.CONVERSATION_CLOSE);
+            this.hideMessages();
         } else if (event.target === this.sendElt) {
             this.sendMessage();
         }

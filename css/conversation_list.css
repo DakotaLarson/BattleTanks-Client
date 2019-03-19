@@ -1,0 +1,39 @@
+.conversation-list {
+    position: absolute;
+    right: 17.75vmin;
+    top: 6vmin;
+    font-family: 'Inconsolata', sans-serif;
+    background-color: #101010;
+    border: solid 1px #ffffff;
+    color: #ffffff;
+    display: none;
+}
+
+.conversation-list .conversation-list-child {
+    padding: 1vmin;
+    border-bottom: solid 1px #909090;
+}
+
+.conversation-list .conversation-list-child:hover {
+    cursor: pointer;
+    background-color: #202020;
+}
+
+.conversation-list .conversation-list-child-username {
+    font-size: 1.75vmin;
+    font-weight: bold;
+}
+
+.conversation-list .conversation-list-child-body {
+    font-size: 1.5vmin;
+    margin-top: 0.25vmin;
+    color: #b0b0b0;
+}
+
+.conversation-list .conversation-list-child:last-child {
+    border-bottom: none;
+}
+
+.conversation-list-message {
+    font-size: 2.5vmin;
+}

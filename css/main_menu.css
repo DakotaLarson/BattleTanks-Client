@@ -189,7 +189,6 @@
     position: absolute;
     top: 15vh;
     background-color: #101010;
-    padding: 2.5vmin;
     border: solid 1px #ffffff;
 }
 
@@ -197,12 +196,13 @@
     left: 2.5vw;
     padding: 0 2.5vmin 2.5vmin 2.5vmin;
     text-transform: capitalize;
+    width: 27.5vmin;
+    box-sizing: border-box;
 }
 
 .main-menu .leaderboard {
     right: 2.5vw;
     padding: 0;
-    min-width: 12.5vw;
     width: 30vmin;
 }
 
