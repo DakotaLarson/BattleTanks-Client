@@ -5,16 +5,22 @@ import Globals from "../Globals";
 
 export default class ConversationList extends Component {
 
+    private static readonly OPEN_COOLDOWN = 1500;
+    private static readonly MAX_CONV_RECV = 5;
+
     private icon: HTMLElement;
 
     private parentElt: HTMLElement;
     private containerElt: HTMLElement;
     private messageElt: HTMLElement;
-
-    private listOpen: boolean;
-    private conversationOpen: boolean;
+    private loadMoreElt: HTMLElement;
 
     private conversationOffset: number;
+    private conversationUsernames: Map<number, string>;
+
+    private listOpen: boolean;
+    private openId: number;
+    private lastFetchTime: number;
 
     constructor(menuElt: HTMLElement) {
         super();
@@ -22,10 +28,14 @@ export default class ConversationList extends Component {
         this.parentElt = DomHandler.getElement(".conversation-list");
         this.containerElt = DomHandler.getElement(".conversation-container", this.parentElt);
         this.messageElt = DomHandler.getElement(".conversation-list-message", this.parentElt);
+        this.loadMoreElt = DomHandler.getElement(".conversation-list-more", this.parentElt);
+
+        this.conversationOffset = 0;
+        this.conversationUsernames = new Map();
 
         this.listOpen = false;
-        this.conversationOpen = false;
-        this.conversationOffset = 0;
+        this.openId = 0;
+        this.lastFetchTime = performance.now();
     }
 
     public enable() {
@@ -33,38 +43,37 @@ export default class ConversationList extends Component {
     }
 
     private onClick(event: MouseEvent) {
-        if (this.listOpen && !this.conversationOpen) {
+        if (this.listOpen) {
             if (event.target !== this.parentElt && !this.parentElt.contains(event.target as Node)) {
                 this.hideList();
+            } else if ((event.target as HTMLElement).id.startsWith("conv")) {
+                const convId = parseInt((event.target as HTMLElement).id.substr(4), 10);
+                const username = this.conversationUsernames.get(convId);
+                if (username) {
+                    EventHandler.callEvent(EventHandler.Event.CONVERSATION_OPEN, username);
+                }
+                this.hideList();
+            } else if (event.target === this.loadMoreElt) {
+                this.showMoreMessages();
             }
         } else if (event.target === this.icon) {
-            this.showList();
+            const now = performance.now();
+            if (now > this.lastFetchTime + ConversationList.OPEN_COOLDOWN) {
+                this.lastFetchTime = now;
+                this.showList();
+            }
         }
     }
 
     private showList() {
         if (Globals.getGlobal(Globals.Global.AUTH_TOKEN)) {
             this.messageElt.textContent = "Loading...";
+            this.openId ++;
+            this.showMoreMessages();
+
         } else {
             this.messageElt.textContent = "Sign in to send messages";
         }
-
-        this.fetchConversations(this.conversationOffset).then((conversations) => {
-            if (!conversations.length) {
-                this.messageElt.textContent = "No messages";
-            } else {
-                console.log(conversations);
-                for (const conversation of conversations) {
-                    const elt = this.createConversationElt(conversation.username, conversation.body);
-                    this.containerElt.appendChild(elt);
-                }
-                this.messageElt.textContent = "";
-            }
-
-        }).catch((err) => {
-            console.error(err);
-            this.messageElt.textContent = "Error";
-        });
 
         this.parentElt.style.display = "inline-block";
         this.listOpen = true;
@@ -76,13 +85,43 @@ export default class ConversationList extends Component {
         }
         this.parentElt.style.display = "";
         this.messageElt.textContent = "";
+        this.loadMoreElt.style.display = "";
         this.listOpen = false;
         this.conversationOffset = 0;
+        this.conversationUsernames.clear();
     }
 
-    private createConversationElt(username: string, body: string) {
+    private showMoreMessages() {
+        this.fetchConversations(this.conversationOffset).then((conversations) => {
+            if (conversations) {
+                if (!conversations.length && !this.conversationOffset) {
+                    this.messageElt.textContent = "No messages";
+                } else {
+                    let convId = 1;
+                    this.conversationOffset += conversations.length;
+                    for (const conversation of conversations) {
+                        const elt = this.createConversationElt(conversation.username, conversation.body, convId ++);
+                        this.containerElt.appendChild(elt);
+                    }
+                    this.messageElt.textContent = "";
+
+                    if (conversations.length === ConversationList.MAX_CONV_RECV) {
+                        this.loadMoreElt.style.display = "block";
+                    } else {
+                        this.loadMoreElt.style.display = "";
+                    }
+                }
+            }
+        }).catch((err) => {
+            console.error(err);
+            this.messageElt.textContent = "Error";
+        });
+    }
+
+    private createConversationElt(username: string, body: string, convId: number) {
         const parentElt = document.createElement("div");
         parentElt.classList.add("conversation-list-child");
+        parentElt.setAttribute("id", "conv" + convId);
 
         const usernameElt = document.createElement("div");
         usernameElt.classList.add("conversation-list-child-username");
@@ -94,6 +133,8 @@ export default class ConversationList extends Component {
 
         parentElt.appendChild(usernameElt);
         parentElt.appendChild(bodyElt);
+
+        this.conversationUsernames.set(convId, username);
         return parentElt;
     }
 
@@ -104,6 +145,7 @@ export default class ConversationList extends Component {
             token,
             offset,
         });
+        const openId = this.openId;
         return fetch(address + "/conversations", {
             method: "post",
             mode: "cors",
@@ -113,7 +155,11 @@ export default class ConversationList extends Component {
                 "content-type": "application/json",
             },
         }).then((response: Response) => {
-            return response.json();
+            if (openId === this.openId && this.listOpen) {
+                return response.json();
+            } else {
+                return undefined;
+            }
         });
     }
 }

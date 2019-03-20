@@ -7,13 +7,19 @@
     border: solid 1px #ffffff;
     color: #ffffff;
     display: none;
+    max-width: 15vw;
 }
 
 .conversation-list .conversation-list-child {
     padding: 1vmin;
     border-bottom: solid 1px #909090;
+    white-space: nowrap;
 }
 
+.conversation-list .conversation-list-child:last-child {
+    border-bottom: none;
+}
+ 
 .conversation-list .conversation-list-child:hover {
     cursor: pointer;
     background-color: #202020;
@@ -22,18 +28,32 @@
 .conversation-list .conversation-list-child-username {
     font-size: 1.75vmin;
     font-weight: bold;
+    pointer-events: none;
 }
 
 .conversation-list .conversation-list-child-body {
     font-size: 1.5vmin;
     margin-top: 0.25vmin;
     color: #b0b0b0;
-}
-
-.conversation-list .conversation-list-child:last-child {
-    border-bottom: none;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    pointer-events: none;
 }
 
 .conversation-list-message {
     font-size: 2.5vmin;
+}
+
+.conversation-list .conversation-list-more {
+    text-align: center;
+    color: #00b9ff;
+    text-decoration: underline;
+    padding: 0.5vmin 0;
+    border-top: solid 1px #909090;
+    display: none;
+}
+
+.conversation-list .conversation-list-more {
+    color: #33c9ff;
+    cursor: pointer;
 }
