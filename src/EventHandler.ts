@@ -211,6 +211,10 @@ enum Event {
     // CONVERSATION VIEWER
     CONVERSATION_OPEN,
     CONVERSATION_CLOSE,
+
+    // NOTIFICATION
+    NOTIFICATION_RECV,
+    NOTIFICATION_HANDLED, // Handled by another component; so don't render it.
 }
 
 enum Level {

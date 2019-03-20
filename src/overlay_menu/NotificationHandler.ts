@@ -4,6 +4,12 @@ import Globals from "../Globals";
 
 export default class NotificationHandler extends Component {
 
+    private static readonly NOTIFICATION_TYPES = [
+        "message",
+        "friend_request",
+        "friend_accept",
+    ];
+
     private eventSource: EventSource | undefined;
 
     constructor() {
@@ -32,10 +38,30 @@ export default class NotificationHandler extends Component {
     }
 
     private onMessage(event: any) {
-        // console.log(event.data);
+        const notifications = JSON.parse(event.data);
+        if (notifications.length) {
+            console.log(notifications);
+            for (const notification of notifications) {
+                const type = NotificationHandler.NOTIFICATION_TYPES[notification.type];
+                if ("body" in notification) {
+                    const body = JSON.parse(notification.body);
+                    // Live notification; Display notification
+                    this.renderNotification(type, body);
+                } else {
+                    EventHandler.callEvent(EventHandler.Event.NOTIFICATION_RECV, {
+                        type,
+                        // something
+                    });
+                }
+            }
+        }
     }
 
     private onError(err: any) {
         console.log(err);
+    }
+
+    private renderNotification(type: string, body: any) {
+        console.log(body);
     }
 }
