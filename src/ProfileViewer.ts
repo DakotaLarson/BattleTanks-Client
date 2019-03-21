@@ -16,7 +16,6 @@ export default class ProfileViewer extends Component {
     private conversationActionElt: HTMLElement;
     private negativeActionElt: HTMLElement;
 
-    private profileOpen: boolean;
     private lastSelectionTime: number;
 
     private selectedUsername: string | undefined;
@@ -36,7 +35,6 @@ export default class ProfileViewer extends Component {
         this.conversationActionElt = DomHandler.getElement(".profile-action-conversation", this.profileParentElt);
         this.negativeActionElt = DomHandler.getElement(".profile-action-negative", this.profileParentElt);
 
-        this.profileOpen = false;
         this.lastSelectionTime = performance.now();
 
         this.friendState = -1;
@@ -47,12 +45,14 @@ export default class ProfileViewer extends Component {
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_GUI_MOUSEDOWN, this.onClick);
         EventHandler.addListener(this, EventHandler.Event.CONVERSATION_CLOSE, this.onConversationClose);
+        EventHandler.addListener(this, EventHandler.Event.PROFILE_OPEN, this.openProfile);
+        EventHandler.addListener(this, EventHandler.Event.NOTIFICATION_ONLINE, this.onNotification);
     }
 
     private onClick(event: MouseEvent) {
         if (!this.conversationOpen) {
             const classList = (event.target as HTMLElement).classList;
-            if (this.profileOpen) {
+            if (this.selectedUsername) {
                 if (event.target !== this.profileParentElt && !this.profileParentElt.contains(event.target as Node)) {
                     this.closeProfile();
                 } else if (event.target === this.conversationActionElt && !classList.contains("profile-action-disabled")) {
@@ -84,6 +84,20 @@ export default class ProfileViewer extends Component {
         this.conversationOpen = false;
     }
 
+    private onNotification(event: any) {
+        if (this.selectedUsername && event.body.username === this.selectedUsername) {
+            if (event.type === "friend_request") {
+                this.friendState = 2;
+                this.renderFriendship(this.friendState);
+            } else if (event.type === "friend_accept") {
+                this.friendState = 3;
+                this.renderFriendship(this.friendState);
+                this.conversationActionElt.setAttribute("title", "Send a message!");
+                this.conversationActionElt.classList.remove("profile-action-disabled");
+            }
+        }
+    }
+
     private openProfile(username: string | undefined) {
         if (username) {
 
@@ -96,7 +110,6 @@ export default class ProfileViewer extends Component {
                 this.profileMessageElt.textContent = "Error";
             });
             this.showProfileParent();
-            this.profileOpen = true;
             this.selectedUsername = username;
         }
     }
@@ -126,7 +139,6 @@ export default class ProfileViewer extends Component {
 
         this.selectedUsername = undefined;
         this.friendState = -1;
-        this.profileOpen = false;
     }
 
     private renderProfileData(data: any) {

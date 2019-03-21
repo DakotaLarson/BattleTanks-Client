@@ -60,6 +60,7 @@
     <link rel="stylesheet" type="text/css" href="./css/profile_viewer.css"/>
     <link rel="stylesheet" type="text/css" href="./css/conversation_viewer.css"/>
     <link rel="stylesheet" type="text/css" href="./css/conversation_list.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/notification.css"/>
 </head>
 <body>
 
@@ -404,7 +405,10 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
     <span class="volume-suggestion no-select">Tap to unmute</span>
     <img class="volume-mute gui-element no-select" draggable="false"/>
     
-    <img class="message-icon gui-element no-select" src="./res/menu/message.svg" draggable="false" />
+    <div class="conversation-icon gui-element no-select">
+        <img src="./res/menu/message.svg" draggable="false" />
+        <div class="conversation-notification-icon"></div>
+    </div>
 
     <img class="notification-icon gui-element no-select" src="./res/menu/notification.svg" draggable="false" />
 
@@ -421,6 +425,12 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
     <div class="conversation-container"></div>
     <div class="conversation-list-message"></div>
     <div class="conversation-list-more">Load more messages</div>
+</div>
+
+<div class="notification-list no-select">
+    <div class="notification-container"></div>
+    <div class="notification-list-message"></div>
+    <div class="notification-list-more">Load more notifications</div>
 </div>
 
 <!-- OPTIONS MENU -->
@@ -516,6 +526,10 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
         <span class="menu-selection" id="username-cancel">Cancel</span>
     </div>
 </div>
+
+<!-- NOTIFICATION CONTAINER -->
+<div class="notification-popup-container"></div>
+
 <!-- PROFILE CONTAINER -->
 <div class="profile-parent no-select">
     <div class="profile-header"></div>

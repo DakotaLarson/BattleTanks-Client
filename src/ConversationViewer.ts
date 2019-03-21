@@ -27,7 +27,7 @@ export default class ConversationViewer extends Component {
         this.closeElt = DomHandler.getElement(".conversation-close", this.parentElt);
         this.messageContainerElt = DomHandler.getElement(".conversation-message-container", this.parentElt);
         this.newMessageElt = DomHandler.getElement(".conversation-new-message", this.parentElt) as HTMLInputElement;
-        this.sendElt = DomHandler.getElement(".converstaion-new-message-send");
+        this.sendElt = DomHandler.getElement(".converstaion-new-message-send", this.parentElt);
 
         this.offset = 0;
 
@@ -38,6 +38,7 @@ export default class ConversationViewer extends Component {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.CONVERSATION_OPEN, this.showMessages);
+        EventHandler.addListener(this, EventHandler.Event.NOTIFICATION_ONLINE, this.onNotification);
     }
 
     private showMessages(username: string) {
@@ -55,6 +56,12 @@ export default class ConversationViewer extends Component {
         setImmediate(() => {
             this.newMessageElt.focus();
         });
+    }
+
+    private onNotification(event: any) {
+        if (this.conversationPlayer && event.type === "message" && event.body.username === this.conversationPlayer) {
+            this.renderMessage(event.body.message, false);
+        }
     }
 
     private hideMessages() {
@@ -113,15 +120,18 @@ export default class ConversationViewer extends Component {
     }
 
     private renderMessages(messages: any[]) {
+        const height = this.messageContainerElt.scrollHeight;
         for (const message of messages) {
             const messageElt = this.createMessageElt(message.body, message.sent);
-            this.messageContainerElt.appendChild(messageElt);
+            this.messageContainerElt.insertBefore(messageElt, this.messageContainerElt.firstChild);
         }
+        this.messageContainerElt.scrollTop = this.messageContainerElt.scrollHeight -  height;
     }
 
     private renderMessage(message: string, sent: boolean) {
         const messageElt = this.createMessageElt(message, sent);
-        this.messageContainerElt.insertBefore(messageElt, this.messageContainerElt.firstChild);
+        this.messageContainerElt.appendChild(messageElt);
+        this.messageContainerElt.scrollTop = this.messageContainerElt.scrollHeight;
     }
 
     private createMessageElt(message: string, sent: boolean) {

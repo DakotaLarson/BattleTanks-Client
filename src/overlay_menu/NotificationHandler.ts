@@ -1,4 +1,5 @@
 import Component from "../component/Component";
+import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 import Globals from "../Globals";
 
@@ -9,17 +10,44 @@ export default class NotificationHandler extends Component {
         "friend_request",
         "friend_accept",
     ];
+    private static readonly MAX_NOTIFICATION_LENGTH = 50;
+    private static readonly MAX_VISIBLE_TIME = 5000;
+    private static readonly SLIDE_TIME = 500;
+
+    private notificationContainer: HTMLElement;
 
     private eventSource: EventSource | undefined;
 
+    private notificationData: Map<string, any>;
+
+    private lastNotificationId: number;
+
     constructor() {
         super();
+        this.notificationContainer = DomHandler.getElement(".notification-popup-container");
+
+        this.notificationData = new Map();
+        this.lastNotificationId = 0;
     }
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.openEventSource);
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.closeEventSource);
         EventHandler.addListener(this, EventHandler.Event.DOM_BEFOREUNLOAD, this.closeEventSource);
+        EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onClick);
+    }
+
+    private onClick(event: MouseEvent) {
+
+        const data = this.notificationData.get((event.target as HTMLElement).getAttribute("id")!);
+        if (data) {
+            DomHandler.setInterference(true);
+            if (data.type === "message") {
+                EventHandler.callEvent(EventHandler.Event.CONVERSATION_OPEN, data.username);
+            } else if (data.type === "friend") {
+                EventHandler.callEvent(EventHandler.Event.PROFILE_OPEN, data.username);
+            }
+        }
     }
 
     private openEventSource(token: string) {
@@ -47,10 +75,14 @@ export default class NotificationHandler extends Component {
                     const body = JSON.parse(notification.body);
                     // Live notification; Display notification
                     this.renderNotification(type, body);
-                } else {
-                    EventHandler.callEvent(EventHandler.Event.NOTIFICATION_RECV, {
+                    EventHandler.callEvent(EventHandler.Event.NOTIFICATION_ONLINE, {
                         type,
-                        // something
+                        body,
+                    });
+                } else {
+                    EventHandler.callEvent(EventHandler.Event.NOTIFICATION_OFFLINE, {
+                        type,
+                        username: notification.username,
                     });
                 }
             }
@@ -62,6 +94,65 @@ export default class NotificationHandler extends Component {
     }
 
     private renderNotification(type: string, body: any) {
-        console.log(body);
+        let title: string;
+        let message: string;
+
+        const notificationData: any = {};
+
+        if (type === "message") {
+            title = "Message from " + body.username;
+            message = body.message;
+
+            notificationData.type = "message";
+        } else if (type === "friend_request" || type === "friend_accept") {
+            if (type === "friend_request") {
+                title = "New Friend Request";
+            } else {
+                title = "Friend Request Accepted";
+            }
+            message = body.username + " " + body.message;
+
+            notificationData.type = "friend";
+        } else {
+            throw new Error("Unknown notification type: " + type);
+        }
+
+        notificationData.username = body.username;
+
+        if (message.length > NotificationHandler.MAX_NOTIFICATION_LENGTH) {
+            message = message.substr(0, NotificationHandler.MAX_NOTIFICATION_LENGTH);
+        }
+
+        const elt = this.createNotificationElt(title, message);
+        this.notificationContainer.appendChild(elt);
+
+        this.notificationData.set(elt.getAttribute("id")!, notificationData);
+
+        setTimeout(() => {
+            elt.classList.add("notification-slide-out");
+            setTimeout(() => {
+                this.notificationContainer.removeChild(elt);
+
+                this.notificationData.delete(elt.getAttribute("id")!);
+            }, NotificationHandler.SLIDE_TIME);
+        }, NotificationHandler.MAX_VISIBLE_TIME);
+    }
+
+    private createNotificationElt(title: string, body: string) {
+        const parentElt = document.createElement("div");
+        parentElt.classList.add("notification-parent");
+        parentElt.setAttribute("id", "notification-" + this.lastNotificationId ++);
+
+        const titleElt = document.createElement("div");
+        titleElt.textContent = title;
+        titleElt.classList.add("notification-title");
+        parentElt.appendChild(titleElt);
+
+        const bodyElt = document.createElement("div");
+        bodyElt.textContent = body;
+        bodyElt.classList.add("notification-body");
+        parentElt.appendChild(bodyElt);
+
+        return parentElt;
     }
 }

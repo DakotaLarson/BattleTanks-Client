@@ -19,7 +19,7 @@
 .overlay-menu .volume-mute,
 .overlay-menu .menu-options,
 .overlay-menu .fullscreen-toggle,
-.overlay-menu .message-icon,
+.overlay-menu .conversation-icon,
 .overlay-menu .notification-icon {
     position: absolute;
     width: 3.5vmin;
@@ -37,10 +37,27 @@
     right: 11.5vmin;
 }
 
-.overlay-menu .message-icon {
+.overlay-menu .conversation-icon {
     right: 16vmin;
 }
 
+.overlay-menu .conversation-icon img {
+    width: 3.5vmin;
+    height: 3.5vmin;
+    pointer-events: none;
+}
+
+.overlay-menu .conversation-notification-icon {
+    background-color: #b01703;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1.85vmin;
+    height: 1.85vmin;
+    border-radius: 100%;
+    font-size: 1.85vmin;
+    display: none;
+}
 
 
 .overlay-menu .volume-mute {
@@ -85,7 +102,7 @@
 .overlay-menu .menu-options:hover,
 .overlay-menu .fullscreen-toggle:hover,
 .overlay-menu .volume-suggestion:hover,
-.overlay-menu .message-icon:hover,
+.overlay-menu .conversation-icon:hover,
 .overlay-menu .notification-icon:hover {
     cursor: pointer;
 }

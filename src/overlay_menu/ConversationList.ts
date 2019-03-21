@@ -8,7 +8,8 @@ export default class ConversationList extends Component {
     private static readonly OPEN_COOLDOWN = 1500;
     private static readonly MAX_CONV_RECV = 5;
 
-    private icon: HTMLElement;
+    private conversationIcon: HTMLElement;
+    private notificationIcon: HTMLElement;
 
     private parentElt: HTMLElement;
     private containerElt: HTMLElement;
@@ -18,13 +19,17 @@ export default class ConversationList extends Component {
     private conversationOffset: number;
     private conversationUsernames: Map<number, string>;
 
+    private notificationQuantity: number;
+
     private listOpen: boolean;
     private openId: number;
     private lastFetchTime: number;
 
     constructor(menuElt: HTMLElement) {
         super();
-        this.icon = DomHandler.getElement(".message-icon", menuElt);
+        this.conversationIcon = DomHandler.getElement(".conversation-icon", menuElt);
+        this.notificationIcon = DomHandler.getElement(".conversation-notification-icon", this.conversationIcon);
+
         this.parentElt = DomHandler.getElement(".conversation-list");
         this.containerElt = DomHandler.getElement(".conversation-container", this.parentElt);
         this.messageElt = DomHandler.getElement(".conversation-list-message", this.parentElt);
@@ -33,6 +38,8 @@ export default class ConversationList extends Component {
         this.conversationOffset = 0;
         this.conversationUsernames = new Map();
 
+        this.notificationQuantity = 0;
+
         this.listOpen = false;
         this.openId = 0;
         this.lastFetchTime = performance.now();
@@ -40,6 +47,7 @@ export default class ConversationList extends Component {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.NOTIFICATION_OFFLINE, this.onOfflineNotification);
     }
 
     private onClick(event: MouseEvent) {
@@ -56,13 +64,17 @@ export default class ConversationList extends Component {
             } else if (event.target === this.loadMoreElt) {
                 this.showMoreMessages();
             }
-        } else if (event.target === this.icon) {
+        } else if (event.target === this.conversationIcon) {
             const now = performance.now();
             if (now > this.lastFetchTime + ConversationList.OPEN_COOLDOWN) {
                 this.lastFetchTime = now;
                 this.showList();
             }
         }
+    }
+
+    private onOfflineNotification(event: any) {
+        this.updateNotificationIcon(++ this.notificationQuantity);
     }
 
     private showList() {
@@ -74,6 +86,9 @@ export default class ConversationList extends Component {
         } else {
             this.messageElt.textContent = "Sign in to send messages";
         }
+
+        this.notificationQuantity = 0;
+        this.updateNotificationIcon(this.notificationQuantity);
 
         this.parentElt.style.display = "inline-block";
         this.listOpen = true;
@@ -116,6 +131,16 @@ export default class ConversationList extends Component {
             console.error(err);
             this.messageElt.textContent = "Error";
         });
+    }
+
+    private updateNotificationIcon(quantity: number) {
+        if (quantity > 0) {
+            this.notificationIcon.textContent = "" + quantity;
+            this.notificationIcon.style.display = "block";
+        } else {
+            this.notificationIcon.textContent = "";
+            this.notificationIcon.style.display = "";
+        }
     }
 
     private createConversationElt(username: string, body: string, convId: number) {

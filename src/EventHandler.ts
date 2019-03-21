@@ -212,9 +212,12 @@ enum Event {
     CONVERSATION_OPEN,
     CONVERSATION_CLOSE,
 
+    // PROFILE VIEWER
+    PROFILE_OPEN,
+
     // NOTIFICATION
-    NOTIFICATION_RECV,
-    NOTIFICATION_HANDLED, // Handled by another component; so don't render it.
+    NOTIFICATION_OFFLINE,
+    NOTIFICATION_ONLINE,
 }
 
 enum Level {

@@ -1,0 +1,55 @@
+.notification-popup-container {
+    position: absolute;
+    right: 1vmin;
+    bottom: 1vmin;
+}
+
+.notification-popup-container .notification-parent {
+    background-color: #101010;
+    color: #ffffff;
+    font-family: 'Inconsolata', sans-serif;
+    padding: 2vmin 2.5vmin;
+    font-size: 2vmin;
+    max-width: 20vmin;
+    border: solid 1px #ffffff;
+    margin-top: 1vmin;
+    animation: notification-slide-in 0.5s forwards;
+}
+
+.notification-popup-container .notification-parent:hover {
+    cursor: pointer;
+    background-color: #202020;
+}
+
+.notification-popup-container .notification-title {
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.notification-popup-container .notification-body {
+    color: #c0c0c0;
+    font-size: 1.75vmin;
+    pointer-events: none;
+}
+
+.notification-popup-container .notification-slide-out {
+    animation: notification-slide-out 0.5s forwards;
+}
+
+@keyframes notification-slide-in {
+    0% {
+        transform: translateX(calc(100% + 1vmin));
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes notification-slide-out {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc(100% + 1vmin));
+    }
+}

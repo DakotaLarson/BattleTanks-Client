@@ -40,20 +40,22 @@
 }
 
 .conversation-parent .conversation-message-container {
-    display: flex;
-    flex-direction: column-reverse;
-    padding: 1vmin;
+    padding: 1vmin 1vmin 0 1vmin;
     height: 41.75vmin;
     overflow: auto;
 }
 
-.conversation-parent .conversation-message-content-container:first-child {
-    margin-bottom: 0;
+.conversation-parent .conversation-message-content-container {
+    margin: 1vmin 0;
+    text-align: left;
 }
 
-.conversation-parent .conversation-message-content-container {
-    margin: 0.5vmin 0;
-    text-align: left;
+.conversation-parent .conversation-message-content-container:last-child {
+    margin-bottom: 1vmin;
+}
+
+.conversation-parent .conversation-message-content-container:first-child {
+    margin-top: 0;
 }
 
 .conversation-parent .conversation-message-content-container-sent {
