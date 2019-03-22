@@ -5,6 +5,7 @@ import ConversationList from "./ConversationList";
 import FullscreenToggle from "./FullscreenToggle";
 import MuteToggleHandler from "./MuteToggleHandler";
 import NotificationHandler from "./NotificationHandler";
+import NotificationList from "./NotificationList";
 import OptionsMenu from "./OptionsMenu";
 import UsernameMenu from "./UsernameMenu";
 
@@ -16,6 +17,7 @@ export default class OverlayMenu extends Component {
     private fullscreenToggle: FullscreenToggle;
     private optionsMenu: OptionsMenu;
     private conversationList: ConversationList;
+    private notificationList: NotificationList;
     private usernameMenu: UsernameMenu;
     private notificationHandler: NotificationHandler;
 
@@ -26,6 +28,7 @@ export default class OverlayMenu extends Component {
         this.fullscreenToggle = new FullscreenToggle(this.element);
         this.optionsMenu = new OptionsMenu(this.element);
         this.conversationList = new ConversationList(this.element);
+        this.notificationList = new NotificationList(this.element);
         this.usernameMenu = new UsernameMenu();
         this.notificationHandler = new NotificationHandler();
     }
@@ -39,6 +42,7 @@ export default class OverlayMenu extends Component {
         this.attachComponent(this.fullscreenToggle);
         this.attachComponent(this.optionsMenu);
         this.attachComponent(this.conversationList);
+        this.attachComponent(this.notificationList);
         this.attachComponent(this.notificationHandler);
         this.element.style.display = "block";
     }

@@ -59,7 +59,7 @@
     <link rel="stylesheet" type="text/css" href="./css/username_menu.css"/>
     <link rel="stylesheet" type="text/css" href="./css/profile_viewer.css"/>
     <link rel="stylesheet" type="text/css" href="./css/conversation_viewer.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/conversation_list.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/overlay_menu_list.css"/>
     <link rel="stylesheet" type="text/css" href="./css/notification.css"/>
 </head>
 <body>
@@ -410,7 +410,11 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
         <div class="conversation-notification-icon"></div>
     </div>
 
-    <img class="notification-icon gui-element no-select" src="./res/menu/notification.svg" draggable="false" />
+    <div class="notification-icon gui-element no-select">
+        <img src="./res/menu/notification.svg" draggable="false" />
+        <div class="notification-notification-icon"></div>
+    </div>
+   
 
     <div class="fullscreen-toggle gui-element no-select">
         <img id="fullscreen-toggle-on" draggable="false" src="./res/menu/fullscreen.svg" />
@@ -421,16 +425,16 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
 </div>
 
 <!-- CONVERSATION LIST CONTAINER -->
-<div class="conversation-list no-select">
-    <div class="conversation-container"></div>
-    <div class="conversation-list-message"></div>
-    <div class="conversation-list-more">Load more messages</div>
+<div class="overlay-menu-list conversation-list no-select">
+    <div class="overlay-menu-container conversation-container"></div>
+    <div class="overlay-menu-list-message conversation-list-message"></div>
+    <div class="overlay-menu-list-more conversation-list-more">Load more messages</div>
 </div>
 
-<div class="notification-list no-select">
-    <div class="notification-container"></div>
-    <div class="notification-list-message"></div>
-    <div class="notification-list-more">Load more notifications</div>
+<!-- NOTIFICATION LIST CONTAINER -->
+<div class="overlay-menu-list notification-list no-select">
+    <div class="overlay-menu-container notification-container"></div>
+    <div class="overlay-menu-list-message notification-list-message"></div>
 </div>
 
 <!-- OPTIONS MENU -->

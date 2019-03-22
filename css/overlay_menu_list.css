@@ -1,6 +1,5 @@
-.conversation-list {
+.overlay-menu-list {
     position: absolute;
-    right: 17.75vmin;
     top: 6vmin;
     font-family: 'Inconsolata', sans-serif;
     background-color: #101010;
@@ -10,28 +9,41 @@
     max-width: 15vw;
 }
 
-.conversation-list .conversation-list-child {
+.conversation-list {
+    right: 17.75vmin;
+}
+
+.notification-list {
+    right: 13.25vmin;
+}
+
+.overlay-menu-list .overlay-menu-list-child {
     padding: 1vmin;
     border-bottom: solid 1px #909090;
     white-space: nowrap;
 }
 
-.conversation-list .conversation-list-child:last-child {
+.overlay-menu-list .conversation-list-child:last-child {
     border-bottom: none;
 }
  
-.conversation-list .conversation-list-child:hover {
+.overlay-menu-list .overlay-menu-list-child:hover {
     cursor: pointer;
     background-color: #202020;
 }
 
-.conversation-list .conversation-list-child-username {
+.overlay-menu-list .overlay-menu-list-child-username {
     font-size: 1.75vmin;
-    font-weight: bold;
+    color: #f0f0f0;
     pointer-events: none;
 }
 
-.conversation-list .conversation-list-child-body {
+.overlay-menu-list .overlay-menu-list-child-unread {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.overlay-menu-list .overlay-menu-list-child-body {
     font-size: 1.5vmin;
     margin-top: 0.25vmin;
     color: #b0b0b0;
@@ -40,11 +52,15 @@
     pointer-events: none;
 }
 
-.conversation-list-message {
+.overlay-menu-list-message {
     font-size: 2.5vmin;
+    padding: 1vmin 1.5vmin;
+}
+.overlay-menu-list-message:empty {
+    padding: 0;
 }
 
-.conversation-list .conversation-list-more {
+.overlay-menu-list .overlay-menu-list-more {
     text-align: center;
     color: #00b9ff;
     text-decoration: underline;
@@ -53,7 +69,7 @@
     display: none;
 }
 
-.conversation-list .conversation-list-more {
+.overlay-menu-list .overlay-menu-list-more {
     color: #33c9ff;
     cursor: pointer;
 }

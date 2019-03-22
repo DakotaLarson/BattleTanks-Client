@@ -83,8 +83,8 @@ export default class Leaderboard extends ChildComponent {
         this.clearLeaderboard();
     }
 
-    private onSignIn(token: string) {
-        this.getLeaderboardRank(token);
+    private onSignIn() {
+        this.updateLeaderboards();
         if (!this.leaderboardVisible) {
             this.showSearchToggle();
         }
@@ -295,6 +295,7 @@ export default class Leaderboard extends ChildComponent {
                 this.searchToggleFriendsElt.classList.remove("leaderboard-selection-selected");
                 this.searchToggleEveryoneElt.classList.add("leaderboard-selection-selected");
             }
+            this.searchInputElt.focus();
             this.searchingFriends = !this.searchingFriends;
             this.onTypingEnd();
         }

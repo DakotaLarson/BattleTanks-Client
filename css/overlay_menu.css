@@ -41,13 +41,15 @@
     right: 16vmin;
 }
 
-.overlay-menu .conversation-icon img {
+.overlay-menu .conversation-icon img,
+.overlay-menu .notification-icon img {
     width: 3.5vmin;
     height: 3.5vmin;
     pointer-events: none;
 }
 
-.overlay-menu .conversation-notification-icon {
+.overlay-menu .conversation-notification-icon,
+.overlay-menu .notification-notification-icon {
     background-color: #b01703;
     position: absolute;
     top: 0;
@@ -56,6 +58,7 @@
     height: 1.85vmin;
     border-radius: 100%;
     font-size: 1.85vmin;
+    pointer-events: none;
     display: none;
 }
 

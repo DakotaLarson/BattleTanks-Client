@@ -24,6 +24,10 @@ export default class GameSuggestion extends ChildComponent {
             "You can select a unique username in the options menu when you sign in!",
             "Your messages are brighter in chat when you sign in!",
             "Ram into players with 'E' to damage and send them flying!",
+            "You can send messages to other players from their profile menu!",
+            "You can add view player profiles by clicking on usernames in the GUI",
+            "You can add send friend requests to players from their profile menu!",
+            "You can configure friend requests and messages in the options menu!",
         ];
     }
 

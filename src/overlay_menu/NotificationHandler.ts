@@ -31,8 +31,8 @@ export default class NotificationHandler extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.openEventSource);
-        EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.closeEventSource);
+        EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
+        EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
         EventHandler.addListener(this, EventHandler.Event.DOM_BEFOREUNLOAD, this.closeEventSource);
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onClick);
     }
@@ -48,6 +48,17 @@ export default class NotificationHandler extends Component {
                 EventHandler.callEvent(EventHandler.Event.PROFILE_OPEN, data.username);
             }
         }
+    }
+
+    private onSignIn(token: string) {
+        this.closeEventSource();
+        EventHandler.callEvent(EventHandler.Event.NOTIFICATION_RESET);
+        this.openEventSource(token);
+    }
+
+    private onSignOut() {
+        EventHandler.callEvent(EventHandler.Event.NOTIFICATION_RESET);
+        this.closeEventSource();
     }
 
     private openEventSource(token: string) {
@@ -68,7 +79,6 @@ export default class NotificationHandler extends Component {
     private onMessage(event: any) {
         const notifications = JSON.parse(event.data);
         if (notifications.length) {
-            console.log(notifications);
             for (const notification of notifications) {
                 const type = NotificationHandler.NOTIFICATION_TYPES[notification.type];
                 if ("body" in notification) {

@@ -19,7 +19,7 @@ export default class ConversationList extends Component {
     private conversationOffset: number;
     private conversationUsernames: Map<number, string>;
 
-    private notificationQuantity: number;
+    private unreadUsernames: string[];
 
     private listOpen: boolean;
     private openId: number;
@@ -38,7 +38,7 @@ export default class ConversationList extends Component {
         this.conversationOffset = 0;
         this.conversationUsernames = new Map();
 
-        this.notificationQuantity = 0;
+        this.unreadUsernames = [];
 
         this.listOpen = false;
         this.openId = 0;
@@ -48,6 +48,7 @@ export default class ConversationList extends Component {
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
         EventHandler.addListener(this, EventHandler.Event.NOTIFICATION_OFFLINE, this.onOfflineNotification);
+        EventHandler.addListener(this, EventHandler.Event.NOTIFICATION_RESET, this.onNotificationReset);
     }
 
     private onClick(event: MouseEvent) {
@@ -59,6 +60,12 @@ export default class ConversationList extends Component {
                 const username = this.conversationUsernames.get(convId);
                 if (username) {
                     EventHandler.callEvent(EventHandler.Event.CONVERSATION_OPEN, username);
+
+                    const unreadIndex = this.unreadUsernames.indexOf(username);
+                    if (unreadIndex > -1) {
+                        this.unreadUsernames.splice(unreadIndex, 1);
+                        this.updateNotificationIcon(this.unreadUsernames.length);
+                    }
                 }
                 this.hideList();
             } else if (event.target === this.loadMoreElt) {
@@ -74,7 +81,15 @@ export default class ConversationList extends Component {
     }
 
     private onOfflineNotification(event: any) {
-        this.updateNotificationIcon(++ this.notificationQuantity);
+        if (event.type === "message") {
+            this.unreadUsernames.push(event.username);
+            this.updateNotificationIcon(this.unreadUsernames.length);
+        }
+    }
+
+    private onNotificationReset() {
+        this.unreadUsernames = [];
+        this.updateNotificationIcon(this.unreadUsernames.length);
     }
 
     private showList() {
@@ -86,9 +101,6 @@ export default class ConversationList extends Component {
         } else {
             this.messageElt.textContent = "Sign in to send messages";
         }
-
-        this.notificationQuantity = 0;
-        this.updateNotificationIcon(this.notificationQuantity);
 
         this.parentElt.style.display = "inline-block";
         this.listOpen = true;
@@ -115,7 +127,10 @@ export default class ConversationList extends Component {
                     let convId = 1;
                     this.conversationOffset += conversations.length;
                     for (const conversation of conversations) {
-                        const elt = this.createConversationElt(conversation.username, conversation.body, convId ++);
+
+                        const isUnread = this.unreadUsernames.indexOf(conversation.username) > -1;
+
+                        const elt = this.createConversationElt(conversation.username, conversation.body, convId ++, isUnread);
                         this.containerElt.appendChild(elt);
                     }
                     this.messageElt.textContent = "";
@@ -125,6 +140,8 @@ export default class ConversationList extends Component {
                     } else {
                         this.loadMoreElt.style.display = "";
                     }
+
+                    this.updateNotificationIcon(this.unreadUsernames.length);
                 }
             }
         }).catch((err) => {
@@ -143,17 +160,20 @@ export default class ConversationList extends Component {
         }
     }
 
-    private createConversationElt(username: string, body: string, convId: number) {
+    private createConversationElt(username: string, body: string, convId: number, unread: boolean) {
         const parentElt = document.createElement("div");
-        parentElt.classList.add("conversation-list-child");
+        parentElt.classList.add("overlay-menu-list-child");
         parentElt.setAttribute("id", "conv" + convId);
 
         const usernameElt = document.createElement("div");
-        usernameElt.classList.add("conversation-list-child-username");
+        usernameElt.classList.add("overlay-menu-list-child-username");
+        if (unread) {
+            usernameElt.classList.add("overlay-menu-list-child-unread");
+        }
         usernameElt.textContent = username;
 
         const bodyElt = document.createElement("div");
-        bodyElt.classList.add("conversation-list-child-body");
+        bodyElt.classList.add("overlay-menu-list-child-body");
         bodyElt.textContent = body;
 
         parentElt.appendChild(usernameElt);
