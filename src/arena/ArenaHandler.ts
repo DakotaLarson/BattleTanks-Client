@@ -155,6 +155,7 @@ export default class ArenaHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
         EventHandler.addListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE_INVOKED, this.onEscape);
         EventHandler.addListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE, this.onEscape);
+        EventHandler.addListener(this, EventHandler.Event.PROFILE_OPENED, this.onProfileOpened);
 
         this.attachChild(this.sceneHandler);
         this.arenaAttached = true;
@@ -167,6 +168,7 @@ export default class ArenaHandler extends Component {
             EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
             EventHandler.removeListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE_INVOKED, this.onEscape);
             EventHandler.removeListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE, this.onEscape);
+            EventHandler.removeListener(this, EventHandler.Event.PROFILE_OPENED, this.onProfileOpened);
 
             this.detachChild(this.sceneHandler);
 
@@ -194,7 +196,6 @@ export default class ArenaHandler extends Component {
                 }
             }
         }
-
     }
 
     private onOptionsOpen() {
@@ -206,6 +207,14 @@ export default class ArenaHandler extends Component {
     }
 
     private onBlur() {
+        if (this.arenaAttached) {
+            if (!this.isGameMenuOpen()) {
+                this.openGameMenu();
+            }
+        }
+    }
+
+    private onProfileOpened() {
         if (this.arenaAttached) {
             if (!this.isGameMenuOpen()) {
                 this.openGameMenu();

@@ -111,6 +111,7 @@ export default class ProfileViewer extends Component {
             });
             this.showProfileParent();
             this.selectedUsername = username;
+            EventHandler.callEvent(EventHandler.Event.PROFILE_OPENED);
         }
     }
 

@@ -214,6 +214,7 @@ enum Event {
 
     // PROFILE VIEWER
     PROFILE_OPEN,
+    PROFILE_OPENED, // After opening
 
     // NOTIFICATION
     NOTIFICATION_OFFLINE,
