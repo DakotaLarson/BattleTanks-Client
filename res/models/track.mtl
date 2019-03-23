@@ -1,0 +1,12 @@
+# Blender MTL File: 'tank1.blend'
+# Material Count: 1
+
+newmtl track_material
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.152142 0.152142 0.152142
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2

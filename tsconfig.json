@@ -5,11 +5,10 @@
             "dom",
             "esnext"
         ],
-        "module": "system",
+        "module": "AMD",
         "sourceMap": true,
         "outDir": "build",
         "allowJs": true,
-        "moduleResolution": "node",
         "strict": true,
         "forceConsistentCasingInFileNames": true,
         "noImplicitReturns": true,

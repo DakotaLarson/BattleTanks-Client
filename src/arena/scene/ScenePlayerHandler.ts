@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, GLTF, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, RingGeometry, Scene, Shape, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, RingGeometry, Scene, Shape, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
@@ -229,14 +229,14 @@ export default class ScenePlayerHandler extends ChildComponent {
     private addPlayer(id: number, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, color?: number) {
         const bodyGroup = new Group();
         const headGroup = new Group();
-        this.modelLoader.getTurretModel().then((gltf: GLTF) => {
-            headGroup.add(gltf.scene);
+        this.modelLoader.getTurretModel().then((result: Group) => {
+            headGroup.add(result);
         });
-        this.modelLoader.getBodyModel().then((gltf: GLTF) => {
-            bodyGroup.add(gltf.scene);
+        this.modelLoader.getBodyModel().then((result: Group) => {
+            bodyGroup.add(result);
         });
-        this.modelLoader.getTracksModel().then((gltf: GLTF) => {
-            bodyGroup.add(gltf.scene);
+        this.modelLoader.getTracksModel().then((result: Group) => {
+            bodyGroup.add(result);
         });
 
         const bodyPos = new Vector3(pos.x, pos.y, pos.z);

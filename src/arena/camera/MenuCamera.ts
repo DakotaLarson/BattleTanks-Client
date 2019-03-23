@@ -5,7 +5,7 @@ import EventHandler from "../../EventHandler";
 
 export default class MenuCamera extends ChildComponent {
 
-    private static readonly CAMERA_SPEED = 0.15;
+    private static readonly CAMERA_SPEED = 0.125;
 
     private camera: PerspectiveCamera;
     private tankPosition: Vector3;

@@ -569,7 +569,53 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
 <script src="./polyfill/eventsource.js"></script>
 <script src="./polyfill/ua-parser.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.21.2/system.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
+<script>
+    const loadScripts = () => {
+        return new Promise((resolve) => {
+            const scripts = new Map([
+                // ["loaders/LoaderSupport.js", false],
+                ["loaders/OBJLoader.js", false],
+                ["loaders/MTLLoader.js", false],
+            ]);
+
+            for (const [name] of scripts) {
+                const script = document.createElement("script");
+                script.setAttribute("src", name);
+                script.onload = () => {
+                    scripts.set(name, true);
+
+                    for (const [, loaded] of scripts) {
+                        if (!loaded) {
+                            return;
+                        }
+                    }
+                    resolve();
+                }
+                document.body.appendChild(script);
+            }
+        });
+
+        
+    };
+
+    require.config({
+        paths: {
+            three: "https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three",
+        }
+    });
+
+    require(["three"], (three) => {
+        window.THREE = three;
+        loadScripts().then(() => {
+            require(["build/Game"]);
+        }).catch(console.error);
+    });
+</script>
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.21.2/system.js"></script>
 <script>
     const config = {
         map: {
@@ -581,7 +627,7 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
             }
         }
     }
-    SystemJS.config(config);
+    System.config(config);
     System.import("three").then((three) => {
 
         window.THREE = three;
@@ -591,6 +637,6 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
         
         System.import("./build/Game.js");
     });
-</script>
+</script> -->
 </body>
 </html>
