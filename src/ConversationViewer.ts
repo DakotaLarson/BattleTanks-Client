@@ -53,7 +53,7 @@ export default class ConversationViewer extends Component {
 
         this.parentElt.style.display = "block";
 
-        setImmediate(() => {
+        setTimeout(() => {
             this.newMessageElt.focus();
         });
     }

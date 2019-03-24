@@ -187,7 +187,7 @@
 .main-menu .player-stats,
 .main-menu .leaderboard {
     position: absolute;
-    top: 15vh;
+    top: 10vh;
     background-color: #101010;
     border: solid 1px #ffffff;
 }
@@ -203,7 +203,7 @@
 .main-menu .leaderboard {
     right: 2.5vw;
     padding: 0;
-    width: 30vmin;
+    width: 32vmin;
 }
 
 .main-menu .player-stats-container,
