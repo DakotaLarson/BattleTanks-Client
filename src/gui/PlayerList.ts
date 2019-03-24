@@ -120,14 +120,6 @@ export default class PlayerList extends ChildComponent {
         this.hidePlayerList();
     }
 
-    private onGameMenuOpen() {
-
-    }
-
-    private onGameMenuClose() {
-
-    }
-
     private showPlayerList() {
         this.parentElt.style.display = "inline-block";
     }
