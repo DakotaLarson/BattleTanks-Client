@@ -41,7 +41,7 @@ export default class ModelLoader {
             const loader = new OBJLoader();
             loader.setMaterials(creator);
 
-            loader.load("/res/models/" + fileName + ".obj", (group: Group) => {
+            loader.load("./res/models/" + fileName + ".obj", (group: Group) => {
                 resolve(group);
             }, undefined, (err: any) => {
                 console.error(err);
@@ -56,7 +56,7 @@ export default class ModelLoader {
                 side: doubleSide ? DoubleSide : FrontSide,
             });
 
-            loader.load("/res/models/" + fileName + ".mtl", (creator: MaterialCreator) => {
+            loader.load("./res/models/" + fileName + ".mtl", (creator: MaterialCreator) => {
                 creator.preload();
                 resolve(creator);
             }, undefined, (err: any) => {
