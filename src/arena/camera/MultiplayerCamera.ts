@@ -116,9 +116,9 @@ export default class MultiplayerCamera extends Camera {
     private moveCamera(bodyRot: number, delta: number, snap: boolean) {
         let theta;
         if (this.lookingBehind) {
-            theta = bodyRot;
-        } else {
             theta = bodyRot + Math.PI;
+        } else {
+            theta = bodyRot;
         }
         this.spherical.theta = theta;
         const finalPosition = new Vector3().setFromSpherical(this.spherical).add(this.target);

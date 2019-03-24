@@ -191,9 +191,6 @@
                     <div class="tutorial-text">
                         Arenas should have at least four (4) team spawns per team. Currently, all arenas can be used by up to eight (8) people.
                     </div>
-                    <div class="tutorial-text">
-                        Additionally, please avoid one (1) block "hallways". These are currently difficult to traverse when driving.
-                    </div>
 
                     <h3>Creation Tips</h3>
                     <div class="tutorial-text">
@@ -379,7 +376,7 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
             <span class="message">Connecting...</span><br>
             <span class="menu-selection option-disconnect">Disconnect</span>
         </div>
-        <div class="menu-section section-dis connected">
+        <div class="menu-section section-disconnected connected">
             <span class="message">Disconnected</span><br>
             <span class="menu-selection option-disconnect">Disconnect</span><br>
             <span class="disconnected-reason"></span>
@@ -614,29 +611,5 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
         }).catch(console.error);
     });
 </script>
-
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.21.2/system.js"></script>
-<script>
-    const config = {
-        map: {
-            three: "https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three.js",
-        },
-        packages: {
-            build: {
-                defaultExtension: "js"
-            }
-        }
-    }
-    System.config(config);
-    System.import("three").then((three) => {
-
-        window.THREE = three;
-        const scriptElt = document.createElement("script");
-        scriptElt.src = "./loaders/GLTFLoader.js";
-        document.body.appendChild(scriptElt);
-        
-        System.import("./build/Game.js");
-    });
-</script> -->
 </body>
 </html>

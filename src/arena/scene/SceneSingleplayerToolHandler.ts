@@ -302,6 +302,8 @@ export default class SceneSingleplayerToolHandler extends Component {
         const xDiff = pos.x - centerPos.x;
         const zDiff = pos.z - centerPos.z;
 
-        return Math.atan2(zDiff, xDiff);
+        const rotation = Math.atan2(xDiff, zDiff) + Math.PI;
+
+        return rotation;
     }
 }

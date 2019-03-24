@@ -96,7 +96,7 @@ export default class Metrics extends ChildComponent {
                 grecaptcha.execute(this.key , {action: "metrics"}).then((token: string) => {
                     this.getMetricSession(token).then((session: string) => {
                         sessionStorage.setItem("metricSession", session);
-                    });
+                    }).catch(console.error);
                 });
             });
         };

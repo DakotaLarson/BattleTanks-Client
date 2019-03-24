@@ -1,6 +1,7 @@
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
+import Globals from "../Globals";
 import Options from "../Options";
 
 export default class PlayerList extends ChildComponent {
@@ -34,6 +35,7 @@ export default class PlayerList extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
         EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
+        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.hidePlayerList);
         this.updateTitle();
     }
 
@@ -51,6 +53,7 @@ export default class PlayerList extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
         EventHandler.removeListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
+        EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN, this.hidePlayerList);
 
         this.clearPlayers();
     }
@@ -85,7 +88,7 @@ export default class PlayerList extends ChildComponent {
     }
 
     private onKeyDown(event: KeyboardEvent) {
-        if (event.code === Options.options.playerList.code) {
+        if (event.code === Options.options.playerList.code && !Globals.getGlobal(Globals.Global.GAME_MENU_OPEN)) {
             this.showPlayerList();
         }
     }
@@ -115,6 +118,14 @@ export default class PlayerList extends ChildComponent {
 
     private onBlur() {
         this.hidePlayerList();
+    }
+
+    private onGameMenuOpen() {
+
+    }
+
+    private onGameMenuClose() {
+
     }
 
     private showPlayerList() {

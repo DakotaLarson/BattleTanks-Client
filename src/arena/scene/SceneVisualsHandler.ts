@@ -116,7 +116,7 @@ export default class SceneVisualsHandler {
             const geo = new CircleGeometry(0.5, 16);
 
             geo.rotateX(-Math.PI / 2);
-            geo.rotateY(-pos.w - Math.PI / 2);
+            geo.rotateY(pos.w);
 
             for (const vert of geo.vertices) {
                 vert.add(new Vector3(pos.x + 0.5, pos.y + 0.01, pos.z + 0.5));

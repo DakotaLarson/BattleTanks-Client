@@ -200,9 +200,9 @@ export default class Player extends Component {
         this.rotationVelocity -= this.rotationVelocity * Player.DECREASE_MULTIPLIER * delta;
 
         if (this.movingForward && !this.movingBackward && !this.isOverlayOpen()) {
-            this.movementVelocity += Player.MOVEMENT_SPEED * delta * increaseMultiplier;
-        } else if (this.movingBackward && !this.movingForward && !this.isOverlayOpen()) {
             this.movementVelocity -= Player.MOVEMENT_SPEED * delta * increaseMultiplier;
+        } else if (this.movingBackward && !this.movingForward && !this.isOverlayOpen()) {
+            this.movementVelocity += Player.MOVEMENT_SPEED * delta * increaseMultiplier;
         }
 
         if (this.rotatingLeft && !this.rotatingRight && !this.isOverlayOpen()) {

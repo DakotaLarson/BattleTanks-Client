@@ -20,7 +20,7 @@ export default class ModelLoader {
        return this.getGroup("track", false);
     }
 
-    private getGroup(fileName: string, doubleSide: boolean) {
+    private getGroup(fileName: string, doubleSide: boolean): Promise<Group> {
         return new Promise((resolve) => {
             const cached = this.cache.get(fileName);
             if (cached) {

@@ -31,14 +31,6 @@ const receivePlayerAdd = (data: string) => {
     EventHandler.callEvent(EventHandler.Event.PLAYER_ADDITION, dataObj);
 };
 
-const receivePlayerMove = (data: string) => {
-    const dataObj = JSON.parse(data);
-    const pos = new Vector3(dataObj.pos[0], dataObj.pos[1], dataObj.pos[2]);
-    dataObj.pos = pos;
-    dataObj.fromServer = true;
-    EventHandler.callEvent(EventHandler.Event.PLAYER_MOVE, dataObj);
-};
-
 const receivePlayerRemove = (data: number[]) => {
     const id = data[0];
     const involvedId = data[1];
@@ -287,7 +279,6 @@ handlers.push(receiveAlert);
 
 handlers.push(receivePlayerName);
 handlers.push(receivePlayerAdd);
-handlers.push(receivePlayerMove);
 handlers.push(receivePlayerRemove);
 handlers.push(receivePlayerShootInvalid);
 handlers.push(receivePlayerShoot);
