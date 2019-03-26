@@ -24,7 +24,7 @@ class Game extends Component {
     private mainMenu: MainMenu;
     private backgroundAudioHandler: BackgroundAudioHandler;
     private overlayMenu: OverlayMenu;
-    private connectionScreen: ConnectionMenu;
+    private connectionMenu: ConnectionMenu;
     private arenaHandler: ArenaHandler;
     private mpConnection: MultiplayerConnection | undefined;
     private gameStatusHandler: GameStatusHandler;
@@ -45,7 +45,7 @@ class Game extends Component {
         this.mainMenu = new MainMenu(perspectiveCamera);
         this.backgroundAudioHandler = new BackgroundAudioHandler();
         this.overlayMenu = new OverlayMenu();
-        this.connectionScreen = new ConnectionMenu();
+        this.connectionMenu = new ConnectionMenu();
         this.arenaHandler = new ArenaHandler(perspectiveCamera);
         this.gameStatusHandler = new GameStatusHandler();
         this.alertMessageHandler = new AlertMessageHandler();
@@ -116,7 +116,7 @@ class Game extends Component {
     private connectToMultiplayer() {
         const address = "ws" + Globals.getGlobal(Globals.Global.HOST);
         this.updateMenu(false);
-        this.attachChild(this.connectionScreen);
+        this.attachChild(this.connectionMenu);
         this.mpConnection = new MultiplayerConnection(address, Globals.getGlobal(Globals.Global.AUTH_TOKEN));
         this.attachChild(this.mpConnection);
         this.attachChild(this.gameStatusHandler);
@@ -124,7 +124,7 @@ class Game extends Component {
     }
 
     private disconnectFromMultiplayer() {
-        this.detachChild(this.connectionScreen);
+        this.detachChild(this.connectionMenu);
         this.detachChild(this.mpConnection as MultiplayerConnection);
         this.detachChild(this.gameStatusHandler);
         this.mpConnection = undefined;

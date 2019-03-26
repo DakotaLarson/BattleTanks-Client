@@ -18,6 +18,7 @@ export default class ConnectionMenu extends ChildComponent {
     private waitingMenu: WaitingMenu;
 
     private hidden: boolean;
+
     private activeMenu: ChildComponent | undefined;
 
     constructor() {
@@ -31,6 +32,7 @@ export default class ConnectionMenu extends ChildComponent {
         this.startingMenu = new StartingMenu(this.element);
 
         this.hidden = false;
+
         this.activeMenu = undefined;
     }
 
@@ -48,8 +50,7 @@ export default class ConnectionMenu extends ChildComponent {
         EventHandler.callEvent(EventHandler.Event.BACKGROUND_AUDIO_CONNECTION_MENU);
 
         this.element.style.display = "flex";
-        this.showMenu(this.connectingMenu);
-
+        this.showMenu(this.connectingMenu, false);
     }
 
     public disable() {
@@ -65,24 +66,25 @@ export default class ConnectionMenu extends ChildComponent {
 
         EventHandler.callEvent(EventHandler.Event.BACKGROUND_AUDIO_MAIN_MENU);
 
+        this.updateBackground(false);
         this.element.style.display = "";
     }
 
     private onConnectionOpen() {
-        this.showMenu(this.connectedMenu);
+        this.showMenu(this.connectedMenu, false);
     }
 
     private onConnectionClose(event: CloseEvent) {
         console.log("Disconnected: " + event.code);
-        this.showMenu(this.disconnectedMenu);
+        this.showMenu(this.disconnectedMenu, true);
     }
 
     private onWaitingGameStatus() {
-        this.showMenu(this.waitingMenu);
+        this.showMenu(this.waitingMenu, false);
     }
 
     private onStartingGameStatus() {
-        this.showMenu(this.startingMenu);
+        this.showMenu(this.startingMenu, false);
     }
 
     private onRunningGameStatus() {
@@ -95,7 +97,7 @@ export default class ConnectionMenu extends ChildComponent {
         this.startingMenu.updateStatistics(elt);
     }
 
-    private showMenu(Menu: ChildComponent) {
+    private showMenu(Menu: ChildComponent, forceBackground: boolean) {
         if (this.hidden) {
             this.show();
             EventHandler.callEvent(EventHandler.Event.BACKGROUND_AUDIO_CONNECTION_MENU);
@@ -110,6 +112,9 @@ export default class ConnectionMenu extends ChildComponent {
             this.attachChild(Menu);
             this.activeMenu = Menu;
         }
+        if (forceBackground) {
+            this.updateBackground(false);
+        }
     }
 
     private hide() {
@@ -117,11 +122,14 @@ export default class ConnectionMenu extends ChildComponent {
             this.detachChild(this.activeMenu);
             this.activeMenu = undefined;
         }
+        EventHandler.callEvent(EventHandler.Event.CONNECTION_MENU_VISIBILITY_UPDATE, false);
         this.element.style.display = "";
+        this.updateBackground(true);
         this.hidden = true;
     }
 
     private show() {
+        EventHandler.callEvent(EventHandler.Event.CONNECTION_MENU_VISIBILITY_UPDATE, true);
         this.element.style.display = "flex";
         this.hidden = false;
     }
@@ -129,7 +137,9 @@ export default class ConnectionMenu extends ChildComponent {
     private createStatisticsMarkup(stats: any) {
         const parent = document.createElement("div");
         parent.appendChild(this.createStatisticsTitle());
-        parent.appendChild(this.createStatisticMarkup("Status", stats.win ? "Win" : "Loss", true, true));
+        if (stats.win !== undefined) {
+            parent.appendChild(this.createStatisticMarkup("Status", stats.win ? "Win" : "Loss", true, true));
+        }
 
         parent.appendChild(this.createStatisticMarkup("Points Earned", stats.points));
         parent.appendChild(this.createStatisticMarkup("Currency Earned", stats.currency, true));
@@ -182,6 +192,24 @@ export default class ConnectionMenu extends ChildComponent {
             return "" + num;
         } else {
             return num + "%";
+        }
+    }
+
+    private updateBackground(hidden: boolean) {
+        const menuSections = Array.from(DomHandler.getElements(".connection-menu-section", this.element));
+
+        if (hidden) {
+            this.element.style.background = "none";
+
+            for (const section of menuSections) {
+                section.style.background = "rgba(0, 0, 0, 0.75)";
+            }
+        } else {
+            this.element.style.background = "";
+
+            for (const section of menuSections) {
+                section.style.background = "";
+            }
         }
     }
 }

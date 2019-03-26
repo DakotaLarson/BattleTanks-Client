@@ -177,22 +177,24 @@ const receiveProtectionEnd = (id: number) => {
 };
 
 const receiveMatchStatistics = (rawStats: number[]) => {
-    const win = rawStats[0] ? true : false;
-    const statistics = {
-        win,
-        teamShots: rawStats[1],
-        teamHits: rawStats[2],
-        teamKills: rawStats[3],
-        enemyTeamShots: rawStats[4],
-        enemyTeamHits: rawStats[5],
-        enemyTeamKills: rawStats[6],
-        shots: rawStats[7],
-        hits: rawStats[8],
-        kills: rawStats[9],
-        deaths: rawStats[10],
-        points: rawStats[11],
-        currency: rawStats[12],
+    const statistics: any = {
+        teamShots: rawStats[0],
+        teamHits: rawStats[1],
+        teamKills: rawStats[2],
+        enemyTeamShots: rawStats[3],
+        enemyTeamHits: rawStats[4],
+        enemyTeamKills: rawStats[5],
+        shots: rawStats[6],
+        hits: rawStats[7],
+        kills: rawStats[8],
+        deaths: rawStats[9],
+        points: rawStats[10],
+        currency: rawStats[11],
     };
+    if (rawStats.length === 13) {
+        const win = rawStats[12] ? true : false;
+        statistics.win = win;
+    }
 
     EventHandler.callEvent(EventHandler.Event.STATISTICS_RECEPTION, statistics);
 };

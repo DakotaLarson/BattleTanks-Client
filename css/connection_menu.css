@@ -14,7 +14,6 @@
 .connection-menu .last-match-statistics {
     font-family: 'Inconsolata', sans-serif;
     font-size: 2.5vmin;
-    display: inline-block;
     margin-bottom: 5vmin;
 }
 
@@ -32,4 +31,9 @@
     font-family: 'Inconsolata', sans-serif;
     font-size: 2.5vmin;
     color: #ffd700
+}
+
+.connection-menu-section {
+    display: none;
+    padding: 2.5vmin;
 }
