@@ -86,7 +86,9 @@ export default class NotificationList extends Component {
 
     private onNotificationReset() {
         this.notifications.clear();
-        this.messageElt.textContent = "No notifications";
+        while (this.containerElt.firstChild) {
+            this.containerElt.removeChild(this.containerElt.firstChild);
+        }
         this.updateElements(this.notifications.size);
     }
 

@@ -7,6 +7,36 @@ export default class ProfileViewer extends Component {
 
     private static readonly SELECTION_COOLDOWN = 1500;
 
+    private static readonly FRIEND_ACTION_TEXTCONTENT = [
+        "Unblock",
+        "Add Friend",
+        "Add Friend",
+        "Request Sent",
+        "Accept Request",
+        "Friends!",
+    ];
+    private static readonly FRIEND_ACTION_CLASSLIST = [
+        undefined,
+        "profile-action-disabled",
+        undefined,
+        "profile-action-disabled",
+        undefined,
+        "profile-action-enabled",
+    ];
+
+    private static readonly CONVERSATION_ACTION_CLASSLIST = [
+        "profile-action-disabled",
+        undefined,
+    ];
+
+    private static readonly NEGATIVE_ACTION_TEXTCONTENT = [
+        "",
+        "Block",
+        "Cancel Request",
+        "Delete Request",
+        "Unfriend",
+    ];
+
     private profileParentElt: HTMLElement;
     private profileHeaderElt: HTMLElement;
     private profileContainerElt: HTMLElement;
@@ -19,7 +49,11 @@ export default class ProfileViewer extends Component {
     private lastSelectionTime: number;
 
     private selectedUsername: string | undefined;
-    private friendState: number;
+
+    private friendsState: number;
+    private conversationsState: number;
+    private negativeState: number;
+
     private updatingFriendship: boolean;
     private conversationOpen: boolean;
 
@@ -37,7 +71,10 @@ export default class ProfileViewer extends Component {
 
         this.lastSelectionTime = performance.now();
 
-        this.friendState = -1;
+        this.friendsState = 0;
+        this.conversationsState = 0;
+        this.negativeState = 0;
+
         this.updatingFriendship = false;
         this.conversationOpen = false;
     }
@@ -54,22 +91,37 @@ export default class ProfileViewer extends Component {
             const classList = (event.target as HTMLElement).classList;
             if (this.selectedUsername) {
                 if (event.target !== this.profileParentElt && !this.profileParentElt.contains(event.target as Node)) {
+
+                    // Click is outside.
                     this.closeProfile();
+
                 } else if (event.target === this.conversationActionElt && !classList.contains("profile-action-disabled")) {
+
+                    // Click is on conversation elt
                     EventHandler.callEvent(EventHandler.Event.CONVERSATION_OPEN, this.selectedUsername);
                     this.conversationOpen = true;
+
                 } else if (event.target === this.friendActionElt && !classList.contains("profile-action-disabled") && !classList.contains("profile-action-enabled")) {
+
+                    // Click is on friendship elt
                     this.updateFriendship(true);
+
                 } else if (event.target === this.negativeActionElt) {
+
+                    // Click is on negative action elt
                     let confirmation = true;
-                    if (this.friendState === 3) {
+
+                    if (this.negativeState === 1 || this.negativeState === 4) {
                         confirmation = window.confirm("Are you sure?");
                     }
+
                     if (confirmation) {
                         this.updateFriendship(false);
                     }
                 }
             } else if (classList.contains("profile-link")) {
+
+                // Click is on profile link
                 const currentTime = performance.now();
                 if (currentTime > this.lastSelectionTime + ProfileViewer.SELECTION_COOLDOWN) {
                     this.lastSelectionTime = currentTime;
@@ -87,11 +139,14 @@ export default class ProfileViewer extends Component {
     private onNotification(event: any) {
         if (this.selectedUsername && event.body.username === this.selectedUsername) {
             if (event.type === "friend_request") {
-                this.friendState = 2;
-                this.renderFriendship(this.friendState);
+                this.friendsState = 4;
+                this.negativeState = 3;
+                this.renderFriendship(this.friendsState, this.conversationsState, this.negativeState);
             } else if (event.type === "friend_accept") {
-                this.friendState = 3;
-                this.renderFriendship(this.friendState);
+                this.friendsState = 5;
+                this.conversationsState = 1;
+                this.negativeState = 4;
+                this.renderFriendship(this.friendsState, this.conversationsState, this.negativeState);
                 this.conversationActionElt.setAttribute("title", "Send a message!");
                 this.conversationActionElt.classList.remove("profile-action-disabled");
             }
@@ -139,7 +194,7 @@ export default class ProfileViewer extends Component {
         this.profileParentElt.style.display = "";
 
         this.selectedUsername = undefined;
-        this.friendState = -1;
+        this.friendsState = -1;
     }
 
     private renderProfileData(data: any) {
@@ -148,8 +203,10 @@ export default class ProfileViewer extends Component {
         }
 
         if (data.friendship) {
-            this.friendState = data.friendship.friends;
-            this.renderFriendship(this.friendState);
+            console.log(data.friendship);
+            this.friendsState = data.friendship.friends;
+            this.negativeState = data.friendship.blocked;
+            this.renderFriendship(data.friendship.friends, data.friendship.conversations, data.friendship.negative);
 
             if (!data.friendship.conversations) {
                 this.conversationActionElt.classList.add("profile-action-disabled");
@@ -172,54 +229,28 @@ export default class ProfileViewer extends Component {
         }
     }
 
-    private renderFriendship(state: number) {
-        const friendActionData = [
-            {
-                text: "Add Friend",
-                title: "You cannot request to be friends.",
-                class: "profile-action-disabled",
-            },
-            {
-                text: "Add Friend",
-                title: "Send a request to be friends!",
-            },
-            {
-                text: "Request Sent!",
-                title: "Your request has been sent!",
-                class: "profile-action-disabled",
-            },
-            {
-                text: "Accept Request",
-                title: "Accept request to be friends!",
-            },
-            {
-                text: "Friends!",
-                title: "You are friends!",
-                class: "profile-action-enabled",
-            },
-        ];
-        const negativeActionVisibleIndices = [1, 2, 3];
-        const negativeActionText = [
-            "Cancel Request",
-            "Delete Request",
-            "Unfriend",
-        ];
+    private renderFriendship(friends: number, conversations: number, negative: number) {
+        this.friendsState = friends;
+        this.conversationsState = conversations;
+        this.negativeState = negative;
 
-        if (negativeActionVisibleIndices.includes(state)) {
-            this.negativeActionElt.style.display = "block";
-            this.negativeActionElt.textContent = negativeActionText[state - 1];
-        } else {
-            this.negativeActionElt.style.display = "";
-            this.negativeActionElt.textContent = "";
-        }
-
-        const eltData = friendActionData[state + 1];
-        this.friendActionElt.textContent = eltData.text;
-        this.friendActionElt.setAttribute("title", eltData.title);
         this.friendActionElt.classList.remove("profile-action-disabled", "profile-action-enabled");
-        if (eltData.class) {
-            this.friendActionElt.classList.add(eltData.class);
+        this.conversationActionElt.classList.remove("profile-action-disabled");
+
+        this.friendActionElt.textContent = ProfileViewer.FRIEND_ACTION_TEXTCONTENT[friends];
+        const friendsClass = ProfileViewer.FRIEND_ACTION_CLASSLIST[friends];
+        if (friendsClass) {
+            this.friendActionElt.classList.add(friendsClass);
         }
+
+        const conversationsClass = ProfileViewer.CONVERSATION_ACTION_CLASSLIST[conversations];
+        if (conversationsClass) {
+            this.conversationActionElt.classList.add(conversationsClass);
+        }
+
+        const negativeTextContent = ProfileViewer.NEGATIVE_ACTION_TEXTCONTENT[negative];
+        this.negativeActionElt.textContent = negativeTextContent;
+        this.negativeActionElt.style.display = negativeTextContent ? "block" : "";
     }
 
     private formatProfileData(data: any) {
@@ -315,7 +346,6 @@ export default class ProfileViewer extends Component {
                 const body = JSON.stringify({
                     token,
                     username: this.selectedUsername,
-                    state: this.friendState,
                     action,
                 });
                 fetch(address + "/friend", {
@@ -327,19 +357,14 @@ export default class ProfileViewer extends Component {
                         "content-type": "application/json",
                     },
                 }).then((response: Response) => {
+                    return response.json();
+                }).then((update) => {
                     this.updatingFriendship = false;
-                    if (response.ok) {
-                        if (action) {
-                            this.friendState ++;
-                        } else {
-                            this.friendState = 0;
-                        }
-                        this.renderFriendship(this.friendState);
-                        resolve();
-                    } else {
-                        console.error("Unexpected response: " + response.status);
-                        reject();
-                    }
+                    this.friendsState = update.friends;
+                    this.conversationsState = update.conversations;
+                    this.negativeState = update.negative;
+                    this.renderFriendship(this.friendsState, this.conversationsState, this.negativeState);
+                    resolve();
                 }).catch(reject);
             } else {
                 reject();

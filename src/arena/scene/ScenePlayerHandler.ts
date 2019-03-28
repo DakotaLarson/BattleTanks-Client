@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, RingGeometry, Scene, Shape, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BackSide, BufferGeometry, BufferGeometryUtils, Font, FontLoader, FrontSide, Geometry, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, OBJLoader, PerspectiveCamera, PositionalAudio, RingGeometry, Scene, Shape, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
@@ -133,6 +133,28 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     public addMenuPlayer() {
+        // const loader = new OBJLoader();
+
+        // loader.load("./res/models/" + "tank013" + ".obj", (group: Group) => {
+        //     console.log(group.children);
+        //     const finalGroup = new Group();
+        //     finalGroup.add(group.children[0]);
+        //     console.log(group.children);
+        //     const geo = BufferGeometryUtils.mergeBufferGeometries([group.children[1].geometry, group.children[1].geometry]);
+        //     const material = new MeshLambertMaterial({
+        //         color: 0x296793,
+        //     });
+        //     const mesh = new Mesh(geo, material);
+        //     mesh.rotateY(Math.PI);
+        //     setInterval(() => {
+        //         mesh.rotateY(0.05);
+        //     }, 20);
+        //     finalGroup.add(mesh);
+        //     finalGroup.position.set(2.5, 0, 2.5);
+        //     this.scene.add(finalGroup);
+        // }, undefined, (err: any) => {
+        //     console.error(err);
+        // });
         this.addPlayer(0, new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true);
     }
 
