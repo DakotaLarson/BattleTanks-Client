@@ -1,4 +1,4 @@
-import { BufferGeometry, DirectionalLight, Float32BufferAttribute, HemisphereLight, LineDashedMaterial, LineSegments, Mesh, MeshLambertMaterial, PlaneGeometry, Vector3, Vector4 } from "three";
+import { BufferGeometry, DirectionalLight, Float32BufferAttribute, HemisphereLight, HemisphereLightHelper, LineDashedMaterial, LineSegments, Mesh, MeshLambertMaterial, PlaneGeometry, Vector3, Vector4 } from "three";
 import SceneHandler from "./SceneHandler";
 
 export default class SceneUtils {
@@ -31,9 +31,10 @@ export default class SceneUtils {
     }
 
     public createLights() {
-        const hemiLight = new HemisphereLight(0xffffff, 0xffffff, 0.85);
+        const hemiLight = new HemisphereLight();
         hemiLight.color.setHSL(0.6, 1, 0.6);
         hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+        hemiLight.intensity = 0.85;
         hemiLight.position.copy(this.getCenter().setY(50));
 
         const dirLight = new DirectionalLight(0xffffff, 0.75);

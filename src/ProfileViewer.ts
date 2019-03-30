@@ -1,6 +1,5 @@
 import Component from "./component/Component";
 import DomHandler from "./DomHandler";
-import DOMMutationHandler from "./DOMMutationHandler";
 import EventHandler from "./EventHandler";
 import Globals from "./Globals";
 
