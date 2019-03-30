@@ -1,5 +1,6 @@
 import Component from "../component/Component";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class FullscreenToggle extends Component {
@@ -22,8 +23,8 @@ export default class FullscreenToggle extends Component {
     }
 
     public enable() {
-        this.container.style.display = "block";
-        this.toggleOnElt.style.display = "block";
+        DOMMutationHandler.show(this.container);
+        DOMMutationHandler.show(this.toggleOnElt);
         this.fullscreenEnabled = false;
         EventHandler.addListener(this, EventHandler.Event.DOM_GUI_MOUSEDOWN, this.onMousedown);
         EventHandler.addListener(this, EventHandler.Event.DOM_FULLSCREEN_ENABLED, this.onFullscreenEnable);
@@ -43,15 +44,15 @@ export default class FullscreenToggle extends Component {
     }
 
     private onFullscreenEnable() {
-        this.toggleOnElt.style.display = "";
-        this.toggleOffElt.style.display = "block";
+        DOMMutationHandler.hide(this.toggleOnElt);
+        DOMMutationHandler.show(this.toggleOffElt);
 
         this.fullscreenEnabled = true;
     }
 
     private onFullscreenDisable() {
-        this.toggleOnElt.style.display = "block";
-        this.toggleOffElt.style.display = "";
+        DOMMutationHandler.hide(this.toggleOffElt);
+        DOMMutationHandler.show(this.toggleOnElt);
 
         this.fullscreenEnabled = false;
     }

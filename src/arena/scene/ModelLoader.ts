@@ -12,7 +12,7 @@ export default class ModelLoader {
         return this.getGroup("body", false);
     }
 
-    public getTurretModel() {
+    public getHeadModel() {
         return this.getGroup("turret", true);
     }
 

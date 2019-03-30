@@ -1,5 +1,6 @@
 import Component from "../component/Component";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 import ConversationList from "./ConversationList";
 import FullscreenToggle from "./FullscreenToggle";
@@ -44,7 +45,8 @@ export default class OverlayMenu extends Component {
         this.attachComponent(this.conversationList);
         this.attachComponent(this.notificationList);
         this.attachComponent(this.notificationHandler);
-        this.element.style.display = "block";
+
+        DOMMutationHandler.show(this.element);
     }
 
     private onUsernameChangeClick() {

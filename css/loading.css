@@ -5,6 +5,7 @@
     text-align: center;
     z-index: 1;
     background: #202020;
+    transition: opacity 1s;
 }
 .loading-screen * {
     box-sizing: border-box;

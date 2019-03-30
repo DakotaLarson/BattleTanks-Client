@@ -1,5 +1,6 @@
 import Component from "../component/Component";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class NotificationList extends Component {
@@ -61,8 +62,8 @@ export default class NotificationList extends Component {
     private onOfflineNotification(event: any) {
         if (event.type === "friend_request" || event.type === "friend_accept") {
 
-            let header;
-            let body;
+            let header: string;
+            let body: string;
 
             if (event.type === "friend_request") {
                 header = "New friend request";
@@ -73,8 +74,10 @@ export default class NotificationList extends Component {
             }
             const id = ++ this.lastNotificationId;
 
-            const elt = this.createElt(header, body, id);
-            this.containerElt.appendChild(elt);
+            fastdom.mutate(() => {
+                const elt = this.createElt(header, body, id);
+                this.containerElt.appendChild(elt);
+            });
 
             this.notifications.set(id, {
                 username: event.username,
@@ -93,28 +96,28 @@ export default class NotificationList extends Component {
     }
 
     private showList() {
-        this.parentElt.style.display = "inline-block";
+        DOMMutationHandler.show(this.parentElt, "inline-block");
         this.listOpen = true;
     }
 
     private hideList() {
-        this.parentElt.style.display = "";
+        DOMMutationHandler.hide(this.parentElt);
         this.listOpen = false;
     }
 
     private updateElements(quantity: number) {
         if (quantity > 0) {
-            this.redIcon.textContent = "" + quantity;
-            this.redIcon.style.display = "block";
+            DOMMutationHandler.setText(this.redIcon, "" + quantity);
+            DOMMutationHandler.show(this.redIcon);
         } else {
-            this.redIcon.textContent = "";
-            this.redIcon.style.display = "";
+            DOMMutationHandler.setText(this.redIcon);
+            DOMMutationHandler.hide(this.redIcon);
         }
 
         if (quantity) {
-            this.messageElt.textContent = "";
+            DOMMutationHandler.setText(this.messageElt);
         } else {
-            this.messageElt.textContent = "No notifications";
+            DOMMutationHandler.setText(this.messageElt, "No notifications");
         }
     }
 

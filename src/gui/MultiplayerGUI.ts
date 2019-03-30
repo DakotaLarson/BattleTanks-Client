@@ -1,5 +1,6 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 import Options from "../Options";
 import AmmoDisplay from "./AmmoDisplay";
@@ -55,7 +56,7 @@ export default class GUI extends Component {
         }
 
         this.attachChild(this.playerList);
-        this.element.style.display = "block";
+        DOMMutationHandler.show(this.element);
     }
 
     public disable() {
@@ -67,7 +68,7 @@ export default class GUI extends Component {
         this.detachChild(this.chat);
         this.detachChild(this.playerList);
 
-        this.element.style.display = "";
+        DOMMutationHandler.hide(this.element);
     }
 
     private onPlayerAddition() {

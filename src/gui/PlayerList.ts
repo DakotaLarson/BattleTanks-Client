@@ -1,5 +1,6 @@
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 import Globals from "../Globals";
 import Options from "../Options";
@@ -79,12 +80,12 @@ export default class PlayerList extends ChildComponent {
     private onPlayerAddition(event: any) {
         const elt = DomHandler.getElement(".player-list-" + event.id, this.parentElt);
         const color = this.getCSSColorString(event.color);
-        elt.style.color = color;
+        DOMMutationHandler.addStyle(elt, "color", color);
     }
 
     private onPlayerRemoval(event: any) {
         const elt = DomHandler.getElement(".player-list-" + event.id, this.parentElt);
-        elt.style.color = "#ffffff";
+        DOMMutationHandler.addStyle(elt, "color", "#ffffff");
     }
 
     private onKeyDown(event: KeyboardEvent) {
@@ -121,11 +122,11 @@ export default class PlayerList extends ChildComponent {
     }
 
     private showPlayerList() {
-        this.parentElt.style.display = "inline-block";
+        DOMMutationHandler.show(this.parentElt, "inline-block");
     }
 
     private hidePlayerList() {
-        this.parentElt.style.display = "";
+        DOMMutationHandler.hide(this.parentElt);
     }
 
     private addPlayer(id: number, name: string, hasProfile: boolean) {

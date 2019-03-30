@@ -1,5 +1,6 @@
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 import Globals from "../Globals";
 import Options from "../Options";
@@ -45,7 +46,7 @@ export default class Chat extends ChildComponent {
 
         this.setOpacity(this.inputElt);
 
-        this.previewContainer.style.display = "block";
+        DOMMutationHandler.show(this.previewContainer);
     }
 
     public disable() {
@@ -60,7 +61,7 @@ export default class Chat extends ChildComponent {
         this.hideChat();
 
         this.messages = [];
-        this.previewContainer.style.display = "";
+        DOMMutationHandler.hide(this.previewContainer);
     }
 
     private onKeyUp(event: KeyboardEvent) {
@@ -86,11 +87,11 @@ export default class Chat extends ChildComponent {
 
         if (!Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
             const previewMessageElt = newMessageElt.cloneNode(true) as HTMLElement;
-            this.previewContainer.appendChild(previewMessageElt);
+            DOMMutationHandler.add(previewMessageElt, this.previewContainer);
             this.removeOldPreviewMessages();
             setTimeout(() => {
                 if (this.previewContainer.contains(previewMessageElt)) {
-                    previewMessageElt.style.opacity = "0";
+                    DOMMutationHandler.addStyle(previewMessageElt, "opacity", "0");
                     setTimeout(() => {
                         if (this.previewContainer.contains(previewMessageElt)) {
                             this.previewContainer.removeChild(previewMessageElt);
@@ -129,30 +130,28 @@ export default class Chat extends ChildComponent {
         this.setMessages();
         EventHandler.addListener(this, EventHandler.Event.DOM_WHEEL, this.onWheel);
         this.listenerAdded = true;
-        this.container.style.display = "flex";
-        this.inputElt.focus();
+        DOMMutationHandler.show(this.container, "flex");
+        DOMMutationHandler.focus(this.inputElt);
         Globals.setGlobal(Globals.Global.CHAT_OPEN, true);
         EventHandler.callEvent(EventHandler.Event.CHAT_OPEN);
     }
 
     private hideChat() {
-        this.inputElt.value = "";
+        DOMMutationHandler.setValue(this.inputElt);
         this.messageOffset = 0;
         if (this.listenerAdded) {
             EventHandler.removeListener(this, EventHandler.Event.DOM_WHEEL, this.onWheel);
             this.listenerAdded = false;
         }
-        this.container.style.display = "";
-        this.previewContainer.style.display = "block";
+        DOMMutationHandler.hide(this.container);
+        DOMMutationHandler.show(this.previewContainer);
         Globals.setGlobal(Globals.Global.CHAT_OPEN, false);
         EventHandler.callEvent(EventHandler.Event.CHAT_CLOSE);
     }
 
     private hidePreview() {
-        while (this.previewContainer.firstChild) {
-            this.previewContainer.removeChild(this.previewContainer.firstChild);
-        }
-        this.previewContainer.style.display = "";
+        DOMMutationHandler.clear(this.previewContainer);
+        DOMMutationHandler.hide(this.previewContainer);
     }
 
     private clearMessages() {
@@ -225,6 +224,6 @@ export default class Chat extends ChildComponent {
         if (opacity === undefined) {
             opacity = Math.round(Options.options.chatOpacity * 100) / 100;
         }
-        elt.style.backgroundColor = "rgba(0, 0, 0, " + opacity + ")";
+        DOMMutationHandler.addStyle(elt, "backgroundColor", "rgba(0, 0, 0, " + opacity + ")");
     }
 }

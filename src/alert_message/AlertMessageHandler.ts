@@ -1,5 +1,6 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class AlertMessageHandler extends Component {
@@ -25,13 +26,13 @@ export default class AlertMessageHandler extends Component {
         if (this.taskId !== -1) {
             clearTimeout(this.taskId);
         }
-        this.alertElt.textContent = message;
-        this.alertElt.style.opacity = "1";
-        this.alertElt.style.display = "inline-block";
+        DOMMutationHandler.setText(this.alertElt, message);
+        DOMMutationHandler.addStyle(this.alertElt, "opacity", "1");
+        DOMMutationHandler.show(this.alertElt, "inline-block");
         this.taskId = window.setTimeout(() => {
-            this.alertElt.style.opacity = "";
+            DOMMutationHandler.removeStyle(this.alertElt, "opacity");
             this.taskId = window.setTimeout(() => {
-                this.alertElt.style.display = "";
+                DOMMutationHandler.hide(this.alertElt);
                 this.taskId = -1;
             }, 500);
         }, 3000);

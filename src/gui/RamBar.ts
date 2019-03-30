@@ -1,5 +1,6 @@
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class RamBar extends ChildComponent {
@@ -24,7 +25,7 @@ export default class RamBar extends ChildComponent {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.PLAYER_RAM, this.onRam);
-        this.ramParent.style.display = "inline-block";
+        DOMMutationHandler.show(this.ramParent, "inline-block");
         this.setPercentage(100);
     }
 
@@ -34,7 +35,7 @@ export default class RamBar extends ChildComponent {
             EventHandler.removeListener(this, EventHandler.Event.GAME_TICK, this.onTick);
             this.listening = false;
         }
-        this.ramParent.style.display = "";
+        DOMMutationHandler.hide(this.ramParent);
     }
 
     private onRam() {
@@ -65,6 +66,6 @@ export default class RamBar extends ChildComponent {
     }
 
     private setPercentage(percentage: number) {
-        this.bar.style.width = "" + percentage + "%";
+        DOMMutationHandler.addStyle(this.bar, "width", percentage + "%");
     }
 }

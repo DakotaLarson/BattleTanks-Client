@@ -1,5 +1,6 @@
 import Component from "./component/Component";
 import DomHandler from "./DomHandler";
+import DOMMutationHandler from "./DOMMutationHandler";
 import EventHandler from "./EventHandler";
 import Globals from "./Globals";
 
@@ -83,9 +84,9 @@ export default class Auth extends Component {
 
     private updateSignoutBtn(authenticated: boolean) {
         if (authenticated) {
-            this.signoutBtn.style.display = "inline";
+            DOMMutationHandler.show(this.signoutBtn, "inline");
         } else {
-            this.signoutBtn.style.display = "";
+            DOMMutationHandler.hide(this.signoutBtn);
         }
     }
 

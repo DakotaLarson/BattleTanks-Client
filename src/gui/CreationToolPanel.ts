@@ -1,5 +1,6 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 import Globals from "../Globals";
 
@@ -61,7 +62,7 @@ export default class CreationToolPanel extends Component {
         this.mode = Mode.CAMERA;
         this.updateHTMLClasses();
 
-        this.parentElt.style.display = "inline-block";
+        DOMMutationHandler.show(this.parentElt, "inline-block");
     }
 
     public disable() {
@@ -81,7 +82,7 @@ export default class CreationToolPanel extends Component {
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
 
-        this.parentElt.style.display = "";
+        DOMMutationHandler.hide(this.parentElt);
     }
 
     private onClick(event: MouseEvent) {

@@ -1,6 +1,7 @@
 import AudioType from "../audio/AudioType";
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class AmmoDisplay extends ChildComponent {
@@ -30,7 +31,7 @@ export default class AmmoDisplay extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.PLAYER_AMMO_STATUS, this.onAmmoStatusChange);
         EventHandler.addListener(this, EventHandler.Event.PLAYER_RELOAD_START, this.onReloadStart);
         EventHandler.addListener(this, EventHandler.Event.PLAYER_RELOAD_END, this.onReloadEnd);
-        this.container.style.display = "block";
+        DOMMutationHandler.show(this.container);
 
         this.ammoCount = 0;
         this.reloadPercentage = 1;
@@ -41,7 +42,7 @@ export default class AmmoDisplay extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_AMMO_STATUS, this.onAmmoStatusChange);
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_RELOAD_START, this.onReloadStart);
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_RELOAD_END, this.onReloadEnd);
-        this.container.style.display = "";
+        DOMMutationHandler.hide(this.container);
     }
 
     private onAmmoStatusChange(data: any) {
@@ -59,12 +60,13 @@ export default class AmmoDisplay extends ChildComponent {
     }
 
     private update() {
-        if (this.countElt.textContent !== "" + this.ammoCount) {
-            this.countElt.textContent = "" + this.ammoCount;
-        }
+        fastdom.mutate(() => {
+            if (this.countElt.textContent !== "" + this.ammoCount) {
+                this.countElt.textContent = "" + this.ammoCount;
+            }
 
-        const dashoffset = this.circumference * (1 - this.reloadPercentage);
-        this.circle.style.strokeDashoffset = "" + dashoffset;
+            const dashoffset = this.circumference * (1 - this.reloadPercentage);
+            this.circle.style.strokeDashoffset = "" + dashoffset;
+        });
     }
-
 }

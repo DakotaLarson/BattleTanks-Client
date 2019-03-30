@@ -6,6 +6,7 @@ import { PerspectiveCamera } from "three";
 import MenuCamera from "../arena/camera/MenuCamera";
 import AudioType from "../audio/AudioType";
 import ChildComponent from "../component/ChildComponent";
+import DOMMutationHandler from "../DOMMutationHandler";
 import CreateWorldMenu from "./CreateArenaMenu";
 import GameSuggestion from "./GameSuggestion";
 import Leaderboard from "./Leaderboard";
@@ -77,7 +78,7 @@ export default class MainMenu extends Component {
         this.attachChild(this.leaderboard);
         this.attachChild(this.menuCamera);
 
-        this.element.style.display = "block";
+        DOMMutationHandler.show(this.element);
     }
 
     public disable() {
@@ -105,7 +106,7 @@ export default class MainMenu extends Component {
         this.detachChild(this.leaderboard);
         this.detachChild(this.menuCamera);
 
-        this.element.style.display = "";
+        DOMMutationHandler.hide(this.element);
     }
 
     // Top menu options

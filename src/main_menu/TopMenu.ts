@@ -1,5 +1,6 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 import Globals from "../Globals";
 import Tutorial from "./Tutorial";
@@ -43,9 +44,9 @@ export default class TopMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.TUTORIAL_CLOSE, this.onTutorialClose);
 
         if (!Globals.getGlobal(Globals.Global.AUTH_TOKEN)) {
-            this.asGuestElt.style.display = "block";
+            DOMMutationHandler.show(this.asGuestElt);
         }
-        this.element.style.display = "block";
+        DOMMutationHandler.show(this.element);
     }
 
     public disable() {
@@ -64,8 +65,8 @@ export default class TopMenu extends Component {
             this.tutorial = undefined;
         }
 
-        this.asGuestElt.style.display = "";
-        this.element.style.display = "";
+        DOMMutationHandler.hide(this.asGuestElt);
+        DOMMutationHandler.hide(this.element);
     }
 
     // Click Handlers
@@ -94,11 +95,11 @@ export default class TopMenu extends Component {
     }
 
     private onSignIn() {
-        this.asGuestElt.style.display = "";
+        DOMMutationHandler.hide(this.asGuestElt);
     }
 
     private onSignOut() {
-        this.asGuestElt.style.display = "block";
+        DOMMutationHandler.show(this.asGuestElt);
     }
 
     private onTutorialClose() {

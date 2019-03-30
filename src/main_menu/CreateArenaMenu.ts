@@ -1,5 +1,6 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 const MAX_DIMENSION = 1000;
@@ -29,19 +30,19 @@ export default class CreateWorldMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCancelClick);
 
-        this.element.style.display = "block";
-        this.widthElt.focus();
+        DOMMutationHandler.show(this.element);
+        DOMMutationHandler.focus(this.widthElt);
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCancelClick);
 
-        this.heightElt.value = "";
-        this.widthElt.value = "";
-        this.errorElt.textContent = "";
+        DOMMutationHandler.setValue(this.heightElt);
+        DOMMutationHandler.setValue(this.widthElt);
+        DOMMutationHandler.setText(this.errorElt);
 
-        this.element.style.display = "none";
+        DOMMutationHandler.hide(this.element);
     }
 
     private onCreateClick(event: MouseEvent) {

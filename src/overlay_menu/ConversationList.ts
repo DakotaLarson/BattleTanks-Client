@@ -1,5 +1,6 @@
 import Component from "../component/Component";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 import Globals from "../Globals";
 
@@ -102,7 +103,7 @@ export default class ConversationList extends Component {
             this.messageElt.textContent = "Sign in to send messages";
         }
 
-        this.parentElt.style.display = "inline-block";
+        DOMMutationHandler.show(this.parentElt, "inline-block");
         this.listOpen = true;
     }
 
@@ -110,9 +111,10 @@ export default class ConversationList extends Component {
         while (this.containerElt.firstChild) {
             this.containerElt.removeChild(this.containerElt.firstChild);
         }
-        this.parentElt.style.display = "";
-        this.messageElt.textContent = "";
-        this.loadMoreElt.style.display = "";
+        DOMMutationHandler.hide(this.parentElt);
+        DOMMutationHandler.setText(this.messageElt);
+        DOMMutationHandler.hide(this.loadMoreElt);
+
         this.listOpen = false;
         this.conversationOffset = 0;
         this.conversationUsernames.clear();
@@ -136,9 +138,9 @@ export default class ConversationList extends Component {
                     this.messageElt.textContent = "";
 
                     if (conversations.length === ConversationList.MAX_CONV_RECV) {
-                        this.loadMoreElt.style.display = "block";
+                        DOMMutationHandler.show(this.loadMoreElt);
                     } else {
-                        this.loadMoreElt.style.display = "";
+                        DOMMutationHandler.hide(this.loadMoreElt);
                     }
 
                     this.updateNotificationIcon(this.unreadUsernames.length);
@@ -152,11 +154,11 @@ export default class ConversationList extends Component {
 
     private updateNotificationIcon(quantity: number) {
         if (quantity > 0) {
-            this.notificationIcon.textContent = "" + quantity;
-            this.notificationIcon.style.display = "block";
+            DOMMutationHandler.setText(this.notificationIcon, "" + quantity);
+            DOMMutationHandler.show(this.notificationIcon);
         } else {
-            this.notificationIcon.textContent = "";
-            this.notificationIcon.style.display = "";
+            DOMMutationHandler.setText(this.notificationIcon);
+            DOMMutationHandler.hide(this.notificationIcon);
         }
     }
 

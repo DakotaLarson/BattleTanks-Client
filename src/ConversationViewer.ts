@@ -1,6 +1,7 @@
 import Component from "./component/Component";
 import DomEventHandler from "./DomEventHandler";
 import DomHandler from "./DomHandler";
+import DOMMutationHandler from "./DOMMutationHandler";
 import EventHandler from "./EventHandler";
 import Globals from "./Globals";
 
@@ -51,7 +52,7 @@ export default class ConversationViewer extends Component {
 
         this.getMessages(this.offset);
 
-        this.parentElt.style.display = "block";
+        DOMMutationHandler.show(this.parentElt);
 
         setTimeout(() => {
             this.newMessageElt.focus();
@@ -73,8 +74,8 @@ export default class ConversationViewer extends Component {
         DomEventHandler.removeListener(this, this.messageContainerElt, "wheel", this.onScroll);
 
         this.clearMessages();
-        this.newMessageElt.value = "";
-        this.parentElt.style.display = "";
+        DOMMutationHandler.setValue(this.newMessageElt);
+        DOMMutationHandler.hide(this.parentElt);
         this.offset = 0;
         this.sendingMessage = false;
         this.retrievingMesssages = false;
@@ -120,18 +121,22 @@ export default class ConversationViewer extends Component {
     }
 
     private renderMessages(messages: any[]) {
-        const height = this.messageContainerElt.scrollHeight;
-        for (const message of messages) {
-            const messageElt = this.createMessageElt(message.body, message.sent);
-            this.messageContainerElt.insertBefore(messageElt, this.messageContainerElt.firstChild);
-        }
-        this.messageContainerElt.scrollTop = this.messageContainerElt.scrollHeight -  height;
+        fastdom.mutate(() => {
+            const height = this.messageContainerElt.scrollHeight;
+            for (const message of messages) {
+                const messageElt = this.createMessageElt(message.body, message.sent);
+                this.messageContainerElt.insertBefore(messageElt, this.messageContainerElt.firstChild);
+            }
+            this.messageContainerElt.scrollTop = this.messageContainerElt.scrollHeight -  height;
+        });
     }
 
     private renderMessage(message: string, sent: boolean) {
-        const messageElt = this.createMessageElt(message, sent);
-        this.messageContainerElt.appendChild(messageElt);
-        this.messageContainerElt.scrollTop = this.messageContainerElt.scrollHeight;
+        fastdom.mutate(() => {
+            const messageElt = this.createMessageElt(message, sent);
+            this.messageContainerElt.appendChild(messageElt);
+            this.messageContainerElt.scrollTop = this.messageContainerElt.scrollHeight;
+        });
     }
 
     private createMessageElt(message: string, sent: boolean) {
@@ -201,8 +206,6 @@ export default class ConversationViewer extends Component {
     }
 
     private clearMessages() {
-        while (this.messageContainerElt.firstChild) {
-            this.messageContainerElt.removeChild(this.messageContainerElt.firstChild);
-        }
+        DOMMutationHandler.clear(this.messageContainerElt);
     }
 }

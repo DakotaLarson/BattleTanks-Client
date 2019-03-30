@@ -1,6 +1,7 @@
 import ChildComponent from "../component/ChildComponent";
 import DomEventHandler from "../DomEventHandler";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 import Globals from "../Globals";
 
@@ -39,8 +40,8 @@ export default class UsernameMenu extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onSaveClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCancelClick);
 
-        this.parentElt.style.display = "block";
-        this.inputElt.focus();
+        DOMMutationHandler.show(this.parentElt);
+        DOMMutationHandler.focus(this.inputElt);
     }
 
     public disable() {
@@ -48,11 +49,11 @@ export default class UsernameMenu extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onSaveClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCancelClick);
 
-        this.inputElt.value = "";
+        DOMMutationHandler.setValue(this.inputElt);
         this.lastValidName = undefined;
         this.updateVisuals(false, false, false);
 
-        this.parentElt.style.display = "";
+        DOMMutationHandler.hide(this.parentElt);
     }
 
     private onInput() {
@@ -159,27 +160,29 @@ export default class UsernameMenu extends ChildComponent {
     }
 
     private updateVisuals(canSave: boolean, hasTyped: boolean, isUpdating: boolean) {
-        if (isUpdating) {
-            this.inputElt.style.borderColor = UsernameMenu.UPDATING_COLOR;
-        } else if (hasTyped) {
-            if (canSave) {
-                this.inputElt.style.borderColor = UsernameMenu.VALID_COLOR;
+        fastdom.mutate(() => {
+            if (isUpdating) {
+                this.inputElt.style.borderColor = UsernameMenu.UPDATING_COLOR;
+            } else if (hasTyped) {
+                if (canSave) {
+                    this.inputElt.style.borderColor = UsernameMenu.VALID_COLOR;
+                } else {
+                    this.inputElt.style.borderColor = UsernameMenu.INVALID_COLOR;
+                }
             } else {
-                this.inputElt.style.borderColor = UsernameMenu.INVALID_COLOR;
+                this.inputElt.style.borderColor = UsernameMenu.INPUT_COLOR;
             }
-        } else {
-            this.inputElt.style.borderColor = UsernameMenu.INPUT_COLOR;
-        }
-        if (isUpdating) {
-            this.saveBtn.classList.add("disabled");
-            this.cancelBtn.classList.add("disabled");
-        } else if (canSave) {
-            this.saveBtn.classList.remove("disabled");
-            this.cancelBtn.classList.remove("disabled");
-        } else {
-            this.saveBtn.classList.add("disabled");
-            this.cancelBtn.classList.remove("disabled");
-        }
+            if (isUpdating) {
+                this.saveBtn.classList.add("disabled");
+                this.cancelBtn.classList.add("disabled");
+            } else if (canSave) {
+                this.saveBtn.classList.remove("disabled");
+                this.cancelBtn.classList.remove("disabled");
+            } else {
+                this.saveBtn.classList.add("disabled");
+                this.cancelBtn.classList.remove("disabled");
+            }
+        });
     }
 
     private isNameInvalid(name: string) {

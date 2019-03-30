@@ -169,7 +169,7 @@ document.addEventListener("pointerlockchange", () => {
 });
 
 const onFullscreenChange = () => {
-    // @ts-ignore necessary as of 11/18
+    // @ts-ignore
     if (document.fullscreen || document.mozFullScreen || document.webkitIsFullScreen || document.msFullscreenElement) {
         EventHandler.callEvent(EventHandler.Event.DOM_FULLSCREEN_ENABLED);
     } else {
@@ -182,11 +182,11 @@ document.addEventListener("webkitfullscreenchange", onFullscreenChange);
 document.addEventListener("mozfullscreenchange", onFullscreenChange);
 document.addEventListener("msfullscreenchange", onFullscreenChange);
 
-// @ts-ignore Necessary as of 11/18
+// @ts-ignore
 document.exitFullscreen = document.exitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen || document.msExitFullscreen;
 
 const docElt = document.documentElement as HTMLElement;
-// @ts-ignore Necessary as of 11/18
+// @ts-ignore
 docElt.requestFullscreen = docElt.requestFullscreen || docElt.mozRequestFullScreen || docElt.webkitRequestFullscreen || docElt.msRequestFullscreen;
 
 EventHandler.addListener(undefined, EventHandler.Event.DOM_RESIZE, () => {
@@ -199,13 +199,10 @@ EventHandler.addListener(undefined, EventHandler.Event.DOM_MOUSEMOVE, (event) =>
     mousePosition.y = event.clientY;
 }, EventHandler.Level.LOW);
 
-const stopDefaultActions = () => {
-    document.oncontextmenu = () => false;
-    document.addEventListener("keydown", (event) => {
-        if ((document.activeElement as Element).nodeName !== "INPUT") {
-            event.preventDefault();
+document.oncontextmenu = () => false;
+document.addEventListener("keydown", (event) => {
+    if ((document.activeElement as Element).nodeName !== "INPUT") {
+        event.preventDefault();
 
-        }
-    });
-};
-stopDefaultActions();
+    }
+});

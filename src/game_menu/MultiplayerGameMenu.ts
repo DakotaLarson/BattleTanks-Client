@@ -1,5 +1,6 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class MultiplayerGameMenu extends Component {
@@ -28,7 +29,6 @@ export default class MultiplayerGameMenu extends Component {
         this.enabled = true;
 
         this.update();
-
     }
 
     public disable() {
@@ -37,7 +37,7 @@ export default class MultiplayerGameMenu extends Component {
 
         this.update();
 
-        this.element.style.display = "";
+        DOMMutationHandler.hide(this.element);
     }
 
     private onClick(event: MouseEvent) {
@@ -55,9 +55,9 @@ export default class MultiplayerGameMenu extends Component {
 
     private update() {
         if (this.enabled && !this.connectionMenuVisible) {
-            this.element.style.display = "block";
+            DOMMutationHandler.show(this.element);
         } else {
-            this.element.style.display = "";
+            DOMMutationHandler.hide(this.element);
         }
     }
 }

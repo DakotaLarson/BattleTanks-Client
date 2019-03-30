@@ -1,5 +1,6 @@
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class Joystick extends ChildComponent {
@@ -30,7 +31,7 @@ export default class Joystick extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.DOM_TOUCHMOVE, this.onMove);
         EventHandler.addListener(this, EventHandler.Event.DOM_TOUCHEND, this.onEnd);
 
-        this.container.style.display = "block";
+        DOMMutationHandler.show(this.container);
     }
 
     public disable() {
@@ -42,7 +43,7 @@ export default class Joystick extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.DOM_TOUCHMOVE, this.onMove);
         EventHandler.removeListener(this, EventHandler.Event.DOM_TOUCHEND, this.onEnd);
 
-        this.container.style.display = "";
+        DOMMutationHandler.hide(this.container);
     }
 
     private onStart(event: any) {

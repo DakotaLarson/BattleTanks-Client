@@ -1,5 +1,6 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class SingleplayerMenu extends Component {
@@ -25,14 +26,14 @@ export default class SingleplayerMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCreateOption);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onLoadOption);
 
-        this.element.style.display = "block";
+        DOMMutationHandler.show(this.element);
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCancelOption);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCreateOption);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onLoadOption);
-        this.element.style.display = "";
+        DOMMutationHandler.hide(this.element);
     }
 
     // Click Handlers

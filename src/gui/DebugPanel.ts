@@ -1,5 +1,6 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 import PacketSender from "../PacketSender";
 
@@ -32,10 +33,11 @@ export default class DebugPanel extends Component {
         EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_WAITING, this.onOtherStatus);
         EventHandler.addListener(this, EventHandler.Event.DEBUG_PONG, this.onPong);
 
-        this.fpsElt.textContent = "...";
-        this.pingElt.textContent = "...";
-        this.renderElt.textContent = "...";
-        this.parentElt.style.display = "inline-block";
+        DOMMutationHandler.setText(this.fpsElt, "...");
+        DOMMutationHandler.setText(this.pingElt, "...");
+        DOMMutationHandler.setText(this.renderElt, "...");
+
+        DOMMutationHandler.show(this.parentElt, "inline-block");
     }
 
     public disable() {
@@ -49,15 +51,15 @@ export default class DebugPanel extends Component {
 
         this.stopPingTask();
 
-        this.parentElt.style.display = "";
+        DOMMutationHandler.hide(this.parentElt);
     }
 
     private onDebugFPS(fps: number) {
-        this.fpsElt.textContent = "" + fps;
+        DOMMutationHandler.setText(this.fpsElt, "" + fps);
     }
 
     private onDebugRender(calls: number) {
-        this.renderElt.textContent = "" + calls;
+        DOMMutationHandler.setText(this.renderElt, "" + calls);
     }
 
     private onRunningStatus() {
@@ -70,7 +72,7 @@ export default class DebugPanel extends Component {
 
     private onPong() {
         const timeDiff = Math.round(performance.now() - this.lastPingTime);
-        this.pingElt.textContent = timeDiff + "ms";
+        DOMMutationHandler.setText(this.pingElt, timeDiff + "ms");
         EventHandler.callEvent(EventHandler.Event.DEBUG_LATENCY, timeDiff);
     }
 

@@ -1,5 +1,6 @@
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class ArenaDownloadHandler extends ChildComponent {
@@ -59,8 +60,8 @@ export default class ArenaDownloadHandler extends ChildComponent {
             EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
             EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onDownloadClick);
 
-            this.parent.style.display = "block";
-            this.titleValueElt.focus();
+            DOMMutationHandler.show(this.parent);
+            DOMMutationHandler.focus(this.titleValueElt);
             this.visible = true;
         }
     }
@@ -72,13 +73,12 @@ export default class ArenaDownloadHandler extends ChildComponent {
 
             this.arenaData = undefined;
 
-            this.titleValueElt.value = "";
-            this.authorValueElt.value = "";
-            this.minValueElt.value = "";
-            this.maxValueElt.value = "";
-            this.errorElt.textContent = "";
+            DOMMutationHandler.setValue(this.titleValueElt);
+            DOMMutationHandler.setValue(this.authorValueElt);            DOMMutationHandler.setValue(this.minValueElt);
+            DOMMutationHandler.setValue(this.maxValueElt);
+            DOMMutationHandler.setText(this.errorElt);
 
-            this.parent.style.display = "";
+            DOMMutationHandler.hide(this.parent);
             this.visible = false;
         }
     }

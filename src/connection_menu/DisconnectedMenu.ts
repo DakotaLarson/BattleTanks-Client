@@ -1,5 +1,6 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class DisconnectedScreen extends Component {
@@ -20,7 +21,7 @@ export default class DisconnectedScreen extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onDisconnect);
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE_REASON, this.onReason);
 
-        this.element.style.display = "block";
+        DOMMutationHandler.show(this.element);
     }
 
     public disable() {
@@ -28,7 +29,8 @@ export default class DisconnectedScreen extends Component {
         EventHandler.removeListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE_REASON, this.onReason);
 
         this.reasonElt.textContent = "";
-        this.element.style.display = "";
+        DOMMutationHandler.setText(this.reasonElt);
+        DOMMutationHandler.hide(this.element);
     }
 
     private onDisconnect(event: MouseEvent) {
@@ -38,6 +40,6 @@ export default class DisconnectedScreen extends Component {
     }
 
     private onReason(reason: string) {
-        this.reasonElt.textContent = reason;
+        DOMMutationHandler.setText(this.reasonElt, reason);
     }
 }

@@ -1,5 +1,6 @@
 import Component from "./component/Component";
 import DomHandler from "./DomHandler";
+import DOMMutationHandler from "./DOMMutationHandler";
 import EventHandler from "./EventHandler";
 import Globals from "./Globals";
 
@@ -171,27 +172,29 @@ export default class ProfileViewer extends Component {
     }
 
     private closeProfile() {
-        while (this.profileContainerElt.firstChild) {
-            this.profileContainerElt.removeChild(this.profileContainerElt.firstChild);
-        }
-        this.profileMessageElt.textContent = "";
+        fastdom.mutate(() => {
+            while (this.profileContainerElt.firstChild) {
+                this.profileContainerElt.removeChild(this.profileContainerElt.firstChild);
+            }
+            this.profileMessageElt.textContent = "";
 
-        this.friendActionElt.textContent = "";
-        this.friendActionElt.classList.remove("profile-action-disabled");
-        this.friendActionElt.removeAttribute("title");
-        this.friendActionElt.style.display = "";
+            this.friendActionElt.textContent = "";
+            this.friendActionElt.classList.remove("profile-action-disabled");
+            this.friendActionElt.removeAttribute("title");
+            this.friendActionElt.style.display = "";
 
-        this.conversationActionElt.classList.remove("profile-action-disabled");
-        this.conversationActionElt.removeAttribute("title");
-        this.conversationActionElt.style.display = "";
+            this.conversationActionElt.classList.remove("profile-action-disabled");
+            this.conversationActionElt.removeAttribute("title");
+            this.conversationActionElt.style.display = "";
 
-        this.negativeActionElt.style.display = "";
+            this.negativeActionElt.style.display = "";
 
-        this.profileParentElt.style.left = "";
-        this.profileParentElt.style.right = "";
-        this.profileParentElt.style.top = "";
-        this.profileParentElt.style.bottom = "";
-        this.profileParentElt.style.display = "";
+            this.profileParentElt.style.left = "";
+            this.profileParentElt.style.right = "";
+            this.profileParentElt.style.top = "";
+            this.profileParentElt.style.bottom = "";
+            this.profileParentElt.style.display = "";
+        });
 
         this.selectedUsername = undefined;
         this.friendsState = -1;
@@ -289,30 +292,32 @@ export default class ProfileViewer extends Component {
     }
 
     private showProfileParent() {
-        const dimensions = DomHandler.getDisplayDimensions();
-        const coordinates = DomHandler.getMouseCoordinates();
-        if (coordinates.x < dimensions.width / 2) {
-            const left = coordinates.x;
-            if (coordinates.y < dimensions.height / 2) {
-                const top = coordinates.y;
-                this.profileParentElt.style.top = top + "px";
+        fastdom.mutate(() => {
+            const dimensions = DomHandler.getDisplayDimensions();
+            const coordinates = DomHandler.getMouseCoordinates();
+            if (coordinates.x < dimensions.width / 2) {
+                const left = coordinates.x;
+                if (coordinates.y < dimensions.height / 2) {
+                    const top = coordinates.y;
+                    this.profileParentElt.style.top = top + "px";
+                } else {
+                    const bottom = dimensions.height - coordinates.y;
+                    this.profileParentElt.style.bottom = bottom + "px";
+                }
+                this.profileParentElt.style.left = left + "px";
             } else {
-                const bottom = dimensions.height - coordinates.y;
-                this.profileParentElt.style.bottom = bottom + "px";
+                const right = dimensions.width - coordinates.x;
+                if (coordinates.y < dimensions.height / 2) {
+                    const top = coordinates.y;
+                    this.profileParentElt.style.top = top + "px";
+                } else {
+                    const bottom = dimensions.height - coordinates.y;
+                    this.profileParentElt.style.bottom = bottom + "px";
+                }
+                this.profileParentElt.style.right = right + "px";
             }
-            this.profileParentElt.style.left = left + "px";
-        } else {
-            const right = dimensions.width - coordinates.x;
-            if (coordinates.y < dimensions.height / 2) {
-                const top = coordinates.y;
-                this.profileParentElt.style.top = top + "px";
-            } else {
-                const bottom = dimensions.height - coordinates.y;
-                this.profileParentElt.style.bottom = bottom + "px";
-            }
-            this.profileParentElt.style.right = right + "px";
-        }
-        this.profileParentElt.style.display = "inline-block";
+            this.profileParentElt.style.display = "inline-block";
+        });
     }
 
     private getProfileData(username: string) {

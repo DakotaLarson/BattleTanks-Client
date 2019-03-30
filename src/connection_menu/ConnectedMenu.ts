@@ -1,5 +1,6 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class ConnectedScreen extends Component {
@@ -16,12 +17,12 @@ export default class ConnectedScreen extends Component {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onDisconnect);
-        this.element.style.display = "block";
+        DOMMutationHandler.show(this.element);
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onDisconnect);
-        this.element.style.display = "";
+        DOMMutationHandler.hide(this.element);
     }
 
     private onDisconnect(event: MouseEvent) {

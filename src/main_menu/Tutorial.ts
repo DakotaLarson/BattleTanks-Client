@@ -1,5 +1,6 @@
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class Tutorial extends ChildComponent {
@@ -18,15 +19,15 @@ export default class Tutorial extends ChildComponent {
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
 
-        this.contentElt.style.display = "block";
-        this.parentElt.style.display = "block";
+        DOMMutationHandler.show(this.contentElt);
+        DOMMutationHandler.show(this.parentElt);
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
 
-        this.contentElt.style.display = "";
-        this.parentElt.style.display = "";
+        DOMMutationHandler.hide(this.contentElt);
+        DOMMutationHandler.hide(this.parentElt);
     }
 
     private onClick(event: MouseEvent) {

@@ -109,8 +109,9 @@
         <span>Server Status: </span>
         <span id="playercount-text"></span>
     </div>
-
-    <img class="main-menu-header" src="./res/menu/header-transparent.png" draggable="false" />
+    <div class="main-menu-header-container">
+        <img class="main-menu-header" src="./res/menu/header-transparent.png" draggable="false" />
+    </div>
 
     <a href="./partners/index.html" target="_blank" class="partners-link">Partners</a><br>
     
@@ -560,20 +561,18 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
 </div>
 
 <!-- POLYFILLS -->
-<script src="./polyfill/encoding.js"></script>
-<script src="./polyfill/encoding-indexes.js"></script>
-<script src="./polyfill/keyboard.js"></script>
-<script src="./polyfill/eventsource.js"></script>
-<script src="./polyfill/ua-parser.js"></script>
+<script src="./scripts/encoding.js"></script>
+<script src="./scripts/encoding-indexes.js"></script>
+<script src="./scripts/keyboard.js"></script>
+<script src="./scripts/eventsource.js"></script>
+<script src="./scripts/ua-parser.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
 <script>
     const loadScripts = () => {
         return new Promise((resolve) => {
             const scripts = new Map([
-                // ["loaders/LoaderSupport.js", false],
                 ["loaders/OBJLoader.js", false],
                 ["loaders/MTLLoader.js", false],
                 ["loaders/BufferGeometryUtils.js", false],
@@ -602,10 +601,11 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
     require.config({
         paths: {
             three: "https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three",
+            fastdom: "https://cdnjs.cloudflare.com/ajax/libs/fastdom/1.0.9/fastdom",
         }
     });
 
-    require(["three"], (three) => {
+    require(["three", "fastdom"], (three) => {
         window.THREE = three;
         loadScripts().then(() => {
             require(["build/Game"]);

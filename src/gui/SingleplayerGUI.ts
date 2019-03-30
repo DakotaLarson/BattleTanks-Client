@@ -1,5 +1,6 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import CreationToolPanel from "./CreationToolPanel";
 import DebugPanel from "./DebugPanel";
 
@@ -23,7 +24,7 @@ export default class GUI extends Component {
         // this.attachChild(this.fullscreenToggle);
         this.attachChild(this.buildToolPanel);
 
-        this.element.style.display = "block";
+        DOMMutationHandler.show(this.element);
     }
 
     public disable() {
@@ -31,6 +32,6 @@ export default class GUI extends Component {
         // this.detachChild(this.fullscreenToggle);
         this.detachChild(this.buildToolPanel);
 
-        this.element.style.display = "";
+        DOMMutationHandler.hide(this.element);
     }
 }

@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/DakotaLarson/BattleTanks-Client#readme",
   "dependencies": {
+    "fastdom": "^1.0.9",
     "three": "^0.99.0"
   },
   "devDependencies": {

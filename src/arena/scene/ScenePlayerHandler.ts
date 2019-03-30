@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, BackSide, BufferGeometry, BufferGeometryUtils, Font, FontLoader, FrontSide, Geometry, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, OBJLoader, PerspectiveCamera, PositionalAudio, RingGeometry, Scene, Shape, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, RingGeometry, Scene, Shape, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
@@ -111,23 +111,6 @@ export default class ScenePlayerHandler extends ChildComponent {
     public clearPlayers() {
         for (const [, player] of this.players) {
             this.removePlayer(player, true);
-            // this.scene.remove(player.body, player.head);
-            // if (player.nameplate) {
-            //     this.scene.remove(player.nameplate);
-            // }
-            // if (player.healthBar) {
-            //     this.scene.remove(player.healthBar);
-            // }
-            // if (player.shieldBar) {
-            //     this.scene.remove(player.shieldBar);
-            // }
-            // if (player.protectionSphere) {
-            //     this.scene.remove(player.protectionSphere);
-            // }
-            // if (player.engineAudio) {
-            //     this.engineAudioHandler.stopEngineSound(player);
-            //     this.scene.remove(player.engineAudio);
-            // }
         }
         this.players.clear();
     }
@@ -138,19 +121,30 @@ export default class ScenePlayerHandler extends ChildComponent {
         // loader.load("./res/models/" + "tank013" + ".obj", (group: Group) => {
         //     console.log(group.children);
         //     const finalGroup = new Group();
-        //     finalGroup.add(group.children[0]);
-        //     console.log(group.children);
-        //     const geo = BufferGeometryUtils.mergeBufferGeometries([group.children[1].geometry, group.children[1].geometry]);
-        //     const material = new MeshLambertMaterial({
-        //         color: 0x296793,
+        //     const bodyGeo = group.children[0].geometry;
+        //     const bodyMaterial = new MeshPhongMaterial({
+        //         color: 0x4b5320,
+        //         flatShading: true,
         //     });
-        //     const mesh = new Mesh(geo, material);
-        //     mesh.rotateY(Math.PI);
-        //     setInterval(() => {
-        //         mesh.rotateY(0.05);
-        //     }, 20);
+        //     finalGroup.add(new Mesh(bodyGeo, bodyMaterial));
+        //     console.log(group.children);
+        //     const headGeo = group.children[2].geometry;
+        //     const material = new MeshPhongMaterial({
+        //         color: 0x7b6543,
+        //         flatShading: true,
+        //     });
+        //     const mesh = new Mesh(headGeo, material);
+        //     // setInterval(() => {
+        //     //     mesh.rotateY(0.02);
+        //     // }, 20);
         //     finalGroup.add(mesh);
+        //     const light = new PointLight(0xf0f0f0, 5, 10);
+        //     light.position.set(2.5, 0.5, 2.5);
+        //     this.scene.add(light);
+        //     const pointLightHelper = new PointLightHelper(light, 1);
+        //     this.scene.add( pointLightHelper );
         //     finalGroup.position.set(2.5, 0, 2.5);
+
         //     this.scene.add(finalGroup);
         // }, undefined, (err: any) => {
         //     console.error(err);
@@ -251,7 +245,7 @@ export default class ScenePlayerHandler extends ChildComponent {
     private addPlayer(id: number, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, color?: number) {
         const bodyGroup = new Group();
         const headGroup = new Group();
-        this.modelLoader.getTurretModel().then((result: Group) => {
+        this.modelLoader.getHeadModel().then((result: Group) => {
             headGroup.add(result);
         });
         this.modelLoader.getBodyModel().then((result: Group) => {

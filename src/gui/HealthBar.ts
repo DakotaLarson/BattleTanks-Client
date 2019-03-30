@@ -1,5 +1,6 @@
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class HealthBar extends ChildComponent {
@@ -16,13 +17,13 @@ export default class HealthBar extends ChildComponent {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.PLAYER_HEALTH_CHANGE, this.onHealthChange);
-        this.healthParent.style.display = "inline-block";
+        DOMMutationHandler.show(this.healthParent, "inline-block");
         this.setPercentage(100);
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_HEALTH_CHANGE, this.onHealthChange);
-        this.healthParent.style.display = "";
+        DOMMutationHandler.hide(this.healthParent);
     }
 
     private onHealthChange(health: number) {
@@ -30,6 +31,6 @@ export default class HealthBar extends ChildComponent {
     }
 
     private setPercentage(percentage: number) {
-        this.bar.style.width = "" + percentage + "%";
+        DOMMutationHandler.addStyle(this.bar, "width", percentage + "%");
     }
 }

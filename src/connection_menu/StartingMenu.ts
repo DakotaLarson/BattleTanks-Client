@@ -1,5 +1,6 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class StartingScreen extends Component {
@@ -18,18 +19,18 @@ export default class StartingScreen extends Component {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onDisconnect);
-        this.element.style.display = "block";
+        DOMMutationHandler.show(this.element);
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onDisconnect);
-        this.element.style.display = "";
+        DOMMutationHandler.hide(this.element);
         this.clearStats();
     }
 
     public updateStatistics(elt: HTMLElement) {
         this.clearStats();
-        this.lastMatchStatisticsElt.appendChild(elt);
+        DOMMutationHandler.add(elt, this.lastMatchStatisticsElt);
     }
 
     private onDisconnect(event: MouseEvent) {
@@ -39,8 +40,6 @@ export default class StartingScreen extends Component {
     }
 
     private clearStats() {
-        while (this.lastMatchStatisticsElt.firstChild) {
-            this.lastMatchStatisticsElt.removeChild(this.lastMatchStatisticsElt.firstChild);
-        }
+        DOMMutationHandler.clear(this.lastMatchStatisticsElt);
     }
 }

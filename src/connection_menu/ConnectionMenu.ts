@@ -1,5 +1,6 @@
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 import ConnectedMenu from "./ConnectedMenu";
 import ConnectingMenu from "./ConnectingMenu";
@@ -49,7 +50,7 @@ export default class ConnectionMenu extends ChildComponent {
 
         EventHandler.callEvent(EventHandler.Event.BACKGROUND_AUDIO_CONNECTION_MENU);
 
-        this.element.style.display = "flex";
+        DOMMutationHandler.show(this.element, "flex");
         this.showMenu(this.connectingMenu, false);
     }
 
@@ -67,7 +68,7 @@ export default class ConnectionMenu extends ChildComponent {
         EventHandler.callEvent(EventHandler.Event.BACKGROUND_AUDIO_MAIN_MENU);
 
         this.updateBackground(false);
-        this.element.style.display = "";
+        DOMMutationHandler.hide(this.element);
     }
 
     private onConnectionOpen() {
@@ -123,14 +124,14 @@ export default class ConnectionMenu extends ChildComponent {
             this.activeMenu = undefined;
         }
         EventHandler.callEvent(EventHandler.Event.CONNECTION_MENU_VISIBILITY_UPDATE, false);
-        this.element.style.display = "";
+        DOMMutationHandler.hide(this.element);
         this.updateBackground(true);
         this.hidden = true;
     }
 
     private show() {
         EventHandler.callEvent(EventHandler.Event.CONNECTION_MENU_VISIBILITY_UPDATE, true);
-        this.element.style.display = "flex";
+        DOMMutationHandler.show(this.element, "flex");
         this.hidden = false;
     }
 
@@ -199,16 +200,16 @@ export default class ConnectionMenu extends ChildComponent {
         const menuSections = Array.from(DomHandler.getElements(".connection-menu-section", this.element));
 
         if (hidden) {
-            this.element.style.background = "none";
+            DOMMutationHandler.addStyle(this.element, "background", "none");
 
             for (const section of menuSections) {
-                section.style.background = "rgba(0, 0, 0, 0.75)";
+                DOMMutationHandler.addStyle(section, "background", "rgba(0, 0, 0, 0.75)");
             }
         } else {
-            this.element.style.background = "";
+            DOMMutationHandler.removeStyle(this.element, "background");
 
             for (const section of menuSections) {
-                section.style.background = "";
+                DOMMutationHandler.removeStyle(section, "background");
             }
         }
     }

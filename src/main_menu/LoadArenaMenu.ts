@@ -1,6 +1,7 @@
 import Component from "../component/ChildComponent";
 import DomEventHandler from "../DomEventHandler";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class LoadArenaMenu extends Component {
@@ -32,7 +33,7 @@ export default class LoadArenaMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this. onCancelClick);
         DomEventHandler.addListener(this, this.fileInputElt, "change", this.onFileChange);
 
-        this.element.style.display = "block";
+        DOMMutationHandler.show(this.element);
     }
 
     public disable() {
@@ -40,13 +41,13 @@ export default class LoadArenaMenu extends Component {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this. onCancelClick);
         DomEventHandler.removeListener(this, this.fileInputElt, "change", this.onFileChange);
 
-        this.errorElt.textContent = "";
-        this.fileNameElt.textContent = "";
-        this.fileInputElt.value = "";
+        DOMMutationHandler.setText(this.errorElt);
+        DOMMutationHandler.setText(this.fileNameElt);
+        DOMMutationHandler.setValue(this.fileInputElt);
 
         this.arena = undefined;
 
-        this.element.style.display = "none";
+        DOMMutationHandler.hide(this.element);
     }
 
     private onLoadClick(event: MouseEvent) {

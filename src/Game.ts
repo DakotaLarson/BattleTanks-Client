@@ -1,15 +1,15 @@
-import Component from "./component/Component";
-import EventHandler from "./EventHandler";
-
 import { PerspectiveCamera } from "three";
 import AlertMessageHandler from "./alert_message/AlertMessageHandler";
 import ArenaHandler from "./arena/ArenaHandler";
 import BackgroundAudioHandler from "./audio/BackgroundAudioHandler";
 import Auth from "./Auth";
+import Component from "./component/Component";
 import ComponentDebugger from "./component/ComponentDebugger";
 import ConnectionMenu from "./connection_menu/ConnectionMenu";
 import ConversationViewer from "./ConversationViewer";
 import DomHandler from "./DomHandler";
+import DOMMutationHandler from "./DOMMutationHandler";
+import EventHandler from "./EventHandler";
 import GameStatusHandler from "./GameStatusHandler";
 import Globals from "./Globals";
 import MainMenu from "./main_menu/MainMenu";
@@ -81,12 +81,15 @@ class Game extends Component {
         this.attachComponent(this.arenaHandler);
         this.updateMenu(true);
         this.attachChild(this.alertMessageHandler);
-        this.hideLoadingScreen();
+
         if (Options.options.metricsEnabled) {
             this.attachChild(this.metrics);
         }
+
         this.attachComponent(this.profileViewer);
         this.attachComponent(this.conversationViewer);
+
+        this.hideLoadingScreen();
     }
 
     public update(delta: number) {
@@ -133,7 +136,9 @@ class Game extends Component {
     }
 
     private hideLoadingScreen() {
-        DomHandler.getElement(".loading-screen").style.display = "none";
+        const elt = DomHandler.getElement(".loading-screen");
+        DOMMutationHandler.addStyle(elt, "opacity", "0");
+        DOMMutationHandler.addFutureStyle(elt, "display", "none", 1000);
     }
 
     private updateMenu(enable: boolean) {

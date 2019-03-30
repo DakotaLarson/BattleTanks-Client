@@ -12,6 +12,9 @@
     height: 33vh;
     margin-bottom: 0.5vh;
 }
+.main-menu .main-menu-header-container {
+    text-align: center;
+}
 .main-menu .game-suggestion {
     margin-bottom: 2.5vh;
     font-family: 'Inconsolata', sans-serif;

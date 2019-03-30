@@ -1,5 +1,6 @@
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class ShieldBar extends ChildComponent {
@@ -16,13 +17,13 @@ export default class ShieldBar extends ChildComponent {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.PLAYER_SHIELD_CHANGE, this.onShieldChange);
-        this.shieldParent.style.display = "inline-block";
+        DOMMutationHandler.show(this.shieldParent, "inline-block");
         this.setPercentage(0);
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_SHIELD_CHANGE, this.onShieldChange);
-        this.shieldParent.style.display = "";
+        DOMMutationHandler.hide(this.shieldParent);
     }
 
     private onShieldChange(shield: number) {
@@ -30,6 +31,6 @@ export default class ShieldBar extends ChildComponent {
     }
 
     private setPercentage(percentage: number) {
-        this.bar.style.width = "" + percentage + "%";
+        DOMMutationHandler.addStyle(this.bar, "width", percentage + "%");
     }
 }

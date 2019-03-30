@@ -1,5 +1,6 @@
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class SinglePlayerGameMenu extends Component {
@@ -20,13 +21,13 @@ export default class SinglePlayerGameMenu extends Component {
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
 
-        this.element.style.display = "block";
+        DOMMutationHandler.show(this.element);
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
 
-        this.element.style.display = "";
+        DOMMutationHandler.hide(this.element);
     }
 
     private onClick(event: MouseEvent) {

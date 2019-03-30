@@ -1,5 +1,6 @@
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
+import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 
 export default class Killfeed extends ChildComponent {
@@ -18,7 +19,7 @@ export default class Killfeed extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.KILLFEED_UPDATE, this.onUpdate);
         EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_WAITING, this.clearMessages);
         EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_STARTING, this.clearMessages);
-        this.container.style.display = "block";
+        DOMMutationHandler.show(this.container);
     }
 
     public disable() {
@@ -27,32 +28,33 @@ export default class Killfeed extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_STARTING, this.clearMessages);
 
         this.clearMessages();
-
-        this.container.style.display = "";
+        DOMMutationHandler.hide(this.container);
     }
 
     private onUpdate(data: any) {
-        const mainPlayer = data.mainPlayer;
-        const involvedPlayer = data.involvedPlayer;
-        const isOOB = data.isOOB;
+        fastdom.mutate(() => {
+            const mainPlayer = data.mainPlayer;
+            const involvedPlayer = data.involvedPlayer;
+            const isOOB = data.isOOB;
 
-        const element = document.createElement("div");
-        element.classList.add("killfeed-message");
+            const element = document.createElement("div");
+            element.classList.add("killfeed-message");
 
-        if (isOOB) {
-            element.appendChild(this.createPlayerElement(mainPlayer));
-            element.appendChild(this.createActionElement(true, isOOB));
-            element.appendChild(this.createLivesRemainingElement(mainPlayer.livesRemaining));
-        } else if (involvedPlayer) {
-            element.appendChild(this.createPlayerElement(involvedPlayer));
-            element.appendChild(this.createActionElement(false, isOOB));
-            element.appendChild(this.createPlayerElement(mainPlayer));
-            element.appendChild(this.createLivesRemainingElement(mainPlayer.livesRemaining));
-        } else {
-            element.appendChild(this.createPlayerElement(mainPlayer));
-            element.appendChild(this.createActionElement(true, isOOB));
-        }
-        this.addMessage(element);
+            if (isOOB) {
+                element.appendChild(this.createPlayerElement(mainPlayer));
+                element.appendChild(this.createActionElement(true, isOOB));
+                element.appendChild(this.createLivesRemainingElement(mainPlayer.livesRemaining));
+            } else if (involvedPlayer) {
+                element.appendChild(this.createPlayerElement(involvedPlayer));
+                element.appendChild(this.createActionElement(false, isOOB));
+                element.appendChild(this.createPlayerElement(mainPlayer));
+                element.appendChild(this.createLivesRemainingElement(mainPlayer.livesRemaining));
+            } else {
+                element.appendChild(this.createPlayerElement(mainPlayer));
+                element.appendChild(this.createActionElement(true, isOOB));
+            }
+            this.addMessage(element);
+        });
     }
 
     private addMessage(element: HTMLElement) {
@@ -60,7 +62,7 @@ export default class Killfeed extends ChildComponent {
         this.container.appendChild(element);
         setTimeout(() => {
             if (this.container.contains(element)) {
-                element.style.opacity = "0";
+                DOMMutationHandler.addStyle(element, "opacity", "0");
                 setTimeout(() => {
                     if (this.container.contains(element)) {
                         this.container.removeChild(element);
@@ -91,9 +93,6 @@ export default class Killfeed extends ChildComponent {
         if (isSelf) {
             if (isOOB) {
                 element.textContent = " went out of bounds";
-            } else {
-                // TODO: Replace with other form of self elimination
-                // element.textContent = " left the game";
             }
         } else {
             element.textContent = " killed ";
