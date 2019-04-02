@@ -227,13 +227,6 @@ const receiveProjecileLaunch = (data: number[]) => {
     });
 };
 
-const receiveProjectileMove = (data: number[]) => {
-    EventHandler.callEvent(EventHandler.Event.PROJECTILE_MOVE, {
-        position: new Vector3(data[0], data[1], data[2]),
-        id: data[3],
-    });
-};
-
 const receiveProjectileRemoval = (projId: number) => {
     EventHandler.callEvent(EventHandler.Event.PROJECTILE_REMOVAL, projId);
 };
@@ -315,7 +308,6 @@ handlers.push(receiveAudio);
 handlers.push(receiveCooldownTime);
 
 handlers.push(receiveProjecileLaunch);
-handlers.push(receiveProjectileMove);
 handlers.push(receiveProjectileRemoval);
 handlers.push(receiveProjectileClear);
 

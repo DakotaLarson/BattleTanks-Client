@@ -5,6 +5,7 @@
     text-align: center;
     z-index: 1;
     background: #202020;
+    pointer-events: none;
     transition: opacity 1s;
 }
 .loading-screen * {

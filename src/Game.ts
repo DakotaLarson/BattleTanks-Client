@@ -1,6 +1,7 @@
 import { PerspectiveCamera } from "three";
 import AlertMessageHandler from "./alert_message/AlertMessageHandler";
 import ArenaHandler from "./arena/ArenaHandler";
+import BatchHandler from "./arena/scene/BatchHandler";
 import BackgroundAudioHandler from "./audio/BackgroundAudioHandler";
 import Auth from "./Auth";
 import Component from "./component/Component";
@@ -56,7 +57,6 @@ class Game extends Component {
 
     }
     public enable() {
-        EventHandler.callEvent(EventHandler.Event.GAME_START);
 
         EventHandler.addListener(this, EventHandler.Event.CREATEWORLDMENU_CREATE_OPT_CLICK, this.loadSingleplayer);
         EventHandler.addListener(this, EventHandler.Event.LOADWORLDMENU_LOAD_OPT_CLICK, this.loadSingleplayer);
@@ -73,6 +73,8 @@ class Game extends Component {
         if (!this.setHost()) {
             EventHandler.addListener(this, EventHandler.Event.DOM_VISIBILITYCHANGE, this.onVisibilityChange);
         }
+
+        BatchHandler.initialize();
 
         this.attachComponent(this.auth);
         this.attachComponent(this.options);
