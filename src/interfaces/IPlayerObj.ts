@@ -1,6 +1,7 @@
 import { Group, Mesh, PositionalAudio } from "three";
 
 export default interface IPlayerObj {
+    group: Group;
     body: Group;
     head: Group;
     movementVelocity: number;

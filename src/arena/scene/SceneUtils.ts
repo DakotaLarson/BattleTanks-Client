@@ -1,4 +1,4 @@
-import { BufferGeometry, DirectionalLight, Float32BufferAttribute, HemisphereLight, HemisphereLightHelper, LineDashedMaterial, LineSegments, Mesh, MeshLambertMaterial, PlaneGeometry, Vector3, Vector4 } from "three";
+import { BufferGeometry, DirectionalLight, Float32BufferAttribute, HemisphereLight, LineDashedMaterial, LineSegments, Mesh, MeshLambertMaterial, PlaneGeometry, Vector3, Vector4 } from "three";
 import SceneHandler from "./SceneHandler";
 
 export default class SceneUtils {

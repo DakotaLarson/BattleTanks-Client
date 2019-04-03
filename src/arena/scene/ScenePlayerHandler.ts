@@ -118,37 +118,37 @@ export default class ScenePlayerHandler extends ChildComponent {
     public addMenuPlayer() {
         // const loader = new OBJLoader();
 
-        // loader.load("./res/models/" + "tank013" + ".obj", (group: Group) => {
-        //     console.log(group.children);
-        //     const finalGroup = new Group();
-        //     const bodyGeo = group.children[0].geometry;
-        //     const bodyMaterial = new MeshPhongMaterial({
-        //         color: 0x4b5320,
-        //         flatShading: true,
-        //     });
-        //     finalGroup.add(new Mesh(bodyGeo, bodyMaterial));
-        //     console.log(group.children);
-        //     const headGeo = group.children[2].geometry;
-        //     const material = new MeshPhongMaterial({
-        //         color: 0x7b6543,
-        //         flatShading: true,
-        //     });
-        //     const mesh = new Mesh(headGeo, material);
-        //     // setInterval(() => {
-        //     //     mesh.rotateY(0.02);
-        //     // }, 20);
-        //     finalGroup.add(mesh);
-        //     const light = new PointLight(0xf0f0f0, 5, 10);
-        //     light.position.set(2.5, 0.5, 2.5);
-        //     this.scene.add(light);
-        //     const pointLightHelper = new PointLightHelper(light, 1);
-        //     this.scene.add( pointLightHelper );
-        //     finalGroup.position.set(2.5, 0, 2.5);
+        // loader.load("./res/models/tanks/3/" + "tank014" + ".obj", (group: Group) => {
+        //     // console.log(group.children);
+        //     // const finalGroup = new Group();
+        //     // const bodyGeo = group.children[0].geometry;
+        //     // const bodyMaterial = new MeshPhongMaterial({
+        //     //     color: 0x4b5320,
+        //     //     flatShading: true,
+        //     // });
+        //     // finalGroup.add(new Mesh(bodyGeo, bodyMaterial));
+        //     // console.log(group.children);
+        //     // const headGeo = group.children[1].geometry;
+        //     // const material = new MeshPhongMaterial({
+        //     //     color: 0x7b6543,
+        //     //     flatShading: true,
+        //     // });
+        //     // const mesh = new Mesh(headGeo, material);
+        //     // // setInterval(() => {
+        //     // //     mesh.rotateY(0.02);
+        //     // // }, 20);
+        //     // mesh.position.set(0, 0, -2);
+        //     // finalGroup.add(mesh);
+        //     // finalGroup.position.set(2.5, 0, 2.5);
 
-        //     this.scene.add(finalGroup);
+        //     // this.scene.add(finalGroup);
+        //     group.position.set(2.5, 0, 2.5);
+        //     console.log(group);
+        //     this.scene.add(group);
         // }, undefined, (err: any) => {
         //     console.error(err);
         // });
+
         this.addPlayer(0, new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true);
     }
 
@@ -214,25 +214,10 @@ export default class ScenePlayerHandler extends ChildComponent {
             obj = this.players.get(data.id);
         }
         if (obj) {
-            this.scene.remove(obj.body);
-            this.scene.remove(obj.head);
-            if (obj.nameplate) {
-                this.scene.remove(obj.nameplate);
-            }
-
-            if (obj.healthBar) {
-                this.scene.remove(obj.healthBar);
-            }
-
-            if (obj.shieldBar) {
-                this.scene.remove(obj.shieldBar);
-            }
-
-            if (obj.protectionSphere) {
-                this.scene.remove(obj.protectionSphere);
-            }
+            this.scene.remove(obj.group);
 
             if (!isClear) {
+                // Cleared after loop otherwise
                 this.players.delete(data.id);
             }
             if (this.controlledPlayerId === data.id) {
@@ -243,62 +228,54 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     private addPlayer(id: number, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, color?: number) {
-        const bodyGroup = new Group();
-        const headGroup = new Group();
-        this.modelLoader.getHeadModel().then((result: Group) => {
-            headGroup.add(result);
-        });
-        this.modelLoader.getBodyModel().then((result: Group) => {
-            bodyGroup.add(result);
-        });
-        this.modelLoader.getTracksModel().then((result: Group) => {
-            bodyGroup.add(result);
+        const group = new Group();
+        const head = new Group();
+        const body = new Group();
+        group.position.set(pos.x, pos.y, pos.z);
+        this.modelLoader.getGroup("3", true).then((result: Group) => {
+            console.log(result);
+            const headMesh = result.getObjectByName("head") as Mesh;
+            const bodyMesh = result.getObjectByName("body") as Mesh;
+
+            console.log(head);
+            head.add(headMesh);
+            body.add(bodyMesh);
         });
 
-        const bodyPos = new Vector3(pos.x, pos.y, pos.z);
-        bodyGroup.position.copy(bodyPos);
-        bodyGroup.rotation.y = pos.w;
-
-        headGroup.position.copy(bodyPos);
-        headGroup.rotation.y = pos.w;
+        body.rotation.y = pos.w;
+        head.rotation.y = pos.w;
 
         if (color) {
             const ring = this.generateRing(color);
             ring.position.add(ScenePlayerHandler.RING_OFFSET);
-            bodyGroup.add(ring);
+            group.add(ring);
         }
 
-        this.scene.add(bodyGroup, headGroup);
+        group.add(head, body);
+        this.scene.add(group);
 
-        let playerObj: IPlayerObj;
+        const playerObj: IPlayerObj = {
+            group,
+            body,
+            head,
+            movementVelocity: 0,
+        };
 
         if (isConnectedPlayer) {
             const nameplate = this.generateNameplate(name, color as number);
-            nameplate.position.copy(bodyPos).add(ScenePlayerHandler.NAMEPLATE_OFFSET);
-            this.scene.add(nameplate);
+            nameplate.position.add(ScenePlayerHandler.NAMEPLATE_OFFSET);
 
             const healthBar = this.generateHealthBar(1);
-            healthBar.position.copy(bodyPos).add(ScenePlayerHandler.HEALTH_BAR_OFFSET);
-            this.scene.add(healthBar);
+            healthBar.position.add(ScenePlayerHandler.HEALTH_BAR_OFFSET);
 
             const shieldBar = this.generateShieldBar(0);
-            shieldBar.position.copy(bodyPos).add(ScenePlayerHandler.SHIELD_BAR_OFFSET);
-            this.scene.add(shieldBar);
+            shieldBar.position.add(ScenePlayerHandler.SHIELD_BAR_OFFSET);
 
-            playerObj = {
-                body: bodyGroup,
-                head: headGroup,
-                movementVelocity: 0,
-                nameplate,
-                healthBar,
-                shieldBar,
-            };
-        } else {
-            playerObj = {
-                body: bodyGroup,
-                head: headGroup,
-                movementVelocity: 0,
-            };
+            group.add(nameplate, healthBar, shieldBar);
+
+            playerObj.nameplate = nameplate;
+            playerObj.healthBar = healthBar;
+            playerObj.shieldBar = shieldBar;
         }
 
         this.players.set(id, playerObj);
@@ -325,7 +302,7 @@ export default class ScenePlayerHandler extends ChildComponent {
         if (playerObj) {
             let healthBar = playerObj.healthBar;
             if (healthBar) {
-                this.scene.remove(healthBar);
+                playerObj.group.remove(healthBar);
             }
 
             healthBar = this.generateHealthBar(data.health);
@@ -334,7 +311,7 @@ export default class ScenePlayerHandler extends ChildComponent {
 
             healthBar.lookAt(this.camera.position);
 
-            this.scene.add(healthBar);
+            playerObj.group.add(healthBar);
             playerObj.healthBar = healthBar;
         }
     }
@@ -344,7 +321,7 @@ export default class ScenePlayerHandler extends ChildComponent {
         if (playerObj) {
             let shieldBar = playerObj.shieldBar;
             if (shieldBar) {
-                this.scene.remove(shieldBar);
+                playerObj.group.remove(shieldBar);
             }
 
             shieldBar = this.generateShieldBar(data.shield);
@@ -353,7 +330,7 @@ export default class ScenePlayerHandler extends ChildComponent {
 
             shieldBar.lookAt(this.camera.position);
 
-            this.scene.add(shieldBar);
+            playerObj.group.add(shieldBar);
             playerObj.shieldBar = shieldBar;
         }
     }
@@ -364,7 +341,7 @@ export default class ScenePlayerHandler extends ChildComponent {
         if (playerObj) {
             const sphere = this.generateProtectionSphere();
             sphere.position.copy(playerObj.body.position);
-            this.scene.add(sphere);
+            playerObj.group.add(sphere);
             playerObj.protectionSphere = sphere;
         }
     }
@@ -372,7 +349,7 @@ export default class ScenePlayerHandler extends ChildComponent {
     private onProtectionEnd(id: number) {
         const playerObj = this.players.get(id);
         if (playerObj && playerObj.protectionSphere) {
-            this.scene.remove(playerObj.protectionSphere);
+            playerObj.group.remove(playerObj.protectionSphere);
             playerObj.protectionSphere = undefined;
         }
     }

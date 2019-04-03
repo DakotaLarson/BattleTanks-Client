@@ -1,4 +1,4 @@
-import { DoubleSide, FrontSide, Group, MaterialCreator, MTLLoader, OBJLoader } from "three";
+import { Group, Material, MaterialCreator, Mesh, MTLLoader, OBJLoader } from "three";
 
 export default class ModelLoader {
 
@@ -8,60 +8,58 @@ export default class ModelLoader {
         this.cache = new Map();
     }
 
-    public getBodyModel() {
-        return this.getGroup("body", false);
+    public async getGroup(fileName: string, flatShading?: boolean) {
+        const cached = this.cache.get(fileName);
+        if (cached) {
+            return cached.clone();
+        } else {
+            const creator = await this.getMaterial(fileName);
+            const group = await this.getModel(fileName, creator, flatShading);
+            this.cache.set(fileName, group);
+            return group;
+        }
     }
 
-    public getHeadModel() {
-        return this.getGroup("turret", true);
-    }
-
-    public getTracksModel() {
-       return this.getGroup("track", false);
-    }
-
-    private getGroup(fileName: string, doubleSide: boolean): Promise<Group> {
-        return new Promise((resolve) => {
-            const cached = this.cache.get(fileName);
-            if (cached) {
-                resolve(cached.clone());
-            } else {
-                this.getMaterial(fileName, doubleSide).then((creator: MaterialCreator) => {
-                    this.getModel(fileName, creator).then((group: Group) => {
-                        this.cache.set(fileName, group);
-                        resolve(group);
-                    });
-                });
-            }
-        });
-    }
-
-    private getModel(fileName: string, creator: MaterialCreator): Promise<Group> {
+    private getModel(fileName: string, creator: MaterialCreator, flatShading?: boolean): Promise<Group> {
         return new Promise((resolve) => {
             const loader = new OBJLoader();
             loader.setMaterials(creator);
 
-            loader.load("./res/models/" + fileName + ".obj", (group: Group) => {
-                resolve(group);
+            loader.load("./res/models/tanks/" + fileName + "/tank.obj", (group: Group) => {
+
+                if (flatShading) {
+                    for (const mesh of group.children) {
+                        this.setFlatShading((mesh as Mesh).material);
+                    }
+                }
+
+                resolve(group.clone());
             }, undefined, (err: any) => {
                 console.error(err);
             });
         });
     }
 
-    private getMaterial(fileName: string, doubleSide: boolean): Promise<MaterialCreator> {
+    private getMaterial(fileName: string): Promise<MaterialCreator> {
         return new Promise((resolve) => {
             const loader = new MTLLoader();
-            loader.setMaterialOptions({
-                side: doubleSide ? DoubleSide : FrontSide,
-            });
 
-            loader.load("./res/models/" + fileName + ".mtl", (creator: MaterialCreator) => {
+            loader.load("./res/models/tanks/" + fileName + "/tank.mtl", (creator: MaterialCreator) => {
                 creator.preload();
                 resolve(creator);
             }, undefined, (err: any) => {
                 console.error(err);
             });
         });
+    }
+
+    private setFlatShading(materials: Material | Material[]) {
+        if (materials.constructor === Array) {
+            for (const material of (materials as Material[])) {
+                material.flatShading = true;
+            }
+        } else {
+            (materials as Material).flatShading = true;
+        }
     }
 }

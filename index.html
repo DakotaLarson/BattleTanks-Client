@@ -565,17 +565,17 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
 <script src="./scripts/encoding-indexes.js"></script>
 <script src="./scripts/keyboard.js"></script>
 <script src="./scripts/eventsource.js"></script>
-<script src="./scripts/ua-parser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ua-parser-js@0/dist/ua-parser.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/103/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
 <script>
     const loadScripts = () => {
         return new Promise((resolve) => {
             const scripts = new Map([
-                ["loaders/OBJLoader.js", false],
-                ["loaders/MTLLoader.js", false],
-                ["loaders/BufferGeometryUtils.js", false],
+                ["https://cdn.jsdelivr.net/npm/three@0.103.0/examples/js/loaders/OBJLoader.js", false],
+                ["https://cdn.jsdelivr.net/npm/three@0.103.0/examples/js/loaders/MTLLoader.js", false],
+                ["https://cdn.jsdelivr.net/npm/three@0.103.0/examples/js/utils/BufferGeometryUtils.js", false],
             ]);
 
             for (const [name] of scripts) {

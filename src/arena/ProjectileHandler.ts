@@ -40,9 +40,6 @@ export default class ProjectileHandler extends ChildComponent {
     }
 
     private onLaunch(data: any) {
-
-        console.log(data);
-
         if (!this.mesh) {
             this.mesh = BatchHandler.create(new SphereBufferGeometry(0.05), [], 0xffffff);
             this.scene.add(this.mesh);
