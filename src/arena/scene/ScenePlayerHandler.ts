@@ -55,8 +55,8 @@ export default class ScenePlayerHandler extends ChildComponent {
         audioLoader.load(location.pathname + "res/audio/effects/game/shoot" + extension, (buffer: AudioBuffer) => {
             this.shootAudioBuffer = buffer;
         });
-        // @ts-ignore Disregard additional arguments
 
+        // @ts-ignore Disregard additional arguments
         const fontLoader = new FontLoader();
         fontLoader.load(location.pathname + "res/font/Bombardier_Regular.json", (font: Font) => {
             this.font = font;
@@ -163,44 +163,29 @@ export default class ScenePlayerHandler extends ChildComponent {
     private onPlayerMove(data: any) {
         const playerObj = this.players.get(data.id);
         if (playerObj) {
-            const pos = new Vector3(data.pos.x, data.pos.y, data.pos.z);
+            playerObj.group.position.copy(data.pos);
             const body = playerObj.body;
             const head = playerObj.head;
             const nameplate = playerObj.nameplate;
             const healthBar = playerObj.healthBar;
             const shieldBar = playerObj.shieldBar;
-            const protectionSphere = playerObj.protectionSphere;
 
-            head.position.copy(pos);
             head.rotation.y = data.headRot;
 
-            body.position.copy(pos);
             body.rotation.y = data.bodyRot;
 
             const cameraPos = this.camera.position;
 
             if (nameplate) {
-                const nameplatePos = nameplate.position;
-                nameplatePos.copy(pos).add(ScenePlayerHandler.NAMEPLATE_OFFSET);
-
                 nameplate.lookAt(cameraPos);
             }
             if (healthBar) {
-                const healthBarPos = healthBar.position;
-                healthBarPos.copy(pos).add(ScenePlayerHandler.HEALTH_BAR_OFFSET);
-
                 healthBar.lookAt(cameraPos);
             }
             if (shieldBar) {
-                const shieldBarPos = shieldBar.position;
-                shieldBarPos.copy(pos).add(ScenePlayerHandler.SHIELD_BAR_OFFSET);
-
                 shieldBar.lookAt(cameraPos);
             }
-            if (protectionSphere) {
-                const protectionSpherePos = protectionSphere.position;
-                protectionSpherePos.copy(pos);
-            }
+
             playerObj.movementVelocity = data.movementVelocity;
             this.engineAudioHandler.updateEngineSound(playerObj);
         }
@@ -233,11 +218,9 @@ export default class ScenePlayerHandler extends ChildComponent {
         const body = new Group();
         group.position.set(pos.x, pos.y, pos.z);
         this.modelLoader.getGroup("3", true).then((result: Group) => {
-            console.log(result);
             const headMesh = result.getObjectByName("head") as Mesh;
             const bodyMesh = result.getObjectByName("body") as Mesh;
 
-            console.log(head);
             head.add(headMesh);
             body.add(bodyMesh);
         });

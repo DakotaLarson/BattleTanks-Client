@@ -3,7 +3,7 @@ import { BufferAttribute, BufferGeometry, InstancedBufferAttribute, InstancedBuf
 export default class BatchHandler {
 
     public static initialize() {
-        ShaderLib.customDepthRGBA = { // this is a cut-and-paste of the depth shader -- modified to accommodate instancing for this app
+        ShaderLib.customDepthRGBA = {
             uniforms: ShaderLib.depth.uniforms,
             vertexShader:
                 `
@@ -42,7 +42,7 @@ export default class BatchHandler {
             `,
             fragmentShader: ShaderChunk.depth_frag,
         };
-        ShaderLib.lambert = { // this is a cut-and-paste of the lambert shader -- modified to accommodate instancing for this app
+        ShaderLib.lambert = {
             uniforms: ShaderLib.lambert.uniforms,
             vertexShader:
                 `
