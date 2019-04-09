@@ -1,4 +1,4 @@
-import { BufferGeometry, Group, Material, MaterialCreator, Mesh, MTLLoader, OBJLoader, OBJLoader2 } from "three";
+import { Group, Material, MaterialCreator, Mesh, MTLLoader, OBJLoader2 } from "three";
 
 export default class ModelLoader {
 
@@ -23,33 +23,11 @@ export default class ModelLoader {
     private getModel(fileName: string, creator: MaterialCreator, flatShading?: boolean): Promise<Group> {
         return new Promise((resolve) => {
             const loader2 = new OBJLoader2();
-            // loader2.load("./res/models/tanks/" + fileName + "/tank.obj", (event: any) => {
-            //     console.log(something);
-            // });
+            loader2.logging.enabled = false;
+            loader2.meshBuilder.setLogging(false, false);
+
             loader2.setMaterials(creator.materials);
-            loader2.load("./res/models/tanks/" + fileName + "/tank.obj", (event) => {
-
-                // for (const mesh of group.children) {
-                //     console.log(mesh);
-
-                //     const materials = (mesh as Mesh).material;
-                //     if (Array.isArray(materials)) {
-                //         const finalMaterials: Material[] = [];
-                //         const groups = ((mesh as Mesh).geometry as BufferGeometry).groups;
-                //         for (let i = 0; i < materials.length; i ++) {
-
-                //             let finalMaterialsIndex = finalMaterials.findIndex((finalMaterial) => {
-                //                 return materials[i].uuid === finalMaterial.uuid;
-                //             });
-
-                //             if (finalMaterialsIndex === -1) {
-                //                 finalMaterialsIndex = finalMaterials.push(materials[i]) - 1;
-                //             }
-                //             groups[i].materialIndex = finalMaterialsIndex;
-                //         }
-                //         (mesh as Mesh).material = finalMaterials;
-                //     }
-                // }
+            loader2.load("./res/models/tanks/" + fileName + "/tank.obj", (event: any) => {
 
                 if (flatShading) {
                     for (const mesh of event.detail.loaderRootNode.children) {

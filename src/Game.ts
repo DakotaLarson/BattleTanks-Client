@@ -40,6 +40,7 @@ class Game extends Component {
 
     constructor() {
         super();
+        BatchHandler.initialize();
         const perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
         this.auth = new Auth();
         this.options = new Options();
@@ -73,8 +74,6 @@ class Game extends Component {
         if (!this.setHost()) {
             EventHandler.addListener(this, EventHandler.Event.DOM_VISIBILITYCHANGE, this.onVisibilityChange);
         }
-
-        BatchHandler.initialize();
 
         this.attachComponent(this.auth);
         this.attachComponent(this.options);

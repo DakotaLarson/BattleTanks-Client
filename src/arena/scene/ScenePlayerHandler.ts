@@ -1,9 +1,10 @@
-import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, RingGeometry, Scene, Shape, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BackSide, Color, DoubleSide, Font, FontLoader, FrontSide, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, RingBufferGeometry, RingGeometry, Scene, ShaderMaterial, Shape, ShapeBufferGeometry, SphereGeometry, Vector2, Vector3, Vector4} from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
 import IPlayerObj from "../../interfaces/IPlayerObj";
 import Options from "../../Options";
+import BatchHandler from "./BatchHandler";
 import EngineAudioHandler from "./EngineAudioHandler";
 import ModelLoader from "./ModelLoader";
 
@@ -116,40 +117,98 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     public addMenuPlayer() {
-        // const loader = new OBJLoader();
+        const ringGeo = new RingBufferGeometry(0.85, 1, 16);
+        ringGeo.rotateX(-Math.PI / 2);
 
-        // loader.load("./res/models/tanks/3/" + "tank014" + ".obj", (group: Group) => {
-        //     // console.log(group.children);
-        //     // const finalGroup = new Group();
-        //     // const bodyGeo = group.children[0].geometry;
-        //     // const bodyMaterial = new MeshPhongMaterial({
-        //     //     color: 0x4b5320,
-        //     //     flatShading: true,
-        //     // });
-        //     // finalGroup.add(new Mesh(bodyGeo, bodyMaterial));
-        //     // console.log(group.children);
-        //     // const headGeo = group.children[1].geometry;
-        //     // const material = new MeshPhongMaterial({
-        //     //     color: 0x7b6543,
-        //     //     flatShading: true,
-        //     // });
-        //     // const mesh = new Mesh(headGeo, material);
-        //     // // setInterval(() => {
-        //     // //     mesh.rotateY(0.02);
-        //     // // }, 20);
-        //     // mesh.position.set(0, 0, -2);
-        //     // finalGroup.add(mesh);
-        //     // finalGroup.position.set(2.5, 0, 2.5);
+        // const mesh = BatchHandler.create(ringGeo, [new Vector3(2.5, 0.01, 2.5)], 0xaa88d6);
+        setTimeout(() => {
+        //     // BatchHandler.add(mesh, new Vector3(2, 0.1, 2), 0xff99ff);
+            // this.addPlayer(0, new Vector4(4, 0, 2.5, Math.PI / 4), "test", true, true, 0xff0000);
+        //     this.addPlayer(0, new Vector4(1, 0, 2.5, 7 * Math.PI / 4), "test1", true, true, 0x0000ff);
+        }, 1000);
+        // this.scene.add(mesh);
 
-        //     // this.scene.add(finalGroup);
-        //     group.position.set(2.5, 0, 2.5);
-        //     console.log(group);
-        //     this.scene.add(group);
-        // }, undefined, (err: any) => {
-        //     console.error(err);
-        // });
+        // const bar = this.generateBar(0x00ff00, 0);
+        const obj = this.createObj();
+        this.scene.add(obj);
+    }
 
-        this.addPlayer(0, new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true);
+    private createObj() {
+        const containerShape = new Shape();
+
+        const fullWidth = 0.75;
+        const fullHeight = 0.25;
+
+        containerShape.moveTo(0, 0);
+        containerShape.lineTo(0, fullHeight);
+        containerShape.lineTo(fullWidth, fullHeight);
+        containerShape.lineTo(fullWidth, 0);
+        containerShape.lineTo(0, 0);
+
+        const containerGeo = new ShapeBufferGeometry(containerShape);
+        containerGeo.translate(-fullWidth / 2, -fullHeight / 2, 0);
+
+        const vertexShader = `
+            uniform vec2 size;
+            uniform vec3 center;
+
+            varying float remainingPos;
+
+            vec3 billboard(vec3 v, mat4 view) {
+                vec3 look = normalize(cameraPosition - center);
+                vec3 cameraUp = vec3(view[0][1], view[1][1], view[2][1]);
+                vec3 billboardRight = cross(cameraUp, look);
+                vec3 billboardUp = cross(look, billboardRight);
+                vec3 pos = center + billboardRight * v.x * size.x + billboardUp * v.y * size.y;
+                return pos;
+            }
+
+            void main() {
+                remainingPos = (position.x + size.x / 2.0) / size.x;
+
+                vec3 worldPos = billboard(position, viewMatrix);
+                gl_Position = projectionMatrix * viewMatrix * vec4(worldPos, 1.0);
+            }
+        `;
+
+        const fragmentShader = `
+            uniform float remainingPercentage;
+            uniform vec3 remainingColor;
+
+            varying float remainingPos;
+
+            void main() {
+                if (remainingPos <= remainingPercentage) {
+                    gl_FragColor = vec4(remainingColor, 1.0);
+                } else {
+                    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+                }
+            }
+        `;
+
+        const containerMaterial = new ShaderMaterial({
+            vertexShader,
+            fragmentShader,
+            uniforms: {
+                size: {
+                    value: new Vector2(fullWidth, fullHeight),
+                },
+                center: {
+                    value: new Vector3(1, 0.5, 1),
+                },
+                remainingPercentage: {
+                    value: 0.33,
+                },
+                remainingColor: {
+                    value: new Color(0x00ff00),
+                },
+            },
+        });
+
+        const containerMesh = new Mesh(containerGeo, containerMaterial);
+        console.log(containerMesh);
+        containerMesh.frustumCulled = false;
+        return containerMesh;
     }
 
     private onPlayerAddition(data: any) {
@@ -388,11 +447,61 @@ export default class ScenePlayerHandler extends ChildComponent {
         const containerGeo = new ShapeBufferGeometry(containerShape);
         const barGeo = new ShapeBufferGeometry(barShape);
 
-        containerGeo.translate(-0.75 / 2, 0, 0);
-        barGeo.translate(-0.75 / 2, 0, 0.01);
+        containerGeo.translate(-fullWidth / 2, -fullHeight / 2, 0);
+        barGeo.translate(-fullWidth / 2, -fullHeight / 2, 0.01);
 
-        const containerMaterial = new MeshBasicMaterial({
-            color: 0x000000,
+        const vertexShader = `
+            uniform vec2 size;
+            uniform vec3 center;
+
+            varying float remainingPos;
+
+            vec3 billboard(vec3 v, mat4 view) {
+                vec3 up = vec3(view[0][1], view[1][1], view[2][1]);
+                vec3 right = vec3(view[0][0], view[1][0], view[2][0]);
+                vec3 pos = center + right * v.x + up * v.y;
+                return pos;
+            }
+
+            void main() {
+                remainingPos = (position.x + size.x / 2.0) / size.x;
+                vec3 worldPos = billboard(position, viewMatrix);
+                gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.0);
+                gl_Position = projectionMatrix * (modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0) + vec4(position.x, position.y, position.z, 0.0));
+            }
+        `;
+
+        const fragmentShader = `
+            uniform float remainingPercentage;
+            uniform vec3 remainingColor;
+            varying float remainingPos;
+
+            void main() {
+                if (remainingPos <= remainingPercentage) {
+                    gl_FragColor = vec4(remainingColor, 1.0);
+                } else {
+                    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+                }
+            }
+        `;
+
+        const containerMaterial = new ShaderMaterial({
+            vertexShader,
+            fragmentShader,
+            uniforms: {
+                size: {
+                    value: new Vector2(0.75, 0.0625),
+                },
+                center: {
+                    value: new Vector2(0, 0),
+                },
+                remainingPercentage: {
+                    value: 0.33,
+                },
+                remainingColor: {
+                    value: new Color(0x00ff00),
+                },
+            },
         });
 
         const barMaterial = new MeshBasicMaterial({

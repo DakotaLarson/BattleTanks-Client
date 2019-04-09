@@ -570,13 +570,14 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/103/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
 <script>
-    const supportScripts = new Map([
+    const mainScripts = new Map([
         ["https://cdn.jsdelivr.net/npm/three@0.103.0/examples/js/loaders/LoaderSupport.js", false],
-    ]);
-    const scripts = new Map([
-        ["https://cdn.jsdelivr.net/npm/three@0.103.0/examples/js/loaders/OBJLoader2.js", false],
         ["https://cdn.jsdelivr.net/npm/three@0.103.0/examples/js/loaders/MTLLoader.js", false],
         ["https://cdn.jsdelivr.net/npm/three@0.103.0/examples/js/utils/BufferGeometryUtils.js", false],
+    ]);
+    const dependentScripts = new Map([
+        ["https://cdn.jsdelivr.net/npm/three@0.103.0/examples/js/loaders/OBJLoader2.js", false],
+        
     ]);
     const loadScripts = (scripts) => {
         return new Promise((resolve) => {
@@ -607,8 +608,8 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
 
     require(["three", "fastdom"], (three) => {
         window.THREE = three;
-        loadScripts(supportScripts).then(() => {
-            loadScripts(scripts).then(() => {
+        loadScripts(mainScripts).then(() => {
+            loadScripts(dependentScripts).then(() => {
                 require(["build/Game"]);
             });
         }).catch(console.error);

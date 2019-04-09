@@ -6,6 +6,7 @@ import BatchHandler from "./scene/BatchHandler";
 export default class ProjectileHandler extends ChildComponent {
 
     private static readonly PROJECTILE_SPEED = 20;
+    private static readonly PROJECTILE_COLOR = 0xffffff;
 
     private mesh: Mesh | undefined;
 
@@ -26,7 +27,7 @@ export default class ProjectileHandler extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.PROJECTILE_CLEAR, this.clearProjectiles);
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
 
-        this.mesh = BatchHandler.create(new SphereBufferGeometry(0.05), [], 0xffffff);
+        this.mesh = BatchHandler.create(new SphereBufferGeometry(0.05), [], ProjectileHandler.PROJECTILE_COLOR);
         this.scene.add(this.mesh);
     }
 
@@ -40,11 +41,7 @@ export default class ProjectileHandler extends ChildComponent {
     }
 
     private onLaunch(data: any) {
-        if (!this.mesh) {
-            this.mesh = BatchHandler.create(new SphereBufferGeometry(0.05), [], 0xffffff);
-            this.scene.add(this.mesh);
-        }
-        BatchHandler.add(this.mesh, data.position);
+        BatchHandler.add(this.mesh!, data.position, ProjectileHandler.PROJECTILE_COLOR);
         this.projectiles.push({
             id: data.id,
             position: data.position,
@@ -57,9 +54,7 @@ export default class ProjectileHandler extends ChildComponent {
             return projectile.id === projId;
         });
         if (index > -1) {
-            if (this.mesh) {
-                BatchHandler.delete(this.mesh!, index);
-            }
+            BatchHandler.delete(this.mesh!, index);
             this.projectiles.splice(index, 1);
         } else {
             console.warn("Unable to find projectile with id:" + projId);

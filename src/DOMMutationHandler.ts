@@ -1,7 +1,7 @@
 export default class DOMMutationHandler {
 
     public static addStyle(elt: HTMLElement, style: string, value: string) {
-        fastdom.mutate(() => {
+        return fastdom.mutate(() => {
             elt.style.setProperty(style, value);
         });
     }
@@ -13,7 +13,7 @@ export default class DOMMutationHandler {
     }
 
     public static removeStyle(elt: HTMLElement, style: string) {
-        fastdom.mutate(() => {
+        return fastdom.mutate(() => {
             elt.style.removeProperty(style);
         });
     }
@@ -25,7 +25,7 @@ export default class DOMMutationHandler {
     }
 
     public static add(elt: HTMLElement, parent?: HTMLElement) {
-        fastdom.mutate(() => {
+        return fastdom.mutate(() => {
             if (parent) {
                 parent.appendChild(elt);
             } else {
@@ -35,19 +35,19 @@ export default class DOMMutationHandler {
     }
 
     public static insert(elt: HTMLElement, parent: HTMLElement) {
-        fastdom.mutate(() => {
+        return fastdom.mutate(() => {
             parent.insertBefore(elt, parent.firstChild);
         });
     }
 
     public static remove(elt: HTMLElement, parent: HTMLElement) {
-        fastdom.mutate(() => {
+        return fastdom.mutate(() => {
             parent.removeChild(elt);
         });
     }
 
     public static clear(elt: HTMLElement) {
-        fastdom.mutate(() => {
+        return fastdom.mutate(() => {
             while (elt.firstChild) {
                 elt.removeChild(elt.firstChild);
             }
@@ -55,20 +55,20 @@ export default class DOMMutationHandler {
     }
 
     public static setText(elt: HTMLElement, text?: string) {
-        fastdom.mutate(() => {
+        return fastdom.mutate(() => {
             // tslint:disable-next-line
             elt.textContent = text || null;
         });
     }
 
     public static setValue(elt: HTMLInputElement, value?: any) {
-        fastdom.mutate(() => {
+        return fastdom.mutate(() => {
             elt.value = value ? value : "";
         });
     }
 
     public static focus(elt: HTMLElement) {
-        fastdom.mutate(() => {
+        return fastdom.mutate(() => {
             elt.focus();
         });
     }
@@ -79,5 +79,9 @@ export default class DOMMutationHandler {
 
     public static hide(elt: HTMLElement) {
         DOMMutationHandler.removeStyle(elt, "display");
+    }
+
+    public static clearTask(task: () => void) {
+        fastdom.clear(task);
     }
 }
