@@ -1,4 +1,5 @@
-import { BufferAttribute, BufferGeometry, Color, InstancedBufferAttribute, InstancedBufferGeometry, Mesh, MeshLambertMaterial, RGBADepthPacking, ShaderChunk, ShaderLib, ShaderMaterial, TypedArray, UniformsUtils, Vector3, VertexColors } from "three";
+import { BufferAttribute, BufferGeometry, Color, InstancedBufferGeometry, Mesh, MeshLambertMaterial, RGBADepthPacking, ShaderChunk, ShaderLib, ShaderMaterial, TypedArray, UniformsUtils, Vector3, VertexColors } from "three";
+import BatchUtils from "./BatchUtils";
 
 export default class BatchHandler {
 
@@ -108,32 +109,12 @@ export default class BatchHandler {
         };
     }
 
-    public static create(bufferGeometry: BufferGeometry, offsets: Vector3[], color: number) {
+    public static create(bufferGeometry: BufferGeometry, offsets: Vector3[], colors: number[]) {
         const geometry = new InstancedBufferGeometry();
-
         geometry.copy(bufferGeometry);
 
-        const colorValue = new Color(color);
-
-        const computedOffsets = [];
-        const computedColors = [];
-        for (const offset of offsets) {
-            computedOffsets.push(offset.x, offset.y, offset.z);
-            computedColors.push(colorValue.r, colorValue.g, colorValue.b);
-        }
-
-        const arrayLength = (offsets.length || 1) * 3;
-        const internalOffsets = new Float32Array(arrayLength);
-        const internalColors = new Float32Array(arrayLength);
-
-        internalOffsets.set(computedOffsets);
-        internalColors.set(computedColors);
-
-        const offsetAttribute = new InstancedBufferAttribute(internalOffsets, 3);
-        const colorAttribute = new InstancedBufferAttribute(internalColors, 3);
-
-        offsetAttribute.setDynamic(true);
-        colorAttribute.setDynamic(true);
+        const offsetAttribute = BatchUtils.createVector3Attribute(offsets);
+        const colorAttribute = BatchUtils.createColorAttribute(colors);
 
         geometry.addAttribute("instanceOffset", offsetAttribute);
         geometry.addAttribute("instanceColor", colorAttribute);
@@ -142,6 +123,7 @@ export default class BatchHandler {
         const material = new MeshLambertMaterial({
             vertexColors: VertexColors,
         });
+
         // @ts-ignore
         material.defines = material.defines || {};
         // @ts-ignore
@@ -166,13 +148,19 @@ export default class BatchHandler {
         return mesh;
     }
 
-    public static delete(mesh: Mesh, index: number) {
+    public static remove(mesh: Mesh, index: number) {
         const geometry = mesh.geometry as InstancedBufferGeometry;
+
         const offsetAttribute = geometry.getAttribute("instanceOffset") as BufferAttribute;
-        (offsetAttribute.array as TypedArray).copyWithin(index, index + offsetAttribute.itemSize);
+        const colorAttribute = geometry.getAttribute("instanceColor") as BufferAttribute;
+
+        (offsetAttribute.array as TypedArray).copyWithin(index * offsetAttribute.itemSize, (index + 1) * offsetAttribute.itemSize);
+        (colorAttribute.array as TypedArray).copyWithin(index * colorAttribute.itemSize, (index + 1) * colorAttribute.itemSize);
 
         geometry.maxInstancedCount --;
+
         offsetAttribute.needsUpdate = true;
+        colorAttribute.needsUpdate = true;
     }
 
     public static add(mesh: Mesh, offset: Vector3, color: number) {
@@ -188,20 +176,11 @@ export default class BatchHandler {
         if (offsetAttribute.count < geometry.maxInstancedCount + 1) {
             // Array is not long enough to contain another element
 
-            const newOffsets = new Float32Array(currentMaxInstancedCount * 2 * offsetAttribute.itemSize);
-            newOffsets.set(offsetAttribute.array);
+            offsetAttribute = BatchUtils.createAttribute(offsetAttribute.array, offsetAttribute.itemSize, currentMaxInstancedCount * 2 * offsetAttribute.itemSize);
 
-            offsetAttribute = new InstancedBufferAttribute(newOffsets, 3);
-            offsetAttribute.setDynamic(true);
+            colorAttribute = BatchUtils.createAttribute(colorAttribute.array, colorAttribute.itemSize, currentMaxInstancedCount * 2 * colorAttribute.itemSize);
+
             geometry.addAttribute("instanceOffset", offsetAttribute);
-
-            // Color array is same length, needs update too
-
-            const newColors = new Float32Array(currentMaxInstancedCount * 2 * colorAttribute.itemSize);
-            newColors.set(colorAttribute.array);
-
-            colorAttribute = new InstancedBufferAttribute(newColors, 3);
-            colorAttribute.setDynamic(true);
             geometry.addAttribute("instanceColor", colorAttribute);
         }
 
@@ -209,6 +188,7 @@ export default class BatchHandler {
         (colorAttribute.array as TypedArray).set([computedColor.r, computedColor.g, computedColor.b], insertionOffset);
 
         geometry.maxInstancedCount ++;
+
         offsetAttribute.needsUpdate = true;
         colorAttribute.needsUpdate = true;
     }

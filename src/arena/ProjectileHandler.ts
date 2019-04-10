@@ -1,7 +1,7 @@
 import { Mesh, Scene, SphereBufferGeometry, Vector3 } from "three";
 import ChildComponent from "../component/ChildComponent";
 import EventHandler from "../EventHandler";
-import BatchHandler from "./scene/BatchHandler";
+import BatchHandler from "./scene/batch/BatchHandler";
 
 export default class ProjectileHandler extends ChildComponent {
 
@@ -27,7 +27,7 @@ export default class ProjectileHandler extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.PROJECTILE_CLEAR, this.clearProjectiles);
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
 
-        this.mesh = BatchHandler.create(new SphereBufferGeometry(0.05), [], ProjectileHandler.PROJECTILE_COLOR);
+        this.mesh = BatchHandler.create(new SphereBufferGeometry(0.05), [], []);
         this.scene.add(this.mesh);
     }
 
@@ -54,7 +54,7 @@ export default class ProjectileHandler extends ChildComponent {
             return projectile.id === projId;
         });
         if (index > -1) {
-            BatchHandler.delete(this.mesh!, index);
+            BatchHandler.remove(this.mesh!, index);
             this.projectiles.splice(index, 1);
         } else {
             console.warn("Unable to find projectile with id:" + projId);

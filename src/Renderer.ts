@@ -47,5 +47,6 @@ export default class Renderer extends Component {
 
     private sendDebugData() {
         EventHandler.callEvent(EventHandler.Event.DEBUG_RENDER, this.renderer.info.render.calls);
+        console.log(this.renderer.info.render.calls);
     }
 }

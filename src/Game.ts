@@ -1,7 +1,8 @@
 import { PerspectiveCamera } from "three";
 import AlertMessageHandler from "./alert_message/AlertMessageHandler";
 import ArenaHandler from "./arena/ArenaHandler";
-import BatchHandler from "./arena/scene/BatchHandler";
+import BatchHandler from "./arena/scene/batch/BatchHandler";
+import BillboardBatchHandler from "./arena/scene/batch/BillboardBatchHandler";
 import BackgroundAudioHandler from "./audio/BackgroundAudioHandler";
 import Auth from "./Auth";
 import Component from "./component/Component";
@@ -40,7 +41,10 @@ class Game extends Component {
 
     constructor() {
         super();
+
         BatchHandler.initialize();
+        BillboardBatchHandler.initialize();
+
         const perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
         this.auth = new Auth();
         this.options = new Options();

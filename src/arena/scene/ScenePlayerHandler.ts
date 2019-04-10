@@ -1,10 +1,11 @@
-import { AudioBuffer, AudioListener, AudioLoader, BackSide, Color, DoubleSide, Font, FontLoader, FrontSide, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, RingBufferGeometry, RingGeometry, Scene, ShaderMaterial, Shape, ShapeBufferGeometry, SphereGeometry, Vector2, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, RingBufferGeometry, Scene, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
 import IPlayerObj from "../../interfaces/IPlayerObj";
 import Options from "../../Options";
-import BatchHandler from "./BatchHandler";
+import BatchHandler from "./batch/BatchHandler";
+import BillboardBatchHandler from "./batch/BillboardBatchHandler";
 import EngineAudioHandler from "./EngineAudioHandler";
 import ModelLoader from "./ModelLoader";
 
@@ -19,6 +20,9 @@ export default class ScenePlayerHandler extends ChildComponent {
 
     private scene: Scene;
     private camera: PerspectiveCamera;
+
+    private ringMesh: Mesh | undefined;
+    private billboardMesh: Mesh | undefined;
 
     private players: Map<number, IPlayerObj>;
 
@@ -65,6 +69,8 @@ export default class ScenePlayerHandler extends ChildComponent {
 
         this.controlledPlayerId = -1;
 
+        this.createBatchedMeshes();
+
     }
 
     public enable() {
@@ -86,6 +92,9 @@ export default class ScenePlayerHandler extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_SHIELD_CHANGE, this.onShieldChange);
 
         this.attachChild(this.engineAudioHandler);
+
+        this.removeBatchedMeshes();
+        this.createBatchedMeshes();
     }
 
     public disable() {
@@ -107,6 +116,7 @@ export default class ScenePlayerHandler extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_SHIELD_CHANGE, this.onShieldChange);
 
         this.detachChild(this.engineAudioHandler);
+        this.removeBatchedMeshes();
     }
 
     public clearPlayers() {
@@ -117,98 +127,10 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     public addMenuPlayer() {
-        const ringGeo = new RingBufferGeometry(0.85, 1, 16);
-        ringGeo.rotateX(-Math.PI / 2);
-
-        // const mesh = BatchHandler.create(ringGeo, [new Vector3(2.5, 0.01, 2.5)], 0xaa88d6);
         setTimeout(() => {
-        //     // BatchHandler.add(mesh, new Vector3(2, 0.1, 2), 0xff99ff);
-            // this.addPlayer(0, new Vector4(4, 0, 2.5, Math.PI / 4), "test", true, true, 0xff0000);
-        //     this.addPlayer(0, new Vector4(1, 0, 2.5, 7 * Math.PI / 4), "test1", true, true, 0x0000ff);
-        }, 1000);
-        // this.scene.add(mesh);
-
-        // const bar = this.generateBar(0x00ff00, 0);
-        const obj = this.createObj();
-        this.scene.add(obj);
-    }
-
-    private createObj() {
-        const containerShape = new Shape();
-
-        const fullWidth = 0.75;
-        const fullHeight = 0.25;
-
-        containerShape.moveTo(0, 0);
-        containerShape.lineTo(0, fullHeight);
-        containerShape.lineTo(fullWidth, fullHeight);
-        containerShape.lineTo(fullWidth, 0);
-        containerShape.lineTo(0, 0);
-
-        const containerGeo = new ShapeBufferGeometry(containerShape);
-        containerGeo.translate(-fullWidth / 2, -fullHeight / 2, 0);
-
-        const vertexShader = `
-            uniform vec2 size;
-            uniform vec3 center;
-
-            varying float remainingPos;
-
-            vec3 billboard(vec3 v, mat4 view) {
-                vec3 look = normalize(cameraPosition - center);
-                vec3 cameraUp = vec3(view[0][1], view[1][1], view[2][1]);
-                vec3 billboardRight = cross(cameraUp, look);
-                vec3 billboardUp = cross(look, billboardRight);
-                vec3 pos = center + billboardRight * v.x * size.x + billboardUp * v.y * size.y;
-                return pos;
-            }
-
-            void main() {
-                remainingPos = (position.x + size.x / 2.0) / size.x;
-
-                vec3 worldPos = billboard(position, viewMatrix);
-                gl_Position = projectionMatrix * viewMatrix * vec4(worldPos, 1.0);
-            }
-        `;
-
-        const fragmentShader = `
-            uniform float remainingPercentage;
-            uniform vec3 remainingColor;
-
-            varying float remainingPos;
-
-            void main() {
-                if (remainingPos <= remainingPercentage) {
-                    gl_FragColor = vec4(remainingColor, 1.0);
-                } else {
-                    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-                }
-            }
-        `;
-
-        const containerMaterial = new ShaderMaterial({
-            vertexShader,
-            fragmentShader,
-            uniforms: {
-                size: {
-                    value: new Vector2(fullWidth, fullHeight),
-                },
-                center: {
-                    value: new Vector3(1, 0.5, 1),
-                },
-                remainingPercentage: {
-                    value: 0.33,
-                },
-                remainingColor: {
-                    value: new Color(0x00ff00),
-                },
-            },
-        });
-
-        const containerMesh = new Mesh(containerGeo, containerMaterial);
-        console.log(containerMesh);
-        containerMesh.frustumCulled = false;
-        return containerMesh;
+            this.addPlayer(0, new Vector4(2.5, 0, 2.5, Math.PI / 4), "test", true, true, 0xd32282);
+            this.addPlayer(0, new Vector4(1.5, 0, 4.5, Math.PI / 4), "test", true, true, 0xd32282);
+        }, 500);
     }
 
     private onPlayerAddition(data: any) {
@@ -288,9 +210,7 @@ export default class ScenePlayerHandler extends ChildComponent {
         head.rotation.y = pos.w;
 
         if (color) {
-            const ring = this.generateRing(color);
-            ring.position.add(ScenePlayerHandler.RING_OFFSET);
-            group.add(ring);
+            this.generateRing(color, group.position.clone().add(ScenePlayerHandler.RING_OFFSET));
         }
 
         group.add(head, body);
@@ -307,17 +227,13 @@ export default class ScenePlayerHandler extends ChildComponent {
             const nameplate = this.generateNameplate(name, color as number);
             nameplate.position.add(ScenePlayerHandler.NAMEPLATE_OFFSET);
 
-            const healthBar = this.generateHealthBar(1);
-            healthBar.position.add(ScenePlayerHandler.HEALTH_BAR_OFFSET);
+            this.generateHealthBar(1, group.position.clone().add(ScenePlayerHandler.HEALTH_BAR_OFFSET));
 
-            const shieldBar = this.generateShieldBar(0);
-            shieldBar.position.add(ScenePlayerHandler.SHIELD_BAR_OFFSET);
+            this.generateShieldBar(0.5, group.position.clone().add(ScenePlayerHandler.SHIELD_BAR_OFFSET));
 
-            group.add(nameplate, healthBar, shieldBar);
+            group.add(nameplate);
 
             playerObj.nameplate = nameplate;
-            playerObj.healthBar = healthBar;
-            playerObj.shieldBar = shieldBar;
         }
 
         this.players.set(id, playerObj);
@@ -339,42 +255,42 @@ export default class ScenePlayerHandler extends ChildComponent {
         this.playSound(player as IPlayerObj, this.shootAudioBuffer as AudioBuffer);
     }
 
-    private onHealthChange(data: any) {
-        const playerObj = this.players.get(data.id);
-        if (playerObj) {
-            let healthBar = playerObj.healthBar;
-            if (healthBar) {
-                playerObj.group.remove(healthBar);
-            }
+    private onHealthChange() {
+        // const playerObj = this.players.get(data.id);
+        // if (playerObj) {
+        //     let healthBar = playerObj.healthBar;
+        //     if (healthBar) {
+        //         playerObj.group.remove(healthBar);
+        //     }
 
-            healthBar = this.generateHealthBar(data.health);
+        //     healthBar = this.generateHealthBar(data.health);
 
-            healthBar.position.copy(playerObj.body.position).add(ScenePlayerHandler.HEALTH_BAR_OFFSET);
+        //     healthBar.position.copy(playerObj.body.position).add(ScenePlayerHandler.HEALTH_BAR_OFFSET);
 
-            healthBar.lookAt(this.camera.position);
+        //     healthBar.lookAt(this.camera.position);
 
-            playerObj.group.add(healthBar);
-            playerObj.healthBar = healthBar;
-        }
+        //     playerObj.group.add(healthBar);
+        //     playerObj.healthBar = healthBar;
+        // }
     }
 
-    private onShieldChange(data: any) {
-        const playerObj = this.players.get(data.id);
-        if (playerObj) {
-            let shieldBar = playerObj.shieldBar;
-            if (shieldBar) {
-                playerObj.group.remove(shieldBar);
-            }
+    private onShieldChange() {
+        // const playerObj = this.players.get(data.id);
+        // if (playerObj) {
+        //     let shieldBar = playerObj.shieldBar;
+        //     if (shieldBar) {
+        //         playerObj.group.remove(shieldBar);
+        //     }
 
-            shieldBar = this.generateShieldBar(data.shield);
+        //     shieldBar = this.generateShieldBar(data.shield);
 
-            shieldBar.position.copy(playerObj.body.position).add(ScenePlayerHandler.SHIELD_BAR_OFFSET);
+        //     shieldBar.position.copy(playerObj.body.position).add(ScenePlayerHandler.SHIELD_BAR_OFFSET);
 
-            shieldBar.lookAt(this.camera.position);
+        //     shieldBar.lookAt(this.camera.position);
 
-            playerObj.group.add(shieldBar);
-            playerObj.shieldBar = shieldBar;
-        }
+        //     playerObj.group.add(shieldBar);
+        //     playerObj.shieldBar = shieldBar;
+        // }
     }
 
     private onProtectionStart(id: number) {
@@ -417,105 +333,16 @@ export default class ScenePlayerHandler extends ChildComponent {
         }
     }
 
-    private generateHealthBar(health: number) {
-        return this.generateBar(0x00ff00, health);
+    private generateHealthBar(health: number, pos: Vector3) {
+        return this.addBar(0x00ff00, health, pos);
     }
 
-    private generateShieldBar(shield: number) {
-        return this.generateBar(0x0095d8, shield);
+    private generateShieldBar(shield: number, pos: Vector3) {
+        return this.addBar(0x0095d8, shield, pos);
     }
 
-    private generateBar(color: number, percentage: number) {
-        const containerShape = new Shape();
-        const barShape = new Shape();
-
-        const fullWidth = 0.75;
-        const fullHeight = 0.0625;
-
-        containerShape.moveTo(0, 0);
-        containerShape.lineTo(0, fullHeight);
-        containerShape.lineTo(fullWidth, fullHeight);
-        containerShape.lineTo(fullWidth, 0);
-        containerShape.lineTo(0, 0);
-
-        barShape.moveTo(0, 0);
-        barShape.lineTo(0, fullHeight);
-        barShape.lineTo(fullWidth * percentage, fullHeight);
-        barShape.lineTo(fullWidth * percentage, 0);
-        barShape.lineTo(0, 0);
-
-        const containerGeo = new ShapeBufferGeometry(containerShape);
-        const barGeo = new ShapeBufferGeometry(barShape);
-
-        containerGeo.translate(-fullWidth / 2, -fullHeight / 2, 0);
-        barGeo.translate(-fullWidth / 2, -fullHeight / 2, 0.01);
-
-        const vertexShader = `
-            uniform vec2 size;
-            uniform vec3 center;
-
-            varying float remainingPos;
-
-            vec3 billboard(vec3 v, mat4 view) {
-                vec3 up = vec3(view[0][1], view[1][1], view[2][1]);
-                vec3 right = vec3(view[0][0], view[1][0], view[2][0]);
-                vec3 pos = center + right * v.x + up * v.y;
-                return pos;
-            }
-
-            void main() {
-                remainingPos = (position.x + size.x / 2.0) / size.x;
-                vec3 worldPos = billboard(position, viewMatrix);
-                gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.0);
-                gl_Position = projectionMatrix * (modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0) + vec4(position.x, position.y, position.z, 0.0));
-            }
-        `;
-
-        const fragmentShader = `
-            uniform float remainingPercentage;
-            uniform vec3 remainingColor;
-            varying float remainingPos;
-
-            void main() {
-                if (remainingPos <= remainingPercentage) {
-                    gl_FragColor = vec4(remainingColor, 1.0);
-                } else {
-                    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-                }
-            }
-        `;
-
-        const containerMaterial = new ShaderMaterial({
-            vertexShader,
-            fragmentShader,
-            uniforms: {
-                size: {
-                    value: new Vector2(0.75, 0.0625),
-                },
-                center: {
-                    value: new Vector2(0, 0),
-                },
-                remainingPercentage: {
-                    value: 0.33,
-                },
-                remainingColor: {
-                    value: new Color(0x00ff00),
-                },
-            },
-        });
-
-        const barMaterial = new MeshBasicMaterial({
-            color,
-        });
-
-        const containerMesh = new Mesh(containerGeo, containerMaterial);
-        const barMesh = new Mesh(barGeo, barMaterial);
-
-        const group = new Group();
-
-        group.add(containerMesh, barMesh);
-
-        return group;
+    private addBar(color: number, percentage: number, position: Vector3) {
+        BillboardBatchHandler.add(this.billboardMesh!, position, color, percentage);
     }
 
     private generateProtectionSphere() {
@@ -543,15 +370,8 @@ export default class ScenePlayerHandler extends ChildComponent {
         return group;
     }
 
-    private generateRing(color: number) {
-        const ringGeo = new RingGeometry(0.85, 1, 16);
-        const ringMaterial = new MeshLambertMaterial({
-            color,
-        });
-        const ringMesh = new Mesh(ringGeo, ringMaterial);
-        ringMesh.rotateX(-Math.PI / 2);
-
-        return ringMesh;
+    private generateRing(color: number, pos: Vector3) {
+        BatchHandler.add(this.ringMesh!, pos, color);
     }
 
     private playSound(player: IPlayerObj, buffer: AudioBuffer) {
@@ -572,5 +392,18 @@ export default class ScenePlayerHandler extends ChildComponent {
             audio.setBuffer(buffer);
             audio.play();
         }
+    }
+
+    private createBatchedMeshes() {
+        const ringGeo = new RingBufferGeometry(0.85, 1, 64);
+        ringGeo.rotateX(-Math.PI / 2);
+
+        this.billboardMesh = BillboardBatchHandler.create([], [], []);
+        this.ringMesh = BatchHandler.create(ringGeo, [], []);
+        this.scene.add(this.billboardMesh, this.ringMesh);
+    }
+
+    private removeBatchedMeshes() {
+        this.scene.remove(this.ringMesh!, this.billboardMesh!);
     }
 }
