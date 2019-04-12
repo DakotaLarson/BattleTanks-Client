@@ -32,10 +32,12 @@ export default class BillboardBatchHandler {
             varying float remainingPercentage;
 
             vec3 billboard(vec3 v, mat4 view) {
-                vec3 look = normalize(cameraPosition - instanceOffset);
-                vec3 cameraUp = vec3(view[0][1], view[1][1], view[2][1]);
-                vec3 billboardRight = cross(cameraUp, look);
-                vec3 billboardUp = cross(look, billboardRight);
+                vec3 look = cameraPosition - instanceOffset;
+                look.y = 0.0;
+                look = normalize(look);
+                // vec3 cameraUp = vec3(view[0][1], view[1][1], view[2][1]);
+                vec3 billboardUp = vec3(0, 1, 0);
+                vec3 billboardRight = cross(billboardUp, look);
                 vec3 pos = instanceOffset + billboardRight * v.x * size.x + billboardUp * v.y * size.y;
                 return pos;
             }
@@ -57,7 +59,7 @@ export default class BillboardBatchHandler {
             varying float remainingPercentage;
 
             void main() {
-                if (remainingPosition <= remainingPercentage) {
+                if (remainingPosition < remainingPercentage) {
                     gl_FragColor = vec4(remainingColor, 1.0);
                 } else {
                     gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);

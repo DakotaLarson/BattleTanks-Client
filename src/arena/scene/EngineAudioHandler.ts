@@ -9,12 +9,12 @@ export default class EngineAudioHandler extends ChildComponent {
 
     private static MAX_PLAYER_SPEED = 4;
 
-    private players: Map<number, IPlayerObj>;
+    private players: IPlayerObj[];
 
     private engineAudioBuffer: AudioBuffer | undefined;
     private audioListener: AudioListener;
 
-    constructor(audioLoader: AudioLoader, audioListener: AudioListener, players: Map<number, IPlayerObj>, extension: string) {
+    constructor(audioLoader: AudioLoader, audioListener: AudioListener, players: IPlayerObj[], extension: string) {
         super();
 
         this.audioListener = audioListener;
@@ -71,7 +71,7 @@ export default class EngineAudioHandler extends ChildComponent {
     }
 
     private onAudioEnabled() {
-        for (const [, player] of this.players) {
+        for (const player of this.players) {
             if (player.engineAudio) {
                 player.engineAudio.play();
             }
@@ -79,7 +79,7 @@ export default class EngineAudioHandler extends ChildComponent {
     }
 
     private onAudioDisabled() {
-        for (const [, player] of this.players) {
+        for (const player of this.players) {
             if (player.engineAudio) {
                 player.engineAudio.stop();
             }
@@ -88,7 +88,7 @@ export default class EngineAudioHandler extends ChildComponent {
 
     private onOptionsUpdate(event: any) {
         if (event.attribute === "engineVolume") {
-            for (const [, player] of this.players) {
+            for (const player of this.players) {
                 (player.engineAudio as PositionalAudio).setVolume(event.data);
             }
         }

@@ -24,7 +24,8 @@ export default class ScenePlayerHandler extends ChildComponent {
     private ringMesh: Mesh | undefined;
     private billboardMesh: Mesh | undefined;
 
-    private players: Map<number, IPlayerObj>;
+    private players: IPlayerObj[];
+    private billboardOwners: any[];
 
     private audioListener: AudioListener;
     private shootAudioBuffer: AudioBuffer | undefined;
@@ -39,7 +40,8 @@ export default class ScenePlayerHandler extends ChildComponent {
 
         this.modelLoader = new ModelLoader();
 
-        this.players = new Map();
+        this.players = [];
+        this.billboardOwners = [];
 
         this.scene = scene;
         this.camera = Globals.getGlobal(Globals.Global.CAMERA);
@@ -120,17 +122,22 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     public clearPlayers() {
-        for (const [, player] of this.players) {
+        for (const player of this.players) {
             this.removePlayer(player, true);
         }
-        this.players.clear();
+
+        this.removeBatchedMeshes();
+        this.createBatchedMeshes();
+
+        this.players = [];
     }
 
     public addMenuPlayer() {
-        setTimeout(() => {
-            this.addPlayer(0, new Vector4(2.5, 0, 2.5, Math.PI / 4), "test", true, true, 0xd32282);
-            this.addPlayer(0, new Vector4(1.5, 0, 4.5, Math.PI / 4), "test", true, true, 0xd32282);
-        }, 500);
+        // setTimeout(() => {
+        //     this.addPlayer(0, new Vector4(2.5, 0, 2.5, Math.PI / 4), "test", true, true, 0xd32282);
+        //     this.addPlayer(0, new Vector4(1.5, 0, 4.5, Math.PI / 4), "test", true, true, 0xd32282);
+        // }, 500);
+        this.addPlayer(0, new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true);
     }
 
     private onPlayerAddition(data: any) {
@@ -142,29 +149,47 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     private onPlayerMove(data: any) {
-        const playerObj = this.players.get(data.id);
-        if (playerObj) {
+        const index = this.players.findIndex((player: IPlayerObj) => {
+            return player.id === data.id;
+        });
+        if (index > -1) {
+            const playerObj = this.players[index];
             playerObj.group.position.copy(data.pos);
             const body = playerObj.body;
             const head = playerObj.head;
             const nameplate = playerObj.nameplate;
-            const healthBar = playerObj.healthBar;
-            const shieldBar = playerObj.shieldBar;
 
             head.rotation.y = data.headRot;
-
             body.rotation.y = data.bodyRot;
 
             const cameraPos = this.camera.position;
 
+            BillboardBatchHandler.updatePositions(this.ringMesh!, [index], [data.pos.clone().add(ScenePlayerHandler.RING_OFFSET)]);
+
             if (nameplate) {
                 nameplate.lookAt(cameraPos);
-            }
-            if (healthBar) {
-                healthBar.lookAt(cameraPos);
-            }
-            if (shieldBar) {
-                shieldBar.lookAt(cameraPos);
+
+                // Billboards are only present on connected players (those with nameplates)
+                const billboardIndices = [];
+                const billboardPositions = [];
+
+                const healthBarIndex = this.billboardOwners.findIndex((owner) => {
+                    return owner.id === data.id && owner.isHealth;
+                });
+                if (healthBarIndex > -1) {
+                    billboardPositions.push(data.pos.clone().add(ScenePlayerHandler.HEALTH_BAR_OFFSET));
+                    billboardIndices.push(healthBarIndex);
+                }
+
+                const shieldBarIndex = this.billboardOwners.findIndex((owner) => {
+                    return owner.id === data.id && !owner.isHealth;
+                });
+                if (shieldBarIndex > -1) {
+                    billboardPositions.push(data.pos.clone().add(ScenePlayerHandler.SHIELD_BAR_OFFSET));
+                    billboardIndices.push(shieldBarIndex);
+                }
+
+                BillboardBatchHandler.updatePositions(this.billboardMesh!, billboardIndices, billboardPositions);
             }
 
             playerObj.movementVelocity = data.movementVelocity;
@@ -174,18 +199,41 @@ export default class ScenePlayerHandler extends ChildComponent {
 
     private removePlayer(data: any, isClear?: boolean) {
         let obj;
+        let index;
         if (isClear) {
             obj = data;
         } else {
-            obj = this.players.get(data.id);
+            index = this.players.findIndex((player) => {
+                return player.id === data.id;
+            });
+            if (index > -1) {
+                obj = this.players[index];
+            }
         }
         if (obj) {
             this.scene.remove(obj.group);
-
-            if (!isClear) {
+            if (!isClear && index !== undefined && index > -1) {
                 // Cleared after loop otherwise
-                this.players.delete(data.id);
+                const healthIndex = this.billboardOwners.findIndex((owner) => {
+                    return owner.id === data.id && owner.isHealth;
+                });
+                if (healthIndex > -1) {
+                    BillboardBatchHandler.remove(this.billboardMesh!, healthIndex);
+                    this.billboardOwners.splice(healthIndex, 1);
+                }
+
+                const shieldIndex = this.billboardOwners.findIndex((owner) => {
+                    return owner.id === data.id && !owner.isHealth;
+                });
+                if (shieldIndex > -1) {
+                    BillboardBatchHandler.remove(this.billboardMesh!, shieldIndex);
+                    this.billboardOwners.splice(shieldIndex, 1);
+                }
+
+                BatchHandler.remove(this.ringMesh!, index);
+                this.players.splice(index, 1);
             }
+
             if (this.controlledPlayerId === data.id) {
                 this.controlledPlayerId = -1;
             }
@@ -217,6 +265,7 @@ export default class ScenePlayerHandler extends ChildComponent {
         this.scene.add(group);
 
         const playerObj: IPlayerObj = {
+            id,
             group,
             body,
             head,
@@ -228,15 +277,22 @@ export default class ScenePlayerHandler extends ChildComponent {
             nameplate.position.add(ScenePlayerHandler.NAMEPLATE_OFFSET);
 
             this.generateHealthBar(1, group.position.clone().add(ScenePlayerHandler.HEALTH_BAR_OFFSET));
+            this.billboardOwners.push({
+                id,
+                isHealth: true,
+            });
 
-            this.generateShieldBar(0.5, group.position.clone().add(ScenePlayerHandler.SHIELD_BAR_OFFSET));
+            this.generateShieldBar(0, group.position.clone().add(ScenePlayerHandler.SHIELD_BAR_OFFSET));
+            this.billboardOwners.push({
+                id,
+                isHealth: false,
+            });
 
             group.add(nameplate);
-
             playerObj.nameplate = nameplate;
         }
 
-        this.players.set(id, playerObj);
+        this.players.push(playerObj);
 
         if (!isConnectedPlayer) {
             this.controlledPlayerId = id;
@@ -251,51 +307,37 @@ export default class ScenePlayerHandler extends ChildComponent {
         if (!playerId) {
             playerId = this.controlledPlayerId;
         }
-        const player = this.players.get(playerId);
-        this.playSound(player as IPlayerObj, this.shootAudioBuffer as AudioBuffer);
+        const player = this.players.find((otherPlayer) => {
+            return otherPlayer.id === playerId;
+        });
+        if (player) {
+            this.playSound(player, this.shootAudioBuffer as AudioBuffer);
+        }
     }
 
-    private onHealthChange() {
-        // const playerObj = this.players.get(data.id);
-        // if (playerObj) {
-        //     let healthBar = playerObj.healthBar;
-        //     if (healthBar) {
-        //         playerObj.group.remove(healthBar);
-        //     }
-
-        //     healthBar = this.generateHealthBar(data.health);
-
-        //     healthBar.position.copy(playerObj.body.position).add(ScenePlayerHandler.HEALTH_BAR_OFFSET);
-
-        //     healthBar.lookAt(this.camera.position);
-
-        //     playerObj.group.add(healthBar);
-        //     playerObj.healthBar = healthBar;
-        // }
+    private onHealthChange(data: any) {
+        const index = this.billboardOwners.findIndex((owner) => {
+            return owner.id === data.id && owner.isHealth;
+        });
+        if (index > -1) {
+            BillboardBatchHandler.updatePercentage(this.billboardMesh!, index, data.health);
+        }
     }
 
-    private onShieldChange() {
-        // const playerObj = this.players.get(data.id);
-        // if (playerObj) {
-        //     let shieldBar = playerObj.shieldBar;
-        //     if (shieldBar) {
-        //         playerObj.group.remove(shieldBar);
-        //     }
-
-        //     shieldBar = this.generateShieldBar(data.shield);
-
-        //     shieldBar.position.copy(playerObj.body.position).add(ScenePlayerHandler.SHIELD_BAR_OFFSET);
-
-        //     shieldBar.lookAt(this.camera.position);
-
-        //     playerObj.group.add(shieldBar);
-        //     playerObj.shieldBar = shieldBar;
-        // }
+    private onShieldChange(data: any) {
+        const index = this.billboardOwners.findIndex((owner) => {
+            return owner.id === data.id && !owner.isHealth;
+        });
+        if (index > -1) {
+            BillboardBatchHandler.updatePercentage(this.billboardMesh!, index, data.shield);
+        }
     }
 
     private onProtectionStart(id: number) {
+        const playerObj = this.players.find((player) => {
+            return player.id === id;
+        });
 
-        const playerObj = this.players.get(id);
         if (playerObj) {
             const sphere = this.generateProtectionSphere();
             sphere.position.copy(playerObj.body.position);
@@ -305,7 +347,10 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     private onProtectionEnd(id: number) {
-        const playerObj = this.players.get(id);
+        const playerObj = this.players.find((player) => {
+            return player.id === id;
+        });
+
         if (playerObj && playerObj.protectionSphere) {
             playerObj.group.remove(playerObj.protectionSphere);
             playerObj.protectionSphere = undefined;

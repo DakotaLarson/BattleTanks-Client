@@ -24,17 +24,15 @@ export default class ProjectileHandler extends ChildComponent {
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.PROJECTILE_LAUNCH, this.onLaunch);
         EventHandler.addListener(this, EventHandler.Event.PROJECTILE_REMOVAL, this.onRemoval);
-        EventHandler.addListener(this, EventHandler.Event.PROJECTILE_CLEAR, this.clearProjectiles);
+        EventHandler.addListener(this, EventHandler.Event.PROJECTILE_CLEAR, this.onClear);
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
 
-        this.mesh = BatchHandler.create(new SphereBufferGeometry(0.05), [], []);
-        this.scene.add(this.mesh);
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.PROJECTILE_LAUNCH, this.onLaunch);
         EventHandler.removeListener(this, EventHandler.Event.PROJECTILE_REMOVAL, this.onRemoval);
-        EventHandler.removeListener(this, EventHandler.Event.PROJECTILE_CLEAR, this.clearProjectiles);
+        EventHandler.removeListener(this, EventHandler.Event.PROJECTILE_CLEAR, this.onClear);
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
         this.clearProjectiles();
 
@@ -59,6 +57,16 @@ export default class ProjectileHandler extends ChildComponent {
         } else {
             console.warn("Unable to find projectile with id:" + projId);
         }
+    }
+
+    private onClear() {
+        this.clearProjectiles();
+        this.initializeProjectiles();
+    }
+
+    private initializeProjectiles() {
+        this.mesh = BatchHandler.create(new SphereBufferGeometry(0.05), [], []);
+        this.scene.add(this.mesh);
     }
 
     private clearProjectiles() {
