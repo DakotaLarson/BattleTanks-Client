@@ -356,6 +356,7 @@ export default class PacketReceiver {
         }
         const handler = handlers[header];
         if (handler) {
+            // @ts-ignore
             handler(body);
         } else {
             console.warn("Received unknown header: " + header);

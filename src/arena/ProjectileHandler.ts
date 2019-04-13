@@ -26,6 +26,7 @@ export default class ProjectileHandler extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.PROJECTILE_REMOVAL, this.onRemoval);
         EventHandler.addListener(this, EventHandler.Event.PROJECTILE_CLEAR, this.onClear);
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
+        this.initializeProjectiles();
 
     }
 
