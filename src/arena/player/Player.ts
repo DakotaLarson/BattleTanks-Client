@@ -350,8 +350,12 @@ export default class Player extends Component {
         const playerPosition = this.position.clone();
         ray.intersectPlane(new Plane(new Vector3(0, 1, 0), -0.75), intersection);
         if (!intersection.equals(new Vector3())) {
-            const angle = Math.atan2(intersection.x - playerPosition.x, intersection.z - playerPosition.z);
+            const slope = (playerPosition.x - intersection.x) / (playerPosition.z - intersection.z);
+            let angle = Math.atan(slope);
 
+            if (playerPosition.z > intersection.z) {
+                angle += Math.PI;
+            }
             this.headRotation = angle;
         }
     }

@@ -45,7 +45,8 @@ export default class PlayerCollisionHandler {
     }
 
     public static addPlayer(player: ConnectedPlayer | Player) {
-        if (PlayerCollisionHandler.players.includes(player)) {
+        const index = PlayerCollisionHandler.players.indexOf(player);
+        if (index === -1) {
             PlayerCollisionHandler.players.push(player);
         }
     }

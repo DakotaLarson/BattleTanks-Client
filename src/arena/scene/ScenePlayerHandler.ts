@@ -133,6 +133,10 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     public addMenuPlayer() {
+        // setTimeout(() => {
+        //     this.addPlayer(0, new Vector4(2.5, 0, 2.5, Math.PI / 4), "test", true, true, 0xd32282);
+        //     this.addPlayer(0, new Vector4(1.5, 0, 4.5, Math.PI / 4), "test", true, true, 0xd32282);
+        // }, 500);
         this.addPlayer(0, new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true);
     }
 

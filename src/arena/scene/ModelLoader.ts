@@ -1,4 +1,4 @@
-import { Group, Material, MaterialCreator, Matrix4, Mesh, MTLLoader, OBJLoader2 } from "three";
+import { Group, Material, MaterialCreator, Mesh, MTLLoader, OBJLoader2 } from "three";
 
 export default class ModelLoader {
 
@@ -29,21 +29,12 @@ export default class ModelLoader {
             loader2.setMaterials(creator.materials);
             loader2.load("./res/models/tanks/" + fileName + "/tank.obj", (event: any) => {
 
-                const head = event.detail.loaderRootNode.getObjectByName("head");
-                const body = event.detail.loaderRootNode.getObjectByName("body");
-
-                const group = new Group();
-                group.add(body, head);
-
                 if (flatShading) {
-                    for (const mesh of group.children) {
+                    for (const mesh of event.detail.loaderRootNode.children) {
                         this.setFlatShading((mesh as Mesh).material);
                     }
                 }
-
-                // this.updateHead(head, 1);
-
-                resolve(group);
+                resolve(event.detail.loaderRootNode);
             }, undefined, (err: any) => {
                 console.error(err);
             });
@@ -70,12 +61,6 @@ export default class ModelLoader {
             }
         } else {
             materials.flatShading = true;
-        }
-    }
-
-    private updateHead(mesh: Mesh, offset: number) {
-        if (offset) {
-            mesh.geometry.applyMatrix(new Matrix4().makeTranslation(0, 0, offset));
         }
     }
 }

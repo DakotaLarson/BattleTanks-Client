@@ -130,7 +130,7 @@ export default class ConversationList extends Component {
                     this.conversationOffset += conversations.length;
                     for (const conversation of conversations) {
 
-                        const isUnread = this.unreadUsernames.includes(conversation.username);
+                        const isUnread = this.unreadUsernames.indexOf(conversation.username) > -1;
 
                         const elt = this.createConversationElt(conversation.username, conversation.body, convId ++, isUnread);
                         this.containerElt.appendChild(elt);
