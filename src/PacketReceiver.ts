@@ -219,7 +219,8 @@ const receiveCooldownTime = (time: number) => {
     EventHandler.callEvent(EventHandler.Event.COOLDOWN_TIME_RECEPTION, time);
 };
 
-const receiveProjecileLaunch = (data: number[]) => {
+const receiveProjectileLaunch = (data: number[]) => {
+    console.log(data);
     EventHandler.callEvent(EventHandler.Event.PROJECTILE_LAUNCH, {
         position: new Vector3(data[0], data[1], data[2]),
         velocity: new Vector3(Math.sin(data[3]), 0, Math.cos(data[3])),
@@ -265,59 +266,60 @@ const receivePong = () => {
     EventHandler.callEvent(EventHandler.Event.DEBUG_PONG);
 };
 
-const handlers: any[] = [];
-handlers.push(receiveArena);
+const handlers = [
+    receiveArena,
 
-handlers.push(receiveGameStatus);
+    receiveGameStatus,
 
-handlers.push(receiveAlert);
+    receiveAlert,
 
-handlers.push(receivePlayerName);
-handlers.push(receivePlayerAdd);
-handlers.push(receivePlayerRemove);
-handlers.push(receivePlayerShootInvalid);
-handlers.push(receivePlayerShoot);
-handlers.push(receivePlayerHealth);
-handlers.push(receivePlayerShield);
-handlers.push(receivePlayerSpectating);
-handlers.push(receivePlayerAmmoStatus);
-handlers.push(receivePlayerSpeedMultiplier);
-handlers.push(receivePlayerPowerupPickup);
-handlers.push(receivePlayerRam);
-handlers.push(receivePlayerRamResponse);
-handlers.push(receivePlayerReloadStart);
-handlers.push(receivePlayerReloadEnd);
+    receivePlayerName,
+    receivePlayerAdd,
+    receivePlayerRemove,
+    receivePlayerShootInvalid,
+    receivePlayerShoot,
+    receivePlayerHealth,
+    receivePlayerShield,
+    receivePlayerSpectating,
+    receivePlayerAmmoStatus,
+    receivePlayerSpeedMultiplier,
+    receivePlayerPowerupPickup,
+    receivePlayerRam,
+    receivePlayerRamResponse,
+    receivePlayerReloadStart,
+    receivePlayerReloadEnd,
 
-handlers.push(receiveConnectedPlayerJoin);
-handlers.push(receiveConnectedPlayerLeave);
-handlers.push(receiveConnectedPlayerAdd);
-handlers.push(receiveConnectedPlayerRemove);
-handlers.push(receiveConnectedPlayerMove);
-handlers.push(receiveConnectedPlayerShoot);
-handlers.push(receiveConnectedPlayerHealth);
-handlers.push(receiveConnectedPlayerShield);
+    receiveConnectedPlayerJoin,
+    receiveConnectedPlayerLeave,
+    receiveConnectedPlayerAdd,
+    receiveConnectedPlayerRemove,
+    receiveConnectedPlayerMove,
+    receiveConnectedPlayerShoot,
+    receiveConnectedPlayerHealth,
+    receiveConnectedPlayerShield,
 
-handlers.push(receiveProtectionStart);
-handlers.push(receiveProtectionEnd);
+    receiveProtectionStart,
+    receiveProtectionEnd,
 
-handlers.push(receiveMatchStatistics);
-handlers.push(receiveMatchStatisticsUpdate);
+    receiveMatchStatistics,
+    receiveMatchStatisticsUpdate,
 
-handlers.push(receiveAudio);
+    receiveAudio,
 
-handlers.push(receiveCooldownTime);
+    receiveCooldownTime,
 
-handlers.push(receiveProjecileLaunch);
-handlers.push(receiveProjectileRemoval);
-handlers.push(receiveProjectileClear);
+    receiveProjectileLaunch,
+    receiveProjectileRemoval,
+    receiveProjectileClear,
 
-handlers.push(receiveChatMessage);
+    receiveChatMessage,
 
-handlers.push(receivePowerupAddition);
-handlers.push(receivePowerupRemoval);
-handlers.push(receivePowerupApplication);
+    receivePowerupAddition,
+    receivePowerupRemoval,
+    receivePowerupApplication,
 
-handlers.push(receivePong);
+    receivePong,
+];
 
 enum DataType {
     NUMBER,

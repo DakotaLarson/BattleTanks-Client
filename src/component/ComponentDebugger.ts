@@ -5,6 +5,8 @@ const components: Map<Component, ChildComponent[]> = new Map();
 
 export default class ComponentDebugger {
 
+    private static readonly DEBUGGER_ENABLED = true;
+
     public static handleComponentAttached(component: Component) {
         if (ComponentDebugger.DEBUGGER_ENABLED) {
             components.set(component, new Array());
@@ -58,6 +60,4 @@ export default class ComponentDebugger {
             console.table(tableArray);
         }
     }
-
-    private static readonly DEBUGGER_ENABLED = true;
 }
