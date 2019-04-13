@@ -27,6 +27,7 @@ export default class ProjectileHandler extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.PROJECTILE_CLEAR, this.onClear);
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
 
+        this.initializeProjectiles();
     }
 
     public disable() {
@@ -34,8 +35,8 @@ export default class ProjectileHandler extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.PROJECTILE_REMOVAL, this.onRemoval);
         EventHandler.removeListener(this, EventHandler.Event.PROJECTILE_CLEAR, this.onClear);
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onUpdate);
-        this.clearProjectiles();
 
+        this.clearProjectiles();
     }
 
     private onLaunch(data: any) {

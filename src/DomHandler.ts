@@ -119,7 +119,7 @@ while (!eventsNext.done) {
     const eventTitle = eventsNext.value[0];
     const eventHandlerEvent = eventsNext.value[1];
 
-    if (windowEventTitles.indexOf(eventTitle) > -1) {
+    if (windowEventTitles.includes(eventTitle)) {
         window.addEventListener(eventTitle, (event) => {
             EventHandler.callEvent(eventHandlerEvent, event);
         });
@@ -147,7 +147,7 @@ while (!guiBlockedEventsNext.done) {
         DomHandler.setInterference(false);
     };
 
-    if (windowEventTitles.indexOf(eventTitle) > -1) {
+    if (windowEventTitles.includes(eventTitle)) {
         window.addEventListener(eventTitle, handler);
     } else {
         document.addEventListener(eventTitle, handler);

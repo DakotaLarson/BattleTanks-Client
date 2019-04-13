@@ -12,7 +12,7 @@ export default abstract class Component {
     public abstract enable(): void;
 
     public attachChild(component: ChildComponent) {
-        if (this.children.indexOf(component) < 0) {
+        if (this.children.includes(component)) {
             this.children.push(component);
             ComponentDebugger.handleChildAttached(this, component);
             component.enable();
