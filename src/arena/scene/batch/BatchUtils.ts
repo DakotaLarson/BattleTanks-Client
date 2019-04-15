@@ -1,4 +1,4 @@
-import { Color, InstancedBufferAttribute, Vector3 } from "three";
+import { Color, InstancedBufferAttribute, Quaternion, Vector3 } from "three";
 
 export default class BatchUtils {
 
@@ -25,6 +25,15 @@ export default class BatchUtils {
 
     public static createNumberAttribute(data: number[]) {
         return BatchUtils.createAttribute(data, 1);
+    }
+
+    public static createRotationAttribute(orientations: Quaternion[]) {
+        const rawData = [];
+        for (const orientation of orientations) {
+            rawData.push(orientation.x, orientation.y, orientation.z, orientation.w);
+        }
+
+        return BatchUtils.createAttribute(rawData, 4);
     }
 
     public static createAttribute(data: ArrayLike<number>, itemSize: number, length?: number) {

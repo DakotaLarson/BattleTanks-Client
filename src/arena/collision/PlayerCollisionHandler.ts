@@ -11,7 +11,7 @@ export default class PlayerCollisionHandler {
         const testPlayers: Array<ConnectedPlayer | Player> = new Array();
         let playerId = 0;
         for (const player of PlayerCollisionHandler.players) {
-            if (player.id !== id && player.position.distanceToSquared(pos) <= Math.pow(Player.radius + Player.radius, 2)) {
+            if (player.id !== id && player.position.distanceToSquared(pos) <= Math.pow(Player.RADIUS + Player.RADIUS, 2)) {
                 testPlayers.push(player);
             }
         }

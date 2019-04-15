@@ -1,4 +1,4 @@
-import { Mesh, Scene, SphereBufferGeometry, Vector3 } from "three";
+import { Mesh, Quaternion, Scene, SphereBufferGeometry, Vector3 } from "three";
 import ChildComponent from "../component/ChildComponent";
 import EventHandler from "../EventHandler";
 import BatchHandler from "./scene/batch/BatchHandler";
@@ -40,7 +40,7 @@ export default class ProjectileHandler extends ChildComponent {
     }
 
     private onLaunch(data: any) {
-        BatchHandler.add(this.mesh!, data.position, ProjectileHandler.PROJECTILE_COLOR);
+        BatchHandler.add(this.mesh!, data.position, ProjectileHandler.PROJECTILE_COLOR, new Quaternion());
         this.projectiles.push({
             id: data.id,
             position: data.position,
@@ -66,7 +66,7 @@ export default class ProjectileHandler extends ChildComponent {
     }
 
     private initializeProjectiles() {
-        this.mesh = BatchHandler.create(new SphereBufferGeometry(0.05), [], []);
+        this.mesh = BatchHandler.create(new SphereBufferGeometry(0.05), [], [], []);
         this.scene.add(this.mesh);
     }
 
@@ -90,7 +90,7 @@ export default class ProjectileHandler extends ChildComponent {
                 indices.push(i);
                 values.push(position);
             }
-            BatchHandler.update(this.mesh, indices, values);
+            BatchHandler.updatePositions(this.mesh, indices, values);
         }
     }
 }

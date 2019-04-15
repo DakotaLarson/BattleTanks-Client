@@ -80,8 +80,8 @@ export default class PowerupCollisionHandler extends ChildComponent {
         if (this.listening) {
             for (const powerup of this.powerups) {
                 const powerupPos = powerup.position;
-                if (powerupPos.distanceToSquared(this.playerPosition) < Math.pow(Player.radius + Powerup.radius, 2)) {
-                    PacketSender.sendPowerupPickup([powerup.type, powerupPos.x, powerupPos.y, powerupPos.z]);
+                if (powerupPos.distanceToSquared(this.playerPosition) < Math.pow(Player.RADIUS + Powerup.RADIUS, 2)) {
+                    PacketSender.sendPowerupPickup([powerup.type, powerupPos.x, 0, powerupPos.z]);
                 }
             }
         }

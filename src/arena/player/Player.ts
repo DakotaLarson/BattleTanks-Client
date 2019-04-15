@@ -10,7 +10,7 @@ import PlayerCollisionHandler from "../collision/PlayerCollisionHandler";
 
 export default class Player extends Component {
 
-    public static radius = Math.sqrt(Math.pow(0.5, 2) + Math.pow(0.75, 2));
+    public static readonly RADIUS = Math.sqrt(Math.pow(0.5, 2) + Math.pow(0.75, 2));
 
     private static readonly MOVEMENT_SPEED = 4;
     private static readonly ROTATION_SPEED = 2;

@@ -1,4 +1,4 @@
-import { BufferAttribute, BufferGeometry, Color, InstancedBufferGeometry, Mesh, MeshLambertMaterial, RGBADepthPacking, ShaderChunk, ShaderLib, ShaderMaterial, TypedArray, UniformsUtils, Vector3, VertexColors } from "three";
+import { BufferAttribute, BufferGeometry, Color, InstancedBufferGeometry, Mesh, MeshLambertMaterial, Quaternion, RGBADepthPacking, ShaderChunk, ShaderLib, ShaderMaterial, Texture, TypedArray, UniformsUtils, Vector3, VertexColors } from "three";
 import BatchUtils from "./BatchUtils";
 
 export default class BatchHandler {
@@ -51,6 +51,7 @@ export default class BatchHandler {
                 #ifdef INSTANCED
                     attribute vec3 instanceOffset;
                     attribute vec3 instanceColor;
+                    attribute vec4 instanceRotation;
                     // attribute float instanceScale;
                 #endif
                 varying vec3 vLightFront;
@@ -72,6 +73,11 @@ export default class BatchHandler {
                 #include <shadowmap_pars_vertex>
                 #include <logdepthbuf_pars_vertex>
                 #include <clipping_planes_pars_vertex>
+
+                vec3 applyQuaternionToVector(vec4 q, vec3 v){
+                    return v + 2.0 * cross(q.xyz, cross(q.xyz, v) + q.w * v);
+                }
+
                 void main() {
                     #include <uv_vertex>
                     #include <uv2_vertex>
@@ -88,10 +94,10 @@ export default class BatchHandler {
                     #include <skinnormal_vertex>
                     #include <defaultnormal_vertex>
                     #include <begin_vertex>
-                    // position instanced
                     #ifdef INSTANCED
                         // transformed *= instanceScale;
-                        transformed = transformed + instanceOffset;
+                        // transformed = transformed + instanceOffset;
+                        transformed = applyQuaternionToVector(instanceRotation, transformed) + instanceOffset;
                     #endif
                     #include <morphtarget_vertex>
                     #include <skinning_vertex>
@@ -109,20 +115,27 @@ export default class BatchHandler {
         };
     }
 
-    public static create(bufferGeometry: BufferGeometry, offsets: Vector3[], colors: number[]) {
+    public static create(bufferGeometry: BufferGeometry, offsets: Vector3[], colors: number[], rotations: Quaternion[], map?: Texture) {
         const geometry = new InstancedBufferGeometry();
         geometry.copy(bufferGeometry);
 
         const offsetAttribute = BatchUtils.createVector3Attribute(offsets);
         const colorAttribute = BatchUtils.createColorAttribute(colors);
+        const rotationAttribute = BatchUtils.createRotationAttribute(rotations);
 
         geometry.addAttribute("instanceOffset", offsetAttribute);
         geometry.addAttribute("instanceColor", colorAttribute);
+        geometry.addAttribute("instanceRotation", rotationAttribute);
         geometry.maxInstancedCount = offsets.length;
 
-        const material = new MeshLambertMaterial({
-            vertexColors: VertexColors,
-        });
+        const materialOptions: any = {};
+        if (map) {
+            materialOptions.map = map;
+        } else {
+            materialOptions.vertexColors = VertexColors;
+        }
+
+        const material = new MeshLambertMaterial(materialOptions);
 
         // @ts-ignore
         material.defines = material.defines || {};
@@ -153,25 +166,27 @@ export default class BatchHandler {
 
         const offsetAttribute = geometry.getAttribute("instanceOffset") as BufferAttribute;
         const colorAttribute = geometry.getAttribute("instanceColor") as BufferAttribute;
+        const rotationAttribute = geometry.getAttribute("instanceRotation") as BufferAttribute;
 
         (offsetAttribute.array as TypedArray).copyWithin(index * offsetAttribute.itemSize, (index + 1) * offsetAttribute.itemSize);
         (colorAttribute.array as TypedArray).copyWithin(index * colorAttribute.itemSize, (index + 1) * colorAttribute.itemSize);
+        (rotationAttribute.array as TypedArray).copyWithin(index * rotationAttribute.itemSize, (index + 1) * rotationAttribute.itemSize);
 
         geometry.maxInstancedCount --;
 
         offsetAttribute.needsUpdate = true;
         colorAttribute.needsUpdate = true;
+        rotationAttribute.needsUpdate = true;
     }
 
-    public static add(mesh: Mesh, offset: Vector3, color: number) {
+    public static add(mesh: Mesh, offset: Vector3, color: number, rotation: Quaternion) {
         const geometry = mesh.geometry as InstancedBufferGeometry;
         const currentMaxInstancedCount = geometry.maxInstancedCount;
         const computedColor = new Color(color);
 
         let offsetAttribute = geometry.getAttribute("instanceOffset") as BufferAttribute;
         let colorAttribute = geometry.getAttribute("instanceColor") as BufferAttribute;
-
-        const insertionOffset = currentMaxInstancedCount * offsetAttribute.itemSize;
+        let rotationAttribute = geometry.getAttribute("instanceRotation") as BufferAttribute;
 
         if (offsetAttribute.count < geometry.maxInstancedCount + 1) {
             // Array is not long enough to contain another element
@@ -180,25 +195,41 @@ export default class BatchHandler {
 
             colorAttribute = BatchUtils.createAttribute(colorAttribute.array, colorAttribute.itemSize, currentMaxInstancedCount * 2 * colorAttribute.itemSize);
 
+            rotationAttribute = BatchUtils.createAttribute(rotationAttribute.array, rotationAttribute.itemSize, currentMaxInstancedCount * 2 * rotationAttribute.itemSize);
+
             geometry.addAttribute("instanceOffset", offsetAttribute);
             geometry.addAttribute("instanceColor", colorAttribute);
+            geometry.addAttribute("instanceRotation", rotationAttribute);
         }
 
-        (offsetAttribute.array as TypedArray).set([offset.x, offset.y, offset.z], insertionOffset);
-        (colorAttribute.array as TypedArray).set([computedColor.r, computedColor.g, computedColor.b], insertionOffset);
+        (offsetAttribute.array as TypedArray).set([offset.x, offset.y, offset.z], currentMaxInstancedCount * offsetAttribute.itemSize);
+
+        (colorAttribute.array as TypedArray).set([computedColor.r, computedColor.g, computedColor.b], currentMaxInstancedCount * colorAttribute.itemSize);
+
+        (rotationAttribute.array as TypedArray).set([rotation.x, rotation.y, rotation.z, rotation.w], currentMaxInstancedCount * rotationAttribute.itemSize);
 
         geometry.maxInstancedCount ++;
 
         offsetAttribute.needsUpdate = true;
         colorAttribute.needsUpdate = true;
+        rotationAttribute.needsUpdate = true;
     }
 
-    public static update(mesh: Mesh, indices: number[], values: Vector3[]) {
+    public static updatePositions(mesh: Mesh, indices: number[], values: Vector3[]) {
         const geometry = mesh.geometry as InstancedBufferGeometry;
-        const offsetAttribute = geometry.getAttribute("instanceOffset") as BufferAttribute;
+        const attribute = geometry.getAttribute("instanceOffset") as BufferAttribute;
         for (let i = 0; i < indices.length; i ++) {
-            (offsetAttribute.array as TypedArray).set([values[i].x, values[i].y, values[i].z], indices[i] * offsetAttribute.itemSize);
+            (attribute.array as TypedArray).set([values[i].x, values[i].y, values[i].z], indices[i] * attribute.itemSize);
         }
-        offsetAttribute.needsUpdate = true;
+        attribute.needsUpdate = true;
+    }
+
+    public static updateRotations(mesh: Mesh, indices: number[], values: Quaternion[]) {
+        const geometry = mesh.geometry as InstancedBufferGeometry;
+        const attribute = geometry.getAttribute("instanceRotation") as BufferAttribute;
+        for (let i = 0; i < indices.length; i ++) {
+            (attribute.array as TypedArray).set([values[i].x, values[i].y, values[i].z, values[i].w], indices[i] * attribute.itemSize);
+        }
+        attribute.needsUpdate = true;
     }
 }

@@ -1,3 +1,4 @@
+import EventHandler from "../EventHandler";
 import ChildComponent from "./ChildComponent";
 import Component from "./Component";
 
@@ -6,6 +7,14 @@ const components: Map<Component, ChildComponent[]> = new Map();
 export default class ComponentDebugger {
 
     private static readonly DEBUGGER_ENABLED = true;
+
+    public static initialize() {
+        EventHandler.addListener(undefined, EventHandler.Event.DOM_KEYUP, (event) => {
+            if (event.target.nodeName !== "INPUT" && event.code === "KeyP") {
+                ComponentDebugger.printTable();
+            }
+        }, EventHandler.Level.LOW);
+    }
 
     public static handleComponentAttached(component: Component) {
         if (ComponentDebugger.DEBUGGER_ENABLED) {

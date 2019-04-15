@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, RingBufferGeometry, Scene, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, Quaternion, RingBufferGeometry, Scene, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
@@ -133,10 +133,6 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     public addMenuPlayer() {
-        // setTimeout(() => {
-        //     this.addPlayer(0, new Vector4(2.5, 0, 2.5, Math.PI / 4), "test", true, true, 0xd32282);
-        //     this.addPlayer(0, new Vector4(1.5, 0, 4.5, Math.PI / 4), "test", true, true, 0xd32282);
-        // }, 500);
         this.addPlayer(0, new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true);
     }
 
@@ -258,7 +254,7 @@ export default class ScenePlayerHandler extends ChildComponent {
         head.rotation.y = pos.w;
 
         if (color) {
-            this.generateRing(color, group.position.clone().add(ScenePlayerHandler.RING_OFFSET));
+            this.generateRing(color, group.position.clone().add(ScenePlayerHandler.RING_OFFSET), new Quaternion());
         }
 
         group.add(head, body);
@@ -415,8 +411,8 @@ export default class ScenePlayerHandler extends ChildComponent {
         return group;
     }
 
-    private generateRing(color: number, pos: Vector3) {
-        BatchHandler.add(this.ringMesh!, pos, color);
+    private generateRing(color: number, pos: Vector3, orientation: Quaternion) {
+        BatchHandler.add(this.ringMesh!, pos, color, orientation);
     }
 
     private playSound(player: IPlayerObj, buffer: AudioBuffer) {
@@ -444,7 +440,7 @@ export default class ScenePlayerHandler extends ChildComponent {
         ringGeo.rotateX(-Math.PI / 2);
 
         this.billboardMesh = BillboardBatchHandler.create([], [], []);
-        this.ringMesh = BatchHandler.create(ringGeo, [], []);
+        this.ringMesh = BatchHandler.create(ringGeo, [], [], []);
         this.scene.add(this.billboardMesh, this.ringMesh);
     }
 

@@ -1,46 +1,48 @@
-import { BoxGeometry, Mesh, MeshLambertMaterial, Scene, Texture, TextureLoader, Vector3 } from "three";
+import { BoxBufferGeometry, Mesh, Quaternion, Scene, Texture, TextureLoader, Vector3 } from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Powerup from "../powerup/Powerup";
+import BatchHandler from "./batch/BatchHandler";
 
 export default class ScenePowerupHandler extends ChildComponent {
 
-    private static rotationSpeed = 1.75;
-    private static heightSpeed = 0.05;
-    private static maxHeight = 0.65;
-    private static minHeight = 0.25;
-
     private scene: Scene;
-    private powerups: any[];
-
-    private shieldTexture: Texture | undefined;
-    private healthTexture: Texture | undefined;
-    private speedTexture: Texture | undefined;
-    private ammoTexture: Texture | undefined;
+    private powerups: any[][];
+    private meshes: Mesh[];
+    private textures: Texture[];
 
     constructor(scene: Scene) {
         super();
         this.scene = scene;
-        const textureLoader = new TextureLoader();
-        textureLoader.load(location.pathname + "res/world/shield.png", (texture) => {
-            this.shieldTexture = texture;
-        });
-        textureLoader.load(location.pathname + "res/world/health.png", (texture) => {
-            this.healthTexture = texture;
-        });
-        textureLoader.load(location.pathname + "res/world/speed.png", (texture) => {
-            this.speedTexture = texture;
-        });
-        textureLoader.load(location.pathname + "res/world/ammo.png", (texture) => {
-            this.ammoTexture = texture;
-        });
         this.powerups = [];
+
+        this.meshes = [];
+        this.textures = [];
+
+        const textureNames = [
+            "shield",
+            "health",
+            "speed",
+            "ammo",
+        ];
+
+        const textureLoader = new TextureLoader();
+        const geo = new BoxBufferGeometry(Powerup.SIZE, Powerup.SIZE, Powerup.SIZE);
+        for (let i = 0; i < textureNames.length; i ++) {
+            textureLoader.load(location.pathname + "res/world/" + textureNames[i] + ".png", (texture) => {
+                this.textures[i] = texture;
+                this.meshes[i] = BatchHandler.create(geo, [], [], [], texture);
+                this.powerups[i] = [];
+            });
+        }
     }
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.POWERUP_ADDITION, this.onPowerupAddition);
         EventHandler.addListener(this, EventHandler.Event.POWERUP_REMOVAL, this.onPowerupRemoval);
         EventHandler.addListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onAnimationUpdate);
+
+        this.scene.add.apply(this.scene, this.meshes);
     }
 
     public disable() {
@@ -48,82 +50,58 @@ export default class ScenePowerupHandler extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.POWERUP_REMOVAL, this.onPowerupRemoval);
         EventHandler.removeListener(this, EventHandler.Event.GAME_ANIMATION_UPDATE, this.onAnimationUpdate);
 
+        this.scene.remove.apply(this.scene, this.meshes);
+        this.powerups = [];
+
     }
 
     public clearPowerups() {
-        for (const powerup of this.powerups) {
-            this.scene.remove(powerup.mesh);
-        }
+        this.scene.remove.apply(this.scene, this.meshes);
+
         this.powerups = [];
+        this.meshes = [];
+
+        const geo = new BoxBufferGeometry(Powerup.SIZE, Powerup.SIZE, Powerup.SIZE);
+        for (const texture of this.textures) {
+            this.meshes.push(BatchHandler.create(geo, [], [], [], texture));
+            this.powerups.push([]);
+        }
+        this.scene.add.apply(this.scene, this.meshes);
     }
 
     private onPowerupAddition(powerup: Powerup) {
-        const mesh = this.createPowerupMesh(powerup.type, powerup.position);
-        const data = {
-            type: powerup.type,
-            position: powerup.position,
-            rising: false,
-            mesh,
-        };
-        this.scene.add(mesh);
-        this.powerups.push(data);
+        BatchHandler.add(this.meshes[powerup.type], powerup.position, 0x000000, powerup.rotation);
+        this.powerups[powerup.type].push(powerup);
     }
 
     private onPowerupRemoval(powerup: Powerup) {
-        let index = -1;
-        for (let i = 0; i < this.powerups.length; i ++) {
-            const data = this.powerups[i];
-            if (data.type === powerup.type && data.position.equals(powerup.position)) {
-                this.scene.remove(data.mesh);
-                index = i;
-                break;
-            }
-        }
-        if (index > -1) {
-            this.powerups.splice(index, 1);
-        }
-    }
-
-    private createPowerupMesh(type: number, position: Vector3) {
-        let texture;
-        if (type === 0) {
-            texture = this.shieldTexture;
-        } else if (type === 1) {
-            texture = this.healthTexture;
-        } else if (type === 2) {
-            texture = this.speedTexture;
-        } else if (type === 3) {
-            texture = this.ammoTexture;
-        } else {
-            throw new Error("Unknown type: " + type);
-        }
-        const geo = new BoxGeometry(Powerup.size, Powerup.size, Powerup.size);
-        const material = new MeshLambertMaterial({
-            map: texture as Texture,
+        const index = this.powerups[powerup.type].findIndex((existing) => {
+            return existing.equals(powerup);
         });
-        const mesh = new Mesh(geo, material);
-        const y = Math.random() * ScenePowerupHandler.maxHeight - ScenePowerupHandler.minHeight;
-        mesh.position.copy(position).setY(y);
-        return mesh;
+        if (index > -1) {
+            BatchHandler.remove(this.meshes[powerup.type], index);
+            this.powerups[powerup.type].splice(index, 1);
+        }
     }
-
     private onAnimationUpdate(delta: number) {
-        for (const powerup of this.powerups) {
-            let heightTravel = delta * ScenePowerupHandler.heightSpeed;
-            let height = powerup.mesh.position.y;
-            if (!powerup.rising) {
-                heightTravel *= -1;
+        for (let i = 0; i < this.powerups.length; i ++) {
+            const type = this.powerups[i];
+
+            const positions: Vector3[] = [];
+            const rotations: Quaternion[] = [];
+            const indices = [];
+
+            for (let j = 0; j < type.length; j ++) {
+                const powerup: Powerup = type[j];
+                powerup.update(delta);
+
+                positions.push(powerup.position);
+                rotations.push(powerup.rotation);
+                indices.push(j);
             }
 
-            height = Math.min(ScenePowerupHandler.maxHeight, Math.max(ScenePowerupHandler.minHeight, height + heightTravel));
-            if (height === ScenePowerupHandler.maxHeight || height === ScenePowerupHandler.minHeight) {
-                powerup.rising = !powerup.rising;
-            }
-
-            const rotationTravel = delta * ScenePowerupHandler.rotationSpeed;
-            powerup.mesh.position.y = height;
-            powerup.mesh.rotation.y += rotationTravel;
-
+            BatchHandler.updatePositions(this.meshes[i], indices, positions);
+            BatchHandler.updateRotations(this.meshes[i], indices, rotations);
         }
     }
 }

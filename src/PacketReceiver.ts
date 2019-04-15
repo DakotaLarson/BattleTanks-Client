@@ -220,7 +220,6 @@ const receiveCooldownTime = (time: number) => {
 };
 
 const receiveProjectileLaunch = (data: number[]) => {
-    console.log(data);
     EventHandler.callEvent(EventHandler.Event.PROJECTILE_LAUNCH, {
         position: new Vector3(data[0], data[1], data[2]),
         velocity: new Vector3(Math.sin(data[3]), 0, Math.cos(data[3])),

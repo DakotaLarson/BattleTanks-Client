@@ -23,6 +23,13 @@ import ProfileViewer from "./ProfileViewer";
 
 class Game extends Component {
 
+    private static readonly TICK_INTERVAL = 50; // 20 ticks/second
+
+    private prevTime: number;
+    private prevTickTime: number;
+    private prevDebugTime: number;
+    private debugFPSCount: number;
+
     private mainMenu: MainMenu;
     private backgroundAudioHandler: BackgroundAudioHandler;
     private overlayMenu: OverlayMenu;
@@ -42,8 +49,15 @@ class Game extends Component {
     constructor() {
         super();
 
+        const now = performance.now();
+        this.prevTime = now;
+        this.prevTickTime = now;
+        this.prevDebugTime = now;
+        this.debugFPSCount = 0;
+
         BatchHandler.initialize();
         BillboardBatchHandler.initialize();
+        ComponentDebugger.initialize();
 
         const perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
         this.auth = new Auth();
@@ -95,10 +109,36 @@ class Game extends Component {
         this.attachComponent(this.conversationViewer);
 
         this.hideLoadingScreen();
+
+        requestAnimationFrame(() => {
+            this.update();
+
+        });
     }
 
-    public update(delta: number) {
+    public update() {
+        requestAnimationFrame(() => {
+            this.update();
+        });
+        const currentTime = performance.now();
+        if (currentTime - this.prevDebugTime > 1000) {
+            EventHandler.callEvent(EventHandler.Event.DEBUG_FPS, this.debugFPSCount);
+            this.debugFPSCount = 0;
+            this.prevDebugTime = currentTime;
+        }
+
+        const delta = (currentTime - this.prevTime) / 1000;
+
         EventHandler.callEvent(EventHandler.Event.GAME_ANIMATION_UPDATE, delta);
+
+        const tickTime = currentTime - this.prevTickTime;
+        if (tickTime > Game.TICK_INTERVAL) {
+            EventHandler.callEvent(EventHandler.Event.GAME_TICK);
+            this.prevTickTime = this.prevTickTime + Game.TICK_INTERVAL;
+        }
+
+        this.debugFPSCount ++;
+        this.prevTime = currentTime;
     }
 
     private onOptionsUpdate(event: any) {
@@ -177,47 +217,7 @@ class Game extends Component {
 
 (() => {
 
-    const TICK_INTERVAL = 50; // 20 ticks/second
-
     const game = new Game();
     game.enable();
 
-    let prevTime = performance.now();
-    let prevTickTime = performance.now();
-    let prevDebugTime = prevTime;
-    let debugFPSCount = 0;
-
-    const update = () => {
-        requestAnimationFrame(update);
-        const currentTime = performance.now();
-        if (currentTime - prevDebugTime > 1000) {
-            outputDebugData();
-            prevDebugTime = currentTime;
-        }
-
-        const delta = (currentTime - prevTime) / 1000;
-
-        game.update(delta);
-
-        const tickTime = currentTime - prevTickTime;
-        if (tickTime > TICK_INTERVAL) {
-            EventHandler.callEvent(EventHandler.Event.GAME_TICK);
-            prevTickTime = prevTickTime + TICK_INTERVAL;
-        }
-
-        debugFPSCount ++;
-        prevTime = currentTime;
-    };
-    update();
-
-    const outputDebugData = () => {
-        EventHandler.callEvent(EventHandler.Event.DEBUG_FPS, debugFPSCount);
-        debugFPSCount = 0;
-    };
-
-    EventHandler.addListener(undefined, EventHandler.Event.DOM_KEYUP, (event) => {
-        if (event.target.nodeName !== "INPUT" && event.code === "KeyP") {
-            ComponentDebugger.printTable();
-        }
-    }, EventHandler.Level.LOW);
 })();
