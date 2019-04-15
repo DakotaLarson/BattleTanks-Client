@@ -446,5 +446,6 @@ export default class ScenePlayerHandler extends ChildComponent {
 
     private removeBatchedMeshes() {
         this.scene.remove(this.ringMesh!, this.billboardMesh!);
+        this.billboardOwners = [];
     }
 }
