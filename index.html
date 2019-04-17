@@ -61,6 +61,7 @@
     <link rel="stylesheet" type="text/css" href="./css/conversation_viewer.css"/>
     <link rel="stylesheet" type="text/css" href="./css/overlay_menu_list.css"/>
     <link rel="stylesheet" type="text/css" href="./css/notification.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/tooltip.css"/>
 </head>
 <body>
 
@@ -465,11 +466,23 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
             <span class="option-title">Killfeed:</span>
             <input type="checkbox" id="option-enabled-killfeed">
 
-            <span class="option-title">Anonymous Metrics:</span>
+            <div class="tooltip option-title">
+                <span class="option-title">Anonymous Metrics:</span>
+                <div class="tooltip-text">Data is sent to the server when you leave BattleTanks regarding your experience. It is impossible to associate this data to your account. Leaving this enabled is appreciated! :)</div>
+            </div>
             <input type="checkbox" id="option-enabled-metrics">
 
             <span class="option-title">Gridlines:</span>
             <input type="checkbox" id="option-enabled-gridlines">
+            
+            <span class="option-title">Lazy Camera:</span>
+            <input type="checkbox" id="option-enabled-camera-lazy">
+
+            <div class="tooltip option-title">
+                    <span class="option-title">Autofix Camera:</span>
+                    <div class="tooltip-text">If you experience an FPS drop, the game will disable the lazy camera to provide you the best experience possible.</div>
+                </div>
+            <input type="checkbox" id="option-enabled-camera-autofix">
     
             <span class="option-title">Forward:</span>
             <span class="option-value option-listening-value" id="option-value-forward"></span>

@@ -18,6 +18,7 @@
     display: inline-grid;
     grid-template-columns: auto auto;
     justify-items: left;
+    align-items: center;
     grid-gap: 5px 5px;
     font-size: 3vmin;
     font-family: 'Inconsolata', sans-serif;

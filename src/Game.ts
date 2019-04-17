@@ -110,16 +110,29 @@ class Game extends Component {
 
         this.hideLoadingScreen();
 
-        requestAnimationFrame(() => {
-            this.update();
-
-        });
     }
 
     public update() {
         requestAnimationFrame(() => {
             this.update();
         });
+        // PERFORMANCE DEBUGGING
+
+        // Singular glitch with standard framerate.
+        // if (Math.random() < 0.05) {
+        //     const waitTime = Math.random() * 10 + 30;
+        //     const waitStart = performance.now();
+        //     while (performance.now() < waitStart + waitTime) {
+        //         // do nothing
+        //     }
+        // }
+
+        // Low framerate
+        // const waitTime = Math.random() * 10 + 50;
+        // const waitStart = performance.now();
+        // while (performance.now() < waitStart + waitTime) {
+        //     // do nothing
+        // }
         const currentTime = performance.now();
         if (currentTime - this.prevDebugTime > 1000) {
             EventHandler.callEvent(EventHandler.Event.DEBUG_FPS, this.debugFPSCount);
@@ -219,5 +232,8 @@ class Game extends Component {
 
     const game = new Game();
     game.enable();
+    requestAnimationFrame(() => {
+        game.update();
+    });
 
 })();

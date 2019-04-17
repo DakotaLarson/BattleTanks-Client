@@ -94,6 +94,7 @@ export default class Player extends Component {
         EventHandler.addListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
+        EventHandler.addListener(this, EventHandler.Event.DOM_FOCUS, this.onFocus);
 
         EventHandler.addListener(this, EventHandler.Event.PLAYER_LOOKING_BEHIND, this.onLookingBehind);
 
@@ -135,6 +136,7 @@ export default class Player extends Component {
         EventHandler.removeListener(this, EventHandler.Event.GAME_TICK, this.onTick);
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_FOCUS, this.onFocus);
 
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_LOOKING_BEHIND, this.onLookingBehind);
 
@@ -332,6 +334,10 @@ export default class Player extends Component {
         this.onTick(); // Prevents jitter in other clients.
     }
 
+    private onFocus() {
+        this.movementVelocity = 0;
+    }
+
     private onOverlayOpen() {
         this.movingForward = false;
         this.movingBackward = false;
@@ -350,12 +356,8 @@ export default class Player extends Component {
         const playerPosition = this.position.clone();
         ray.intersectPlane(new Plane(new Vector3(0, 1, 0), -0.75), intersection);
         if (!intersection.equals(new Vector3())) {
-            const slope = (playerPosition.x - intersection.x) / (playerPosition.z - intersection.z);
-            let angle = Math.atan(slope);
+            const angle = Math.atan2(playerPosition.x - intersection.x, playerPosition.z - intersection.z);
 
-            if (playerPosition.z > intersection.z) {
-                angle += Math.PI;
-            }
             this.headRotation = angle;
         }
     }

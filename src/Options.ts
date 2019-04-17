@@ -25,6 +25,12 @@ export default class Options extends Component {
         if (!("gridlinesEnabled" in Options.options)) {
             Options.options.gridlinesEnabled = false;
         }
+        if (!("lazyCamera" in Options.options)) {
+            Options.options.lazyCamera = true;
+        }
+        if (!("autofixCamera" in Options.options)) {
+            Options.options.autofixCamera = true;
+        }
         if (!("forward" in Options.options)) {
             Options.options.forward = {
                 key: "w",

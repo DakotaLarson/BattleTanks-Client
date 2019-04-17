@@ -28,6 +28,8 @@ export default class OptionsMenu extends Component {
     private killfeedEnabledElt: HTMLInputElement;
     private metricsEnabledElt: HTMLInputElement;
     private gridlinesEnabledElt: HTMLInputElement;
+    private lazyCameraEnabledElt: HTMLInputElement;
+    private autofixCameraEnabledElt: HTMLInputElement;
 
     private forwardValueElt: HTMLElement;
     private backwardValueElt: HTMLElement;
@@ -73,6 +75,8 @@ export default class OptionsMenu extends Component {
         this.killfeedEnabledElt = DomHandler.getElement("#option-enabled-killfeed", this.parentElt) as HTMLInputElement;
         this.metricsEnabledElt = DomHandler.getElement("#option-enabled-metrics", this.parentElt) as HTMLInputElement;
         this.gridlinesEnabledElt = DomHandler.getElement("#option-enabled-gridlines", this.parentElt) as HTMLInputElement;
+        this.lazyCameraEnabledElt = DomHandler.getElement("#option-enabled-camera-lazy", this.parentElt) as HTMLInputElement;
+        this.autofixCameraEnabledElt = DomHandler.getElement("#option-enabled-camera-autofix", this.parentElt) as HTMLInputElement;
 
         this.forwardValueElt = DomHandler.getElement("#option-value-forward", this.parentElt);
         this.backwardValueElt = DomHandler.getElement("#option-value-backward", this.parentElt);
@@ -139,6 +143,8 @@ export default class OptionsMenu extends Component {
         DomEventHandler.addListener(this, this.killfeedEnabledElt, "change", this.onKillfeedEnabledChange);
         DomEventHandler.addListener(this, this.metricsEnabledElt, "change", this.onMetricsEnabledChange);
         DomEventHandler.addListener(this, this.gridlinesEnabledElt, "change", this.onGridlinesEnabledChange);
+        DomEventHandler.addListener(this, this.lazyCameraEnabledElt, "change", this.onLazyCameraEnabledChange);
+        DomEventHandler.addListener(this, this.autofixCameraEnabledElt, "change", this.onAutofixCameraEnabledChange);
 
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onBackwardClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onForwardClick);
@@ -173,6 +179,8 @@ export default class OptionsMenu extends Component {
         DomEventHandler.removeListener(this, this.killfeedEnabledElt, "change", this.onKillfeedEnabledChange);
         DomEventHandler.removeListener(this, this.metricsEnabledElt, "change", this.onMetricsEnabledChange);
         DomEventHandler.removeListener(this, this.gridlinesEnabledElt, "change", this.onGridlinesEnabledChange);
+        DomEventHandler.removeListener(this, this.lazyCameraEnabledElt, "change", this.onLazyCameraEnabledChange);
+        DomEventHandler.removeListener(this, this.autofixCameraEnabledElt, "change", this.onAutofixCameraEnabledChange);
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onBackwardClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onForwardClick);
@@ -253,6 +261,14 @@ export default class OptionsMenu extends Component {
 
     private onGridlinesEnabledChange() {
         this.saveChange("gridlinesEnabled", this.gridlinesEnabledElt.checked);
+    }
+
+    private onLazyCameraEnabledChange() {
+        this.saveChange("lazyCamera", this.lazyCameraEnabledElt.checked);
+    }
+
+    private onAutofixCameraEnabledChange() {
+        this.saveChange("autofixCamera", this.autofixCameraEnabledElt.checked);
     }
 
     private onForwardClick(event: MouseEvent) {
@@ -455,6 +471,8 @@ export default class OptionsMenu extends Component {
             setCheckedValue("killfeedEnabled", this.killfeedEnabledElt);
             setCheckedValue("metricsEnabled", this.metricsEnabledElt);
             setCheckedValue("gridlinesEnabled", this.gridlinesEnabledElt);
+            setCheckedValue("lazyCamera", this.lazyCameraEnabledElt);
+            setCheckedValue("autofixCamera", this.autofixCameraEnabledElt);
 
             setOption("forward", this.forwardValueElt);
             setOption("backward", this.backwardValueElt);

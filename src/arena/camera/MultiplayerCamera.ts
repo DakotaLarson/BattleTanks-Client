@@ -1,15 +1,21 @@
 import {PerspectiveCamera, Spherical, Vector3} from "three";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
+import Options from "../../Options";
 import Camera from "./Camera";
 
 export default class MultiplayerCamera extends Camera {
 
     private static readonly FOLLOWING_POSITION = new Spherical(3, Math.PI / 3.125, 0);
+    private static readonly MAX_GLITCHES = 5;
+    private static readonly MAX_FRAMETIMES = 60;
 
     private lookingBehind: boolean;
 
     private switchTask: number | undefined;
+
+    private frametimes: any[];
+    private autofixEnabled: boolean;
 
     constructor(camera: PerspectiveCamera) {
         super(camera);
@@ -17,13 +23,12 @@ export default class MultiplayerCamera extends Camera {
         this.spherical = MultiplayerCamera.FOLLOWING_POSITION.clone();
 
         this.lookingBehind = false;
-
+        this.frametimes = [];
+        this.autofixEnabled = false;
     }
 
     public enable() {
         super.enable();
-
-        this.lookingBehind = false;
 
         EventHandler.addListener(this, EventHandler.Event.PLAYER_ADDITION, this.onPlayerAddition);
         EventHandler.addListener(this, EventHandler.Event.PLAYER_REMOVAL, this.onPlayerRemoval);
@@ -56,6 +61,10 @@ export default class MultiplayerCamera extends Camera {
         EventHandler.removeListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
 
         window.clearTimeout(this.switchTask);
+
+        this.lookingBehind = false;
+        this.autofixEnabled = false;
+        this.frametimes = [];
     }
 
     protected onArenaSceneUpdate(data: any) {
@@ -114,6 +123,7 @@ export default class MultiplayerCamera extends Camera {
     }
 
     private moveCamera(bodyRot: number, delta: number, snap: boolean) {
+
         let theta;
         if (this.lookingBehind) {
             theta = bodyRot + Math.PI;
@@ -122,17 +132,71 @@ export default class MultiplayerCamera extends Camera {
         }
         this.spherical.theta = theta;
         const finalPosition = new Vector3().setFromSpherical(this.spherical).add(this.target);
-        if (snap) {
-            this.camera.position.copy(finalPosition);
-        } else {
+
+        if (Options.options.lazyCamera && !this.autofixEnabled && !snap) {
             const smoothedPosition = new Vector3().lerpVectors(this.camera.position, finalPosition, delta * 10);
             this.camera.position.copy(smoothedPosition);
+
+            if (this.handleAutofix(delta)) {
+                this.camera.position.copy(finalPosition);
+            }
+
+        } else {
+            this.camera.position.copy(finalPosition);
         }
+
         this.camera.lookAt(this.target);
+    }
+
+    private handleAutofix(delta: number) {
+        if (Options.options.autofixCamera) {
+            if (this.checkFrametime(delta, this.frametimes)) {
+                this.autofixEnabled = true;
+                this.frametimes = [];
+                console.log("camera autofix enabled");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private checkFrametime(delta: number, frametimes: any[]) {
+        const avg = this.average(frametimes);
+        let glitch = false;
+        if (delta > avg * 1.5) {
+            glitch = true;
+        }
+
+        frametimes.push({
+            delta,
+            glitch,
+        });
+
+        const quantityToRemove = frametimes.length - MultiplayerCamera.MAX_FRAMETIMES;
+        if (quantityToRemove > 0) {
+            frametimes.splice(0, quantityToRemove);
+        }
+
+        let glitchCount = 0;
+        for (const frametime of frametimes) {
+            if (frametime.glitch) {
+                glitchCount ++;
+            }
+        }
+        return glitchCount >= MultiplayerCamera.MAX_GLITCHES;
     }
 
     private updateLookingBehind(value: boolean) {
         this.lookingBehind = value;
         EventHandler.callEvent(EventHandler.Event.PLAYER_LOOKING_BEHIND, value);
+    }
+
+    private average(data: any[]) {
+        const sum = data.reduce((total, value) => {
+            return total + value.delta;
+        }, 0);
+
+        const avg = sum / data.length;
+        return avg;
     }
 }
