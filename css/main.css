@@ -64,6 +64,10 @@ html, body{
     font-size: 10vmin;
     padding: 2vmin 3vmin;
 }
+.menu-selection-small {
+    font-size: 3.5vmin;
+    padding: 0.25vmin 0.5vmin;
+}
 
 .menu-selection.disabled{
     color: #707070 !important;

@@ -14,11 +14,13 @@ private static ranks = [
     "General",
 ];
 
-    public static getLevel(points: number) {
+    public static getData(points: number) {
         const level = Math.floor(Math.pow(points, 1 / Math.E));
-        const rank = RankCalculator.ranks[Math.floor(level / 10)];
+        const rankIndex = Math.max(Math.floor(level / 10), RankCalculator.ranks.length - 1);
+
+        const rank = RankCalculator.ranks[rankIndex];
         return {
-            level,
+            level: "" + level,
             rank,
         };
     }

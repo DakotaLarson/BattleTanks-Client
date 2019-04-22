@@ -1,0 +1,20 @@
+.side-panel {
+    position: absolute;
+    top: 10vh;
+    background-color: #101010;
+    border: solid 1px #ffffff;
+    left: 2.5vw;
+    padding: 1.5vmin;
+    text-transform: capitalize;
+    width: 27.5vmin;
+    box-sizing: border-box;
+}
+
+.side-panel-username {
+    font-size: 3.5vmin;
+    margin-bottom: 1vmin 0;
+}
+
+.side-panel .data-container {
+    margin-bottom: 1vmin;
+}

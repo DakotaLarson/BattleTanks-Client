@@ -207,7 +207,7 @@
     padding: 0;
     width: 32vmin;
 }
-
+.main-menu .data-container,
 .main-menu .player-stats-container,
 .main-menu .leaderboard-container,
 .main-menu .search-container {
@@ -234,7 +234,7 @@
 .main-menu .leaderboard-entry-username {
     justify-self: left;
 }
-
+.data-container div:nth-child(odd),
 .main-menu .player-stat:nth-child(odd),
 .main-menu .search-result:nth-child(odd) {
     justify-self: left;
@@ -342,18 +342,18 @@
     display: none;
 }
 
-.main-menu .tutorial-link {
+.main-menu .menu-link {
     font-size: 2vmin;
     color: #00b9ff;
     text-decoration: underline;
     font-family: 'Inconsolata', sans-serif;
 }
 
-.main-menu .tutorial-link:hover {
+.main-menu .menu-link:hover {
     cursor: pointer;
     color: #33c9ff;
 }
-.main-menu .tutorial-link-xl {
+.main-menu .menu-link-xl {
     font-size: 2.5vmin;
 }
 

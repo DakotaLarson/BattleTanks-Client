@@ -62,6 +62,7 @@
     <link rel="stylesheet" type="text/css" href="./css/overlay_menu_list.css"/>
     <link rel="stylesheet" type="text/css" href="./css/notification.css"/>
     <link rel="stylesheet" type="text/css" href="./css/tooltip.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/side_panel.css"/>
 </head>
 <body>
 
@@ -119,20 +120,21 @@
     
     <div class="game-suggestion game-suggestion-hidden"></div>
 
-    <div class="sidepanel">
-        <div class="sidepanel-username">Kotamigo</div>
-        <div class="sidepanel-level">
-            <span>Level: </span>
-            <span>12</span>
-        </div>
-        <div class="sidepanel-rank">
-                <span>Rank: </span>
-                <span>Private</span>
+    <div class="side-panel">
+        <div class="side-panel-username">Kotamigo</div>
+        <div class="data-container">
+            <div>Level:</div>
+            <div class="side-panel-level">12</div>
+            <div>Rank:</div>
+            <div class="side-panel-rank">Private</div>
         </div>
 
+        <span class="menu-selection menu-selection-small">Your Stats</span>
+        <span class="menu-selection menu-selection-small">Find Player</span>
+        <span class="menu-selection menu-selection-small">Create Arena</span>
     </div>
 
-    <div class="player-stats">
+    <div class="player-stats" style="display: none;">
         <h2 class="player-stats-title">Your Stats</h2>
         <div class="player-stats-container"></div>
         <div class="player-stats-message"></div>
@@ -165,9 +167,9 @@
                 <div>Play</div>
                 <div class="play-as-guest">(As Guest)</div>
             </span><br>
-            <span class="tutorial-link tutorial-link-xl" id="play-tutorial-link">How to Play</span><br>
+            <span class="menu-link menu-link-xl" id="play-tutorial-link">How to Play</span><br>
             <span class="menu-selection create-btn" id="top-opt-sp">Create Arena</span><br>
-            <span class="tutorial-link" id="create-tutorial-link">What is this?</span>
+            <span class="menu-link" id="create-tutorial-link">What is this?</span>
         </div>
         <div class="menu tutorial-parent">
             <div class="tutorial-container">

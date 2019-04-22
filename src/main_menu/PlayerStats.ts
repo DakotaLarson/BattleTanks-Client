@@ -2,7 +2,6 @@ import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 import Globals from "../Globals";
-import RankCalculator from "../RankCalculator";
 
 export default class PlayerStats extends ChildComponent {
 
