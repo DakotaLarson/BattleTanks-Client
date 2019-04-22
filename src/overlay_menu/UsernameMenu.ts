@@ -96,14 +96,15 @@ export default class UsernameMenu extends ChildComponent {
     private onSaveClick(event: MouseEvent) {
         if (event.target === this.saveBtn && !this.saveBtn.classList.contains("disabled")) {
             const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
-            if (this.lastValidName) {
-                this.fetchData(authToken, this.lastValidName, true).then((status) => {
+            const name = this.lastValidName;
+            if (name) {
+                this.fetchData(authToken, name, true).then((status) => {
                     if (status) {
-                        EventHandler.callEvent(EventHandler.Event.USERNAME_MENU_CLOSE, this.lastValidName);
+                        EventHandler.callEvent(EventHandler.Event.USERNAME_UPDATE, name);
                     } else {
                         console.log("Username update was not successful");
-                        EventHandler.callEvent(EventHandler.Event.USERNAME_MENU_CLOSE);
                     }
+                    EventHandler.callEvent(EventHandler.Event.USERNAME_MENU_CLOSE);
                 }).catch((err) => {
                     console.log(err);
                 });

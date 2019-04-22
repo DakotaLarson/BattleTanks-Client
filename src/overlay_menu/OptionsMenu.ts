@@ -108,7 +108,7 @@ export default class OptionsMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_GUI_MOUSEDOWN, this.onGearMouseDown);
         EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
-        EventHandler.addListener(this, EventHandler.Event.USERNAME_MENU_CLOSE, this.onUsernameMenuClose);
+        EventHandler.addListener(this, EventHandler.Event.USERNAME_UPDATE, this.onUsernameUpdate);
         Globals.setGlobal(Globals.Global.OPTIONS_OPEN, false);
 
         const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
@@ -130,10 +130,17 @@ export default class OptionsMenu extends Component {
         this.updateRemoteSettings();
     }
 
-    private onUsernameMenuClose(name?: string) {
-        if (name) {
-            const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
-            this.updateUsername(authToken);
+    private onUsernameUpdate(username?: string) {
+        if (username) {
+            this.usernameChangeElt.style.display = "inline";
+            this.usernameValueElt.textContent = username;
+            this.usernameValueElt.style.color = "";
+            this.usernameParentElt.style.color = "";
+        } else {
+            this.usernameChangeElt.style.display = "";
+            this.usernameValueElt.style.color = "#909090";
+            this.usernameParentElt.style.color = "#909090";
+            this.usernameValueElt.textContent = "Signed out";
         }
     }
 
@@ -243,7 +250,7 @@ export default class OptionsMenu extends Component {
 
     private onUsernameUpdateClick(event: MouseEvent) {
         if (event.target === this.usernameChangeElt) {
-            EventHandler.callEvent(EventHandler.Event.USERNAME_OPT_CHANGE_CLICK);
+            EventHandler.callEvent(EventHandler.Event.USERNAME_CHANGE_CLICK);
         }
     }
 
@@ -495,23 +502,7 @@ export default class OptionsMenu extends Component {
     }
 
     private updateRemoteSettings(token?: string) {
-        this.updateUsername(token);
         this.updateSocialOptions(token);
-    }
-    private updateUsername(token?: string) {
-        if (token) {
-            this.usernameChangeElt.style.display = "inline";
-            this.getUsername(token).then((username) => {
-                this.usernameValueElt.textContent = username;
-                this.usernameValueElt.style.color = "";
-                this.usernameParentElt.style.color = "";
-            });
-        } else {
-            this.usernameChangeElt.style.display = "";
-            this.usernameValueElt.style.color = "#909090";
-            this.usernameParentElt.style.color = "#909090";
-            this.usernameValueElt.textContent = "Signed out";
-        }
     }
 
     private updateSocialOptions(token?: string) {
@@ -545,28 +536,6 @@ export default class OptionsMenu extends Component {
 
         this.conversationsFriendsElt.checked = enabled && !conversations;
         this.conversationsFriendsElt.disabled = !enabled;
-    }
-
-    private getUsername(token: string): Promise<string> {
-        const address = "http" + Globals.getGlobal(Globals.Global.HOST);
-        const body = JSON.stringify({
-            token,
-        });
-
-        return fetch(address + "/playerusername", {
-            method: "post",
-            mode: "cors",
-            credentials: "omit",
-            body,
-            headers: {
-                "content-type": "application/json",
-            },
-        }).then((response: Response) => {
-            return response.text();
-        }).catch((err) => {
-            console.error(err);
-            return "Error";
-        });
     }
 
     private getSocialOptions(token: string): Promise<any> {

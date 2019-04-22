@@ -48,16 +48,21 @@ export default class Auth extends Component {
             gapi.auth2.getAuthInstance().signOut();
             Globals.setGlobal(Globals.Global.AUTH_TOKEN, undefined);
             EventHandler.callEvent(EventHandler.Event.SIGN_OUT);
+            EventHandler.callEvent(EventHandler.Event.USERNAME_UPDATE);
             this.updateSignoutBtn(false);
             console.log("Signed out");
         }
     }
 
     private onSuccess(googleUser: gapi.auth2.GoogleUser) {
-        this.authenticateToken(googleUser.getAuthResponse().id_token).then(() => {
+        const token = googleUser.getAuthResponse().id_token;
+        this.authenticateToken(token).then(() => {
             console.log("Signed in as: " + googleUser.getBasicProfile().getName());
             this.updateToken(googleUser.getAuthResponse());
             this.updateSignoutBtn(true);
+            this.getUsername(token).then((username) => {
+                EventHandler.callEvent(EventHandler.Event.USERNAME_UPDATE, username);
+            });
         }).catch((err) => {
             console.error(err);
             gapi.auth2.getAuthInstance().signOut();
@@ -114,6 +119,28 @@ export default class Auth extends Component {
             }).catch((err) => {
                 reject(err);
             });
+        });
+    }
+
+    private getUsername(token: string): Promise<string> {
+        const address = "http" + Globals.getGlobal(Globals.Global.HOST);
+        const body = JSON.stringify({
+            token,
+        });
+
+        return fetch(address + "/playerusername", {
+            method: "post",
+            mode: "cors",
+            credentials: "omit",
+            body,
+            headers: {
+                "content-type": "application/json",
+            },
+        }).then((response: Response) => {
+            return response.text();
+        }).catch((err) => {
+            console.error(err);
+            return "Error";
         });
     }
 
