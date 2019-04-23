@@ -6,15 +6,74 @@
     left: 2.5vw;
     padding: 1.5vmin;
     text-transform: capitalize;
-    width: 27.5vmin;
+    width: 15vw;
     box-sizing: border-box;
 }
 
-.side-panel-username {
+.side-panel .side-panel-title {
     font-size: 3.5vmin;
-    margin-bottom: 1vmin 0;
+    margin-bottom: 1vmin;
+    text-transform: none;
 }
 
-.side-panel .data-container {
+.side-panel-username {
+    display: none;
+}
+
+.side-panel .side-panel-top .data-container {
     margin-bottom: 1vmin;
+    display: none;
+}
+
+.side-panel .side-panel-message {
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 2vmin;
+}
+
+.side-panel .side-panel-cmp {
+    display: none;
+}
+
+.side-panel .side-panel-back {
+    margin-top: 1vmin;
+    display: none;
+}
+
+.side-panel .side-panel-creator-section {
+    display: none;
+}
+
+.side-panel .side-panel-search-toggle-parent {
+    justify-content: space-evenly;
+    margin: 1vmin 0;
+    display: none;
+}
+
+.side-panel .side-panel-search-toggle-everyone,
+.side-panel .side-panel-search-toggle-friends {
+    height: 4vmin;
+    width: 50%;
+    line-height: 4vmin;
+    vertical-align: middle;
+}
+
+.side-panel .side-panel-search-toggle-everyone:hover,
+.side-panel .side-panel-search-toggle-friends:hover {
+    background-color: #03b053;
+    cursor: pointer;
+}
+
+.side-panel .side-panel-search-input {
+    margin: 1vmin 0;
+    background: none;
+    font-size: 2.5vmin;
+    border: solid 1px #ffffff;
+    outline: none;
+    padding: 0.5vmin 1vmin;
+    color: #ffffff;
+    font-family: 'Inconsolata', sans-serif;
+}
+
+.side-panel .side-panel-search-container {
+    font-size: 2vmin;
 }

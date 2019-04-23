@@ -9,11 +9,9 @@ export default class TopMenu extends Component {
 
     private element: HTMLElement;
 
-    private createBtn: HTMLElement;
     private playBtn: HTMLElement;
 
     private playTutorialLink: HTMLElement;
-    private createTutorialLink: HTMLElement;
 
     private asGuestElt: HTMLElement;
 
@@ -23,20 +21,16 @@ export default class TopMenu extends Component {
         super();
         this.element = DomHandler.getElement("#main-menu-top", mainMenu);
 
-        this.createBtn = DomHandler.getElement("#top-opt-sp", this.element);
         this.playBtn = DomHandler.getElement("#top-opt-mp", this.element);
 
         this.playTutorialLink = DomHandler.getElement("#play-tutorial-link", this.element);
-        this.createTutorialLink = DomHandler.getElement("#create-tutorial-link", this.element);
 
         this.asGuestElt = DomHandler.getElement(".play-as-guest", this.playBtn);
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onPlayClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onPlayTutorialClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCreateTutorialClick);
 
         EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
@@ -50,10 +44,8 @@ export default class TopMenu extends Component {
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onPlayClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onPlayTutorialClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCreateTutorialClick);
 
         EventHandler.removeListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.removeListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
@@ -69,13 +61,6 @@ export default class TopMenu extends Component {
         DOMMutationHandler.hide(this.element);
     }
 
-    // Click Handlers
-    private onCreateClick(event: MouseEvent) {
-        if (event.target === this.createBtn) {
-            EventHandler.callEvent(EventHandler.Event.TOPMENU_SP_OPT_CLICK);
-        }
-    }
-
     private onPlayClick(event: MouseEvent) {
         if (event.target === this.playBtn || this.playBtn.contains((event.target) as Node)) {
             EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECT_REQUEST);
@@ -85,12 +70,6 @@ export default class TopMenu extends Component {
     private onPlayTutorialClick(event: MouseEvent) {
         if (event.target === this.playTutorialLink) {
             this.openTutorial(".tutorial-play");
-        }
-    }
-
-    private onCreateTutorialClick(event: MouseEvent) {
-        if (event.target === this.createTutorialLink) {
-            this.openTutorial(".tutorial-create");
         }
     }
 
@@ -113,7 +92,7 @@ export default class TopMenu extends Component {
         if (this.tutorial) {
             this.detachChild(this.tutorial);
         }
-        this.tutorial = new Tutorial(this.element, contentQuery);
+        this.tutorial = new Tutorial(contentQuery);
         this.attachChild(this.tutorial);
     }
 }

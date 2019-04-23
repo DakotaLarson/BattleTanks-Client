@@ -16,7 +16,7 @@ private static ranks = [
 
     public static getData(points: number) {
         const level = Math.floor(Math.pow(points, 1 / Math.E));
-        const rankIndex = Math.max(Math.floor(level / 10), RankCalculator.ranks.length - 1);
+        const rankIndex = Math.min(Math.floor(level / 10), RankCalculator.ranks.length - 1);
 
         const rank = RankCalculator.ranks[rankIndex];
         return {

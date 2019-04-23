@@ -13,6 +13,7 @@ import Leaderboard from "./Leaderboard";
 import LoadWorldMenu from "./LoadArenaMenu";
 import PlayerStats from "./PlayerStats";
 import ServerPlayerCount from "./ServerPlayerCount";
+import SidePanel from "./side_panel/SidePanel";
 import SingleplayerMenu from "./SingleplayerMenu";
 import TopMenu from "./TopMenu";
 
@@ -21,12 +22,10 @@ export default class MainMenu extends Component {
     private element: HTMLElement;
 
     private topMenu: TopMenu;
-    private spMenu: SingleplayerMenu;
-    private createMenu: CreateWorldMenu;
-    private loadMenu: LoadWorldMenu;
 
     private serverPlayercount: ServerPlayerCount;
     private gameSuggestion: GameSuggestion;
+    private sidePanel: SidePanel;
     private playerStats: PlayerStats;
     private leaderboard: Leaderboard;
     private menuCamera: MenuCamera;
@@ -38,42 +37,23 @@ export default class MainMenu extends Component {
         this.element = DomHandler.getElement(".main-menu");
 
         this.topMenu = new TopMenu(this.element);
-        this.spMenu = new SingleplayerMenu(this.element);
-        this.createMenu = new CreateWorldMenu(this.element);
-        this.loadMenu = new LoadWorldMenu(this.element);
 
         this.serverPlayercount = new ServerPlayerCount(this.element);
         this.gameSuggestion = new GameSuggestion(this.element);
+        this.sidePanel = new SidePanel(this.element);
         this.playerStats = new PlayerStats(this.element);
         this.leaderboard = new Leaderboard(this.element);
         this.menuCamera = new MenuCamera(camera);
     }
     public enable() {
-
-        // TOP MENU
-        EventHandler.addListener(this, EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.onTopSpOptClick);
-
-        // SP MENU
-        EventHandler.addListener(this, EventHandler.Event.SPMENU_LOAD_OPT_CLICK, this.onSpLoadOptClick);
-        EventHandler.addListener(this, EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.onSpCancelOptClick);
-        EventHandler.addListener(this, EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.onSpCreateOptClick);
-
         // MP MENU
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECT_REQUEST, this.onMpJoinOptClick);
-
-        // OPT MENU
-        EventHandler.addListener(this, EventHandler.Event.OPTMENU_RETURN_OPT_CLICK, this.onOptCancelOptClick);
-
-        // CREATE WORLD MENU
-        EventHandler.addListener(this, EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.onCreateWorldCancelClick);
-
-        // LOAD WORLD MENU
-        EventHandler.addListener(this, EventHandler.Event.LOADWORLDMENU_CANCEL_OPT_CLICK, this.onLoadWorldCancelClick);
 
         this.attach(this.topMenu);
 
         this.attachChild(this.serverPlayercount);
         this.attachChild(this.gameSuggestion);
+        this.attachChild(this.sidePanel);
         this.attachChild(this.playerStats);
         this.attachChild(this.leaderboard);
         this.attachChild(this.menuCamera);
@@ -83,25 +63,12 @@ export default class MainMenu extends Component {
 
     public disable() {
 
-        // TOP MENU
-        EventHandler.removeListener(this, EventHandler.Event.TOPMENU_SP_OPT_CLICK, this.onTopSpOptClick);
-
-        // SP MENU
-        EventHandler.removeListener(this, EventHandler.Event.SPMENU_CREATE_OPT_CLICK, this.onSpCreateOptClick);
-        EventHandler.removeListener(this, EventHandler.Event.SPMENU_LOAD_OPT_CLICK, this.onSpLoadOptClick);
-        EventHandler.removeListener(this, EventHandler.Event.SPMENU_CANCEL_OPT_CLICK, this.onSpCancelOptClick);
-
         // MP MENU
         EventHandler.removeListener(this, EventHandler.Event.MULTIPLAYER_CONNECT_REQUEST, this.onMpJoinOptClick);
 
-        // OPT MENU
-        EventHandler.removeListener(this, EventHandler.Event.OPTMENU_RETURN_OPT_CLICK, this.onOptCancelOptClick);
-
-        // SPCREATE MENU
-        EventHandler.removeListener(this, EventHandler.Event.CREATEWORLDMENU_CANCEL_OPT_CLICK, this.onCreateWorldCancelClick);
-
         this.detachChild(this.serverPlayercount);
         this.detachChild(this.gameSuggestion);
+        this.detachChild(this.sidePanel);
         this.detachChild(this.playerStats);
         this.detachChild(this.leaderboard);
         this.detachChild(this.menuCamera);
@@ -109,49 +76,9 @@ export default class MainMenu extends Component {
         DOMMutationHandler.hide(this.element);
     }
 
-    // Top menu options
-    private onTopSpOptClick() {
-        this.attach(this.spMenu);
-        this.playSelect();
-    }
-
-    // Singleplayer Option Handlers
-    private onSpLoadOptClick() {
-        this.attach(this.loadMenu);
-        this.playSelect();
-    }
-
-    private onSpCancelOptClick() {
-        this.attach(this.topMenu);
-        this.playReturn();
-    }
-
-    private onSpCreateOptClick() {
-        this.attach(this.createMenu);
-        this.playSelect();
-    }
-
     private onMpJoinOptClick() {
         this.attachedCmp = undefined;
         this.playValidate();
-    }
-
-    // Options Option Handlers
-    private onOptCancelOptClick() {
-        this.attach(this.topMenu);
-        this.playSelect();
-    }
-
-    // create world menu
-    private onCreateWorldCancelClick() {
-        this.attach(this.spMenu);
-        this.playReturn();
-    }
-
-    // load world menu
-    private onLoadWorldCancelClick() {
-        this.attach(this.spMenu);
-        this.playReturn();
     }
 
     private attach(cmp: ChildComponent) {

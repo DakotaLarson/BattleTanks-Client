@@ -63,6 +63,7 @@
     <link rel="stylesheet" type="text/css" href="./css/notification.css"/>
     <link rel="stylesheet" type="text/css" href="./css/tooltip.css"/>
     <link rel="stylesheet" type="text/css" href="./css/side_panel.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/tutorial.css"/>
 </head>
 <body>
 
@@ -121,17 +122,69 @@
     <div class="game-suggestion game-suggestion-hidden"></div>
 
     <div class="side-panel">
-        <div class="side-panel-username">Kotamigo</div>
-        <div class="data-container">
-            <div>Level:</div>
-            <div class="side-panel-level">12</div>
-            <div>Rank:</div>
-            <div class="side-panel-rank">Private</div>
+        <div class="side-panel-top">
+            <div class="side-panel-title side-panel-username"></div>
+            <div class="data-container">
+                <div>Rank:</div>
+                <div class="side-panel-rank"></div>
+                <div>Level:</div>
+                <div class="side-panel-level"></div>
+            </div>
+    
+            <span class="side-panel-message">Sign in to save your stats!</span>
+    
+            <span class="menu-selection menu-selection-small disabled" id="side-panel-stats">Your Stats</span>
+            <span class="menu-selection menu-selection-small" id="side-panel-find">Find Player</span>
+            <span class="menu-selection menu-selection-small" id="side-panel-create">Create Arena</span>
         </div>
 
-        <span class="menu-selection menu-selection-small">Your Stats</span>
-        <span class="menu-selection menu-selection-small">Find Player</span>
-        <span class="menu-selection menu-selection-small">Create Arena</span>
+        <div class="side-panel-cmp side-panel-stats">
+            <div class="side-panel-title">Your Stats</div>
+            <div class="data-container"></div>
+        </div>
+
+        <div class="side-panel-cmp side-panel-find">
+            <div class="side-panel-search-toggle-parent">
+                <div class="side-panel-search-toggle-everyone">Everyone</div>
+                <div class="side-panel-search-toggle-friends">Friends</div>
+            </div>
+            <input class="side-panel-search-input" type="text" size="16" maxlength="16" />
+            <div class="data-container side-panel-search-container"></div>
+        </div>
+
+        <div class="side-panel-cmp side-panel-creator">
+            <div class="side-panel-title">Create Arena</div>
+            
+            <!-- ARENA CREATOR TOP MENU -->
+            <div class="side-panel-creator-section side-panel-creator-section-top">
+                <span class="menu-selection menu-selection-small side-panel-creator-create">Create New</span><br>
+                <span class="menu-selection menu-selection-small side-panel-creator-load">Load Existing</span><br>
+                <span class="menu-link" id="create-tutorial-link">What is this?</span>
+            </div>
+
+            <!-- ARENA CREATOR CREATE MENU -->
+            <div class="side-panel-creator-section side-panel-creator-section-create">
+                <input type="number" min="5" max="1000" class="menu-input menu-number-input" id="create-opt-width" placeholder="Width" /><br>
+                <input type="number" min="5" max="1000" class="menu-input menu-number-input" id="create-opt-height" placeholder="Length" /><br>
+                <span class="menu-selection menu-selection-small" id="create-opt-create">Create</span><br>
+                <span class="menu-error menu-error-small" id="create-opt-error"></span>
+            </div>
+            
+            <!-- ARENA CREATOR LOAD MENU -->
+            <div class="side-panel-creator-section side-panel-creator-section-load">
+                <input type="file" class="" id="load-opt-file" accept=".json" />
+                <div class="menu-file-input">
+                    <label for="load-opt-file" class="menu-selection menu-file-choose" id="menu-file-choose">Choose File</label><br>
+                    <span class="menu-or">OR</span><br>
+                    <span class="menu-drop">Drag &amp; Drop here</span>
+                    <span class="menu-file-name"></span>
+                </div><br>
+                <span class="menu-selection menu-selection-small" id="load-opt-load">Load</span>
+                <span class="menu-error" id="load-opt-error"></span>
+            </div>
+
+        </div>
+        <div class="side-panel-back menu-link">Back</div>
     </div>
 
     <div class="player-stats" style="display: none;">
@@ -146,17 +199,10 @@
             <div class="leaderboard-selection" id="leaderboard-selection-1" title="Top scoring players this week">Week</div>
             <div class="leaderboard-selection" id="leaderboard-selection-2" title="Top scoring players this month">Month</div>
             <div class="leaderboard-selection" id="leaderboard-selection-3" title="Top scoring players">All-Time</div>
-            <img class="leaderboard-selection leaderboard-search leaderboard-search-img" draggable="false" src="./res/menu/search.svg" title="Search for a player">
         </div>
 
         <h2 class="leaderboard-title">Leaderboard</h2>
-        <div class="leaderboard-search-toggle-parent">
-            <div class="leaderboard-search-toggle-everyone">Everyone</div>
-            <div class="leaderboard-search-toggle-friends">Friends</div>
-        </div>
-        <input class="leaderboard-search-input" type="text" size="16" maxlength="16" />
         <div class="leaderboard-container"></div>
-        <div class="search-container"></div>
         <div class="leaderboard-message"></div>
     </div>
 
@@ -167,104 +213,7 @@
                 <div>Play</div>
                 <div class="play-as-guest">(As Guest)</div>
             </span><br>
-            <span class="menu-link menu-link-xl" id="play-tutorial-link">How to Play</span><br>
-            <span class="menu-selection create-btn" id="top-opt-sp">Create Arena</span><br>
-            <span class="menu-link" id="create-tutorial-link">What is this?</span>
-        </div>
-        <div class="menu tutorial-parent">
-            <div class="tutorial-container">
-                <div class="tutorial-content tutorial-play">
-                        <h2>How to Play</h2>
-                    
-                        <div class="tutorial-text">BattleTanks is a 2.5D tank shooter where two teams compete in a team eliminiation gamemode!</div>
-
-                        <h3>Default Controls</h3>
-                        <div class="tutorial-controls">
-                            <div><span class="tutorial-controls-highlight">W</span> - Forward</div>
-                            <div><span class="tutorial-controls-highlight">Mouse</span> - Shoot</div>
-                            
-                            <div><span class="tutorial-controls-highlight">S</span> - Backward</div>
-                            <div><span class="tutorial-controls-highlight">R</span> - Reload</div>
-
-                            <div><span class="tutorial-controls-highlight">A</span> - Rotate Left</div>
-                            <div><span class="tutorial-controls-highlight">E</span> - Ramming Speed</div>
-
-                            <div><span class="tutorial-controls-highlight">D</span> - Rotate Right</div>
-                            <div><span class="tutorial-controls-highlight">Enter</span> - Chat</div>
-                        </div>
-
-                        <h3>Player Details</h3>
-                        <div class="tutorial-text">Hits to Kill: <span class="tutorial-controls-highlight">5</span></div>
-                        <div class="tutorial-text">Lives: <span class="tutorial-controls-highlight">3</span></div>
-                        <div class="tutorial-text">Points per Hit: <span class="tutorial-controls-highlight">1</span></div>
-                        <div class="tutorial-text">Points per Kill: <span class="tutorial-controls-highlight">2</span></div>
-
-                </div>
-                <div class="tutorial-content tutorial-create">
-                    <h2>Creating an Arena</h2>
-                    
-                    <div class="tutorial-text">You can create an arena and submit it on our <a class="standard-anchor" href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>!</div>
-                    
-                    <h3>Guidelines</h3>
-                    <div class="tutorial-text">
-                        Arenas should have at least four (4) team spawns per team. Currently, all arenas can be used by up to eight (8) people.
-                    </div>
-
-                    <h3>Creation Tips</h3>
-                    <div class="tutorial-text">
-                        I recommend odd dimensions so there is a center block in the arena.
-                    </div>
-                    <div class="tutorial-text">
-                        The tools you use can be selected by a hotkey instead of having to use your mouse.
-                    </div>
-                    <div class="tutorial-text">
-                        <strong>Remember</strong> Your primary mouse button creates an entity; your secondary mouse button removes an entity if there is one of that type at the position you are selecting.
-                    </div>
-
-                    <h3>Submission &amp; Reward</h3>
-                    <div class="tutorial-text">
-                        Upon submission to the <a class="standard-anchor" href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>, I will reivew your arena and offer feedback if necessary. If all looks good, then I will include your arena with the next release of BattleTanks!
-                    </div>
-                    <div class="tutorial-text">
-                        Upon approval of your arena, you will granted access to the "Arena Creators" role on the Discord server! I will also note you as the author of the arena so appropriate credit can be made visible in future releases.
-                    </div>
-
-                </div>
-                <span class="menu-selection tutorial-close">Close</span>
-            </div>
-        </div>
-    </div>
-    <!-- SINGLEPLAYER MENU -->
-    <div class="menu-section" id="main-menu-sp">
-        <div class="top-menu-section">
-            <span class="menu-selection" id="sp-opt-create">Create New</span><br>
-            <span class="menu-selection" id="sp-opt-load">Load Existing</span><br>
-            <span class="menu-selection" id="sp-opt-cancel">Cancel</span>
-        </div>
-    </div>
-    <!-- SINGLEPLAYER CREATE MENU -->
-    <div class="menu-section" id="sp-menu-create">
-        <div class="top-menu-section">
-            <input type="number" min="5" max="1000" class="menu-input menu-number-input" id="create-opt-width" placeholder="Width" /><br>
-            <input type="number" min="5" max="1000" class="menu-input menu-number-input" id="create-opt-height" placeholder="Height" /><br>
-            <span class="menu-selection" id="create-opt-create">Create</span>
-            <span class="menu-selection" id="create-opt-cancel">Cancel</span><br>
-            <span class="menu-error" id="create-opt-error"></span>
-        </div>
-    </div>
-    <!-- SINGLEPLAYER LOAD MENU -->
-    <div class="menu-section" id="sp-menu-load">
-        <div class="top-menu-section">
-            <input type="file" class="" id="load-opt-file" accept=".json" />
-            <div class="menu-file-input">
-                <label for="load-opt-file" class="menu-selection menu-file-choose" id="menu-file-choose">Choose File</label><br>
-                <span class="menu-or">OR</span><br>
-                <span class="menu-drop">Drag &amp; Drop here</span>
-                <span class="menu-file-name"></span>
-            </div><br>
-            <span class="menu-selection" id="load-opt-load">Load</span>
-            <span class="menu-selection" id="load-opt-cancel">Cancel</span><br>
-            <span class="menu-error" id="load-opt-error"></span>
+            <span class="menu-link menu-link-xl" id="play-tutorial-link">How to Play</span>
         </div>
     </div>
     <!-- SOCIAL LINKS -->
@@ -277,6 +226,68 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
         <a class="discord-ref" href="https://discord.gg/7J5ZJUQ" target="_blank">
             <img class="discord-image" draggable="false" src="./res/social/discord.svg" alt="BattleTanks Discord">
         </a>
+    </div>
+</div>
+
+<div class="menu tutorial-parent">
+    <div class="tutorial-container">
+        <div class="tutorial-content tutorial-play">
+                <h2>How to Play</h2>
+            
+                <div class="tutorial-text">BattleTanks is a 2.5D tank shooter where two teams compete in a team eliminiation gamemode!</div>
+
+                <h3>Default Controls</h3>
+                <div class="tutorial-controls">
+                    <div><span class="tutorial-controls-highlight">W</span> - Forward</div>
+                    <div><span class="tutorial-controls-highlight">Mouse</span> - Shoot</div>
+                    
+                    <div><span class="tutorial-controls-highlight">S</span> - Backward</div>
+                    <div><span class="tutorial-controls-highlight">R</span> - Reload</div>
+
+                    <div><span class="tutorial-controls-highlight">A</span> - Rotate Left</div>
+                    <div><span class="tutorial-controls-highlight">E</span> - Ramming Speed</div>
+
+                    <div><span class="tutorial-controls-highlight">D</span> - Rotate Right</div>
+                    <div><span class="tutorial-controls-highlight">Enter</span> - Chat</div>
+                </div>
+
+                <h3>Player Details</h3>
+                <div class="tutorial-text">Hits to Kill: <span class="tutorial-controls-highlight">5</span></div>
+                <div class="tutorial-text">Lives: <span class="tutorial-controls-highlight">3</span></div>
+                <div class="tutorial-text">Points per Hit: <span class="tutorial-controls-highlight">1</span></div>
+                <div class="tutorial-text">Points per Kill: <span class="tutorial-controls-highlight">2</span></div>
+
+        </div>
+        <div class="tutorial-content tutorial-create">
+            <h2>Creating an Arena</h2>
+            
+            <div class="tutorial-text">You can create an arena and submit it on our <a class="standard-anchor" href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>!</div>
+            
+            <h3>Guidelines</h3>
+            <div class="tutorial-text">
+                Arenas should have at least four (4) team spawns per team. Currently, all arenas can be used by up to eight (8) people.
+            </div>
+
+            <h3>Creation Tips</h3>
+            <div class="tutorial-text">
+                I recommend odd dimensions so there is a center block in the arena.
+            </div>
+            <div class="tutorial-text">
+                The tools you use can be selected by a hotkey instead of having to use your mouse.
+            </div>
+            <div class="tutorial-text">
+                <strong>Remember</strong> Your primary mouse button creates an entity; your secondary mouse button removes an entity if there is one of that type at the position you are selecting.
+            </div>
+
+            <h3>Submission &amp; Reward</h3>
+            <div class="tutorial-text">
+                Upon submission to the <a class="standard-anchor" href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>, I will reivew your arena and offer feedback if necessary. If all looks good, then I will include your arena with the next release of BattleTanks!
+            </div>
+            <div class="tutorial-text">
+                Upon approval of your arena, you will granted access to the "Arena Creators" role on the Discord server! I will also note you as the author of the arena so appropriate credit can be made visible in future releases.
+            </div>
+        </div>
+        <span class="menu-selection tutorial-close">Close</span>
     </div>
 </div>
 

@@ -46,11 +46,15 @@
     border-color: #03c95f;
 }
 .main-menu .menu-number-input {
-    width: 9vmin;
+    width: 5vw;
 }
 .main-menu .menu-error {
+    font-family: 'Inconsolata', sans-serif;
     font-size: 3vmin;
     color: red;
+}
+.main-menu .menu-error-small {
+    font-size: 2vmin;
 }
 .main-menu input[type='file'] {
     display: none;
@@ -58,16 +62,15 @@
 .main-menu .menu-file-input {
     box-sizing: border-box;
     border: dashed 3px;
-    width: 50vmin;
-    height: 30vmin;
+    padding: 1vmin;
     display: inline-flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-bottom: 5vmin;
+    margin-bottom: 1vmin;
 }
 .main-menu .menu-file-choose {
-    font-size: 4vmin;
+    font-size: 3vmin;
     display: inline-block;
 }
 .main-menu .menu-or {
@@ -75,14 +78,14 @@
     display: inline-block;
 }
 .main-menu .menu-drop {
-    font-size: 4vmin;
+    font-size: 3vmin;
     display: inline-block;
 }
 .main-menu .menu-file-name {
     display: inline-block;
     color: #03c95f;
-    font-size: 5vmin;
-    margin-top: 5vmin;
+    font-size: 3vmin;
+    margin-top: 1vmin;
 }
 
 .discord-container {
@@ -102,11 +105,10 @@
 .top-menu-section {
     display: inline-block;
     position: absolute;
-    left: 75%;
     transform: translate(-50%);
+    top: 70vh;
 }
 .main-menu .play-btn {
-    margin-top: 10vh;
     background-color: #03b053;
 }
 
@@ -205,7 +207,7 @@
 .main-menu .leaderboard {
     right: 2.5vw;
     padding: 0;
-    width: 32vmin;
+    width: 15vw;
 }
 .main-menu .data-container,
 .main-menu .player-stats-container,
@@ -262,7 +264,8 @@
 }
 
 .main-menu .leaderboard-selection {
-    width: 25%;
+    flex-grow: 1;
+    flex-basis: 0;
     font-size: 1.75vmin;
     height: 4vmin;
     line-height: 4vmin;
@@ -280,48 +283,6 @@
 
 .main-menu .leaderboard-selection-selected:hover {
     background-color: #03c95f;
-}
-
-.leaderboard-search {
-    padding: 0.25vmin 0;
-    box-sizing: border-box;
-}
-
-.leaderboard-search-img {
-    max-width: 100%;
-    max-height: 100%;
-}
-
-.leaderboard-search-toggle-parent {
-    justify-content: space-evenly;
-    margin: 1vmin 0;
-    display: none;
-}
-
-.leaderboard-search-toggle-everyone,
-.leaderboard-search-toggle-friends {
-    height: 4vmin;
-    width: 50%;
-    line-height: 4vmin;
-    vertical-align: middle;
-}
-
-.leaderboard-search-toggle-everyone:hover,
-.leaderboard-search-toggle-friends:hover {
-    background-color: #03b053;
-    cursor: pointer;
-}
-
-.leaderboard-search-input {
-    margin: 1vmin 0;
-    background: none;
-    font-size: 2.5vmin;
-    border: solid 1px #ffffff;
-    outline: none;
-    padding: 0.5vmin 1vmin;
-    color: #ffffff;
-    font-family: 'Inconsolata', sans-serif;
-    display: none;
 }
 
 .main-menu .player-stats-message,
@@ -355,54 +316,4 @@
 }
 .main-menu .menu-link-xl {
     font-size: 2.5vmin;
-}
-
-.main-menu .tutorial-parent {
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0,25);
-}
-
-.main-menu .tutorial-container {
-    position: fixed;
-    overflow-y: auto;
-    max-height: 90vh;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #101010;
-    padding: 2.5vmin;
-    border: solid 1px #ffffff;
-}
-
-.main-menu .tutorial-content {
-    display: none;
-}
-
-.main-menu .tutorial-content h2 {
-    font-size: 5vmin;
-    margin: 0 0 2vmin 0;
-}
-
-.main-menu .tutorial-content h3 {
-    font-size: 3vmin;
-    margin: 2vmin 0;
-}
-
-.main-menu .tutorial-content .tutorial-text {
-    font-size: 2vmin;
-    margin-bottom: 1vmin;
-    font-family: 'Inconsolata', sans-serif;
-}
-
-.main-menu .tutorial-content .tutorial-controls {
-    display: inline-grid;
-    grid-template-columns: 1fr 1fr;
-    justify-items: left;
-    font-size: 2.5vmin;
-    font-family: 'Inconsolata', sans-serif;
-    grid-gap: 1vmin;
-}
-
-.main-menu .tutorial-content .tutorial-controls-highlight {
-    color: #03b053;
 }

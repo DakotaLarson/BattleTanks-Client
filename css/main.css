@@ -42,10 +42,6 @@ html, body{
     display: none;
 }
 
-.menu-section{
-    display: none;
-}
-
 .menu-selection, .menu-text-input{
     font-size: 5vmin;
     margin: 1vmin;

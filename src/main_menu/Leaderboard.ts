@@ -1,5 +1,4 @@
 import ChildComponent from "../component/ChildComponent";
-import DomEventHandler from "../DomEventHandler";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 import Globals from "../Globals";
@@ -12,46 +11,28 @@ export default class Leaderboard extends ChildComponent {
 
     private messageElt: HTMLElement;
     private leaderboardContainerElt: HTMLElement;
-    private searchContainerElt: HTMLElement;
 
     private selection1Elt: HTMLElement;
     private selection2Elt: HTMLElement;
     private selection3Elt: HTMLElement;
-    private searchElt: HTMLElement;
 
     private titleElt: HTMLElement;
-    private searchInputElt: HTMLInputElement;
-
-    private searchToggleParentElt: HTMLElement;
-    private searchToggleEveryoneElt: HTMLElement;
-    private searchToggleFriendsElt: HTMLElement;
 
     private selectedElt: HTMLElement;
     private leaderboardSelection: number;
     private lastSelectionTime: number;
-
-    private leaderboardVisible: boolean;
-    private searchingFriends: boolean;
-    private typingTimeout: number | undefined;
 
     constructor(menuElt: HTMLElement) {
         super();
 
         this.messageElt = DomHandler.getElement(".leaderboard-message", menuElt);
         this.leaderboardContainerElt = DomHandler.getElement(".leaderboard-container", menuElt);
-        this.searchContainerElt = DomHandler.getElement(".search-container", menuElt);
 
         this.selection1Elt = DomHandler.getElement("#leaderboard-selection-1", menuElt);
         this.selection2Elt = DomHandler.getElement("#leaderboard-selection-2", menuElt);
         this.selection3Elt = DomHandler.getElement("#leaderboard-selection-3", menuElt);
-        this.searchElt = DomHandler.getElement(".leaderboard-search", menuElt);
 
         this.titleElt = DomHandler.getElement(".leaderboard-title", menuElt);
-        this.searchInputElt = DomHandler.getElement(".leaderboard-search-input", menuElt) as HTMLInputElement;
-
-        this.searchToggleParentElt = DomHandler.getElement(".leaderboard-search-toggle-parent", menuElt);
-        this.searchToggleEveryoneElt = DomHandler.getElement(".leaderboard-search-toggle-everyone", this.searchToggleParentElt);
-        this.searchToggleFriendsElt = DomHandler.getElement(".leaderboard-search-toggle-friends", this.searchToggleParentElt);
 
         let leaderboardSelection = parseInt(localStorage.getItem("leaderboardSelection") as string, 10);
         if (isNaN(leaderboardSelection)) {
@@ -63,9 +44,6 @@ export default class Leaderboard extends ChildComponent {
         this.selectedElt = this.getSelectionElt(leaderboardSelection);
         this.selectedElt.classList.add("leaderboard-selection-selected");
         this.lastSelectionTime = performance.now();
-
-        this.leaderboardVisible = true;
-        this.searchingFriends = false;
     }
 
     public enable() {
@@ -85,16 +63,10 @@ export default class Leaderboard extends ChildComponent {
 
     private onSignIn() {
         this.updateLeaderboards();
-        if (!this.leaderboardVisible) {
-            this.showSearchToggle();
-        }
     }
 
     private onSignOut() {
         this.updateLeaderboards();
-        if (!this.leaderboardVisible) {
-            this.hideSearchToggle();
-        }
     }
 
     private onClick(event: MouseEvent) {
@@ -103,24 +75,14 @@ export default class Leaderboard extends ChildComponent {
                 this.updateLeaderboardSelection(1);
                 this.updateLeaderboards();
                 this.updateSelectedElement(this.selection1Elt);
-                this.updateLeaderboardVisibility(true);
             } else if (event.target === this.selection2Elt) {
                 this.updateLeaderboardSelection(2);
                 this.updateLeaderboards();
                 this.updateSelectedElement(this.selection2Elt);
-                this.updateLeaderboardVisibility(true);
             } else if (event.target === this.selection3Elt) {
                 this.updateLeaderboardSelection(3);
                 this.updateLeaderboards();
                 this.updateSelectedElement(this.selection3Elt);
-                this.updateLeaderboardVisibility(true);
-            } else if (event.target === this.searchElt) {
-                this.updateSelectedElement(this.searchElt);
-                this.updateLeaderboardVisibility(false);
-            } else if (event.target === this.searchToggleEveryoneElt) {
-                this.onSearchToggleUpdate(false);
-            } else if (event.target === this.searchToggleFriendsElt) {
-                this.onSearchToggleUpdate(true);
             }
         }
     }
@@ -140,12 +102,6 @@ export default class Leaderboard extends ChildComponent {
             this.leaderboardContainerElt.removeChild(this.leaderboardContainerElt.firstChild);
         }
         this.messageElt.textContent = "";
-    }
-
-    private clearSearchResults() {
-        while (this.searchContainerElt.firstChild) {
-            this.searchContainerElt.removeChild(this.searchContainerElt.firstChild);
-        }
     }
 
     private getLeaderboard() {
@@ -215,107 +171,6 @@ export default class Leaderboard extends ChildComponent {
         }
     }
 
-    private updateLeaderboardVisibility(showLeaderboard: boolean) {
-        if (showLeaderboard !== this.leaderboardVisible) {
-            if (showLeaderboard) {
-                this.titleElt.style.display = "";
-                this.leaderboardContainerElt.style.display = "";
-
-            } else {
-                this.titleElt.style.display = "none";
-                this.leaderboardContainerElt.style.display = "none";
-            }
-            this.updateSearchVisibility(!showLeaderboard);
-            this.leaderboardVisible = showLeaderboard;
-        }
-    }
-
-    private updateSearchVisibility(show: boolean) {
-        if (show) {
-
-            this.searchInputElt.style.display = "inline-block";
-            this.searchContainerElt.style.display = "grid";
-            this.searchInputElt.style.display = "inline-block";
-
-            if (Globals.getGlobal(Globals.Global.AUTH_TOKEN)) {
-                this.showSearchToggle();
-            }
-
-            DomEventHandler.addListener(this, this.searchInputElt, "input", this.onSearchInput);
-            this.searchInputElt.focus();
-
-        } else {
-            this.searchInputElt.style.display = "";
-            this.searchContainerElt.style.display = "";
-            this.searchInputElt.style.display = "";
-
-            this.hideSearchToggle();
-
-            this.clearSearchResults();
-            this.searchInputElt.value = "";
-
-            DomEventHandler.removeListener(this, this.searchInputElt, "input", this.onSearchInput);
-            window.clearTimeout(this.typingTimeout);
-        }
-    }
-
-    private showSearchToggle() {
-        this.searchToggleParentElt.style.display = "flex";
-
-        if (this.searchingFriends) {
-            this.searchToggleFriendsElt.classList.add("leaderboard-selection-selected");
-        } else {
-            this.searchToggleEveryoneElt.classList.add("leaderboard-selection-selected");
-        }
-    }
-
-    private hideSearchToggle() {
-        this.searchToggleParentElt.style.display = "";
-        this.searchToggleFriendsElt.classList.remove("leaderboard-selection-selected");
-        this.searchToggleEveryoneElt.classList.remove("leaderboard-selection-selected");
-    }
-
-    private onSearchInput() {
-        if (this.typingTimeout) {
-            window.clearTimeout(this.typingTimeout);
-        }
-        this.typingTimeout = window.setTimeout(() => {
-            this.onTypingEnd();
-            this.typingTimeout = undefined;
-        }, Leaderboard.SEARCH_TYPING_TIME);
-    }
-
-    private onSearchToggleUpdate(searchingFriends: boolean) {
-        if (this.searchingFriends !== searchingFriends) {
-            this.lastSelectionTime = performance.now();
-            if (searchingFriends) {
-                this.searchToggleFriendsElt.classList.add("leaderboard-selection-selected");
-                this.searchToggleEveryoneElt.classList.remove("leaderboard-selection-selected");
-            } else {
-                this.searchToggleFriendsElt.classList.remove("leaderboard-selection-selected");
-                this.searchToggleEveryoneElt.classList.add("leaderboard-selection-selected");
-            }
-            this.searchInputElt.focus();
-            this.searchingFriends = !this.searchingFriends;
-            this.onTypingEnd();
-        }
-    }
-
-    private onTypingEnd() {
-        let name = this.searchInputElt.value;
-        name = name.trim();
-        if (name) {
-            this.retrieveSearchResults(name).then((results) => {
-                this.clearSearchResults();
-                this.renderSearchResults(results);
-            }).catch((err) => {
-                console.log(err);
-            });
-        } else {
-            this.clearSearchResults();
-        }
-    }
-
     private renderLeaderboard(data: any[]) {
         if (data.length) {
 
@@ -344,38 +199,12 @@ export default class Leaderboard extends ChildComponent {
         }
     }
 
-    private renderSearchResults(results: any[]) {
-        for (const result of results) {
-            const usernameElt = this.createSearchResultElt(result.username, true);
-            const pointsElt = this.createSearchResultElt(result.points, false);
-
-            if (result.isPlayer) {
-                usernameElt.style.color = "#03c95f";
-                pointsElt.style.color = "#03c95f";
-            }
-
-            this.searchContainerElt.appendChild(usernameElt);
-            this.searchContainerElt.appendChild(pointsElt);
-        }
-    }
-
     private createLeaderboardElt(text: string, rankId: number, isUsername: boolean) {
         const element = document.createElement("div");
         element.textContent = text;
         element.classList.add("leaderboard-entry", "leaderboard-entry-" + rankId);
         if (isUsername) {
             element.classList.add("profile-link", "leaderboard-entry-username");
-        }
-        return element;
-    }
-
-    private createSearchResultElt(text: string, isUsername: boolean) {
-        const element = document.createElement("div");
-        element.textContent = text;
-        if (isUsername) {
-            element.classList.add("search-result", "profile-link");
-        } else {
-            element.classList.add("search-result");
         }
         return element;
     }
@@ -410,29 +239,6 @@ export default class Leaderboard extends ChildComponent {
             mode: "cors",
             credentials: "omit",
             body,
-            headers: {
-                "content-type": "application/json",
-            },
-        }).then((response: Response) => {
-            return response.json();
-        });
-    }
-
-    private retrieveSearchResults(query: string): Promise<any[]> {
-        const address = "http" + Globals.getGlobal(Globals.Global.HOST);
-        const payload: any = {
-            query,
-        };
-        const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
-        if (authToken) {
-            payload.token = authToken;
-            payload.friends = this.searchingFriends;
-        }
-        return fetch(address + "/search", {
-            method: "post",
-            mode: "cors",
-            credentials: "omit",
-            body: JSON.stringify(payload),
             headers: {
                 "content-type": "application/json",
             },

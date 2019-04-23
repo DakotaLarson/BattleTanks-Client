@@ -9,9 +9,9 @@ export default class Tutorial extends ChildComponent {
     private contentElt: HTMLElement;
     private closeBtn: HTMLElement;
 
-    constructor(menuElt: HTMLElement, contentQuery: string) {
+    constructor(contentQuery: string) {
         super();
-        this.parentElt = DomHandler.getElement(".tutorial-parent", menuElt);
+        this.parentElt = DomHandler.getElement(".tutorial-parent");
         this.contentElt = DomHandler.getElement(contentQuery, this.parentElt);
         this.closeBtn = DomHandler.getElement(".tutorial-close", this.parentElt);
     }

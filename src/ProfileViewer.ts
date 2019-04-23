@@ -205,7 +205,6 @@ export default class ProfileViewer extends Component {
         }
 
         if (data.friendship) {
-            console.log(data.friendship);
             this.friendsState = data.friendship.friends;
             this.negativeState = data.friendship.blocked;
             this.renderFriendship(data.friendship.friends, data.friendship.conversations, data.friendship.negative);

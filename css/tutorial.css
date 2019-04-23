@@ -1,0 +1,49 @@
+.tutorial-parent {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.tutorial-container {
+    position: fixed;
+    overflow-y: auto;
+    max-height: 90vh;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #101010;
+    padding: 2.5vmin;
+    border: solid 1px #ffffff;
+}
+
+.tutorial-content {
+    display: none;
+}
+
+.tutorial-content h2 {
+    font-size: 5vmin;
+    margin: 0 0 2vmin 0;
+}
+
+.tutorial-content h3 {
+    font-size: 3vmin;
+    margin: 2vmin 0;
+}
+
+.tutorial-content .tutorial-text {
+    font-size: 2vmin;
+    margin-bottom: 1vmin;
+    font-family: 'Inconsolata', sans-serif;
+}
+
+.tutorial-content .tutorial-controls {
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: left;
+    font-size: 2.5vmin;
+    font-family: 'Inconsolata', sans-serif;
+    grid-gap: 1vmin;
+}
+
+.tutorial-content .tutorial-controls-highlight {
+    color: #03b053;
+}
