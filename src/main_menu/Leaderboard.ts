@@ -7,16 +7,12 @@ export default class Leaderboard extends ChildComponent {
 
     private static readonly SELECTION_COOLDOWN = 1000;
 
-    private static readonly SEARCH_TYPING_TIME = 500;
-
     private messageElt: HTMLElement;
     private leaderboardContainerElt: HTMLElement;
 
     private selection1Elt: HTMLElement;
     private selection2Elt: HTMLElement;
     private selection3Elt: HTMLElement;
-
-    private titleElt: HTMLElement;
 
     private selectedElt: HTMLElement;
     private leaderboardSelection: number;
@@ -31,8 +27,6 @@ export default class Leaderboard extends ChildComponent {
         this.selection1Elt = DomHandler.getElement("#leaderboard-selection-1", menuElt);
         this.selection2Elt = DomHandler.getElement("#leaderboard-selection-2", menuElt);
         this.selection3Elt = DomHandler.getElement("#leaderboard-selection-3", menuElt);
-
-        this.titleElt = DomHandler.getElement(".leaderboard-title", menuElt);
 
         let leaderboardSelection = parseInt(localStorage.getItem("leaderboardSelection") as string, 10);
         if (isNaN(leaderboardSelection)) {

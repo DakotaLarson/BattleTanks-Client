@@ -5,7 +5,7 @@ import EventHandler from "../EventHandler";
 import Globals from "../Globals";
 import Tutorial from "./Tutorial";
 
-export default class TopMenu extends Component {
+export default class PlayButton extends Component {
 
     private element: HTMLElement;
 
@@ -19,9 +19,9 @@ export default class TopMenu extends Component {
 
     constructor(mainMenu: HTMLElement) {
         super();
-        this.element = DomHandler.getElement("#main-menu-top", mainMenu);
+        this.element = DomHandler.getElement(".play-button-container", mainMenu);
 
-        this.playBtn = DomHandler.getElement("#top-opt-mp", this.element);
+        this.playBtn = DomHandler.getElement(".play-btn", this.element);
 
         this.playTutorialLink = DomHandler.getElement("#play-tutorial-link", this.element);
 

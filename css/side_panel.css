@@ -27,6 +27,7 @@
 
 .side-panel .side-panel-message {
     font-family: 'Inconsolata', sans-serif;
+    text-transform: none;
     font-size: 2vmin;
 }
 

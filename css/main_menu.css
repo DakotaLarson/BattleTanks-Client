@@ -102,12 +102,14 @@
 .main-menu .discord-ref {
     display: inline-block;
 }
-.top-menu-section {
-    display: inline-block;
+
+.play-button-container {
     position: absolute;
-    transform: translate(-50%);
+    left: 50%;
+    transform: translateX(-50%);
     top: 70vh;
 }
+
 .main-menu .play-btn {
     background-color: #03b053;
 }
@@ -188,20 +190,11 @@
     background-color: #03c95f;
 }
 
-.main-menu .player-stats,
 .main-menu .leaderboard {
     position: absolute;
     top: 10vh;
     background-color: #101010;
     border: solid 1px #ffffff;
-}
-
-.main-menu .player-stats {
-    left: 2.5vw;
-    padding: 0 2.5vmin 2.5vmin 2.5vmin;
-    text-transform: capitalize;
-    width: 27.5vmin;
-    box-sizing: border-box;
 }
 
 .main-menu .leaderboard {
@@ -210,7 +203,6 @@
     width: 15vw;
 }
 .main-menu .data-container,
-.main-menu .player-stats-container,
 .main-menu .leaderboard-container,
 .main-menu .search-container {
     display: grid;
@@ -242,7 +234,6 @@
     justify-self: left;
 }
 
-.main-menu .player-stats-title,
 .main-menu .leaderboard-title {
     font-size: 5vmin;
     margin: 1vmin 0;
@@ -285,7 +276,6 @@
     background-color: #03c95f;
 }
 
-.main-menu .player-stats-message,
 .main-menu .leaderboard-message {
     font-size: 2.5vmin;
     font-family: 'Inconsolata', sans-serif;
