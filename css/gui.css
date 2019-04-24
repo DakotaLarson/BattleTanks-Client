@@ -99,7 +99,7 @@
     bottom: 2.5vmin;
     left: 2.5vmin;
     color: #ffffff;
-    font-size: 2vmin;
+    font-size: 2.5vmin;
     font-family: 'Inconsolata', sans-serif;
 }
 
@@ -123,7 +123,7 @@
     outline: none;
     color: #ffffff;
     height: 2.5vh;
-    font-size: 2vh;
+    font-size: 2.5vmin;
     box-sizing: border-box;
     font-family: 'Inconsolata', sans-serif;
 }

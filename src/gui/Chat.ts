@@ -121,6 +121,11 @@ export default class Chat extends ChildComponent {
         for (const elt of messageElts) {
             this.setOpacity(elt, event.data);
         }
+
+        const previewElts = Array.from(DomHandler.getElements(".chat-message", this.previewContainer));
+        for (const elt of previewElts) {
+            this.setOpacity(elt, event.data);
+        }
     }
 
     private sendMessage() {
@@ -229,6 +234,8 @@ export default class Chat extends ChildComponent {
         if (opacity === undefined) {
             opacity = Math.round(Options.options.chatOpacity * 100) / 100;
         }
+
         DOMMutationHandler.addStyle(elt, "backgroundColor", "rgba(0, 0, 0, " + opacity + ")");
+        elt.style.backgroundColor = "rgba(0, 0, 0, " + opacity + ")";
     }
 }

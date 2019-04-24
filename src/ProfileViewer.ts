@@ -347,9 +347,18 @@ export default class ProfileViewer extends Component {
         if (data.first_seen) {
             data["first seen"] = new Date(data.first_seen).toLocaleDateString();
         }
-        if (data.play_time) {
-            const date = new Date(0, 0, 0, 0, 0, data.play_time);
-            data["time played"] = date.toISOString().substr(11, 8);
+        if (data.play_time !== undefined) {
+            const time = data.play_time;
+
+            const hours = Math.floor(time / 3600);
+            const minutes = Math.floor((time - hours * 3600) / 60);
+            const seconds = time - hours * 3600 - minutes * 60;
+
+            const hourStr = hours < 10 ? "0" + hours : "" + hours;
+            const minuteStr = minutes < 10 ? "0" + minutes : "" + minutes;
+            const secondsStr = seconds < 10 ? "0" + seconds : "" + seconds;
+
+            data["time played"] = hourStr + ":" + minuteStr + ":" + secondsStr;
         }
     }
 

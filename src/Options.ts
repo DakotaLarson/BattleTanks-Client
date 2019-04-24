@@ -97,7 +97,7 @@ export default class Options extends Component {
         }
 
         if (!("chatOpacity" in Options.options)) {
-            Options.options.chatOpacity = 0.5;
+            Options.options.chatOpacity = 0.75;
         }
 
         if (!("musicVolume" in Options.options)) {
