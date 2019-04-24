@@ -356,7 +356,7 @@ export default class ScenePlayerHandler extends ChildComponent {
     private generateNameplate(name: string, color: number) {
         if (this.font) {
             // @ts-ignore Types specification is not remotely correct.
-            const shapes = this.font.generateShapes(name, 0.175);
+            const shapes = this.font.generateShapes(name, 0.1);
 
             const geometry = new ShapeBufferGeometry(shapes);
             geometry.computeBoundingBox();

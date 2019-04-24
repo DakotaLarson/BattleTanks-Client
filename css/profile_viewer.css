@@ -68,16 +68,25 @@
     background-color: #03b053;
 }
 
-.profile-action-negative {
-    display: none;
+.profile-action-small {
     font-size: 1.5vmin;
-    color: #b01703;
     margin-bottom: 0.25vmin;
+    color: #00b9ff;
+    display: none;
+}
+
+.profile-action-small:hover {
+    color: #33c9ff;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.profile-action-negative {
+    color: #b01703;
 }
 
 .profile-action-negative:hover {
-    cursor: pointer;
-    text-decoration: underline;
+    color: #b01703;
 }
 
 .profile-parent .profile-message {

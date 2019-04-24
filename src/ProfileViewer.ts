@@ -1,11 +1,16 @@
 import Component from "./component/Component";
 import DomHandler from "./DomHandler";
+import DOMMutationHandler from "./DOMMutationHandler";
 import EventHandler from "./EventHandler";
 import Globals from "./Globals";
+import RankCalculator from "./RankCalculator";
 
 export default class ProfileViewer extends Component {
 
     private static readonly SELECTION_COOLDOWN = 1500;
+
+    private static readonly VIEW_ACTION_PRIMARY = "View Stats";
+    private static readonly VIEW_ACTION_STATS = "Hide Stats";
 
     private static readonly FRIEND_ACTION_TEXTCONTENT = [
         "Unblock",
@@ -37,13 +42,18 @@ export default class ProfileViewer extends Component {
         "Unfriend",
     ];
 
-    private profileParentElt: HTMLElement;
-    private profileHeaderElt: HTMLElement;
-    private profileContainerElt: HTMLElement;
-    private profileMessageElt: HTMLElement;
+    private parentElt: HTMLElement;
+    private headerElt: HTMLElement;
+
+    private primaryContainerElt: HTMLElement;
+    private statsContainerElt: HTMLElement;
+
+    private messageElt: HTMLElement;
 
     private friendActionElt: HTMLElement;
     private conversationActionElt: HTMLElement;
+
+    private viewActionElt: HTMLElement;
     private negativeActionElt: HTMLElement;
 
     private lastSelectionTime: number;
@@ -56,18 +66,22 @@ export default class ProfileViewer extends Component {
 
     private updatingFriendship: boolean;
     private conversationOpen: boolean;
+    private statsVisible: boolean;
 
     constructor() {
         super();
 
-        this.profileParentElt = DomHandler.getElement(".profile-parent");
-        this.profileHeaderElt = DomHandler.getElement(".profile-header", this.profileParentElt);
-        this.profileContainerElt = DomHandler.getElement(".profile-container", this.profileParentElt);
-        this.profileMessageElt = DomHandler.getElement(".profile-message", this.profileParentElt);
+        this.parentElt = DomHandler.getElement(".profile-parent");
+        this.headerElt = DomHandler.getElement(".profile-header", this.parentElt);
+        this.primaryContainerElt = DomHandler.getElement(".profile-container-primary", this.parentElt);
+        this.statsContainerElt = DomHandler.getElement(".profile-container-stats", this.parentElt);
+        this.messageElt = DomHandler.getElement(".profile-message", this.parentElt);
 
-        this.friendActionElt = DomHandler.getElement(".profile-action-friend", this.profileParentElt);
-        this.conversationActionElt = DomHandler.getElement(".profile-action-conversation", this.profileParentElt);
-        this.negativeActionElt = DomHandler.getElement(".profile-action-negative", this.profileParentElt);
+        this.friendActionElt = DomHandler.getElement(".profile-action-friend", this.parentElt);
+        this.conversationActionElt = DomHandler.getElement(".profile-action-conversation", this.parentElt);
+
+        this.negativeActionElt = DomHandler.getElement(".profile-action-negative", this.parentElt);
+        this.viewActionElt = DomHandler.getElement(".profile-action-view", this.parentElt);
 
         this.lastSelectionTime = performance.now();
 
@@ -77,6 +91,7 @@ export default class ProfileViewer extends Component {
 
         this.updatingFriendship = false;
         this.conversationOpen = false;
+        this.statsVisible = false;
     }
 
     public enable() {
@@ -90,7 +105,7 @@ export default class ProfileViewer extends Component {
         if (!this.conversationOpen) {
             const classList = (event.target as HTMLElement).classList;
             if (this.selectedUsername) {
-                if (event.target !== this.profileParentElt && !this.profileParentElt.contains(event.target as Node)) {
+                if (event.target !== this.parentElt && !this.parentElt.contains(event.target as Node)) {
 
                     // Click is outside.
                     this.closeProfile();
@@ -118,6 +133,17 @@ export default class ProfileViewer extends Component {
                     if (confirmation) {
                         this.updateFriendship(false);
                     }
+                } else if (event.target === this.viewActionElt) {
+                    if (this.statsVisible) {
+                        DOMMutationHandler.hide(this.primaryContainerElt);
+                        DOMMutationHandler.show(this.statsContainerElt, "none");
+                        DOMMutationHandler.setText(this.viewActionElt, ProfileViewer.VIEW_ACTION_PRIMARY);
+                    } else {
+                        DOMMutationHandler.hide(this.statsContainerElt);
+                        DOMMutationHandler.show(this.primaryContainerElt, "none");
+                        DOMMutationHandler.setText(this.viewActionElt, ProfileViewer.VIEW_ACTION_STATS);
+                    }
+                    this.statsVisible = !this.statsVisible;
                 }
             } else if (classList.contains("profile-link")) {
 
@@ -158,11 +184,18 @@ export default class ProfileViewer extends Component {
 
             this.updateProfileHeader(username);
 
+            DOMMutationHandler.clear(this.primaryContainerElt);
+            DOMMutationHandler.clear(this.statsContainerElt);
+
+            DOMMutationHandler.show(this.statsContainerElt, "none");
+            DOMMutationHandler.hide(this.primaryContainerElt);
+            DOMMutationHandler.hide(this.viewActionElt);
+
             this.getProfileData(username).then((data: any) => {
                 this.renderProfileData(data);
             }).catch((err) => {
                 console.error(err);
-                this.profileMessageElt.textContent = "Error";
+                this.messageElt.textContent = "Error";
             });
             this.showProfileParent();
             this.selectedUsername = username;
@@ -172,10 +205,10 @@ export default class ProfileViewer extends Component {
 
     private closeProfile() {
         fastdom.mutate(() => {
-            while (this.profileContainerElt.firstChild) {
-                this.profileContainerElt.removeChild(this.profileContainerElt.firstChild);
+            while (this.primaryContainerElt.firstChild) {
+                this.primaryContainerElt.removeChild(this.primaryContainerElt.firstChild);
             }
-            this.profileMessageElt.textContent = "";
+            this.messageElt.textContent = "";
 
             this.friendActionElt.textContent = "";
             this.friendActionElt.classList.remove("profile-action-disabled");
@@ -188,11 +221,11 @@ export default class ProfileViewer extends Component {
 
             this.negativeActionElt.style.display = "";
 
-            this.profileParentElt.style.left = "";
-            this.profileParentElt.style.right = "";
-            this.profileParentElt.style.top = "";
-            this.profileParentElt.style.bottom = "";
-            this.profileParentElt.style.display = "";
+            this.parentElt.style.left = "";
+            this.parentElt.style.right = "";
+            this.parentElt.style.top = "";
+            this.parentElt.style.bottom = "";
+            this.parentElt.style.display = "";
         });
 
         this.selectedUsername = undefined;
@@ -200,10 +233,6 @@ export default class ProfileViewer extends Component {
     }
 
     private renderProfileData(data: any) {
-        while (this.profileContainerElt.firstChild) {
-            this.profileContainerElt.removeChild(this.profileContainerElt.firstChild);
-        }
-
         if (data.friendship) {
             this.friendsState = data.friendship.friends;
             this.negativeState = data.friendship.blocked;
@@ -220,14 +249,46 @@ export default class ProfileViewer extends Component {
         }
 
         this.formatProfileData(data);
-        const dataTitles = ["points", "rank", "victories", "defeats", "V/D", "kills", "deaths", "K/D", "shots", "hits", "accuracy"];
-        for (const title of dataTitles) {
-            if (title in data) {
-                this.profileContainerElt.appendChild(this.createProfileDataElt(title));
-                this.profileContainerElt.appendChild(this.createProfileDataElt(data[title]));
+        const statTitles = ["points", "rank", "victories", "defeats", "V/D", "kills", "deaths", "K/D", "shots", "hits", "accuracy"];
+        const primaryTitles = ["last seen", "first seen", "time played"];
+        const primaryElts: HTMLElement[] = [];
+        const statsElts: HTMLElement[] = [];
 
+        for (const title of statTitles) {
+            if (title in data) {
+                statsElts.push(this.createProfileDataElt(title));
+                statsElts.push(this.createProfileDataElt(data[title]));
             }
         }
+
+        const rankData = RankCalculator.getData(data.points);
+
+        primaryElts.push(this.createProfileDataElt("Rank"));
+        primaryElts.push(this.createProfileDataElt(rankData.rank));
+
+        primaryElts.push(this.createProfileDataElt("Level"));
+        primaryElts.push(this.createProfileDataElt(rankData.level));
+
+        for (const title of primaryTitles) {
+            if (title in data) {
+                primaryElts.push(this.createProfileDataElt(title));
+                primaryElts.push(this.createProfileDataElt(data[title]));
+            }
+        }
+        fastdom.mutate(() => {
+
+            for (const elt of primaryElts) {
+                this.primaryContainerElt.appendChild(elt);
+            }
+
+            for (const elt of statsElts) {
+                this.statsContainerElt.appendChild(elt);
+            }
+        });
+
+        DOMMutationHandler.setText(this.viewActionElt, ProfileViewer.VIEW_ACTION_PRIMARY);
+        DOMMutationHandler.show(this.viewActionElt);
+        this.statsVisible = false;
     }
 
     private renderFriendship(friends: number, conversations: number, negative: number) {
@@ -276,6 +337,20 @@ export default class ProfileViewer extends Component {
             }
             data.accuracy = accuracy + "%";
         }
+        if (data.last_seen) {
+            if (data.online) {
+                data["last seen"] = "Online!";
+            } else {
+                data["last seen"] = new Date(data.last_seen).toLocaleDateString();
+            }
+        }
+        if (data.first_seen) {
+            data["first seen"] = new Date(data.first_seen).toLocaleDateString();
+        }
+        if (data.play_time) {
+            const date = new Date(0, 0, 0, 0, 0, data.play_time);
+            data["time played"] = date.toISOString().substr(11, 8);
+        }
     }
 
     private createProfileDataElt(title: string) {
@@ -286,7 +361,7 @@ export default class ProfileViewer extends Component {
     }
 
     private updateProfileHeader(text: string) {
-        this.profileHeaderElt.textContent = text;
+        this.headerElt.textContent = text;
     }
 
     private showProfileParent() {
@@ -297,24 +372,24 @@ export default class ProfileViewer extends Component {
                 const left = coordinates.x;
                 if (coordinates.y < dimensions.height / 2) {
                     const top = coordinates.y;
-                    this.profileParentElt.style.top = top + "px";
+                    this.parentElt.style.top = top + "px";
                 } else {
                     const bottom = dimensions.height - coordinates.y;
-                    this.profileParentElt.style.bottom = bottom + "px";
+                    this.parentElt.style.bottom = bottom + "px";
                 }
-                this.profileParentElt.style.left = left + "px";
+                this.parentElt.style.left = left + "px";
             } else {
                 const right = dimensions.width - coordinates.x;
                 if (coordinates.y < dimensions.height / 2) {
                     const top = coordinates.y;
-                    this.profileParentElt.style.top = top + "px";
+                    this.parentElt.style.top = top + "px";
                 } else {
                     const bottom = dimensions.height - coordinates.y;
-                    this.profileParentElt.style.bottom = bottom + "px";
+                    this.parentElt.style.bottom = bottom + "px";
                 }
-                this.profileParentElt.style.right = right + "px";
+                this.parentElt.style.right = right + "px";
             }
-            this.profileParentElt.style.display = "inline-block";
+            this.parentElt.style.display = "inline-block";
         });
     }
 
