@@ -64,6 +64,7 @@
     <link rel="stylesheet" type="text/css" href="./css/tooltip.css"/>
     <link rel="stylesheet" type="text/css" href="./css/side_panel.css"/>
     <link rel="stylesheet" type="text/css" href="./css/tutorial.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/rank_chart.css"/>
 </head>
 <body>
 
@@ -125,9 +126,9 @@
         <div class="side-panel-top">
             <div class="side-panel-title side-panel-username"></div>
             <div class="data-container">
-                <div>Rank:</div>
+                <div>Rank</div>
                 <div class="side-panel-rank"></div>
-                <div>Level:</div>
+                <div>Level</div>
                 <div class="side-panel-level"></div>
             </div>
     
@@ -135,7 +136,8 @@
     
             <span class="menu-selection menu-selection-small disabled" id="side-panel-stats">Your Stats</span>
             <span class="menu-selection menu-selection-small" id="side-panel-find">Find Player</span>
-            <span class="menu-selection menu-selection-small" id="side-panel-create">Create Arena</span>
+            <span class="menu-selection menu-selection-small" id="side-panel-create">Create Arena</span><br>
+            <span class="menu-link menu-link-small rank-tutorial-link">Rank Chart</span> 
         </div>
 
         <div class="side-panel-cmp side-panel-stats">
@@ -284,6 +286,12 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
             </div>
             <div class="tutorial-text">
                 Upon approval of your arena, you will granted access to the "Arena Creators" role on the Discord server! I will also note you as the author of the arena so appropriate credit can be made visible in future releases.
+            </div>
+        </div>
+        <div class="tutorial-content tutorial-rank no-select">
+            <div class="rank-chart">
+                <div class="rank-chart-progress"></div>
+                <div class="rank-chart-container"></div>
             </div>
         </div>
         <span class="menu-selection tutorial-close">Close</span>

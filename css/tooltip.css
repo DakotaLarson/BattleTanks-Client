@@ -12,6 +12,8 @@
     font-size: 2vmin;
     position: absolute;
     z-index: 1;
+    text-align: left;
+    padding: 0.5vmin;
 }
 
 /* Show the tooltip text when on hover */

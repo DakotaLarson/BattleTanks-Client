@@ -1,0 +1,38 @@
+.rank-chart .rank-chart-container {
+    display: flex;
+    font-size: 2.5vmin;
+    max-width: 90vw;
+    overflow-x: auto;
+}
+
+.rank-chart .rank-container {
+    border: solid 1px white;
+    border-right: none;
+    white-space: nowrap;
+}
+
+.rank-chart .rank-container:last-child {
+    border-right: solid 1px white;
+}
+
+.rank-chart .rank-container .rank-chart-title-container,
+.rank-chart .rank-container .rank-chart-reward-container {
+    padding: 2.5vmin;
+}
+
+.rank-chart .rank-chart-title-container {
+    border-bottom: solid 1px white;
+}
+
+.rank-chart .rank-chart-title {
+    font-size: 3.5vmin;
+}
+
+.rank-chart .rank-chart-subtitle {
+    font-size: 2vmin;
+    font-family: 'Inconsolata', sans-serif;
+}
+
+.rank-chart .rank-chart-reward {
+
+}

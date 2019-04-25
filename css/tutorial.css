@@ -47,3 +47,7 @@
 .tutorial-content .tutorial-controls-highlight {
     color: #03b053;
 }
+
+.tutorial-container .tutorial-rank {
+    margin-bottom: 2.5vmin;
+}

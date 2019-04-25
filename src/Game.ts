@@ -109,6 +109,8 @@ class Game extends Component {
         this.attachComponent(this.profileViewer);
         this.attachComponent(this.conversationViewer);
 
+        RankCalculator.constructRankChart();
+
         this.hideLoadingScreen();
 
     }

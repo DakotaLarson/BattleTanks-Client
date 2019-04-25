@@ -3,6 +3,7 @@ import DomHandler from "../../DomHandler";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
 import RankCalculator from "../../RankCalculator";
+import Tutorial from "../Tutorial";
 import ArenaCreator from "./creator/ArenaCreator";
 import PlayerFinder from "./PlayerFinder";
 import PlayerStats from "./PlayerStats";
@@ -31,6 +32,9 @@ export default class SidePanel extends ChildComponent {
 
     private backBtn: HTMLElement;
 
+    private tutorial: Tutorial | undefined;
+    private rankChartLink: HTMLElement;
+
     constructor(menuElt: HTMLElement) {
         super();
 
@@ -53,6 +57,7 @@ export default class SidePanel extends ChildComponent {
         this.createBtn = DomHandler.getElement("#side-panel-create", this.topContainer);
 
         this.backBtn = DomHandler.getElement(".side-panel-back", menuElt);
+        this.rankChartLink = DomHandler.getElement(".rank-tutorial-link", this.topContainer);
     }
 
     public enable() {
@@ -64,6 +69,9 @@ export default class SidePanel extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onFindClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onBackClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onRankChartClick);
+
+        EventHandler.addListener(this, EventHandler.Event.TUTORIAL_CLOSE, this.onTutorialClose);
 
         const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
         if (authToken) {
@@ -82,6 +90,9 @@ export default class SidePanel extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onFindClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onBackClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onRankChartClick);
+
+        EventHandler.removeListener(this, EventHandler.Event.TUTORIAL_CLOSE, this.onTutorialClose);
 
         this.attach(undefined);
     }
@@ -135,6 +146,27 @@ export default class SidePanel extends ChildComponent {
         if (event.target === this.backBtn) {
             this.attach(undefined);
         }
+    }
+
+    private onRankChartClick(event: MouseEvent) {
+        if (event.target === this.rankChartLink) {
+            this.openTutorial(".tutorial-rank");
+        }
+    }
+
+    private onTutorialClose() {
+        if (this.tutorial) {
+            this.detachChild(this.tutorial);
+            this.tutorial = undefined;
+        }
+    }
+
+    private openTutorial(contentQuery: string) {
+        if (this.tutorial) {
+            this.detachChild(this.tutorial);
+        }
+        this.tutorial = new Tutorial(contentQuery);
+        this.attachChild(this.tutorial);
     }
 
     private async updateStats(token?: string) {

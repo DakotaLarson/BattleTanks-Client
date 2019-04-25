@@ -304,6 +304,11 @@
     cursor: pointer;
     color: #33c9ff;
 }
+
 .main-menu .menu-link-xl {
     font-size: 2.5vmin;
+}
+
+.main-menu .menu-link-small {
+    font-size: 1.5vmin;
 }
