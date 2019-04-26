@@ -178,7 +178,7 @@ export default class SidePanel extends ChildComponent {
             this.statsBtn.classList.remove("disabled");
             this.playerStats.updateStats(stats);
 
-            RankCalculator.updateProgress(parseInt(rankData.level, 10));
+            RankCalculator.updateProgress(parseInt(rankData.level, 10), stats.points);
         } else {
             this.dataContainer.style.display = "";
             this.statsBtn.classList.add("disabled");

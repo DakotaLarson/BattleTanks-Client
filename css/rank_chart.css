@@ -46,6 +46,12 @@
     font-family: 'Inconsolata', sans-serif;
 }
 
+.rank-chart .rank-info {
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 2vmin;
+    text-align: left;
+}
+
 .rank-chart .rank-chart-reward {
 
 }

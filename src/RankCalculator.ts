@@ -20,8 +20,8 @@ export default class RankCalculator {
     ];
 
     public static getData(points: number) {
-        const level = Math.floor(Math.pow(points, 1 / Math.E));
-        const rankIndex = Math.min(Math.floor(level / 10), RankCalculator.RANKS.length - 1);
+        const level = Math.round(Math.pow(points, 1 / Math.E)) + 1;
+        const rankIndex = Math.min(Math.floor(level / RankCalculator.LEVELS_PER_RANK), RankCalculator.RANKS.length - 1);
 
         const rank = RankCalculator.RANKS[rankIndex];
         return {
@@ -30,8 +30,11 @@ export default class RankCalculator {
         };
     }
 
-    public static updateProgress(level?: number) {
+    public static updateProgress(level?: number, points?: number) {
         const parentElt = DomHandler.getElement(".rank-chart");
+
+        RankCalculator.updateInfoElts(parentElt, level, points);
+
         const elts = Array.from(DomHandler.getElements(".rank-chart-progress", parentElt));
 
         if (level) {
@@ -50,6 +53,7 @@ export default class RankCalculator {
                 }
             }
         } else {
+
             for (const elt of elts) {
                 elt.style.width = "";
             }
@@ -101,6 +105,37 @@ export default class RankCalculator {
         DomEventHandler.addListener(this, container, "wheel", (event: WheelEvent) => {
             container.scrollLeft += event.deltaY;
         });
+    }
+
+    private static updateInfoElts(parentElt: HTMLElement, level?: number, points?: number) {
+        const levelInfoElt = DomHandler.getElement(".rank-info-level", parentElt);
+        const rankInfoElt = DomHandler.getElement(".rank-info-rank", parentElt);
+
+        if (level && points) {
+            const levels = RankCalculator.getLevels();
+            if (level < levels.length) {
+                const nextLevel = levels[level];
+                const levelPointDiff = nextLevel.points - points;
+                levelInfoElt.textContent = "Points needed for next level: " + levelPointDiff;
+            } else {
+                levelInfoElt.textContent = "Top level achieved!";
+            }
+
+            const nextRank = level - (level % RankCalculator.LEVELS_PER_RANK) + RankCalculator.LEVELS_PER_RANK + 1;
+            if (nextRank < levels.length) {
+                const rankPointDiff = levels[nextRank - 1].points - points;
+                rankInfoElt.textContent = "Points needed for next rank: " + rankPointDiff;
+            } else {
+                rankInfoElt.textContent = "Top rank achieved!";
+            }
+
+            levelInfoElt.style.display = "block";
+            rankInfoElt.style.display = "block";
+
+        } else {
+            levelInfoElt.style.display = "";
+            rankInfoElt.style.display = "";
+        }
     }
 
     private static createRankContainer(rank: string, minLevel: number, maxLevel: number, minPoints: number, levelPoints?: Map<number, number>) {
