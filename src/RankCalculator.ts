@@ -1,20 +1,23 @@
+import DomEventHandler from "./DomEventHandler";
 import DomHandler from "./DomHandler";
 
 export default class RankCalculator {
 
-private static readonly RANKS = [
-    "Recruit",
-    "Private",
-    "Corporal",
-    "Sergeant",
-    "Officer",
-    "Lieutenant",
-    "Commander",
-    "Captain",
-    "Major",
-    "Colonel",
-    "General",
-];
+    private static readonly LEVELS_PER_RANK = 10;
+
+    private static readonly RANKS = [
+        "Recruit",
+        "Private",
+        "Corporal",
+        "Sergeant",
+        "Officer",
+        "Lieutenant",
+        "Commander",
+        "Captain",
+        "Major",
+        "Colonel",
+        "General",
+    ];
 
     public static getData(points: number) {
         const level = Math.floor(Math.pow(points, 1 / Math.E));
@@ -27,24 +30,34 @@ private static readonly RANKS = [
         };
     }
 
-    public static getLevels() {
-        const levels = [];
-        for (let i = 0; i <= 100; i ++) {
-            const points = Math.round(Math.pow(i, Math.E));
-            const data: any = {
-                points,
-            };
-            if ( i % 10 === 0) {
-                data.rank = RankCalculator.RANKS[i / 10];
+    public static updateProgress(level?: number) {
+        const parentElt = DomHandler.getElement(".rank-chart");
+        const elts = Array.from(DomHandler.getElements(".rank-chart-progress", parentElt));
+
+        if (level) {
+            const partialAmount = level % RankCalculator.LEVELS_PER_RANK;
+            const fullQuantity = (level - partialAmount) / RankCalculator.LEVELS_PER_RANK;
+            const partialPercentage = (partialAmount / RankCalculator.LEVELS_PER_RANK * 100) + "%";
+
+            for (let i = 0; i < elts.length; i ++) {
+                const elt = elts[i];
+                if (i < fullQuantity) {
+                    elt.style.width = "100%";
+                } else if (i === fullQuantity) {
+                    elt.style.width = partialPercentage;
+                } else {
+                    elt.style.width = "";
+                }
             }
-            levels.push(data);
+        } else {
+            for (const elt of elts) {
+                elt.style.width = "";
+            }
         }
-        return levels;
     }
 
     public static constructRankChart() {
         const parentElt = DomHandler.getElement(".rank-chart");
-        const progressBar = DomHandler.getElement(".rank-chart-progress", parentElt);
         const container = DomHandler.getElement(".rank-chart-container", parentElt);
         const levels = RankCalculator.getLevels();
 
@@ -64,7 +77,6 @@ private static readonly RANKS = [
                     rankContainers.push(RankCalculator.createRankContainer(currentRank, currentRankMinimumLevel, currentRankMaximumLevel, currentRankMinimumPoints, levelPoints));
                     levelPoints.clear();
                 }
-                console.log(levelPoints);
 
                 currentRank = level.rank;
                 currentRankMinimumLevel = i;
@@ -84,6 +96,10 @@ private static readonly RANKS = [
             for (const elt of rankContainers) {
                 container.appendChild(elt);
             }
+        });
+
+        DomEventHandler.addListener(this, container, "wheel", (event: WheelEvent) => {
+            container.scrollLeft += event.deltaY;
         });
     }
 
@@ -122,7 +138,13 @@ private static readonly RANKS = [
         rankContainer.appendChild(titleContainer);
         rankContainer.appendChild(rewardContainer);
 
-        return rankContainer;
+        const progressElt = RankCalculator.createElement("rank-chart-progress");
+        const rankContainerParent = RankCalculator.createElement("rank-container-parent");
+
+        rankContainerParent.appendChild(progressElt);
+        rankContainerParent.appendChild(rankContainer);
+
+        return rankContainerParent;
     }
 
     private static createElement(eltClass: string, text?: string) {
@@ -149,18 +171,19 @@ private static readonly RANKS = [
         tooltip.appendChild(tooltipContent);
         return tooltip;
     }
+
+    private static getLevels() {
+        const levels = [];
+        for (let i = 0; i <= 100; i ++) {
+            const points = Math.round(Math.pow(i, Math.E));
+            const data: any = {
+                points,
+            };
+            if ( i % 10 === 0) {
+                data.rank = RankCalculator.RANKS[i / 10];
+            }
+            levels.push(data);
+        }
+        return levels;
+    }
 }
-/*
-<div class="rank-container">
-    <div class="rank-chart-title-container">
-        <div class="rank-chart-title">Private</div>
-
-        <div class="rank-chart-subtitle">Levels: 1-10</div>
-        <div class="rank-chart-subtitle">Points required: 0</div>
-
-    </div>
-    <div class="rank-chart-reward-container">
-        <span class="rank-chart-reward">Reward 1</span>
-    </div>
-</div>
-*/

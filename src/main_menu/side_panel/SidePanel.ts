@@ -58,6 +58,7 @@ export default class SidePanel extends ChildComponent {
 
         this.backBtn = DomHandler.getElement(".side-panel-back", menuElt);
         this.rankChartLink = DomHandler.getElement(".rank-tutorial-link", this.topContainer);
+
     }
 
     public enable() {
@@ -172,14 +173,18 @@ export default class SidePanel extends ChildComponent {
     private async updateStats(token?: string) {
         if (token) {
             const stats = await this.retrieveStats(token);
-            this.updateRankAndLevel(stats);
+            const rankData = this.updateRankAndLevel(stats);
             this.dataContainer.style.display = "grid";
             this.statsBtn.classList.remove("disabled");
             this.playerStats.updateStats(stats);
+
+            RankCalculator.updateProgress(parseInt(rankData.level, 10));
         } else {
             this.dataContainer.style.display = "";
             this.statsBtn.classList.add("disabled");
             this.playerStats.updateStats(undefined);
+
+            RankCalculator.updateProgress();
         }
     }
 
@@ -187,6 +192,7 @@ export default class SidePanel extends ChildComponent {
         const data = RankCalculator.getData(stats.points);
         this.rankElt.textContent = data.rank;
         this.levelElt.textContent = data.level;
+        return data;
     }
 
     private async retrieveStats(authToken: string) {

@@ -3,16 +3,29 @@
     font-size: 2.5vmin;
     max-width: 90vw;
     overflow-x: auto;
+    min-height: 35vh;
+}
+
+.rank-chart .rank-chart-progress {
+    height: 1vh;
+    background-color: #03b053;
+    width: 0%;
+}
+
+.rank-chart .rank-container-parent {
+    display: flex;
+    flex-direction: column;
 }
 
 .rank-chart .rank-container {
-    border: solid 1px white;
+    border: solid 1px #ffffff;
     border-right: none;
     white-space: nowrap;
+    flex-grow: 1;
 }
 
 .rank-chart .rank-container:last-child {
-    border-right: solid 1px white;
+    border-right: solid 1px #ffffff;
 }
 
 .rank-chart .rank-container .rank-chart-title-container,
@@ -21,7 +34,7 @@
 }
 
 .rank-chart .rank-chart-title-container {
-    border-bottom: solid 1px white;
+    border-bottom: solid 1px #ffffff;
 }
 
 .rank-chart .rank-chart-title {

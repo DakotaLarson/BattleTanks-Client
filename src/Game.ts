@@ -238,5 +238,4 @@ class Game extends Component {
     requestAnimationFrame(() => {
         game.update();
     });
-    console.log(RankCalculator.getLevels());
 })();
