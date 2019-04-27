@@ -90,31 +90,35 @@ export default class RankChart extends Tutorial {
     }
 
     private updateInfoElts(parentElt: HTMLElement, level?: number, points?: number) {
+        const currentInfoElt = DomHandler.getElement(".rank-info-current", parentElt);
         const levelInfoElt = DomHandler.getElement(".rank-info-level", parentElt);
         const rankInfoElt = DomHandler.getElement(".rank-info-rank", parentElt);
 
         if (level && points) {
             const levels = RankCalculator.getLevels();
             if (level < levels.length) {
-                const nextLevel = levels[level];
-                const levelPointDiff = nextLevel.points - points;
-                levelInfoElt.textContent = "Points needed for next level: " + levelPointDiff;
+                const nextLevelPoints = levels[level].points;
+                const levelPointDiff = nextLevelPoints - points;
+                levelInfoElt.textContent = "Points needed for next level: " + nextLevelPoints + " (" + levelPointDiff + " more)";
             } else {
                 levelInfoElt.textContent = "Top level achieved!";
             }
 
             const nextRank = level - (level % RankCalculator.LEVELS_PER_RANK) + RankCalculator.LEVELS_PER_RANK + 1;
             if (nextRank < levels.length) {
-                const rankPointDiff = levels[nextRank - 1].points - points;
-                rankInfoElt.textContent = "Points needed for next rank: " + rankPointDiff;
+                const nextRankPoints = levels[nextRank - 1].points;
+                const rankPointDiff = nextRankPoints - points;
+                rankInfoElt.textContent = "Points needed for next rank: " + nextRankPoints + " (" + rankPointDiff + " more)";
             } else {
                 rankInfoElt.textContent = "Top rank achieved!";
             }
 
+            currentInfoElt.style.display = "block";
             levelInfoElt.style.display = "block";
             rankInfoElt.style.display = "block";
 
         } else {
+            currentInfoElt.style.display = "";
             levelInfoElt.style.display = "";
             rankInfoElt.style.display = "";
         }

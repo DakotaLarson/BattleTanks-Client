@@ -50,6 +50,11 @@
     font-family: 'Inconsolata', sans-serif;
     font-size: 2vmin;
     text-align: left;
+    display: none;
+}
+
+.rank-chart .rank-info-rank {
+    margin-bottom: 2vmin;
 }
 
 .rank-chart .rank-chart-reward {
