@@ -354,8 +354,8 @@ export default class ScenePlayerHandler extends ChildComponent {
         if (index > -1) {
             BatchHandler.remove(this.protectionFrontsideMesh!, index);
             BatchHandler.remove(this.protectionBacksideMesh!, index);
+            this.sphereOwners.splice(index, 1);
         }
-        this.sphereOwners.splice(index, 1);
     }
 
     private moveProtectionSphere(id: number, pos: Vector3) {
