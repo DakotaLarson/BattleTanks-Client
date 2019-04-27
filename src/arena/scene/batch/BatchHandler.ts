@@ -1,4 +1,4 @@
-import { BufferAttribute, BufferGeometry, Color, InstancedBufferGeometry, Mesh, MeshLambertMaterial, Quaternion, RGBADepthPacking, ShaderChunk, ShaderLib, ShaderMaterial, Texture, TypedArray, UniformsUtils, Vector3, VertexColors } from "three";
+import { BufferAttribute, BufferGeometry, Color, InstancedBufferGeometry, Mesh, MeshLambertMaterial, MeshLambertMaterialParameters, Quaternion, RGBADepthPacking, ShaderChunk, ShaderLib, ShaderMaterial, Side, Texture, TypedArray, UniformsUtils, Vector3, VertexColors } from "three";
 import BatchUtils from "./BatchUtils";
 
 export default class BatchHandler {
@@ -115,7 +115,7 @@ export default class BatchHandler {
         };
     }
 
-    public static create(bufferGeometry: BufferGeometry, offsets: Vector3[], colors: number[], rotations: Quaternion[], map?: Texture) {
+    public static create(bufferGeometry: BufferGeometry, offsets: Vector3[], colors: number[], rotations: Quaternion[], map?: Texture, side?: Side, opacity?: number) {
         const geometry = new InstancedBufferGeometry();
         geometry.copy(bufferGeometry);
 
@@ -128,11 +128,20 @@ export default class BatchHandler {
         geometry.addAttribute("instanceRotation", rotationAttribute);
         geometry.maxInstancedCount = offsets.length;
 
-        const materialOptions: any = {};
+        const materialOptions: MeshLambertMaterialParameters = {};
         if (map) {
             materialOptions.map = map;
         } else {
             materialOptions.vertexColors = VertexColors;
+        }
+
+        if (side) {
+            materialOptions.side = side;
+        }
+
+        if (opacity) {
+            materialOptions.opacity = opacity;
+            materialOptions.transparent = true;
         }
 
         const material = new MeshLambertMaterial(materialOptions);

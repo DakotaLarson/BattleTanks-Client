@@ -3,7 +3,7 @@ import DomHandler from "../../DomHandler";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
 import RankCalculator from "../../RankCalculator";
-import Tutorial from "../Tutorial";
+import RankChart from "../tutorial/RankChart";
 import ArenaCreator from "./creator/ArenaCreator";
 import PlayerFinder from "./PlayerFinder";
 import PlayerStats from "./PlayerStats";
@@ -32,7 +32,7 @@ export default class SidePanel extends ChildComponent {
 
     private backBtn: HTMLElement;
 
-    private tutorial: Tutorial | undefined;
+    private rankChart: RankChart;
     private rankChartLink: HTMLElement;
 
     constructor(menuElt: HTMLElement) {
@@ -57,8 +57,11 @@ export default class SidePanel extends ChildComponent {
         this.createBtn = DomHandler.getElement("#side-panel-create", this.topContainer);
 
         this.backBtn = DomHandler.getElement(".side-panel-back", menuElt);
+
+        this.rankChart = new RankChart(".tutorial-rank");
         this.rankChartLink = DomHandler.getElement(".rank-tutorial-link", this.topContainer);
 
+        this.rankChart.constructRankChart();
     }
 
     public enable() {
@@ -151,23 +154,12 @@ export default class SidePanel extends ChildComponent {
 
     private onRankChartClick(event: MouseEvent) {
         if (event.target === this.rankChartLink) {
-            this.openTutorial(".tutorial-rank");
+            this.attachChild(this.rankChart);
         }
     }
 
     private onTutorialClose() {
-        if (this.tutorial) {
-            this.detachChild(this.tutorial);
-            this.tutorial = undefined;
-        }
-    }
-
-    private openTutorial(contentQuery: string) {
-        if (this.tutorial) {
-            this.detachChild(this.tutorial);
-        }
-        this.tutorial = new Tutorial(contentQuery);
-        this.attachChild(this.tutorial);
+        this.detachChild(this.rankChart);
     }
 
     private async updateStats(token?: string) {
@@ -178,13 +170,13 @@ export default class SidePanel extends ChildComponent {
             this.statsBtn.classList.remove("disabled");
             this.playerStats.updateStats(stats);
 
-            RankCalculator.updateProgress(parseInt(rankData.level, 10), stats.points);
+            this.rankChart.updateProgress(parseInt(rankData.level, 10), stats.points);
         } else {
             this.dataContainer.style.display = "";
             this.statsBtn.classList.add("disabled");
             this.playerStats.updateStats(undefined);
 
-            RankCalculator.updateProgress();
+            this.rankChart.updateProgress();
         }
     }
 

@@ -20,7 +20,6 @@ import MultiplayerConnection from "./MultiplayerConnection";
 import Options from "./Options";
 import OverlayMenu from "./overlay_menu/OverlayMenu";
 import ProfileViewer from "./ProfileViewer";
-import RankCalculator from "./RankCalculator";
 
 class Game extends Component {
 
@@ -108,8 +107,6 @@ class Game extends Component {
 
         this.attachComponent(this.profileViewer);
         this.attachComponent(this.conversationViewer);
-
-        RankCalculator.constructRankChart();
 
         this.hideLoadingScreen();
 

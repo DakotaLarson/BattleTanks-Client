@@ -82,3 +82,11 @@ html, body{
 .menu-text-input:focus{
     border-color: #03c95f;
 }
+
+.standard-anchor {
+    color: #00b9ff;
+}
+
+.standard-anchor:hover {
+    color: #33c9ff;
+}

@@ -3,7 +3,7 @@ import DomHandler from "../DomHandler";
 import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 import Globals from "../Globals";
-import Tutorial from "./Tutorial";
+import Tutorial from "./tutorial/Tutorial";
 
 export default class PlayButton extends Component {
 

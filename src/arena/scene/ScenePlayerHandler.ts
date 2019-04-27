@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PerspectiveCamera, PositionalAudio, Quaternion, RingBufferGeometry, Scene, ShapeBufferGeometry, SphereGeometry, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, Group, Mesh, MeshBasicMaterial, PerspectiveCamera, PositionalAudio, Quaternion, RingBufferGeometry, Scene, ShapeBufferGeometry, SphereBufferGeometry, , Vector3, Vector4} from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
@@ -24,8 +24,12 @@ export default class ScenePlayerHandler extends ChildComponent {
     private ringMesh: Mesh | undefined;
     private billboardMesh: Mesh | undefined;
 
+    private protectionFrontsideMesh: Mesh | undefined;
+    private protectionBacksideMesh: Mesh | undefined;
+
     private players: IPlayerObj[];
     private billboardOwners: any[];
+    private sphereOwners: number[];
 
     private audioListener: AudioListener;
     private shootAudioBuffer: AudioBuffer | undefined;
@@ -42,6 +46,7 @@ export default class ScenePlayerHandler extends ChildComponent {
 
         this.players = [];
         this.billboardOwners = [];
+        this.sphereOwners = [];
 
         this.scene = scene;
         this.camera = Globals.getGlobal(Globals.Global.CAMERA);
@@ -84,8 +89,8 @@ export default class ScenePlayerHandler extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_REMOVAL, this.removePlayer);
         EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_MOVE, this.onPlayerMove);
 
-        EventHandler.addListener(this, EventHandler.Event.PROTECTION_START, this.onProtectionStart);
-        EventHandler.addListener(this, EventHandler.Event.PROTECTION_END, this.onProtectionEnd);
+        EventHandler.addListener(this, EventHandler.Event.PROTECTION_START, this.addProtectionSphere);
+        EventHandler.addListener(this, EventHandler.Event.PROTECTION_END, this.removeProtectionSphere);
 
         EventHandler.addListener(this, EventHandler.Event.PLAYER_SHOOT, this.onShoot);
         EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_SHOOT, this.onShoot);
@@ -108,8 +113,8 @@ export default class ScenePlayerHandler extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_REMOVAL, this.removePlayer);
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_MOVE, this.onPlayerMove);
 
-        EventHandler.removeListener(this, EventHandler.Event.PROTECTION_START, this.onProtectionStart);
-        EventHandler.removeListener(this, EventHandler.Event.PROTECTION_END, this.onProtectionEnd);
+        EventHandler.removeListener(this, EventHandler.Event.PROTECTION_START, this.addProtectionSphere);
+        EventHandler.removeListener(this, EventHandler.Event.PROTECTION_END, this.removeProtectionSphere);
 
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_SHOOT, this.onShoot);
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_SHOOT, this.onShoot);
@@ -160,7 +165,9 @@ export default class ScenePlayerHandler extends ChildComponent {
 
             const cameraPos = this.camera.position;
 
-            BillboardBatchHandler.updatePositions(this.ringMesh!, [index], [data.pos.clone().add(ScenePlayerHandler.RING_OFFSET)]);
+            BatchHandler.updatePositions(this.ringMesh!, [index], [data.pos.clone().add(ScenePlayerHandler.RING_OFFSET)]);
+
+            this.moveProtectionSphere(data.id, data.pos);
 
             if (nameplate) {
                 nameplate.lookAt(cameraPos);
@@ -228,6 +235,8 @@ export default class ScenePlayerHandler extends ChildComponent {
 
                 BatchHandler.remove(this.ringMesh!, index);
                 this.players.splice(index, 1);
+
+                this.removeProtectionSphere(data.id);
             }
 
             if (this.controlledPlayerId === data.id) {
@@ -329,27 +338,31 @@ export default class ScenePlayerHandler extends ChildComponent {
         }
     }
 
-    private onProtectionStart(id: number) {
+    private addProtectionSphere(id: number) {
         const playerObj = this.players.find((player) => {
             return player.id === id;
         });
 
         if (playerObj) {
-            const sphere = this.generateProtectionSphere();
-            sphere.position.copy(playerObj.body.position);
-            playerObj.group.add(sphere);
-            playerObj.protectionSphere = sphere;
+            this.generateProtectionSphere(playerObj.body.position);
+            this.sphereOwners.push(id);
         }
     }
 
-    private onProtectionEnd(id: number) {
-        const playerObj = this.players.find((player) => {
-            return player.id === id;
-        });
+    private removeProtectionSphere(id: number) {
+        const index = this.sphereOwners.indexOf(id);
+        if (index > -1) {
+            BatchHandler.remove(this.protectionFrontsideMesh!, index);
+            BatchHandler.remove(this.protectionBacksideMesh!, index);
+        }
+        this.sphereOwners.splice(index, 1);
+    }
 
-        if (playerObj && playerObj.protectionSphere) {
-            playerObj.group.remove(playerObj.protectionSphere);
-            playerObj.protectionSphere = undefined;
+    private moveProtectionSphere(id: number, pos: Vector3) {
+        const index = this.sphereOwners.indexOf(id);
+        if (index > -1) {
+            BatchHandler.updatePositions(this.protectionFrontsideMesh!, [index], [pos]);
+            BatchHandler.updatePositions(this.protectionBacksideMesh!, [index], [pos]);
         }
     }
 
@@ -386,29 +399,31 @@ export default class ScenePlayerHandler extends ChildComponent {
         BillboardBatchHandler.add(this.billboardMesh!, position, color, percentage);
     }
 
-    private generateProtectionSphere() {
+    private generateProtectionSphere(pos: Vector3) {
         // Two spheres are required to remove rendering artifacts.
-        const sphereGeo = new SphereGeometry(1.25, 12, 12, 0, Math.PI);
-        const sphere1Material = new MeshLambertMaterial({
-            color: 0xf0f0f0,
-            transparent: true,
-            side: BackSide,
-        });
-        const sphere2Material = new MeshLambertMaterial({
-            color: 0xf0f0f0,
-            transparent: true,
-            side: FrontSide,
-        });
-        sphere1Material.opacity = 0.5;
-        sphere2Material.opacity = 0.5;
-        const sphere1Obj = new Mesh(sphereGeo, sphere1Material);
-        const sphere2Obj = new Mesh(sphereGeo, sphere2Material);
-        sphere1Obj.rotateX(-Math.PI / 2);
-        sphere2Obj.rotateX(-Math.PI / 2);
+        // const sphereGeo = new SphereGeometry(1.25, 12, 12, 0, Math.PI);
+        // const sphere1Material = new MeshLambertMaterial({
+        //     color: 0xf0f0f0,
+        //     transparent: true,
+        //     side: BackSide,
+        // });
+        // const sphere2Material = new MeshLambertMaterial({
+        //     color: 0xf0f0f0,
+        //     transparent: true,
+        //     side: FrontSide,
+        // });
+        // sphere1Material.opacity = 0.5;
+        // sphere2Material.opacity = 0.5;
+        // const sphere1Obj = new Mesh(sphereGeo, sphere1Material);
+        // const sphere2Obj = new Mesh(sphereGeo, sphere2Material);
+        // sphere1Obj.rotateX(-Math.PI / 2);
+        // sphere2Obj.rotateX(-Math.PI / 2);
 
-        const group = new Group();
-        group.add(sphere1Obj, sphere2Obj);
-        return group;
+        // const group = new Group();
+        // group.add(sphere1Obj, sphere2Obj);
+        // return group;
+        BatchHandler.add(this.protectionFrontsideMesh!, pos, 0xf0f0f0, new Quaternion());
+        BatchHandler.add(this.protectionBacksideMesh!, pos, 0xf0f0f0, new Quaternion());
     }
 
     private generateRing(color: number, pos: Vector3, orientation: Quaternion) {
@@ -439,13 +454,21 @@ export default class ScenePlayerHandler extends ChildComponent {
         const ringGeo = new RingBufferGeometry(0.85, 1, 64);
         ringGeo.rotateX(-Math.PI / 2);
 
-        this.billboardMesh = BillboardBatchHandler.create([], [], []);
+        const sphereGeo = new SphereBufferGeometry(1.25, 12, 12, 0, Math.PI);
+        sphereGeo.rotateX(-Math.PI / 2);
+
         this.ringMesh = BatchHandler.create(ringGeo, [], [], []);
-        this.scene.add(this.billboardMesh, this.ringMesh);
+        this.protectionFrontsideMesh = BatchHandler.create(sphereGeo, [], [], [], undefined, FrontSide, 0.5);
+        this.protectionBacksideMesh = BatchHandler.create(sphereGeo, [], [], [], undefined, BackSide, 0.5);
+        this.protectionFrontsideMesh.renderOrder = 1;
+
+        this.billboardMesh = BillboardBatchHandler.create([], [], []);
+        this.scene.add(this.billboardMesh, this.ringMesh, this.protectionBacksideMesh, this.protectionFrontsideMesh);
     }
 
     private removeBatchedMeshes() {
-        this.scene.remove(this.ringMesh!, this.billboardMesh!);
+        this.scene.remove(this.ringMesh!, this.billboardMesh!, this.protectionFrontsideMesh!, this.protectionBacksideMesh!);
         this.billboardOwners = [];
+        this.sphereOwners = [];
     }
 }

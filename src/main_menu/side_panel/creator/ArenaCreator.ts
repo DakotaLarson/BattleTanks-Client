@@ -1,7 +1,7 @@
 import ChildComponent from "../../../component/ChildComponent";
 import DomHandler from "../../../DomHandler";
 import EventHandler from "../../../EventHandler";
-import Tutorial from "../../Tutorial";
+import Tutorial from "../../tutorial/Tutorial";
 import CreateMenu from "./CreateMenu";
 import LoadMenu from "./LoadMenu";
 

@@ -1,12 +1,13 @@
-import ChildComponent from "../component/ChildComponent";
-import DomHandler from "../DomHandler";
-import DOMMutationHandler from "../DOMMutationHandler";
-import EventHandler from "../EventHandler";
+import ChildComponent from "../../component/ChildComponent";
+import DomHandler from "../../DomHandler";
+import DOMMutationHandler from "../../DOMMutationHandler";
+import EventHandler from "../../EventHandler";
 
 export default class Tutorial extends ChildComponent {
 
+    protected contentElt: HTMLElement;
+
     private parentElt: HTMLElement;
-    private contentElt: HTMLElement;
     private closeBtn: HTMLElement;
 
     constructor(contentQuery: string) {

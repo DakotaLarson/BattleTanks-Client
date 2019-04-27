@@ -137,12 +137,7 @@
 .main-menu .feedback-greeting {
     font-size: 4vmin;
 }
-.main-menu .standard-anchor {
-    color: #00b9ff;
-}
-.main-menu .standard-anchor:hover {
-    color: #33c9ff;
-}
+
 .main-menu .auth-container {
     position: absolute;
     top: 2.5vmin;
