@@ -23,22 +23,27 @@ export default class PlayerStats extends ChildComponent {
     }
 
     public updateStats(stats: any) {
+        this.clearStats();
         if (stats) {
             this.formatStats(stats);
             this.renderStats(stats);
-        } else {
-            this.clearStats();
         }
     }
 
     private renderStats(stats: any) {
         const statTitles = ["points", "rank", "victories", "defeats", "V/D", "kills", "deaths", "K/D", "shots", "hits", "accuracy"];
+        const elts: HTMLElement[] = [];
         for (const title of statTitles) {
             if (stats[title] !== undefined) {
-                this.containerElt.appendChild(this.createStatElt(title));
-                this.containerElt.appendChild(this.createStatElt(stats[title]));
+                elts.push(this.createStatElt(title));
+                elts.push(this.createStatElt(stats[title]));
             }
         }
+        fastdom.mutate(() => {
+            for (const elt of elts) {
+                this.containerElt.appendChild(elt);
+            }
+        });
     }
 
     private formatStats(stats: any) {

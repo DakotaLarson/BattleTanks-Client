@@ -95,6 +95,8 @@ export default class RankChart extends Tutorial {
         const rankInfoElt = DomHandler.getElement(".rank-info-rank", parentElt);
 
         if (level && points) {
+            currentInfoElt.textContent = "Current points: " + points;
+
             const levels = RankCalculator.getLevels();
             if (level < levels.length) {
                 const nextLevelPoints = levels[level].points;
