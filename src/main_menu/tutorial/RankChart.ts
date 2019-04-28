@@ -152,10 +152,10 @@ export default class RankChart extends Tutorial {
         titleContainer.appendChild(pointsSubtitle);
 
         const rewardContainer = this.createElement("rank-chart-reward-container");
-        const rewardCount = Math.floor(Math.random() * 3);
-        for (let i = 0; i < rewardCount; i ++) {
-            rewardContainer.appendChild(this.createElement("rank-chart-reward", "Reward"));
-        }
+        rewardContainer.appendChild(this.createElement("rank-chart-reward", "Rewards"));
+        rewardContainer.appendChild(this.createElement("rank-chart-reward", "Coming"));
+        rewardContainer.appendChild(this.createElement("rank-chart-reward", "Soon!"));
+
         // TODO: Add rewards to container
 
         rankContainer.appendChild(titleContainer);

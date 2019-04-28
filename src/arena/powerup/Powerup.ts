@@ -8,8 +8,8 @@ export default class Powerup {
     private static readonly ROTATION_SPEED = 1.75;
     private static readonly ROTATION_AXIS = new Vector3(0, 1, 0);
 
-    private static readonly HEIGHT_SPEED = 0.05;
-    private static readonly MAX_HEIGHT = 0.65;
+    private static readonly HEIGHT_SPEED = 0.25;
+    private static readonly MAX_HEIGHT = 0.55;
     private static readonly MIN_HEIGHT = 0.25;
 
     public type: number;
@@ -17,7 +17,7 @@ export default class Powerup {
     public rotation: Quaternion;
 
     private rotationAngle: number;
-    private rising: boolean;
+    private heightTime: number;
 
     constructor(type: number, position: Vector3) {
         this.type = type;
@@ -28,19 +28,14 @@ export default class Powerup {
 
         const y = Math.random() * Powerup.MAX_HEIGHT - Powerup.MIN_HEIGHT;
         position.y = y;
-        this.rising = Math.random() < 0.5;
+        this.heightTime = Math.random() / Powerup.HEIGHT_SPEED;
     }
 
     public update(delta: number) {
-        let heightTravel = delta * Powerup.HEIGHT_SPEED;
-        if (!this.rising) {
-            heightTravel *= -1;
-        }
+        this.heightTime += delta;
 
-        this.position.y = Math.min(Powerup.MAX_HEIGHT, Math.max(Powerup.MIN_HEIGHT, this.position.y + heightTravel));
-        if (this.position.y === Powerup.MAX_HEIGHT || this.position.y === Powerup.MIN_HEIGHT) {
-            this.rising = !this.rising;
-        }
+        const halfHeight = (Powerup.MAX_HEIGHT - Powerup.MIN_HEIGHT) / 2;
+        this.position.y = Math.sin(this.heightTime * Math.PI * 2 * Powerup.HEIGHT_SPEED) * halfHeight + halfHeight + Powerup.MIN_HEIGHT;
 
         this.rotationAngle += delta * Powerup.ROTATION_SPEED % (2 * Math.PI);
         this.rotation.setFromAxisAngle(Powerup.ROTATION_AXIS, this.rotationAngle);
