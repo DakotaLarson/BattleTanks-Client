@@ -4,6 +4,7 @@ import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Options from "../../Options";
 import BlockCollisionHandler from "../collision/BlockCollisionHandler";
+import FireworkHandler from "./FireworkHandler";
 import ScenePlayerHandler from "./ScenePlayerHandler";
 import ScenePowerupHandler from "./ScenePowerupHandler";
 import SceneSingleplayerToolHandler from "./SceneSingleplayerToolHandler";
@@ -45,6 +46,7 @@ export default class SceneHandler extends Component {
     private sceneUtils: SceneUtils;
     private sceneVisualsHandler: SceneVisualsHandler;
     private scenePowerupHandler: ScenePowerupHandler;
+    private fireworkHandler: FireworkHandler;
 
     constructor(audioListener: AudioListener) {
         super();
@@ -74,11 +76,14 @@ export default class SceneHandler extends Component {
         this.sceneUtils = new SceneUtils(this);
         this.sceneVisualsHandler = new SceneVisualsHandler(this, this.scene);
         this.scenePowerupHandler = new ScenePowerupHandler(this.scene);
+        this.fireworkHandler = new FireworkHandler(this.scene);
 
+        this.attachChild(this.fireworkHandler);
         this.renderMenuScene();
 
         // Create in constructor to handle main menu alterations, when component is disabled.
         EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
+
     }
 
     public enable() {
@@ -98,6 +103,7 @@ export default class SceneHandler extends Component {
         this.detachChild(this.scenePlayerHandler);
         this.detachChild(this.sceneSingleplayerToolHandler);
         this.detachChild(this.scenePowerupHandler);
+        this.detachChild(this.fireworkHandler);
 
         this.clearScene();
         this.renderMenuScene();

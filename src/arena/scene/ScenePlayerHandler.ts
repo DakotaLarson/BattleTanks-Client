@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, Group, Mesh, MeshBasicMaterial, PerspectiveCamera, PositionalAudio, Quaternion, RingBufferGeometry, Scene, ShapeBufferGeometry, SphereBufferGeometry, , Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, Group, Mesh, MeshBasicMaterial, PerspectiveCamera, PositionalAudio, Quaternion, RingBufferGeometry, Scene, ShapeBufferGeometry, SphereBufferGeometry, Vector3, Vector4} from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
@@ -149,103 +149,6 @@ export default class ScenePlayerHandler extends ChildComponent {
         this.addPlayer(data.id, data.pos, data.name, true, false, data.color);
     }
 
-    private onPlayerMove(data: any) {
-        const index = this.players.findIndex((player: IPlayerObj) => {
-            return player.id === data.id;
-        });
-        if (index > -1) {
-            const playerObj = this.players[index];
-            playerObj.group.position.copy(data.pos);
-            const body = playerObj.body;
-            const head = playerObj.head;
-            const nameplate = playerObj.nameplate;
-
-            head.rotation.y = data.headRot;
-            body.rotation.y = data.bodyRot;
-
-            const cameraPos = this.camera.position;
-
-            BatchHandler.updatePositions(this.ringMesh!, [index], [data.pos.clone().add(ScenePlayerHandler.RING_OFFSET)]);
-
-            this.moveProtectionSphere(data.id, data.pos);
-
-            if (nameplate) {
-                nameplate.lookAt(cameraPos);
-
-                // Billboards are only present on connected players (those with nameplates)
-                const billboardIndices = [];
-                const billboardPositions = [];
-
-                const healthBarIndex = this.billboardOwners.findIndex((owner) => {
-                    return owner.id === data.id && owner.isHealth;
-                });
-                if (healthBarIndex > -1) {
-                    billboardPositions.push(data.pos.clone().add(ScenePlayerHandler.HEALTH_BAR_OFFSET));
-                    billboardIndices.push(healthBarIndex);
-                }
-
-                const shieldBarIndex = this.billboardOwners.findIndex((owner) => {
-                    return owner.id === data.id && !owner.isHealth;
-                });
-                if (shieldBarIndex > -1) {
-                    billboardPositions.push(data.pos.clone().add(ScenePlayerHandler.SHIELD_BAR_OFFSET));
-                    billboardIndices.push(shieldBarIndex);
-                }
-
-                BillboardBatchHandler.updatePositions(this.billboardMesh!, billboardIndices, billboardPositions);
-            }
-
-            playerObj.movementVelocity = data.movementVelocity;
-            this.engineAudioHandler.updateEngineSound(playerObj);
-        }
-    }
-
-    private removePlayer(data: any, isClear?: boolean) {
-        let obj;
-        let index;
-        if (isClear) {
-            obj = data;
-        } else {
-            index = this.players.findIndex((player) => {
-                return player.id === data.id;
-            });
-            if (index > -1) {
-                obj = this.players[index];
-            }
-        }
-        if (obj) {
-            this.scene.remove(obj.group);
-            if (!isClear && index !== undefined && index > -1) {
-                // Cleared after loop otherwise
-                const healthIndex = this.billboardOwners.findIndex((owner) => {
-                    return owner.id === data.id && owner.isHealth;
-                });
-                if (healthIndex > -1) {
-                    BillboardBatchHandler.remove(this.billboardMesh!, healthIndex);
-                    this.billboardOwners.splice(healthIndex, 1);
-                }
-
-                const shieldIndex = this.billboardOwners.findIndex((owner) => {
-                    return owner.id === data.id && !owner.isHealth;
-                });
-                if (shieldIndex > -1) {
-                    BillboardBatchHandler.remove(this.billboardMesh!, shieldIndex);
-                    this.billboardOwners.splice(shieldIndex, 1);
-                }
-
-                BatchHandler.remove(this.ringMesh!, index);
-                this.players.splice(index, 1);
-
-                this.removeProtectionSphere(data.id);
-            }
-
-            if (this.controlledPlayerId === data.id) {
-                this.controlledPlayerId = -1;
-            }
-            this.engineAudioHandler.stopEngineSound(obj);
-        }
-    }
-
     private addPlayer(id: number, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, color?: number) {
         const group = new Group();
         const head = new Group();
@@ -305,6 +208,104 @@ export default class ScenePlayerHandler extends ChildComponent {
 
         if (!noSound) {
             this.engineAudioHandler.startEngineSound(playerObj);
+        }
+    }
+
+    private removePlayer(data: any, isClear?: boolean) {
+        let obj;
+        let index;
+        if (isClear) {
+            obj = data;
+        } else {
+            index = this.players.findIndex((player) => {
+                return player.id === data.id;
+            });
+            if (index > -1) {
+                obj = this.players[index];
+            }
+        }
+        if (obj) {
+            this.scene.remove(obj.group);
+            if (!isClear && index !== undefined && index > -1) {
+                // Cleared after loop otherwise
+                const healthIndex = this.billboardOwners.findIndex((owner) => {
+                    return owner.id === data.id && owner.isHealth;
+                });
+                if (healthIndex > -1) {
+                    BillboardBatchHandler.remove(this.billboardMesh!, healthIndex);
+                    this.billboardOwners.splice(healthIndex, 1);
+                }
+
+                const shieldIndex = this.billboardOwners.findIndex((owner) => {
+                    return owner.id === data.id && !owner.isHealth;
+                });
+                if (shieldIndex > -1) {
+                    BillboardBatchHandler.remove(this.billboardMesh!, shieldIndex);
+                    this.billboardOwners.splice(shieldIndex, 1);
+                }
+
+                BatchHandler.remove(this.ringMesh!, index);
+                this.players.splice(index, 1);
+
+                this.removeProtectionSphere(data.id);
+            }
+
+            if (this.controlledPlayerId === data.id) {
+                this.controlledPlayerId = -1;
+            }
+            this.engineAudioHandler.stopEngineSound(obj);
+        }
+    }
+
+    private onPlayerMove(data: any) {
+        const index = this.players.findIndex((player: IPlayerObj) => {
+            return player.id === data.id;
+        });
+        if (index > -1) {
+            const playerObj = this.players[index];
+            playerObj.group.position.copy(data.pos);
+            const body = playerObj.body;
+            const head = playerObj.head;
+            const nameplate = playerObj.nameplate;
+
+            head.rotation.y = data.headRot;
+
+            body.rotation.y = data.bodyRot;
+
+            const cameraPos = this.camera.position;
+
+            BatchHandler.updatePositions(this.ringMesh!, [index], [data.pos.clone().add(ScenePlayerHandler.RING_OFFSET)]);
+
+            this.moveProtectionSphere(data.id, data.pos);
+
+            if (nameplate) {
+                nameplate.lookAt(cameraPos);
+
+                // Billboards are only present on connected players (those with nameplates)
+                const billboardIndices = [];
+                const billboardPositions = [];
+
+                const healthBarIndex = this.billboardOwners.findIndex((owner) => {
+                    return owner.id === data.id && owner.isHealth;
+                });
+                if (healthBarIndex > -1) {
+                    billboardPositions.push(data.pos.clone().add(ScenePlayerHandler.HEALTH_BAR_OFFSET));
+                    billboardIndices.push(healthBarIndex);
+                }
+
+                const shieldBarIndex = this.billboardOwners.findIndex((owner) => {
+                    return owner.id === data.id && !owner.isHealth;
+                });
+                if (shieldBarIndex > -1) {
+                    billboardPositions.push(data.pos.clone().add(ScenePlayerHandler.SHIELD_BAR_OFFSET));
+                    billboardIndices.push(shieldBarIndex);
+                }
+
+                BillboardBatchHandler.updatePositions(this.billboardMesh!, billboardIndices, billboardPositions);
+            }
+
+            playerObj.movementVelocity = data.movementVelocity;
+            this.engineAudioHandler.updateEngineSound(playerObj);
         }
     }
 
@@ -400,28 +401,6 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     private generateProtectionSphere(pos: Vector3) {
-        // Two spheres are required to remove rendering artifacts.
-        // const sphereGeo = new SphereGeometry(1.25, 12, 12, 0, Math.PI);
-        // const sphere1Material = new MeshLambertMaterial({
-        //     color: 0xf0f0f0,
-        //     transparent: true,
-        //     side: BackSide,
-        // });
-        // const sphere2Material = new MeshLambertMaterial({
-        //     color: 0xf0f0f0,
-        //     transparent: true,
-        //     side: FrontSide,
-        // });
-        // sphere1Material.opacity = 0.5;
-        // sphere2Material.opacity = 0.5;
-        // const sphere1Obj = new Mesh(sphereGeo, sphere1Material);
-        // const sphere2Obj = new Mesh(sphereGeo, sphere2Material);
-        // sphere1Obj.rotateX(-Math.PI / 2);
-        // sphere2Obj.rotateX(-Math.PI / 2);
-
-        // const group = new Group();
-        // group.add(sphere1Obj, sphere2Obj);
-        // return group;
         BatchHandler.add(this.protectionFrontsideMesh!, pos, 0xf0f0f0, new Quaternion());
         BatchHandler.add(this.protectionBacksideMesh!, pos, 0xf0f0f0, new Quaternion());
     }

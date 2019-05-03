@@ -16,6 +16,7 @@ export default class Renderer extends Component {
             canvas: DomHandler.getElement("#game-canvas") as HTMLCanvasElement,
             antialias: true,
             powerPreference: "high-performance",
+            stencil: false,
         });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.scene = scene;

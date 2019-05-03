@@ -352,10 +352,9 @@ export default class Player extends Component {
 
     private computeTurretRotation() {
         const ray: Ray = RaycastHandler.getRaycaster().ray;
-        const intersection = new Vector3();
         const playerPosition = this.position.clone();
-        ray.intersectPlane(new Plane(new Vector3(0, 1, 0), -0.75), intersection);
-        if (!intersection.equals(new Vector3())) {
+        const intersection = ray.intersectPlane(new Plane(new Vector3(0, 1, 0), -0.55), new Vector3());
+        if (intersection) {
             const angle = Math.atan2(playerPosition.x - intersection.x, playerPosition.z - intersection.z);
 
             this.headRotation = angle;

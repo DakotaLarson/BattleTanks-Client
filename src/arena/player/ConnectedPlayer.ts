@@ -57,7 +57,7 @@ export default class ConnectedPlayer extends ChildComponent {
     }
 
     private onFrame(delta: number) {
-        let potentialRotation = (this.bodyRotation + delta * this.rotationVelocity);
+        let potentialRotation = this.bodyRotation + delta * this.rotationVelocity;
         const potentialPosition = this.position.clone();
 
         if (this.ramResponse) {
