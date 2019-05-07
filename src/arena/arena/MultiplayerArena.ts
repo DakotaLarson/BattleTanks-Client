@@ -1,3 +1,4 @@
+import { Vec2, Vector3 } from "three";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
 import PlayerCollisionHandler from "../collision/PlayerCollisionHandler";
@@ -84,6 +85,7 @@ export default class MultiplayerArena extends Arena {
 
     private onPlayerRemoval(data: any) {
         this.updateKillfeed(data.id, data.involvedId, data.livesRemaining);
+        this.displayFirework(data.involvedId, this.player!);
         this.detachChild(this.player as Player);
         PlayerCollisionHandler.removePlayer(this.player as Player);
         this.player = undefined;
@@ -120,11 +122,15 @@ export default class MultiplayerArena extends Arena {
 
     private onConnectedPlayerRemoval(data: any) {
         const player = this.connectedPlayers.get(data.id);
+
         this.updateKillfeed(data.id, data.involvedId, data.livesRemaining);
+
         this.connectedPlayers.delete(data.id);
         if (player) {
             this.detachChild(player);
             PlayerCollisionHandler.removePlayer(player);
+
+            this.displayFirework(data.involvedId, player);
         }
     }
 
@@ -182,6 +188,17 @@ export default class MultiplayerArena extends Arena {
             } else {
                 return undefined;
             }
+        }
+    }
+
+    private displayFirework(involvedId: number, player: ConnectedPlayer | Player) {
+        if (involvedId && involvedId !== MultiplayerArena.OOB_ID) {
+            const position = player.position.clone().setY(0.5);
+
+            EventHandler.callEvent(EventHandler.Event.FIREWORK_ADDITION, {
+                position,
+                color: player.color,
+            });
         }
     }
 }

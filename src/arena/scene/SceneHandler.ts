@@ -4,7 +4,7 @@ import Component from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Options from "../../Options";
 import BlockCollisionHandler from "../collision/BlockCollisionHandler";
-import FireworkHandler from "./FireworkHandler";
+import FireworkHandler from "./firework/FireworkHandler";
 import ScenePlayerHandler from "./ScenePlayerHandler";
 import ScenePowerupHandler from "./ScenePowerupHandler";
 import SceneSingleplayerToolHandler from "./SceneSingleplayerToolHandler";

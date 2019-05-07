@@ -138,7 +138,6 @@ export default class NotificationList extends Component {
         parentElt.appendChild(usernameElt);
         parentElt.appendChild(bodyElt);
 
-        this.notifications.set(id, header);
         return parentElt;
     }
 

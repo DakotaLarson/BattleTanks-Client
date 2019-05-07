@@ -188,15 +188,13 @@
 .main-menu .leaderboard {
     position: absolute;
     top: 10vh;
+    right: 2.5vw;
+    padding: 0;
+    min-width: 15vw;
     background-color: #101010;
     border: solid 1px #ffffff;
 }
 
-.main-menu .leaderboard {
-    right: 2.5vw;
-    padding: 0;
-    width: 15vw;
-}
 .main-menu .data-container,
 .main-menu .leaderboard-container,
 .main-menu .search-container {

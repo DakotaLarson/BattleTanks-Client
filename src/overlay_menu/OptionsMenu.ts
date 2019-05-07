@@ -30,6 +30,7 @@ export default class OptionsMenu extends Component {
     private gridlinesEnabledElt: HTMLInputElement;
     private lazyCameraEnabledElt: HTMLInputElement;
     private autofixCameraEnabledElt: HTMLInputElement;
+    private fireworksEnabledElt: HTMLInputElement;
 
     private forwardValueElt: HTMLElement;
     private backwardValueElt: HTMLElement;
@@ -77,6 +78,7 @@ export default class OptionsMenu extends Component {
         this.gridlinesEnabledElt = DomHandler.getElement("#option-enabled-gridlines", this.parentElt) as HTMLInputElement;
         this.lazyCameraEnabledElt = DomHandler.getElement("#option-enabled-camera-lazy", this.parentElt) as HTMLInputElement;
         this.autofixCameraEnabledElt = DomHandler.getElement("#option-enabled-camera-autofix", this.parentElt) as HTMLInputElement;
+        this.fireworksEnabledElt = DomHandler.getElement("#option-enabled-fireworks", this.parentElt) as HTMLInputElement;
 
         this.forwardValueElt = DomHandler.getElement("#option-value-forward", this.parentElt);
         this.backwardValueElt = DomHandler.getElement("#option-value-backward", this.parentElt);
@@ -152,6 +154,7 @@ export default class OptionsMenu extends Component {
         DomEventHandler.addListener(this, this.gridlinesEnabledElt, "change", this.onGridlinesEnabledChange);
         DomEventHandler.addListener(this, this.lazyCameraEnabledElt, "change", this.onLazyCameraEnabledChange);
         DomEventHandler.addListener(this, this.autofixCameraEnabledElt, "change", this.onAutofixCameraEnabledChange);
+        DomEventHandler.addListener(this, this.fireworksEnabledElt, "change", this.onFireworksEnabledChange);
 
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onBackwardClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onForwardClick);
@@ -188,6 +191,7 @@ export default class OptionsMenu extends Component {
         DomEventHandler.removeListener(this, this.gridlinesEnabledElt, "change", this.onGridlinesEnabledChange);
         DomEventHandler.removeListener(this, this.lazyCameraEnabledElt, "change", this.onLazyCameraEnabledChange);
         DomEventHandler.removeListener(this, this.autofixCameraEnabledElt, "change", this.onAutofixCameraEnabledChange);
+        DomEventHandler.removeListener(this, this.fireworksEnabledElt, "change", this.onFireworksEnabledChange);
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onBackwardClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onForwardClick);
@@ -276,6 +280,10 @@ export default class OptionsMenu extends Component {
 
     private onAutofixCameraEnabledChange() {
         this.saveChange("autofixCamera", this.autofixCameraEnabledElt.checked);
+    }
+
+    private onFireworksEnabledChange() {
+        this.saveChange("fireworksEnabled", this.fireworksEnabledElt.checked);
     }
 
     private onForwardClick(event: MouseEvent) {
@@ -480,6 +488,7 @@ export default class OptionsMenu extends Component {
             setCheckedValue("gridlinesEnabled", this.gridlinesEnabledElt);
             setCheckedValue("lazyCamera", this.lazyCameraEnabledElt);
             setCheckedValue("autofixCamera", this.autofixCameraEnabledElt);
+            setCheckedValue("fireworksEnabled", this.fireworksEnabledElt);
 
             setOption("forward", this.forwardValueElt);
             setOption("backward", this.backwardValueElt);
