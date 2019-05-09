@@ -18,7 +18,7 @@ export default class RankCalculator {
 
     public static getData(points: number) {
         const level = Math.ceil(Math.pow(points, 1 / Math.E));
-        const rankIndex = Math.min(Math.floor(level / RankCalculator.LEVELS_PER_RANK), RankCalculator.RANKS.length - 1);
+        const rankIndex = Math.min(Math.floor((level - 1) / RankCalculator.LEVELS_PER_RANK), RankCalculator.RANKS.length - 1);
 
         const rank = RankCalculator.RANKS[rankIndex];
         return {
