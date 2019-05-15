@@ -1,4 +1,3 @@
-import { Vec2, Vector3 } from "three";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
 import PlayerCollisionHandler from "../collision/PlayerCollisionHandler";
