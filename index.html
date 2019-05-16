@@ -623,18 +623,16 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
 <script src="https://cdn.jsdelivr.net/npm/event-source-polyfill@1.0.5/src/eventsource.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@0/dist/ua-parser.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/103/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
 <script>
     const mainScripts = new Map([
-        ["https://cdn.jsdelivr.net/npm/three@0.103.0/examples/js/loaders/LoaderSupport.js", false],
-        ["https://cdn.jsdelivr.net/npm/three@0.103.0/examples/js/loaders/MTLLoader.js", false],
-        ["https://cdn.jsdelivr.net/npm/three@0.103.0/examples/js/utils/BufferGeometryUtils.js", false],
-        ["https://cdn.jsdelivr.net/npm/three@0.104.0/examples/js/loaders/TDSLoader.js", false],
+        ["https://cdn.jsdelivr.net/npm/three@0.104.0/examples/js/loaders/LoaderSupport.js", false],
+        ["https://cdn.jsdelivr.net/npm/three@0.104.0/examples/js/loaders/MTLLoader.js", false],
+        ["https://cdn.jsdelivr.net/npm/three@0.104.0/examples/js/utils/BufferGeometryUtils.js", false],
+        ["https://cdn.jsdelivr.net/npm/three@0.104.0/examples/js/loaders/STLLoader.js", false],
     ]);
     const dependentScripts = new Map([
-        ["https://cdn.jsdelivr.net/npm/three@0.103.0/examples/js/loaders/OBJLoader2.js", false],
-        
+        ["https://cdn.jsdelivr.net/npm/three@0.104.0/examples/js/loaders/OBJLoader2.js", false],
     ]);
     const loadScripts = (scripts) => {
         return new Promise((resolve) => {
@@ -658,7 +656,7 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
 
     require.config({
         paths: {
-            three: "https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three",
+            three: "https://cdnjs.cloudflare.com/ajax/libs/three.js/104/three",
             fastdom: "https://cdnjs.cloudflare.com/ajax/libs/fastdom/1.0.9/fastdom",
         }
     });
