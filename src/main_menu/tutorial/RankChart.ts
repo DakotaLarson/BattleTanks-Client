@@ -95,13 +95,13 @@ export default class RankChart extends Tutorial {
         const rankInfoElt = DomHandler.getElement(".rank-info-rank", parentElt);
 
         if (level && points) {
-            currentInfoElt.textContent = "Current points: " + points;
+            currentInfoElt.textContent = "Current: " + points + " points";
 
             const levels = RankCalculator.getLevels();
             if (level < levels.length) {
                 const nextLevelPoints = levels[level].points;
                 const levelPointDiff = nextLevelPoints - points;
-                levelInfoElt.textContent = "Points needed for next level: " + nextLevelPoints + " (" + levelPointDiff + " more)";
+                levelInfoElt.textContent = "Next Level: " + nextLevelPoints + " points (+" + levelPointDiff + ")";
             } else {
                 levelInfoElt.textContent = "Top level achieved!";
             }
@@ -110,7 +110,7 @@ export default class RankChart extends Tutorial {
             if (nextRank < levels.length) {
                 const nextRankPoints = levels[nextRank - 1].points;
                 const rankPointDiff = nextRankPoints - points;
-                rankInfoElt.textContent = "Points needed for next rank: " + nextRankPoints + " (" + rankPointDiff + " more)";
+                rankInfoElt.textContent = "Next rank: " + nextRankPoints + " points (+" + rankPointDiff + ")";
             } else {
                 rankInfoElt.textContent = "Top rank achieved!";
             }

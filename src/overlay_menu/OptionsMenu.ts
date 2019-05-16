@@ -115,6 +115,7 @@ export default class OptionsMenu extends Component {
 
         const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
         this.updateRemoteSettings(authToken);
+        this.onUsernameUpdate();
     }
 
     private onGearMouseDown(event: MouseEvent) {
