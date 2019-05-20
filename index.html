@@ -46,6 +46,7 @@
     <link rel="stylesheet" type="text/css" href="./css/fonts/fonts.css"/>
     <link rel="stylesheet" type="text/css" href="./css/loading.css"/>
     <link rel="stylesheet" type="text/css" href="./css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/buttons.css"/>
     <link rel="stylesheet" type="text/css" href="./css/game_menu.css"/>
     <link rel="stylesheet" type="text/css" href="./css/overlay_menu.css"/>
     <link rel="stylesheet" type="text/css" href="./css/gui.css"/>
@@ -132,12 +133,18 @@
                 <div class="side-panel-level"></div>
             </div>
     
-            <span class="side-panel-message">Sign in to see your stats!</span><br>
+            <span class="side-panel-message">Sign in to see your stats!<br></span>
     
-            <span class="menu-selection menu-selection-small disabled" id="side-panel-stats">Your Stats</span><br>
-            <span class="menu-selection menu-selection-small" id="side-panel-find">Find Player</span><br>
-            <span class="menu-selection menu-selection-small" id="side-panel-create">Create Arena</span><br>
+            <span class="btn btn-disabled" id="side-panel-store">The Store</span><br>
+            <span class="btn btn-disabled" id="side-panel-stats">Your Stats</span><br>
+            <span class="btn" id="side-panel-find">Find Player</span><br>
+            <span class="btn" id="side-panel-create">Create Arena</span><br>
             <span class="menu-link menu-link-small rank-tutorial-link">Rank Chart</span> 
+        </div>
+
+        <div class="side-panel-cmp side-panel-store">
+            <div class="side-panel-title">The Store</div>
+            <div class="store-container"></div>
         </div>
 
         <div class="side-panel-cmp side-panel-stats">

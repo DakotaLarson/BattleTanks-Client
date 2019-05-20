@@ -154,9 +154,14 @@ export default class ScenePlayerHandler extends ChildComponent {
         const head = new Group();
         const body = new Group();
         group.position.set(pos.x, pos.y, pos.z);
-        this.modelLoader.getGroup("3", true).then((result: Group) => {
+        this.modelLoader.getGroup("0", true).then((result: Group) => {
             const headMesh = result.getObjectByName("head") as Mesh;
             const bodyMesh = result.getObjectByName("body") as Mesh;
+
+            // console.log(headMesh, bodyMesh);
+            // for (const mat of bodyMesh.material) {
+            //     console.log(mat.color.getHexString());
+            // }
 
             head.add(headMesh);
             body.add(bodyMesh);

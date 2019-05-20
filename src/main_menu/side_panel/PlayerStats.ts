@@ -31,7 +31,7 @@ export default class PlayerStats extends ChildComponent {
     }
 
     private renderStats(stats: any) {
-        const statTitles = ["points", "rank", "victories", "defeats", "V/D", "kills", "deaths", "K/D", "shots", "hits", "accuracy"];
+        const statTitles = ["points", "rank", "currency", "victories", "defeats", "V/D", "kills", "deaths", "K/D", "shots", "hits", "accuracy"];
         const elts: HTMLElement[] = [];
         for (const title of statTitles) {
             if (stats[title] !== undefined) {

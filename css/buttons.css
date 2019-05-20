@@ -1,0 +1,40 @@
+.btn,
+.btn-sml {
+    margin: 1vmin;
+    display: inline-block;
+    border: solid 1px #ffffff;
+    font-size: 3.5vmin;
+    padding: 0.25vmin 0.5vmin;
+    cursor: pointer;
+}
+
+.btn-sml {
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 1.75vmin;
+    margin: 0.5vmin 0;
+    padding: 0.25vmin 0.55vmin;
+}
+
+.btn:hover,
+.btn-sml:hover {
+    background-color: #03c95f;
+}
+
+.btn-selected {
+    background-color: #03b053;
+    cursor: default;
+}
+
+.btn-selected:hover {
+    background-color: #03b053;
+}
+
+.btn-disabled {
+    color: #909090;
+    border-color: #909090;
+    cursor: default;
+}
+
+.btn-disabled:hover {
+    background: none;
+}

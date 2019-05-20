@@ -7,11 +7,13 @@ import RankChart from "../tutorial/RankChart";
 import ArenaCreator from "./creator/ArenaCreator";
 import PlayerFinder from "./PlayerFinder";
 import PlayerStats from "./PlayerStats";
+import Store from "./Store";
 
 export default class SidePanel extends ChildComponent {
 
     private topContainer: HTMLElement;
 
+    private store: Store;
     private playerStats: PlayerStats;
     private playerFinder: PlayerFinder;
     private arenaCreator: ArenaCreator;
@@ -26,6 +28,7 @@ export default class SidePanel extends ChildComponent {
 
     private messageElt: HTMLElement;
 
+    private storeBtn: HTMLElement;
     private statsBtn: HTMLElement;
     private findBtn: HTMLElement;
     private createBtn: HTMLElement;
@@ -40,6 +43,7 @@ export default class SidePanel extends ChildComponent {
 
         this.topContainer = DomHandler.getElement(".side-panel-top", menuElt);
 
+        this.store = new Store(menuElt);
         this.playerStats = new PlayerStats(menuElt);
         this.playerFinder = new PlayerFinder(menuElt);
         this.arenaCreator = new ArenaCreator(menuElt);
@@ -52,6 +56,7 @@ export default class SidePanel extends ChildComponent {
 
         this.messageElt = DomHandler.getElement(".side-panel-message", this.topContainer);
 
+        this.storeBtn = DomHandler.getElement("#side-panel-store", this.topContainer);
         this.statsBtn = DomHandler.getElement("#side-panel-stats", this.topContainer);
         this.findBtn = DomHandler.getElement("#side-panel-find", this.topContainer);
         this.createBtn = DomHandler.getElement("#side-panel-create", this.topContainer);
@@ -69,6 +74,7 @@ export default class SidePanel extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
         EventHandler.addListener(this, EventHandler.Event.USERNAME_UPDATE, this.onUsernameUpdate);
 
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onStoreClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onStatsClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onFindClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
@@ -90,6 +96,7 @@ export default class SidePanel extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
         EventHandler.removeListener(this, EventHandler.Event.USERNAME_UPDATE, this.onUsernameUpdate);
 
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onStoreClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onStatsClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onFindClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
@@ -103,6 +110,7 @@ export default class SidePanel extends ChildComponent {
 
     private onSignIn(token: string) {
         this.updateStats(token);
+        this.updateButtons(true);
         this.messageElt.style.display = "none";
 
         if (this.lastAttachedChild) {
@@ -112,6 +120,7 @@ export default class SidePanel extends ChildComponent {
 
     private onSignOut() {
         this.updateStats();
+        this.updateButtons(false);
         this.messageElt.style.display = "";
 
         if (this.lastAttachedChild) {
@@ -128,8 +137,14 @@ export default class SidePanel extends ChildComponent {
         }
     }
 
+    private onStoreClick(event: MouseEvent) {
+        if (event.target === this.storeBtn && !this.storeBtn.classList.contains("btn-disabled")) {
+            this.attach(this.store);
+        }
+    }
+
     private onStatsClick(event: MouseEvent) {
-        if (event.target === this.statsBtn && !this.statsBtn.classList.contains("disabled")) {
+        if (event.target === this.statsBtn && !this.statsBtn.classList.contains("btn-disabled")) {
             this.attach(this.playerStats);
         }
     }
@@ -166,17 +181,26 @@ export default class SidePanel extends ChildComponent {
         if (token) {
             const stats = await this.retrieveStats(token);
             const rankData = this.updateRankAndLevel(stats);
+            this.store.updateStats(parseInt(rankData.level, 10), stats.currency);
             this.dataContainer.style.display = "grid";
-            this.statsBtn.classList.remove("disabled");
             this.playerStats.updateStats(stats);
 
             this.rankChart.updateProgress(parseInt(rankData.level, 10), stats.points);
         } else {
             this.dataContainer.style.display = "";
-            this.statsBtn.classList.add("disabled");
             this.playerStats.updateStats(undefined);
 
             this.rankChart.updateProgress();
+        }
+    }
+
+    private updateButtons(hasToken: boolean) {
+        if (hasToken) {
+            this.storeBtn.classList.remove("btn-disabled");
+            this.statsBtn.classList.remove("btn-disabled");
+        } else {
+            this.storeBtn.classList.add("btn-disabled");
+            this.statsBtn.classList.add("btn-disabled");
         }
     }
 

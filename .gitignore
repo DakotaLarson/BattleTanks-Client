@@ -4,3 +4,4 @@ build/
 deploy/
 .old/
 .DS_Store
+.vscode/
