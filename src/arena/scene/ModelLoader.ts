@@ -1,4 +1,4 @@
-import { Group, Material, MaterialCreator, Mesh, MTLLoader, OBJLoader2 } from "three";
+import { Group, MaterialCreator, MTLLoader, OBJLoader2 } from "three";
 
 export default class ModelLoader {
 
@@ -8,19 +8,19 @@ export default class ModelLoader {
         this.cache = new Map();
     }
 
-    public async getGroup(fileName: string, flatShading?: boolean) {
+    public async getGroup(fileName: string) {
         const cached = this.cache.get(fileName);
         if (cached) {
             return cached.clone();
         } else {
             const creator = await this.getMaterial(fileName);
-            const group = await this.getModel(fileName, creator, flatShading);
+            const group = await this.getModel(fileName, creator);
             this.cache.set(fileName, group);
             return group.clone();
         }
     }
 
-    private getModel(fileName: string, creator: MaterialCreator, flatShading?: boolean): Promise<Group> {
+    private getModel(fileName: string, creator: MaterialCreator): Promise<Group> {
         return new Promise((resolve) => {
             const loader2 = new OBJLoader2();
             loader2.logging.enabled = false;
@@ -28,12 +28,6 @@ export default class ModelLoader {
 
             loader2.setMaterials(creator.materials);
             loader2.load("./res/models/tanks/" + fileName + "/tank.obj", (event: any) => {
-
-                if (flatShading) {
-                    for (const mesh of event.detail.loaderRootNode.children) {
-                        this.setFlatShading((mesh as Mesh).material);
-                    }
-                }
                 resolve(event.detail.loaderRootNode);
             }, undefined, (err: any) => {
                 console.error(err);
@@ -52,15 +46,5 @@ export default class ModelLoader {
                 console.error(err);
             });
         });
-    }
-
-    private setFlatShading(materials: Material | Material[]) {
-        if (Array.isArray(materials)) {
-            for (const material of (materials)) {
-                material.flatShading = true;
-            }
-        } else {
-            materials.flatShading = true;
-        }
     }
 }

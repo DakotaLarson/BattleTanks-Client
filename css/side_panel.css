@@ -92,3 +92,7 @@
     height: 15vmin;
     border: solid 1px #ffffff;
 }
+
+.side-panel .store-item-price {
+    font-size: 2vmin;
+}

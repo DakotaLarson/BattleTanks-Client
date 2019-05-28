@@ -13,7 +13,7 @@ import SceneVisualsHandler from "./SceneVisualsHandler";
 
 export default class SceneHandler extends Component {
 
-    private static readonly BLOCK_COLOR = 0xc0c0c0;
+    private static readonly BLOCK_COLOR = 0xc0c0b0;
 
     public blockPositions: Vector3[];
 

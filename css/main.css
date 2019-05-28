@@ -2,7 +2,6 @@ html, body{
     margin: 0;
     background-color: black;
     font-family: 'Bombardier', sans-serif;
-    height: 100%;
     overflow: hidden;
     overscroll-behavior: none;
     position: fixed;
