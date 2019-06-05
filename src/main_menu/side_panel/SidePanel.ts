@@ -2,12 +2,13 @@ import ChildComponent from "../../component/ChildComponent";
 import DomHandler from "../../DomHandler";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
+import Dropdown from "../../gui/Dropdown";
 import RankCalculator from "../../RankCalculator";
+import Store from "../store/Store";
 import RankChart from "../tutorial/RankChart";
 import ArenaCreator from "./creator/ArenaCreator";
 import PlayerFinder from "./PlayerFinder";
 import PlayerStats from "./PlayerStats";
-import Store from "./Store";
 
 export default class SidePanel extends ChildComponent {
 
@@ -67,6 +68,8 @@ export default class SidePanel extends ChildComponent {
         this.rankChartLink = DomHandler.getElement(".rank-tutorial-link", this.topContainer);
 
         this.rankChart.constructRankChart();
+
+        this.createDropdown(this.topContainer);
     }
 
     public enable() {
@@ -106,6 +109,34 @@ export default class SidePanel extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.TUTORIAL_CLOSE, this.onTutorialClose);
 
         this.attach(undefined);
+    }
+
+    private createDropdown(parent: HTMLElement) {
+        const bgColors = ["red", "yellow", "blue"];
+        const textColors = ["white", "black", "red"];
+
+        const elts = new Map();
+        let selected: HTMLElement;
+        for (let i = 0; i < bgColors.length; i ++) {
+            const bgColor = bgColors[i];
+            const textColor = textColors[i];
+
+            const elt = document.createElement("div");
+            elt.textContent = "test " + i;
+            elt.style.backgroundColor = bgColor;
+            elt.style.color = textColor;
+            elt.style.padding = "15px";
+
+            elts.set(elt, "test " + i);
+
+            if (i === 1) {
+                selected = elt;
+            }
+        }
+        const dropdown = new Dropdown(elts, selected!);
+        parent.appendChild(dropdown.getElement());
+        this.attachChild(dropdown);
+
     }
 
     private onSignIn(token: string) {

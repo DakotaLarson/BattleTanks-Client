@@ -77,22 +77,3 @@
 .side-panel .side-panel-search-container {
     font-size: 2vmin;
 }
-
-.side-panel .store-container {
-    max-width: 33vw;
-    display: grid;
-    grid-template-columns: repeat(4, auto);
-    grid-gap: 1vmin;
-    font-size: 2.5vmin;
-    font-family: 'Inconsolata', sans-serif;
-
-}
-.side-panel .store-item-container {
-    padding: 1vmin;
-    height: 15vmin;
-    border: solid 1px #ffffff;
-}
-
-.side-panel .store-item-price {
-    font-size: 2vmin;
-}

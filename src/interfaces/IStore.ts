@@ -1,15 +1,21 @@
 export interface IStore {
-    tanks: IShopObject[];
-    colors: IShopObject[];
+    tanks: Map<string, IStoreTank>;
+    colors: Map<string, IStoreColor>;
 }
 
-export interface IShopObject {
-    title: string;
+interface IStoreObject {
     price: number;
-    detail: string;
-    parent_required: boolean;
     level_required: number;
+}
+
+export interface IStoreTank extends IStoreObject {
     image_url: string;
     purchased: boolean;
-    selectionIndex: number;
+    selected: boolean;
+    purchasedColors: string[];
+    selectedColors: string[];
+}
+
+export interface IStoreColor extends IStoreObject {
+    detail: string;
 }

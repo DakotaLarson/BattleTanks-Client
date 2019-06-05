@@ -225,6 +225,13 @@ enum Event {
 
     // FIREWORK HANDLER
     FIREWORK_ADDITION,
+
+    // DROPDOWN
+    DROPDOWN_UPDATE,
+
+    // STORE ITEM
+    STORE_ITEM_PURCHASE,
+    STORE_ITEM_SELECTION,
 }
 
 enum Level {

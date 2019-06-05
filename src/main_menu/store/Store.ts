@@ -3,7 +3,8 @@ import DomHandler from "../../DomHandler";
 import DOMMutationHandler from "../../DOMMutationHandler";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
-import { IShopObject, IStore } from "../../interfaces/IStore";
+import Dropdown from "../../gui/Dropdown";
+import { IStore, IStoreColor, IStoreTank } from "../../interfaces/IStore";
 
 export default class Store extends ChildComponent {
 
@@ -36,6 +37,7 @@ export default class Store extends ChildComponent {
         DOMMutationHandler.show(this.parentElt);
         if (token) {
             const store = await this.getStore(token);
+            console.log(store);
             this.renderStore(store);
         }
 
@@ -68,13 +70,15 @@ export default class Store extends ChildComponent {
                     this.select(selectionTitle, elt);
                 }
             }
+        } else if (elt.classList.contains("store-item-color-icon")) {
+
         }
     }
 
     private async select(title: string, elt: HTMLElement) {
         const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
         if (token) {
-            await this.postStore(token, "select", title);
+            await this.postStore(token, "selection", title);
 
             const currentSelectionElt = DomHandler.getElement("#store-item-selected", this.containerElt);
             currentSelectionElt.textContent = "Select";
@@ -100,8 +104,8 @@ export default class Store extends ChildComponent {
 
     private renderStore(store: IStore) {
         const elts: HTMLElement[] = [];
-        for (const tank of store.tanks) {
-            elts.push(this.createStoreItem(tank));
+        for (const [title, tank] of store.tanks) {
+            elts.push(this.createStoreItem(tank, title, store.colors));
         }
         fastdom.mutate(() => {
             for (const elt of elts) {
@@ -110,11 +114,15 @@ export default class Store extends ChildComponent {
         });
     }
 
-    private createStoreItem(tank: IShopObject) {
+    private createStoreItem(tank: IStoreTank, title: string, colors: Map<string, IStoreColor>) {
         const parent = this.createElement("div", ["store-item-container"]);
 
-        const titleElt = this.createElement("div", [], tank.title);
+        const titleElt = this.createElement("div", [], title);
         const priceElt = this.createElement("div", ["store-item-price"], "Price: " + (tank.price || "Free"));
+
+        const colorElt = this.createElement("img", ["store-item-color-icon"]);
+        colorElt.setAttribute("src", "./res/menu/color.svg");
+        colorElt.setAttribute("title", "Customize");
 
         let actionText;
         const actionClassList = ["btn-sml", "store-item-action"];
@@ -123,38 +131,85 @@ export default class Store extends ChildComponent {
         let isPurchase = false;
         let isSelection = false;
 
-        if (tank.selectionIndex > -1) {
+        if (tank.selected) {
             actionText = "Selected";
             actionClassList.push("btn-selected");
 
-            actionId = "shop-item-selected";
+            actionId = "store-item-selected";
             isSelection = true;
+            colorElt.style.display = "block";
+
         } else if (tank.purchased) {
             actionText = "Select";
             isSelection = true;
         } else {
-            actionText = "Buy";
+            actionText = "Purchase";
             if (tank.level_required > this.level || tank.price > this.currency) {
                 actionClassList.push("btn-disabled");
             } else {
                 isPurchase = true;
             }
+
         }
         const actionElt = this.createElement("span", actionClassList, actionText, actionId);
+
+        const customizationElt = this.createStoreItemCustomization(tank, colors);
 
         parent.appendChild(titleElt);
         parent.appendChild(priceElt);
         parent.appendChild(actionElt);
+        parent.appendChild(colorElt);
+        parent.appendChild(customizationElt);
 
         if (isSelection) {
-            this.selectionOptions.set(actionElt, tank.title);
+            this.selectionOptions.set(actionElt, title);
         }
 
         if (isPurchase) {
-            this.purchaseOptions.set(actionElt, tank.title);
+            this.purchaseOptions.set(actionElt, title);
         }
 
         return parent;
+    }
+
+    private createStoreItemCustomization(tank: IStoreTank, colors: Map<string, IStoreColor>) {
+        const containerElt = this.createElement("div", ["store-item-custom-container"]);
+
+        for (const selectedColor of tank.selectedColors) {
+
+            const headerElt = this.createStoreItemColorElt(selectedColor, colors.get(selectedColor)!.detail);
+
+            const dropdownColors: Map<HTMLElement, string> = new Map();
+            for (const purchasedColor of tank.purchasedColors) {
+                const colorElt = this.createStoreItemColorElt(purchasedColor, colors.get(purchasedColor)!.detail);
+                dropdownColors.set(colorElt, purchasedColor);
+            }
+
+            const dropdown = new Dropdown(dropdownColors, headerElt);
+            containerElt.appendChild(dropdown.getElement());
+            this.attachChild(dropdown);
+        }
+
+        return containerElt;
+    }
+
+    private createStoreItemColorElt(title: string, detail: string) {
+        const colorContainerElt = this.createElement("div", ["store-item-custom-color-container"]);
+
+        const colorElt = this.createElement("div", ["store-item-custom-color"]);
+        colorElt.style.backgroundColor = "#" + detail;
+        const textElt = this.createElement("div", [], title);
+
+        const arrowElt = this.createElement("div", ["arrow-down"]);
+
+        const textContainer = this.createElement("div", ["store-item-custom-color-inner-container"]);
+        textContainer.appendChild(colorElt);
+        textContainer.appendChild(textElt);
+
+        colorContainerElt.appendChild(textContainer);
+        colorContainerElt.appendChild(arrowElt);
+
+        return colorContainerElt;
     }
 
     private createElement(tagName: string, classList?: string[], textContent?: string, id?: string) {
@@ -177,8 +232,14 @@ export default class Store extends ChildComponent {
         return elt;
     }
 
-    private getStore(token: string) {
-        return this.postStore(token);
+    private async getStore(token: string) {
+        const storeData = await this.postStore(token);
+
+        const store: any = {};
+        store.colors = new Map(Object.entries(storeData.colors));
+        store.tanks = new Map(Object.entries(storeData.tanks));
+
+        return store;
     }
 
     private async postStore(token: string, key?: string, title?: string) {
@@ -200,6 +261,9 @@ export default class Store extends ChildComponent {
                 "content-type": "application/json",
             },
         });
-        return response.json() as unknown as IStore;
+        if (key && title) {
+            return;
+        }
+        return response.json();
     }
 }

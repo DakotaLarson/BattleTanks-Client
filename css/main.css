@@ -89,3 +89,19 @@ html, body{
 .standard-anchor:hover {
     color: #33c9ff;
 }
+
+.arrow-up {
+    width: 0; 
+    height: 0; 
+    border-left: 0.75vmin solid transparent;
+    border-right: 0.75vmin solid transparent;
+    border-bottom: 0.75vmin solid #ffffff;
+}
+
+.arrow-down {
+    width: 0; 
+    height: 0; 
+    border-left: 0.75vmin solid transparent;
+    border-right: 0.75vmin solid transparent;
+    border-top: 0.75vmin solid #ffffff;
+}
