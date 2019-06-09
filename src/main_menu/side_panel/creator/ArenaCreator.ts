@@ -1,7 +1,7 @@
 import ChildComponent from "../../../component/ChildComponent";
 import DomHandler from "../../../DomHandler";
 import EventHandler from "../../../EventHandler";
-import Tutorial from "../../tutorial/Tutorial";
+import Overlay from "../../overlay/Overlay";
 import CreateMenu from "./CreateMenu";
 import LoadMenu from "./LoadMenu";
 
@@ -20,7 +20,7 @@ export default class ArenaCreator extends ChildComponent {
     private createBtn: HTMLElement;
     private loadBtn: HTMLElement;
 
-    private tutorial: Tutorial | undefined;
+    private tutorial: Overlay | undefined;
 
     constructor(menuElt: HTMLElement) {
         super();
@@ -41,7 +41,7 @@ export default class ArenaCreator extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onLoadClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCreateTutorialClick);
-        EventHandler.addListener(this, EventHandler.Event.TUTORIAL_CLOSE, this.onTutorialClose);
+        EventHandler.addListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onTutorialClose);
 
         this.attach(undefined);
 
@@ -52,7 +52,7 @@ export default class ArenaCreator extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onLoadClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCreateTutorialClick);
-        EventHandler.removeListener(this, EventHandler.Event.TUTORIAL_CLOSE, this.onTutorialClose);
+        EventHandler.removeListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onTutorialClose);
 
         this.parentElt.style.display = "";
     }
@@ -71,7 +71,7 @@ export default class ArenaCreator extends ChildComponent {
 
     private onCreateTutorialClick(event: MouseEvent) {
         if (event.target === this.createTutorialLink) {
-            this.openTutorial(".tutorial-create");
+            this.openTutorial(".overlay-create");
         }
     }
 
@@ -86,7 +86,7 @@ export default class ArenaCreator extends ChildComponent {
         if (this.tutorial) {
             this.detachChild(this.tutorial);
         }
-        this.tutorial = new Tutorial(contentQuery);
+        this.tutorial = new Overlay(contentQuery);
         this.attachChild(this.tutorial);
     }
 

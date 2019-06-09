@@ -64,7 +64,7 @@
     <link rel="stylesheet" type="text/css" href="./css/notification.css"/>
     <link rel="stylesheet" type="text/css" href="./css/tooltip.css"/>
     <link rel="stylesheet" type="text/css" href="./css/side_panel.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/tutorial.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/overlay.css"/>
     <link rel="stylesheet" type="text/css" href="./css/rank_chart.css"/>
     <link rel="stylesheet" type="text/css" href="./css/dropdown.css"/>
     <link rel="stylesheet" type="text/css" href="./css/store.css"/>
@@ -239,9 +239,9 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
     </div>
 </div>
 
-<div class="menu tutorial-parent">
-    <div class="tutorial-container">
-        <div class="tutorial-content tutorial-play">
+<div class="menu overlay-parent">
+    <div class="overlay-container">
+        <div class="overlay-content overlay-play">
                 <h2>How to Play</h2>
             
                 <div class="tutorial-text">BattleTanks is a 2.5D tank shooter where two teams compete in a team eliminiation gamemode!</div>
@@ -268,7 +268,7 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
                 <div class="tutorial-text">Points per Kill: <span class="tutorial-controls-highlight">2</span></div>
 
         </div>
-        <div class="tutorial-content tutorial-create">
+        <div class="overlay-content overlay-create">
             <h2>Creating an Arena</h2>
             
             <div class="tutorial-text">You can create an arena and submit it on our <a class="standard-anchor" href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>!</div>
@@ -297,7 +297,7 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
                 Upon approval of your arena, you will granted access to the "Arena Creators" role on the Discord server! I will also note you as the author of the arena so appropriate credit can be made visible in future releases.
             </div>
         </div>
-        <div class="tutorial-content tutorial-rank no-select">
+        <div class="overlay-content overlay-rank no-select">
             <div class="rank-chart">
                 <div class="rank-info rank-info-current"></div>
                 <div class="rank-info rank-info-level"></div>
@@ -306,7 +306,11 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
                 <div class="rank-chart-container"></div>
             </div>
         </div>
-        <span class="menu-selection tutorial-close no-select">Close</span>
+        <div class="overlay-content overlay-color no-select">
+            <h2 class="overlay-color-title"></h2>
+            <div class=overlay-color-container></div>
+        </div>
+        <span class="menu-selection overlay-close no-select">Close</span>
     </div>
 </div>
 

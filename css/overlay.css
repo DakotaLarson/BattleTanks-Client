@@ -1,9 +1,9 @@
-.tutorial-parent {
+.overlay-parent {
     position: absolute;
     background-color: rgba(0, 0, 0, 0.25);
 }
 
-.tutorial-container {
+.overlay-container {
     position: fixed;
     overflow-y: auto;
     max-height: 90vh;
@@ -15,27 +15,27 @@
     border: solid 1px #ffffff;
 }
 
-.tutorial-content {
+.overlay-content {
     display: none;
 }
 
-.tutorial-content h2 {
+.overlay-content h2 {
     font-size: 5vmin;
     margin: 0 0 2vmin 0;
 }
 
-.tutorial-content h3 {
+.overlay-content h3 {
     font-size: 3vmin;
     margin: 2vmin 0;
 }
 
-.tutorial-content .tutorial-text {
+.overlay-content .tutorial-text {
     font-size: 2vmin;
     margin-bottom: 1vmin;
     font-family: 'Inconsolata', sans-serif;
 }
 
-.tutorial-content .tutorial-controls {
+.overlay-content .tutorial-controls {
     display: inline-grid;
     grid-template-columns: 1fr 1fr;
     justify-items: left;
@@ -44,10 +44,10 @@
     grid-gap: 1vmin;
 }
 
-.tutorial-content .tutorial-controls-highlight {
+.overlay-content .tutorial-controls-highlight {
     color: #03b053;
 }
 
-.tutorial-container .tutorial-rank {
+.overlay-container .overlay-rank {
     margin-bottom: 2.5vmin;
 }

@@ -2,10 +2,9 @@ import ChildComponent from "../../component/ChildComponent";
 import DomHandler from "../../DomHandler";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
-import Dropdown from "../../gui/Dropdown";
 import RankCalculator from "../../RankCalculator";
+import RankChart from "../overlay/RankChart";
 import Store from "../store/Store";
-import RankChart from "../tutorial/RankChart";
 import ArenaCreator from "./creator/ArenaCreator";
 import PlayerFinder from "./PlayerFinder";
 import PlayerStats from "./PlayerStats";
@@ -64,12 +63,10 @@ export default class SidePanel extends ChildComponent {
 
         this.backBtn = DomHandler.getElement(".side-panel-back", menuElt);
 
-        this.rankChart = new RankChart(".tutorial-rank");
+        this.rankChart = new RankChart(".overlay-rank");
         this.rankChartLink = DomHandler.getElement(".rank-tutorial-link", this.topContainer);
 
         this.rankChart.constructRankChart();
-
-        this.createDropdown(this.topContainer);
     }
 
     public enable() {
@@ -84,7 +81,7 @@ export default class SidePanel extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onBackClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onRankChartClick);
 
-        EventHandler.addListener(this, EventHandler.Event.TUTORIAL_CLOSE, this.onTutorialClose);
+        EventHandler.addListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onOverlayClose);
 
         const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
         if (authToken) {
@@ -106,37 +103,9 @@ export default class SidePanel extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onBackClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onRankChartClick);
 
-        EventHandler.removeListener(this, EventHandler.Event.TUTORIAL_CLOSE, this.onTutorialClose);
+        EventHandler.removeListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onOverlayClose);
 
         this.attach(undefined);
-    }
-
-    private createDropdown(parent: HTMLElement) {
-        const bgColors = ["red", "yellow", "blue"];
-        const textColors = ["white", "black", "red"];
-
-        const elts = new Map();
-        let selected: HTMLElement;
-        for (let i = 0; i < bgColors.length; i ++) {
-            const bgColor = bgColors[i];
-            const textColor = textColors[i];
-
-            const elt = document.createElement("div");
-            elt.textContent = "test " + i;
-            elt.style.backgroundColor = bgColor;
-            elt.style.color = textColor;
-            elt.style.padding = "15px";
-
-            elts.set(elt, "test " + i);
-
-            if (i === 1) {
-                selected = elt;
-            }
-        }
-        const dropdown = new Dropdown(elts, selected!);
-        parent.appendChild(dropdown.getElement());
-        this.attachChild(dropdown);
-
     }
 
     private onSignIn(token: string) {
@@ -204,7 +173,7 @@ export default class SidePanel extends ChildComponent {
         }
     }
 
-    private onTutorialClose() {
+    private onOverlayClose() {
         this.detachChild(this.rankChart);
     }
 

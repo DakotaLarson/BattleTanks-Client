@@ -1,9 +1,9 @@
 import DomEventHandler from "../../DomEventHandler";
 import DomHandler from "../../DomHandler";
 import RankCalculator from "../../RankCalculator";
-import Tutorial from "./Tutorial";
+import Overlay from "./Overlay";
 
-export default class RankChart extends Tutorial {
+export default class RankChart extends Overlay {
 
     private chartParent: HTMLElement;
 
