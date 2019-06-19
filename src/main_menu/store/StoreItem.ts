@@ -14,6 +14,9 @@ export enum ActionState {
 export class StoreItem extends ChildComponent {
 
     public title: string;
+    public price: number;
+
+    public purchasedColors: string[];
 
     private level: number;
     private currency: number;
@@ -36,6 +39,9 @@ export class StoreItem extends ChildComponent {
         super();
 
         this.title = title;
+        this.price = tank.price;
+
+        this.purchasedColors = tank.purchasedColors;
 
         this.level = level;
         this.currency = currency;
@@ -69,14 +75,23 @@ export class StoreItem extends ChildComponent {
 
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.DROPDOWN_UPDATE, this.onDropdownUpdate);
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.removeListener(this, EventHandler.Event.DROPDOWN_UPDATE, this.onDropdownUpdate);
     }
 
     public getElement() {
         return this.parentElt;
+    }
+
+    public addColor(title: string, detail: string) {
+        const colorElt = this.createStoreItemColorElt(title, detail);
+        for (const dropdown of this.dropdowns) {
+            dropdown.addValue(colorElt, title);
+        }
     }
 
     public updateStats(level: number, currency: number) {
@@ -122,7 +137,7 @@ export class StoreItem extends ChildComponent {
                 this.updateCustomizationVisibility(false);
 
                 if (target === this.moreColorsElt) {
-                    EventHandler.callEvent(EventHandler.Event.STORE_ITEM_MORE_COLORS, this);
+                    EventHandler.callEvent(EventHandler.Event.STORE_ITEM_MORE_COLORS_VIEW);
                 }
             }
 
@@ -134,6 +149,21 @@ export class StoreItem extends ChildComponent {
                 this.updateCustomizationVisibility(true);
             }
 
+        }
+    }
+
+    private onDropdownUpdate(event: any) {
+
+        const index = this.dropdowns.findIndex((dropdown) => {
+            return dropdown.getId() === event.dropdown;
+        });
+
+        if (index > -1) {
+            EventHandler.callEvent(EventHandler.Event.STORE_ITEM_COLOR_SELECTION, {
+                id: event.id,
+                index,
+                item: this,
+            });
         }
     }
 
@@ -195,7 +225,6 @@ export class StoreItem extends ChildComponent {
 
         return colorElt;
     }
-
     private createCustomizationElt(tank: IStoreTank, colors: Map<string, IStoreColor>) {
 
         for (const dropdown of this.dropdowns) {

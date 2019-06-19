@@ -77,6 +77,7 @@ export default class ConversationList extends Component {
             if (now > this.lastFetchTime + ConversationList.OPEN_COOLDOWN) {
                 this.lastFetchTime = now;
                 this.showList();
+                EventHandler.callEvent(EventHandler.Event.OVERLAY_OPEN);
             }
         }
     }

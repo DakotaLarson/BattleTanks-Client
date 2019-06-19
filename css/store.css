@@ -20,10 +20,12 @@
 
 .side-panel .store-item-color-icon {
     position: absolute;
-    top: 85%;
-    left: 85%;
+    top: 80%;
+    left: 80%;
     cursor: pointer;
     display: none;
+    width: 3vmin;
+    height: 3vmin;
 }
 
 .side-panel .store-item-custom-container {
@@ -35,6 +37,7 @@
     z-index: 1;
     display: none;
     padding: 1vmin;
+    width: 21vmin; /* Change this value when colors are added with longer titles*/
 }
 
 .side-panel .store-item-custom-color-container {
@@ -81,4 +84,24 @@
 .side-panel .dropdown-container .arrow-down,
 .side-panel .dropdown-container .arrow-up {
     display: none;
+}
+
+.overlay-color .store-item-custom-color-price {
+    font-size: 1.75vmin;
+}
+
+.overlay-color .store-item-custom-color-parent {
+    text-align: right;
+}
+
+.side-panel .store-currency,
+.overlay-color .store-currency {
+    text-align: left;
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 2vmin;
+    margin-bottom: 1vmin;
+}
+
+.overlay-color .overlay-color-title {
+    margin-bottom: 1vmin;
 }

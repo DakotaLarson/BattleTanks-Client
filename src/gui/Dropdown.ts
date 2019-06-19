@@ -48,6 +48,12 @@ export default class Dropdown extends ChildComponent {
         return this.id;
     }
 
+    public addValue(elt: HTMLElement, id: string) {
+        const clone = elt.cloneNode(true) as HTMLElement;
+        this.container.appendChild(clone);
+        this.idsByElts.set(clone, id);
+    }
+
     private onClick(event: MouseEvent) {
         if (this.visible) {
             if (!this.container.contains(event.target as Node)) {

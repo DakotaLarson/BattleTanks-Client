@@ -96,7 +96,7 @@ export default class ArenaHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_DISCONNECT_REQUEST, this.detachMultiplayerArena);
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.detachMultiplayerArena);
 
-        EventHandler.addListener(this, EventHandler.Event.OPTIONS_OPEN, this.onOptionsOpen);
+        EventHandler.addListener(this, EventHandler.Event.OVERLAY_OPEN, this.onOverlayOpen);
 
         this.attachComponent(this.audioHandler);
         this.attachComponent(this.renderer);
@@ -198,7 +198,7 @@ export default class ArenaHandler extends Component {
         }
     }
 
-    private onOptionsOpen() {
+    private onOverlayOpen() {
         if (this.arenaAttached) {
             if (!this.isGameMenuOpen()) {
                 this.openGameMenu();

@@ -178,7 +178,7 @@ export default class OptionsMenu extends Component {
 
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onOptionsParentClick);
 
-        EventHandler.callEvent(EventHandler.Event.OPTIONS_OPEN);
+        EventHandler.callEvent(EventHandler.Event.OVERLAY_OPEN);
         Globals.setGlobal(Globals.Global.OPTIONS_OPEN, true);
 
         this.parentElt.style.display = "block";

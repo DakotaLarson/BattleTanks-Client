@@ -56,6 +56,7 @@ export default class NotificationList extends Component {
             }
         } else if (event.target === this.notificationIcon) {
             this.showList();
+            EventHandler.callEvent(EventHandler.Event.OVERLAY_OPEN);
         }
     }
 
