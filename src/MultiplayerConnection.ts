@@ -1,6 +1,7 @@
 import Component from "./component/ChildComponent";
 import DomEventHandler from "./DomEventHandler";
 import EventHandler from "./EventHandler";
+import Globals from "./Globals";
 import PacketReceiver from "./PacketReceiver";
 import PacketSender from "./PacketSender";
 
@@ -19,6 +20,20 @@ export default class MultiplayerConnection extends Component {
         super();
         this.address = address;
         this.tokenId = tokenId;
+    }
+
+    public static async fetch(endpoint: string, body: any, method?: string) {
+        const address = "http" + Globals.getGlobal(Globals.Global.HOST);
+        const response = await fetch(address + endpoint, {
+            method: method || "post",
+            mode: "cors",
+            credentials: "omit",
+            body: JSON.stringify(body),
+            headers: {
+                "content-type": "application/json",
+            },
+        });
+        return response.json();
     }
 
     public enable() {

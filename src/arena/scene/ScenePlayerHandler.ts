@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, Group, Mesh, MeshBasicMaterial, PerspectiveCamera, PositionalAudio, Quaternion, RingBufferGeometry, Scene, ShapeBufferGeometry, SphereBufferGeometry, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BackSide, Color, Font, FontLoader, FrontSide, Group, Material, Mesh, MeshBasicMaterial, PerspectiveCamera, PositionalAudio, Quaternion, RingBufferGeometry, Scene, ShapeBufferGeometry, SphereBufferGeometry, Vector3, Vector4} from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
@@ -15,6 +15,8 @@ export default class ScenePlayerHandler extends ChildComponent {
     private static readonly SHIELD_BAR_OFFSET = new Vector3(0, 1.1, 0);
     private static readonly NAMEPLATE_OFFSET = new Vector3(0, 1.2, 0);
     private static readonly RING_OFFSET = new Vector3(0, 0.01, 0);
+
+    private static readonly MENU_PLAYER_ID = 0;
 
     private modelLoader: ModelLoader;
 
@@ -138,82 +140,123 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     public addMenuPlayer() {
-        this.addPlayer(0, new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true);
+        this.addPlayer(ScenePlayerHandler.MENU_PLAYER_ID, "0", new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true);
+    }
+
+    public async updateMenuPlayer(id: string, colors: string[]) {
+        this.removePlayer({
+            id: 0,
+        }, false);
+        const playerObj = await this.addPlayer(ScenePlayerHandler.MENU_PLAYER_ID, id, new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true);
+
+        for (let i = 0; i < colors.length; i ++) {
+            this.updateGroupColor(playerObj.group, "" + i, colors[i]);
+        }
+    }
+
+    public updateMenuPlayerColor(detail: string, materialTitle: string) {
+        const group = this.players.find((player) => {
+            return player.id === ScenePlayerHandler.MENU_PLAYER_ID;
+        })!.group;
+        this.updateGroupColor(group, materialTitle, detail);
     }
 
     private onPlayerAddition(data: any) {
-        this.addPlayer(data.id, data.pos, name, false, false, data.color);
+        this.addPlayer(data.id, "0", data.pos, name, false, false, data.color);
     }
 
     private onConnectedPlayerAddition(data: any) {
-        this.addPlayer(data.id, data.pos, data.name, true, false, data.color);
+        this.addPlayer(data.id, "0", data.pos, data.name, true, false, data.color);
     }
 
-    private addPlayer(id: number, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, color?: number) {
-        const group = new Group();
-        const head = new Group();
-        const body = new Group();
-        group.position.set(pos.x, pos.y, pos.z);
-        this.modelLoader.getGroup("0").then((result: Group) => {
-            const headMesh = result.getObjectByName("head") as Mesh;
-            const bodyMesh = result.getObjectByName("body") as Mesh;
+    private updateGroupColor(group: Group, materialTitle: string, detail: string) {
+        const color = new Color("#" + detail);
+        for (const child of group.children) {
+            if (child instanceof Group) {
+                this.updateGroupColor(child, materialTitle, detail);
+            } else if (child instanceof Mesh) {
+                if (Array.isArray(child.material)) {
+                    for (const material of child.material) {
+                        this.updateMaterial(materialTitle, material, color);
+                    }
+                } else {
+                    this.updateMaterial(materialTitle, child.material, color);
+                }
+            }
+        }
+    }
 
-            // console.log(headMesh, bodyMesh);
-            // for (const mat of bodyMesh.material) {
-            //     console.log(mat);
-            // }
+    private updateMaterial(materialTitle: string, material: Material, color: Color) {
+        if (material.name.startsWith(materialTitle)) {
+            (material as any).color.copy(color);
+        }
+    }
 
-            head.add(headMesh);
-            body.add(bodyMesh);
+    private addPlayer(id: number, modelId: string, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, teamColor?: number): Promise<IPlayerObj> {
+        return new Promise((resolve) => {
+            const group = new Group();
+            const head = new Group();
+            const body = new Group();
+            group.position.set(pos.x, pos.y, pos.z);
+
+            body.rotation.y = pos.w;
+            head.rotation.y = pos.w;
+
+            if (teamColor) {
+                this.generateRing(teamColor, group.position.clone().add(ScenePlayerHandler.RING_OFFSET), new Quaternion());
+            }
+
+            group.add(head, body);
+            this.scene.add(group);
+
+            const playerObj: IPlayerObj = {
+                id,
+                group,
+                body,
+                head,
+                movementVelocity: 0,
+            };
+
+            if (isConnectedPlayer) {
+                const nameplate = this.generateNameplate(name, teamColor as number);
+                nameplate.position.add(ScenePlayerHandler.NAMEPLATE_OFFSET);
+
+                this.generateHealthBar(1, group.position.clone().add(ScenePlayerHandler.HEALTH_BAR_OFFSET));
+                this.billboardOwners.push({
+                    id,
+                    isHealth: true,
+                });
+
+                this.generateShieldBar(0, group.position.clone().add(ScenePlayerHandler.SHIELD_BAR_OFFSET));
+                this.billboardOwners.push({
+                    id,
+                    isHealth: false,
+                });
+
+                group.add(nameplate);
+                playerObj.nameplate = nameplate;
+            }
+
+            this.players.push(playerObj);
+
+            if (!isConnectedPlayer) {
+                this.controlledPlayerId = id;
+            }
+
+            if (!noSound) {
+                this.engineAudioHandler.startEngineSound(playerObj);
+            }
+
+            this.modelLoader.getGroup(modelId).then((result: Group) => {
+                const headMesh = result.getObjectByName("head") as Mesh;
+                const bodyMesh = result.getObjectByName("body") as Mesh;
+
+                head.add(headMesh);
+                body.add(bodyMesh);
+
+                resolve(playerObj);
+            });
         });
-
-        body.rotation.y = pos.w;
-        head.rotation.y = pos.w;
-
-        if (color) {
-            this.generateRing(color, group.position.clone().add(ScenePlayerHandler.RING_OFFSET), new Quaternion());
-        }
-
-        group.add(head, body);
-        this.scene.add(group);
-
-        const playerObj: IPlayerObj = {
-            id,
-            group,
-            body,
-            head,
-            movementVelocity: 0,
-        };
-
-        if (isConnectedPlayer) {
-            const nameplate = this.generateNameplate(name, color as number);
-            nameplate.position.add(ScenePlayerHandler.NAMEPLATE_OFFSET);
-
-            this.generateHealthBar(1, group.position.clone().add(ScenePlayerHandler.HEALTH_BAR_OFFSET));
-            this.billboardOwners.push({
-                id,
-                isHealth: true,
-            });
-
-            this.generateShieldBar(0, group.position.clone().add(ScenePlayerHandler.SHIELD_BAR_OFFSET));
-            this.billboardOwners.push({
-                id,
-                isHealth: false,
-            });
-
-            group.add(nameplate);
-            playerObj.nameplate = nameplate;
-        }
-
-        this.players.push(playerObj);
-
-        if (!isConnectedPlayer) {
-            this.controlledPlayerId = id;
-        }
-
-        if (!noSound) {
-            this.engineAudioHandler.startEngineSound(playerObj);
-        }
     }
 
     private removePlayer(data: any, isClear?: boolean) {

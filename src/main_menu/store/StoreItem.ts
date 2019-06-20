@@ -1,7 +1,7 @@
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Dropdown from "../../gui/Dropdown";
-import { IStoreColor, IStoreTank } from "../../interfaces/IStore";
+import { IStoreObject, IStoreTank } from "../../interfaces/IStore";
 import StoreUtils from "./StoreUtils";
 
 export enum ActionState {
@@ -15,8 +15,10 @@ export class StoreItem extends ChildComponent {
 
     public title: string;
     public price: number;
+    public detail: string;
 
     public purchasedColors: string[];
+    public selectedColors: string[];
 
     private level: number;
     private currency: number;
@@ -35,13 +37,15 @@ export class StoreItem extends ChildComponent {
     private customizationElt: HTMLElement;
     private moreColorsElt: HTMLElement;
 
-    constructor(tank: IStoreTank, title: string, colors: Map<string, IStoreColor>, level: number, currency: number) {
+    constructor(tank: IStoreTank, title: string, colors: Map<string, IStoreObject>, level: number, currency: number) {
         super();
 
         this.title = title;
         this.price = tank.price;
+        this.detail = tank.detail;
 
         this.purchasedColors = tank.purchasedColors;
+        this.selectedColors = tank.selectedColors;
 
         this.level = level;
         this.currency = currency;
@@ -164,6 +168,8 @@ export class StoreItem extends ChildComponent {
                 index,
                 item: this,
             });
+
+            this.selectedColors[index] = event.id;
         }
     }
 

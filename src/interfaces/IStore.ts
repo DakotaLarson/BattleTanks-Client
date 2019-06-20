@@ -1,11 +1,12 @@
 export interface IStore {
     tanks: Map<string, IStoreTank>;
-    colors: Map<string, IStoreColor>;
+    colors: Map<string, IStoreObject>;
 }
 
-interface IStoreObject {
+export interface IStoreObject {
     price: number;
     level_required: number;
+    detail: string;
 }
 
 export interface IStoreTank extends IStoreObject {
@@ -16,6 +17,5 @@ export interface IStoreTank extends IStoreObject {
     selectedColors: string[];
 }
 
-export interface IStoreColor extends IStoreObject {
-    detail: string;
-}
+// export interface IStoreColor extends IStoreObject {
+// }

@@ -1,6 +1,6 @@
 import DomHandler from "../../DomHandler";
 import EventHandler from "../../EventHandler";
-import { IStore, IStoreColor } from "../../interfaces/IStore";
+import { IStoreColor } from "../../interfaces/IStore";
 import Overlay from "../overlay/Overlay";
 import { StoreItem } from "./StoreItem";
 import StoreUtils from "./StoreUtils";

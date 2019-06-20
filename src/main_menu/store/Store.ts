@@ -3,7 +3,7 @@ import DomHandler from "../../DomHandler";
 import DOMMutationHandler from "../../DOMMutationHandler";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
-import { IStore, IStoreColor } from "../../interfaces/IStore";
+import { IStore, IStoreObject } from "../../interfaces/IStore";
 import ColorStore from "./ColorStore";
 import { ActionState, StoreItem } from "./StoreItem";
 
@@ -21,7 +21,7 @@ export default class Store extends ChildComponent {
 
     private colorStore: ColorStore;
 
-    private colors: Map<string, IStoreColor>;
+    private colors: Map<string, IStoreObject>;
 
     constructor(menuElt: HTMLElement) {
         super();
@@ -123,6 +123,8 @@ export default class Store extends ChildComponent {
                 }
 
                 storeItem.updateAction(ActionState.SELECTED);
+                this.propagateSelection(storeItem);
+
                 this.selectedItem = storeItem;
             } else {
                 alert("Error selecting store item: " + requestStatus + ". Please report this.");
@@ -141,6 +143,8 @@ export default class Store extends ChildComponent {
             ]);
             if (requestStatus !== 200) {
                 alert("Error selecting store item color: " + requestStatus + ". Please report this.");
+            } else {
+                this.propagateColorSelection(event.id, event.index);
             }
         }
     }
@@ -185,6 +189,26 @@ export default class Store extends ChildComponent {
                 this.selectedItem = storeItem;
             }
         }
+    }
+
+    private propagateSelection(storeItem: StoreItem) {
+        const colors = [];
+        for (const colorTitle of storeItem.selectedColors) {
+            colors.push(this.colors.get(colorTitle)!.detail);
+        }
+
+        EventHandler.callEvent(EventHandler.Event.STORE_ITEM_SELECTION_PROPAGATION, {
+            colors,
+            id: storeItem.detail,
+        });
+    }
+
+    private propagateColorSelection(colorTitle: string, index: number) {
+        const detail = this.colors.get(colorTitle)!.detail;
+        EventHandler.callEvent(EventHandler.Event.STORE_ITEM_COLOR_SELECTION_PROPAGATION, {
+            detail,
+            index,
+        });
     }
 
     private async getStore(token: string) {
