@@ -231,7 +231,7 @@ export class StoreItem extends ChildComponent {
 
         return colorElt;
     }
-    private createCustomizationElt(tank: IStoreTank, colors: Map<string, IStoreColor>) {
+    private createCustomizationElt(tank: IStoreTank, colors: Map<string, IStoreObject>) {
 
         for (const dropdown of this.dropdowns) {
             this.detachChild(dropdown);

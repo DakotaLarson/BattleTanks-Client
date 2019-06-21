@@ -61,6 +61,7 @@ export default class Store extends ChildComponent {
             this.renderStore(store);
         }
 
+        EventHandler.callEvent(EventHandler.Event.STORE_OPEN);
     }
 
     public disable() {
@@ -80,6 +81,8 @@ export default class Store extends ChildComponent {
 
         DOMMutationHandler.clear(this.containerElt);
         DOMMutationHandler.hide(this.parentElt);
+
+        EventHandler.callEvent(EventHandler.Event.STORE_CLOSE);
 
     }
 

@@ -8,6 +8,7 @@ import BatchHandler from "./batch/BatchHandler";
 import BillboardBatchHandler from "./batch/BillboardBatchHandler";
 import EngineAudioHandler from "./EngineAudioHandler";
 import ModelLoader from "./ModelLoader";
+import TankCustomizationHandler from "./TankCustomizationHandler";
 
 export default class ScenePlayerHandler extends ChildComponent {
 
@@ -40,6 +41,9 @@ export default class ScenePlayerHandler extends ChildComponent {
     private font: Font | undefined;
 
     private controlledPlayerId: number;
+
+    private menuPlayerModelId: string | undefined;
+    private menuPlayerModelColors: string[] | undefined;
 
     constructor(scene: Scene, audioListener: AudioListener) {
         super();
@@ -140,33 +144,35 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     public addMenuPlayer() {
-        this.addPlayer(ScenePlayerHandler.MENU_PLAYER_ID, "0", new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true);
+        const modelId = this.menuPlayerModelId || TankCustomizationHandler.DEFAULT_MODEL_ID;
+        const modelColors = this.menuPlayerModelColors || TankCustomizationHandler.DEFAULT_COLORS;
+
+        this.addPlayer(ScenePlayerHandler.MENU_PLAYER_ID, modelId, new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true, modelColors);
     }
 
-    public async updateMenuPlayer(id: string, colors: string[]) {
+    public async updateMenuPlayer(modelId: string, modelColors: string[]) {
+        this.menuPlayerModelId = modelId;
+        this.menuPlayerModelColors = modelColors;
         this.removePlayer({
-            id: 0,
+            id: ScenePlayerHandler.MENU_PLAYER_ID,
         }, false);
-        const playerObj = await this.addPlayer(ScenePlayerHandler.MENU_PLAYER_ID, id, new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true);
-
-        for (let i = 0; i < colors.length; i ++) {
-            this.updateGroupColor(playerObj.group, "" + i, colors[i]);
-        }
+        this.addPlayer(ScenePlayerHandler.MENU_PLAYER_ID, modelId, new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true, modelColors);
     }
 
-    public updateMenuPlayerColor(detail: string, materialTitle: string) {
+    public updateMenuPlayerColor(detail: string, materialTitle: string, index: number) {
         const group = this.players.find((player) => {
             return player.id === ScenePlayerHandler.MENU_PLAYER_ID;
         })!.group;
         this.updateGroupColor(group, materialTitle, detail);
+        this.menuPlayerModelColors![index] = detail;
     }
 
-    private onPlayerAddition(data: any) {
-        this.addPlayer(data.id, "0", data.pos, name, false, false, data.color);
+    private async onPlayerAddition(data: any) {
+        this.addPlayer(data.id, data.modelId, data.pos, name, false, false, data.modelColors, data.color);
     }
 
     private onConnectedPlayerAddition(data: any) {
-        this.addPlayer(data.id, "0", data.pos, data.name, true, false, data.color);
+        this.addPlayer(data.id, data.modelId, data.pos, data.name, true, false, data.modelColors, data.color);
     }
 
     private updateGroupColor(group: Group, materialTitle: string, detail: string) {
@@ -187,76 +193,78 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     private updateMaterial(materialTitle: string, material: Material, color: Color) {
-        if (material.name.startsWith(materialTitle)) {
+        if (material.name === materialTitle) {
             (material as any).color.copy(color);
         }
     }
 
-    private addPlayer(id: number, modelId: string, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, teamColor?: number): Promise<IPlayerObj> {
-        return new Promise((resolve) => {
-            const group = new Group();
-            const head = new Group();
-            const body = new Group();
-            group.position.set(pos.x, pos.y, pos.z);
+    private async addPlayer(id: number, modelId: string, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, modelColors: string[], teamColor?: number): Promise<IPlayerObj> {
+        const group = new Group();
+        const head = new Group();
+        const body = new Group();
+        group.position.set(pos.x, pos.y, pos.z);
 
-            body.rotation.y = pos.w;
-            head.rotation.y = pos.w;
+        body.rotation.y = pos.w;
+        head.rotation.y = pos.w;
 
-            if (teamColor) {
-                this.generateRing(teamColor, group.position.clone().add(ScenePlayerHandler.RING_OFFSET), new Quaternion());
-            }
+        if (teamColor) {
+            this.generateRing(teamColor, group.position.clone().add(ScenePlayerHandler.RING_OFFSET), new Quaternion());
+        }
 
-            group.add(head, body);
-            this.scene.add(group);
+        group.add(head, body);
+        this.scene.add(group);
 
-            const playerObj: IPlayerObj = {
+        const playerObj: IPlayerObj = {
+            id,
+            group,
+            body,
+            head,
+            movementVelocity: 0,
+        };
+
+        if (isConnectedPlayer) {
+            const nameplate = this.generateNameplate(name, teamColor as number);
+            nameplate.position.add(ScenePlayerHandler.NAMEPLATE_OFFSET);
+
+            this.generateHealthBar(1, group.position.clone().add(ScenePlayerHandler.HEALTH_BAR_OFFSET));
+            this.billboardOwners.push({
                 id,
-                group,
-                body,
-                head,
-                movementVelocity: 0,
-            };
-
-            if (isConnectedPlayer) {
-                const nameplate = this.generateNameplate(name, teamColor as number);
-                nameplate.position.add(ScenePlayerHandler.NAMEPLATE_OFFSET);
-
-                this.generateHealthBar(1, group.position.clone().add(ScenePlayerHandler.HEALTH_BAR_OFFSET));
-                this.billboardOwners.push({
-                    id,
-                    isHealth: true,
-                });
-
-                this.generateShieldBar(0, group.position.clone().add(ScenePlayerHandler.SHIELD_BAR_OFFSET));
-                this.billboardOwners.push({
-                    id,
-                    isHealth: false,
-                });
-
-                group.add(nameplate);
-                playerObj.nameplate = nameplate;
-            }
-
-            this.players.push(playerObj);
-
-            if (!isConnectedPlayer) {
-                this.controlledPlayerId = id;
-            }
-
-            if (!noSound) {
-                this.engineAudioHandler.startEngineSound(playerObj);
-            }
-
-            this.modelLoader.getGroup(modelId).then((result: Group) => {
-                const headMesh = result.getObjectByName("head") as Mesh;
-                const bodyMesh = result.getObjectByName("body") as Mesh;
-
-                head.add(headMesh);
-                body.add(bodyMesh);
-
-                resolve(playerObj);
+                isHealth: true,
             });
-        });
+
+            this.generateShieldBar(0, group.position.clone().add(ScenePlayerHandler.SHIELD_BAR_OFFSET));
+            this.billboardOwners.push({
+                id,
+                isHealth: false,
+            });
+
+            group.add(nameplate);
+            playerObj.nameplate = nameplate;
+        }
+
+        this.players.push(playerObj);
+
+        if (!isConnectedPlayer) {
+            this.controlledPlayerId = id;
+        }
+
+        if (!noSound) {
+            this.engineAudioHandler.startEngineSound(playerObj);
+        }
+
+        const result = await this.modelLoader.getGroup(modelId);
+        const headMesh = result.getObjectByName("head") as Mesh;
+        const bodyMesh = result.getObjectByName("body") as Mesh;
+
+        head.add(headMesh);
+        body.add(bodyMesh);
+
+        console.log(modelColors);
+        for (let i = 0; i < modelColors.length; i ++) {
+            this.updateGroupColor(playerObj.group, "" + i, modelColors[i]);
+        }
+
+        return playerObj;
     }
 
     private removePlayer(data: any, isClear?: boolean) {

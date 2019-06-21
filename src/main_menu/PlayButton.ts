@@ -7,8 +7,6 @@ import Overlay from "./overlay/Overlay";
 
 export default class PlayButton extends Component {
 
-    private element: HTMLElement;
-
     private playBtn: HTMLElement;
 
     private playTutorialLink: HTMLElement;
@@ -17,14 +15,11 @@ export default class PlayButton extends Component {
 
     private tutorial: Overlay | undefined;
 
-    constructor(mainMenu: HTMLElement) {
+    constructor(parent: HTMLElement) {
         super();
-        this.element = DomHandler.getElement(".play-button-container", mainMenu);
 
-        this.playBtn = DomHandler.getElement(".play-btn", this.element);
-
-        this.playTutorialLink = DomHandler.getElement("#play-tutorial-link", this.element);
-
+        this.playBtn = DomHandler.getElement(".play-btn", parent);
+        this.playTutorialLink = DomHandler.getElement("#play-tutorial-link", parent);
         this.asGuestElt = DomHandler.getElement(".play-as-guest", this.playBtn);
     }
 
@@ -40,7 +35,6 @@ export default class PlayButton extends Component {
         if (!Globals.getGlobal(Globals.Global.AUTH_TOKEN)) {
             DOMMutationHandler.show(this.asGuestElt);
         }
-        DOMMutationHandler.show(this.element);
     }
 
     public disable() {
@@ -58,7 +52,6 @@ export default class PlayButton extends Component {
         }
 
         DOMMutationHandler.hide(this.asGuestElt);
-        DOMMutationHandler.hide(this.element);
     }
 
     private onPlayClick(event: MouseEvent) {

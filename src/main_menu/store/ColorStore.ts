@@ -1,6 +1,6 @@
 import DomHandler from "../../DomHandler";
 import EventHandler from "../../EventHandler";
-import { IStoreColor } from "../../interfaces/IStore";
+import { IStoreObject } from "../../interfaces/IStore";
 import Overlay from "../overlay/Overlay";
 import { StoreItem } from "./StoreItem";
 import StoreUtils from "./StoreUtils";
@@ -15,7 +15,7 @@ export default class ColorStore extends Overlay {
     private currencyElt: HTMLElement;
 
     private actionsByTitles: Map<string, HTMLElement>;
-    private colorsByTitles: Map<string, IStoreColor>;
+    private colorsByTitles: Map<string, IStoreObject>;
 
     constructor(level: number, currency: number) {
         super(".overlay-color");
@@ -43,7 +43,7 @@ export default class ColorStore extends Overlay {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
     }
 
-    public updateColors(colors: Map<string, IStoreColor>) {
+    public updateColors(colors: Map<string, IStoreObject>) {
 
         while (this.containerElt.firstChild) {
             this.containerElt.removeChild(this.containerElt.firstChild);

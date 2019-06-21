@@ -4,8 +4,8 @@ import MultiplayerConnection from "../../MultiplayerConnection";
 
 export default class TankCustomizationHandler extends Component {
 
-    private static readonly DEFAULT_TANK = "0";
-    private static readonly DEFAULT_COLORS = [
+    public static readonly DEFAULT_MODEL_ID = "0";
+    public static readonly DEFAULT_COLORS = [
         "bfac86",
         "635944",
         "3f5434",
@@ -25,7 +25,6 @@ export default class TankCustomizationHandler extends Component {
         const selection = await MultiplayerConnection.fetch("/selection", {
             token,
         });
-        console.log(selection);
 
         EventHandler.callEvent(EventHandler.Event.STORE_ITEM_SELECTION_PROPAGATION, {
             colors: selection.colors,
@@ -36,7 +35,7 @@ export default class TankCustomizationHandler extends Component {
     private onSignOut() {
         EventHandler.callEvent(EventHandler.Event.STORE_ITEM_SELECTION_PROPAGATION, {
             colors: TankCustomizationHandler.DEFAULT_COLORS,
-            id: TankCustomizationHandler.DEFAULT_TANK,
+            id: TankCustomizationHandler.DEFAULT_MODEL_ID,
         });
     }
 }

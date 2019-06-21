@@ -1,4 +1,4 @@
-import { Group, MaterialCreator, MTLLoader, OBJLoader2 } from "three";
+import { Group, MaterialCreator, Mesh, MTLLoader, OBJLoader2 } from "three";
 
 export default class ModelLoader {
 
@@ -28,6 +28,7 @@ export default class ModelLoader {
 
             loader2.setMaterials(creator.materials);
             loader2.load("./res/models/tanks/" + fileName + "/tank.obj", (event: any) => {
+                this.updateNames(event.detail.loaderRootNode);
                 resolve(event.detail.loaderRootNode);
             }, undefined, (err: any) => {
                 console.error(err);
@@ -46,5 +47,21 @@ export default class ModelLoader {
                 console.error(err);
             });
         });
+    }
+
+    private updateNames(group: Group) {
+        for (const child of group.children) {
+            if (child instanceof Group) {
+                this.updateNames(child);
+            } else if (child instanceof Mesh) {
+                if (Array.isArray(child.material)) {
+                    for (const mat of child.material) {
+                        mat.name = mat.name.split("_")[0];
+                    }
+                } else {
+                    child.material.name = child.material.name.split("_")[0];
+                }
+            }
+        }
     }
 }

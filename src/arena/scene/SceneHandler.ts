@@ -234,7 +234,7 @@ export default class SceneHandler extends Component {
     }
 
     private onStoreItemColorSelection(event: any) {
-        this.scenePlayerHandler.updateMenuPlayerColor(event.detail, "" + event.index);
+        this.scenePlayerHandler.updateMenuPlayerColor(event.detail, "" + event.index, event.index);
     }
 
     private renderMenuScene() {

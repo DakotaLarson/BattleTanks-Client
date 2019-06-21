@@ -48,23 +48,25 @@ export default class FireworkHandler extends ChildComponent {
             this.fireworks.push(firework);
 
             setTimeout(() => {
-                this.removeFirework(firework);
+                this.removeFirework(firework, true);
             }, FireworkHandler.FIREWORK_LIFESPAN);
         }
     }
 
-    private removeFirework(firework: Firework) {
+    private removeFirework(firework: Firework, splice: boolean) {
         const index = this.fireworks.indexOf(firework);
         if (index > -1) {
-            this.fireworks.splice(index, 1);
+            if (splice) {
+                this.fireworks.splice(index, 1);
+            }
             this.scene.remove(firework.points);
         }
     }
 
     private clearFireworks() {
         for (const firework of this.fireworks) {
-            this.removeFirework(firework);
-            this.fireworks = [];
+            this.removeFirework(firework, false);
         }
+        this.fireworks = [];
     }
 }
