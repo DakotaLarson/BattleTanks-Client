@@ -1,11 +1,13 @@
-import { Group, MaterialCreator, Mesh, MTLLoader, OBJLoader2 } from "three";
+import { Color, Group, MaterialCreator, Mesh, MeshPhongMaterial, MTLLoader, OBJLoader2 } from "three";
 
 export default class ModelLoader {
 
     private cache: Map<string, Group>;
+    private materials: Map<string, MeshPhongMaterial>;
 
     constructor() {
         this.cache = new Map();
+        this.materials = new Map();
     }
 
     public async getGroup(fileName: string) {
@@ -13,11 +15,30 @@ export default class ModelLoader {
         if (cached) {
             return cached.clone();
         } else {
-            const creator = await this.getMaterial(fileName);
+            const creator = await this.getMaterialFromDisk(fileName);
+
+            for (const prop in creator.materials) {
+                if (creator.materials.hasOwnProperty(prop)) {
+                    const material = creator.materials[prop] as MeshPhongMaterial;
+                    this.materials.set(material.color.getHexString(), material);
+                }
+            }
+
             const group = await this.getModel(fileName, creator);
             this.cache.set(fileName, group);
             return group.clone();
         }
+    }
+
+    public getMaterial(detail: string, existingMaterial: MeshPhongMaterial) {
+        let material = this.materials.get(detail);
+        if (!material) {
+            material = existingMaterial.clone();
+            material.color = new Color("#" + detail);
+            this.materials.set(detail, material);
+        }
+
+        return material;
     }
 
     private getModel(fileName: string, creator: MaterialCreator): Promise<Group> {
@@ -27,6 +48,7 @@ export default class ModelLoader {
             loader2.meshBuilder.setLogging(false, false);
 
             loader2.setMaterials(creator.materials);
+            console.log(creator.materials);
             loader2.load("./res/models/tanks/" + fileName + "/tank.obj", (event: any) => {
                 this.updateNames(event.detail.loaderRootNode);
                 resolve(event.detail.loaderRootNode);
@@ -36,7 +58,7 @@ export default class ModelLoader {
         });
     }
 
-    private getMaterial(fileName: string): Promise<MaterialCreator> {
+    private getMaterialFromDisk(fileName: string): Promise<MaterialCreator> {
         return new Promise((resolve) => {
             const loader = new MTLLoader();
 

@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, BackSide, Color, Font, FontLoader, FrontSide, Group, Material, Mesh, MeshBasicMaterial, PerspectiveCamera, PositionalAudio, Quaternion, RingBufferGeometry, Scene, ShapeBufferGeometry, SphereBufferGeometry, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BackSide, Color, Font, FontLoader, FrontSide, Group, Material, Mesh, MeshBasicMaterial, MeshPhongMaterial, PerspectiveCamera, PositionalAudio, Quaternion, RingBufferGeometry, Scene, ShapeBufferGeometry, SphereBufferGeometry, Vector3, Vector4} from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
@@ -176,27 +176,69 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     private updateGroupColor(group: Group, materialTitle: string, detail: string) {
-        const color = new Color("#" + detail);
-        for (const child of group.children) {
-            if (child instanceof Group) {
-                this.updateGroupColor(child, materialTitle, detail);
-            } else if (child instanceof Mesh) {
-                if (Array.isArray(child.material)) {
-                    for (const material of child.material) {
-                        this.updateMaterial(materialTitle, material, color);
-                    }
-                } else {
-                    this.updateMaterial(materialTitle, child.material, color);
-                }
+        // const color = new Color("#" + detail);
+        // for (const child of group.children) {
+        //     if (child instanceof Group) {
+        //         this.updateGroupColor(child, materialTitle, detail);
+        //     } else if (child instanceof Mesh) {
+        //         if (Array.isArray(child.material)) {
+        //             for (const material of child.material) {
+        //                 this.updateMaterial(materialTitle, material, color);
+        //             }
+        //         } else {
+        //             this.updateMaterial(materialTitle, child.material, color);
+        //         }
+        //     }
+        // }
+
+        const materialIndicesByMeshes = this.getMaterialIndicesByMeshes(group, materialTitle);
+
+        for (const [mesh, index] of materialIndicesByMeshes) {
+            if (index === -1) {
+                // the mesh material is a material
+                const currentMaterial = mesh.material as MeshPhongMaterial;
+                const newMaterial = this.modelLoader.getMaterial(detail, currentMaterial);
+                mesh.material = newMaterial;
+            } else {
+                // the mesh material is an array
+                const currentMaterials = mesh.material as MeshPhongMaterial[];
+                const currentMaterial = currentMaterials[index];
+                const newMaterial = this.modelLoader.getMaterial(detail, currentMaterial);
+                currentMaterials[index] = newMaterial;
             }
         }
     }
 
-    private updateMaterial(materialTitle: string, material: Material, color: Color) {
-        if (material.name === materialTitle) {
-            (material as any).color.copy(color);
+    private getMaterialIndicesByMeshes(group: Group, title: string) {
+        const materialIndicesByMeshes: Map<Mesh, number> = new Map();
+        for (const child of group.children) {
+            if (child instanceof Group) {
+                const childValues = this.getMaterialIndicesByMeshes(child, title);
+                for (const [mesh, index] of childValues) {
+                    materialIndicesByMeshes.set(mesh, index);
+                }
+            } else if (child instanceof Mesh) {
+                if (Array.isArray(child.material)) {
+                    const materialIndex = child.material.findIndex((material) => {
+                        return material.name === title;
+                    });
+                    if (materialIndex > -1) {
+                        materialIndicesByMeshes.set(child, materialIndex);
+                    }
+                } else if (child.material.name === title) {
+                    materialIndicesByMeshes.set(child, -1);
+                }
+            }
         }
+
+        return materialIndicesByMeshes;
     }
+
+    // private updateMaterial(materialTitle: string, material: Material, color: Color) {
+    //     if (material.name === materialTitle) {
+    //         (material as any).color.copy(color);
+    //     }
+    // }
 
     private async addPlayer(id: number, modelId: string, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, modelColors: string[], teamColor?: number): Promise<IPlayerObj> {
         const group = new Group();
