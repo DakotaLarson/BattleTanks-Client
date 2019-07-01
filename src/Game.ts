@@ -109,7 +109,6 @@ class Game extends Component {
         this.attachComponent(this.conversationViewer);
 
         this.hideLoadingScreen();
-
     }
 
     public update() {

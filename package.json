@@ -21,13 +21,13 @@
   "homepage": "https://github.com/DakotaLarson/BattleTanks-Client#readme",
   "dependencies": {
     "fastdom": "^1.0.9",
-    "three": "^0.99.0"
+    "three": "^0.105.2"
   },
   "devDependencies": {
     "@types/gapi": "latest",
     "@types/gapi.auth2": "latest",
-    "@types/three": "latest",
+    "@types/three": "^0.93.31",
     "eslint": "^5.14.1",
-    "lite-server": "latest"
+    "lite-server": "^2.5.3"
   }
 }

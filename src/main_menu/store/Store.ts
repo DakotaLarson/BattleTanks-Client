@@ -1,4 +1,5 @@
-import ChildComponent from "../../component/ChildComponent";
+import MaterialHandler from "../../arena/scene/MaterialHandler";
+import Component from "../../component/Component";
 import DomHandler from "../../DomHandler";
 import DOMMutationHandler from "../../DOMMutationHandler";
 import EventHandler from "../../EventHandler";
@@ -7,7 +8,7 @@ import { IStore, IStoreObject } from "../../interfaces/IStore";
 import ColorStore from "./ColorStore";
 import { ActionState, StoreItem } from "./StoreItem";
 
-export default class Store extends ChildComponent {
+export default class Store extends Component {
 
     private parentElt: HTMLElement;
     private containerElt: HTMLElement;
@@ -48,40 +49,21 @@ export default class Store extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.STORE_ITEM_MORE_COLORS_VIEW, this.onStoreItemMoreColorsView);
         EventHandler.addListener(this, EventHandler.Event.STORE_ITEM_MORE_COLORS_PURCHASE, this.onStoreItemMoreColorsPurchase);
         EventHandler.addListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onOverlayClose);
+        EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
+        EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
 
         const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
-        DOMMutationHandler.show(this.parentElt);
-        if (token) {
-            const store = await this.getStore(token);
-            console.log(store);
-
-            this.colors = store.colors;
-
-            this.colorStore.updateColors(store.colors);
-            this.renderStore(store);
-        }
-
-        EventHandler.callEvent(EventHandler.Event.STORE_OPEN);
+        this.updateStore(token);
     }
 
-    public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.STORE_ITEM_PURCHASE, this.onPurchase);
-        EventHandler.removeListener(this, EventHandler.Event.STORE_ITEM_SELECTION, this.onSelection);
-        EventHandler.removeListener(this, EventHandler.Event.STORE_ITEM_COLOR_SELECTION, this.onStoreItemColorSelection);
-        EventHandler.removeListener(this, EventHandler.Event.STORE_ITEM_MORE_COLORS_VIEW, this.onStoreItemMoreColorsView);
-        EventHandler.removeListener(this, EventHandler.Event.STORE_ITEM_MORE_COLORS_PURCHASE, this.onStoreItemMoreColorsPurchase);
-        EventHandler.removeListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onOverlayClose);
+    public show() {
+        DOMMutationHandler.show(this.parentElt);
+        EventHandler.callEvent(EventHandler.Event.STORE_OPEN);
 
-        for (const storeItem of this.storeItems) {
-            this.detachChild(storeItem);
-        }
+    }
 
-        this.storeItems = [];
-        this.selectedItem = undefined;
-
-        DOMMutationHandler.clear(this.containerElt);
+    public hide() {
         DOMMutationHandler.hide(this.parentElt);
-
         EventHandler.callEvent(EventHandler.Event.STORE_CLOSE);
 
     }
@@ -97,6 +79,14 @@ export default class Store extends ChildComponent {
         this.colorStore.updateStats(level, currency);
 
         this.currencyElt.textContent = "Currency: " + this.currency;
+    }
+
+    private onSignIn(token: string) {
+        this.updateStore(token);
+    }
+
+    private onSignOut() {
+        this.updateStore();
     }
 
     private async onPurchase(storeItem: StoreItem) {
@@ -179,10 +169,21 @@ export default class Store extends ChildComponent {
         this.detachChild(this.colorStore);
     }
 
-    private renderStore(store: IStore) {
+    private async updateStore(token?: string) {
+        DOMMutationHandler.clear(this.containerElt);
+
+        const store = await this.getStore(token);
+
+        this.colors = store.colors;
+
+        this.colorStore.updateColors(store.colors);
+        this.renderStore(store, token !== undefined);
+    }
+
+    private renderStore(store: IStore, hasToken: boolean) {
         for (const [title, tank] of store.tanks) {
 
-            const storeItem = new StoreItem(tank, title, store.colors, this.level, this.currency);
+            const storeItem = new StoreItem(tank, title, store.colors, this.level, this.currency, hasToken);
             this.storeItems.push(storeItem);
             this.attachChild(storeItem);
 
@@ -214,7 +215,7 @@ export default class Store extends ChildComponent {
         });
     }
 
-    private async getStore(token: string) {
+    private async getStore(token?: string) {
         const storeData = await this.postStore(token);
 
         const store: any = {};
@@ -224,7 +225,7 @@ export default class Store extends ChildComponent {
         return store;
     }
 
-    private async postStore(token: string, data?: string[][]) {
+    private async postStore(token?: string, data?: string[][]) {
         const address = "http" + Globals.getGlobal(Globals.Global.HOST);
         const body: any = {
             token,

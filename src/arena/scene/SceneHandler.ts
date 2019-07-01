@@ -2,6 +2,7 @@ import {AudioListener, BoxGeometry, Color, Geometry, LineSegments, Mesh, MeshLam
 
 import Component from "../../component/Component";
 import EventHandler from "../../EventHandler";
+import Globals from "../../Globals";
 import Options from "../../Options";
 import BlockCollisionHandler from "../collision/BlockCollisionHandler";
 import FireworkHandler from "./firework/FireworkHandler";
@@ -78,13 +79,14 @@ export default class SceneHandler extends Component {
         this.scene = new Scene();
         this.scene.background = new Color(0x1e1e20);
 
+        Globals.setGlobal(Globals.Global.SCENE, this.scene);
+
         this.sceneSingleplayerToolHandler = new SceneSingleplayerToolHandler(this);
         this.scenePlayerHandler = new ScenePlayerHandler(this.scene, audioListener);
         this.sceneUtils = new SceneUtils(this);
         this.sceneVisualsHandler = new SceneVisualsHandler(this, this.scene);
         this.scenePowerupHandler = new ScenePowerupHandler(this.scene);
         this.fireworkHandler = new FireworkHandler(this.scene);
-
     }
 
     public renderArena() {

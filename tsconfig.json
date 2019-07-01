@@ -12,7 +12,8 @@
         "strict": true,
         "forceConsistentCasingInFileNames": true,
         "noImplicitReturns": true,
-        "noUnusedLocals": true
+        "noUnusedLocals": true,
+        "moduleResolution": "node"
     },
     "include": [
         "src/**/*"

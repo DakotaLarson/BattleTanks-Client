@@ -38,6 +38,8 @@ export default class SidePanel extends ChildComponent {
     private rankChart: RankChart;
     private rankChartLink: HTMLElement;
 
+    private storeVisible: boolean;
+
     constructor(menuElt: HTMLElement) {
         super();
 
@@ -67,6 +69,8 @@ export default class SidePanel extends ChildComponent {
         this.rankChartLink = DomHandler.getElement(".rank-tutorial-link", this.topContainer);
 
         this.rankChart.constructRankChart();
+
+        this.storeVisible = false;
     }
 
     public enable() {
@@ -89,6 +93,8 @@ export default class SidePanel extends ChildComponent {
         } else {
             this.onSignOut();
         }
+
+        this.attachComponent(this.store);
     }
 
     public disable() {
@@ -105,7 +111,7 @@ export default class SidePanel extends ChildComponent {
 
         EventHandler.removeListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onOverlayClose);
 
-        this.attach(undefined);
+        this.detach();
     }
 
     private onSignIn(token: string) {
@@ -114,7 +120,7 @@ export default class SidePanel extends ChildComponent {
         this.messageElt.style.display = "none";
 
         if (this.lastAttachedChild) {
-            this.attach(undefined);
+            this.detach();
         }
     }
 
@@ -124,7 +130,7 @@ export default class SidePanel extends ChildComponent {
         this.messageElt.style.display = "";
 
         if (this.lastAttachedChild) {
-            this.attach(undefined);
+            this.detach();
         }
     }
 
@@ -138,8 +144,13 @@ export default class SidePanel extends ChildComponent {
     }
 
     private onStoreClick(event: MouseEvent) {
-        if (event.target === this.storeBtn && !this.storeBtn.classList.contains("btn-disabled")) {
-            this.attach(this.store);
+        if (event.target === this.storeBtn) {
+
+            this.topContainer.style.display = "none";
+            this.backBtn.style.display = "inline-block";
+
+            this.store.show();
+            this.storeVisible = true;
         }
     }
 
@@ -163,7 +174,7 @@ export default class SidePanel extends ChildComponent {
 
     private onBackClick(event: MouseEvent) {
         if (event.target === this.backBtn) {
-            this.attach(undefined);
+            this.detach();
         }
     }
 
@@ -189,6 +200,7 @@ export default class SidePanel extends ChildComponent {
         } else {
             this.dataContainer.style.display = "";
             this.playerStats.updateStats(undefined);
+            this.store.updateStats(0, 0);
 
             this.rankChart.updateProgress();
         }
@@ -196,10 +208,8 @@ export default class SidePanel extends ChildComponent {
 
     private updateButtons(hasToken: boolean) {
         if (hasToken) {
-            this.storeBtn.classList.remove("btn-disabled");
             this.statsBtn.classList.remove("btn-disabled");
         } else {
-            this.storeBtn.classList.add("btn-disabled");
             this.statsBtn.classList.add("btn-disabled");
         }
     }
@@ -233,25 +243,23 @@ export default class SidePanel extends ChildComponent {
         }
     }
 
-    private attach(child: ChildComponent | undefined) {
-        if (child) {
+    private attach(child: ChildComponent) {
+        this.attachChild(child);
+        this.topContainer.style.display = "none";
+        this.backBtn.style.display = "inline-block";
+        this.lastAttachedChild = child;
+    }
 
-            this.attachChild(child);
-            this.topContainer.style.display = "none";
-            this.backBtn.style.display = "inline-block";
-            this.lastAttachedChild = child;
-
-        } else {
-            // back button clicked
-
-            if (this.lastAttachedChild) {
-                this.detachChild(this.lastAttachedChild);
-                this.lastAttachedChild = undefined;
-            }
-
-            this.topContainer.style.display = "block";
-            this.backBtn.style.display = "none";
-
+    private detach() {
+        if (this.storeVisible) {
+            this.store.hide();
+            this.storeVisible = false;
+        } else if (this.lastAttachedChild) {
+            this.detachChild(this.lastAttachedChild);
+            this.lastAttachedChild = undefined;
         }
+
+        this.topContainer.style.display = "block";
+        this.backBtn.style.display = "none";
     }
 }

@@ -37,7 +37,7 @@ export class StoreItem extends ChildComponent {
     private customizationElt: HTMLElement;
     private moreColorsElt: HTMLElement;
 
-    constructor(tank: IStoreTank, title: string, colors: Map<string, IStoreObject>, level: number, currency: number) {
+    constructor(tank: IStoreTank, title: string, colors: Map<string, IStoreObject>, level: number, currency: number, hasToken: boolean) {
         super();
 
         this.title = title;
@@ -53,7 +53,9 @@ export class StoreItem extends ChildComponent {
         this.levelRequired = tank.level_required;
         this.currencyRequired = tank.price;
 
-        if (tank.selected) {
+        if (!hasToken) {
+            this.actionState = ActionState.DISABLED;
+        } else if (tank.selected) {
             this.actionState = ActionState.SELECTED;
         } else if (tank.purchased) {
             this.actionState = ActionState.SELECT;

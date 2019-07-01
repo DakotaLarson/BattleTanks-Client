@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, BackSide, Color, Font, FontLoader, FrontSide, Group, Material, Mesh, MeshBasicMaterial, MeshPhongMaterial, PerspectiveCamera, PositionalAudio, Quaternion, RingBufferGeometry, Scene, ShapeBufferGeometry, SphereBufferGeometry, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, Group, Material, Mesh, MeshBasicMaterial, PerspectiveCamera, PositionalAudio, Quaternion, RingBufferGeometry, Scene, ShapeBufferGeometry, SphereBufferGeometry, Vector3, Vector4} from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
@@ -7,6 +7,7 @@ import Options from "../../Options";
 import BatchHandler from "./batch/BatchHandler";
 import BillboardBatchHandler from "./batch/BillboardBatchHandler";
 import EngineAudioHandler from "./EngineAudioHandler";
+import MaterialHandler from "./MaterialHandler";
 import ModelLoader from "./ModelLoader";
 import TankCustomizationHandler from "./TankCustomizationHandler";
 
@@ -160,10 +161,10 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     public updateMenuPlayerColor(detail: string, materialTitle: string, index: number) {
-        const group = this.players.find((player) => {
-            return player.id === ScenePlayerHandler.MENU_PLAYER_ID;
-        })!.group;
-        this.updateGroupColor(group, materialTitle, detail);
+        const player = this.players.find((currentPlayer) => {
+            return currentPlayer.id === ScenePlayerHandler.MENU_PLAYER_ID;
+        })!;
+        this.updateGroupColor(player, materialTitle, detail);
         this.menuPlayerModelColors![index] = detail;
     }
 
@@ -175,70 +176,22 @@ export default class ScenePlayerHandler extends ChildComponent {
         this.addPlayer(data.id, data.modelId, data.pos, data.name, true, false, data.modelColors, data.color);
     }
 
-    private updateGroupColor(group: Group, materialTitle: string, detail: string) {
-        // const color = new Color("#" + detail);
-        // for (const child of group.children) {
-        //     if (child instanceof Group) {
-        //         this.updateGroupColor(child, materialTitle, detail);
-        //     } else if (child instanceof Mesh) {
-        //         if (Array.isArray(child.material)) {
-        //             for (const material of child.material) {
-        //                 this.updateMaterial(materialTitle, material, color);
-        //             }
-        //         } else {
-        //             this.updateMaterial(materialTitle, child.material, color);
-        //         }
-        //     }
-        // }
+    private updateGroupColor(player: IPlayerObj, materialTitle: string, detail: string) {
 
-        const materialIndicesByMeshes = this.getMaterialIndicesByMeshes(group, materialTitle);
+        const newMaterial = MaterialHandler.getMaterial(detail);
 
-        for (const [mesh, index] of materialIndicesByMeshes) {
-            if (index === -1) {
-                // the mesh material is a material
-                const currentMaterial = mesh.material as MeshPhongMaterial;
-                const newMaterial = this.modelLoader.getMaterial(detail, currentMaterial);
-                mesh.material = newMaterial;
-            } else {
-                // the mesh material is an array
-                const currentMaterials = mesh.material as MeshPhongMaterial[];
-                const currentMaterial = currentMaterials[index];
-                const newMaterial = this.modelLoader.getMaterial(detail, currentMaterial);
-                currentMaterials[index] = newMaterial;
-            }
-        }
-    }
-
-    private getMaterialIndicesByMeshes(group: Group, title: string) {
-        const materialIndicesByMeshes: Map<Mesh, number> = new Map();
-        for (const child of group.children) {
-            if (child instanceof Group) {
-                const childValues = this.getMaterialIndicesByMeshes(child, title);
-                for (const [mesh, index] of childValues) {
-                    materialIndicesByMeshes.set(mesh, index);
-                }
-            } else if (child instanceof Mesh) {
-                if (Array.isArray(child.material)) {
-                    const materialIndex = child.material.findIndex((material) => {
-                        return material.name === title;
-                    });
-                    if (materialIndex > -1) {
-                        materialIndicesByMeshes.set(child, materialIndex);
-                    }
-                } else if (child.material.name === title) {
-                    materialIndicesByMeshes.set(child, -1);
-                }
-            }
+        const headMaterialIndex = this.modelLoader.headMaterialIndicesByNamesByMesh.get(player.modelId)!.get(materialTitle);
+        if (headMaterialIndex !== undefined) {
+            const meshMaterial = (player.group.getObjectByName("head") as Mesh).material as Material[];
+            meshMaterial[headMaterialIndex] = newMaterial;
         }
 
-        return materialIndicesByMeshes;
+        const bodyMaterialIndex = this.modelLoader.bodyMaterialIndicesByNamesByMesh.get(player.modelId)!.get(materialTitle);
+        if (bodyMaterialIndex !== undefined) {
+            const meshMaterial = (player.group.getObjectByName("body") as Mesh).material as Material[];
+            meshMaterial[bodyMaterialIndex] = newMaterial;
+        }
     }
-
-    // private updateMaterial(materialTitle: string, material: Material, color: Color) {
-    //     if (material.name === materialTitle) {
-    //         (material as any).color.copy(color);
-    //     }
-    // }
 
     private async addPlayer(id: number, modelId: string, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, modelColors: string[], teamColor?: number): Promise<IPlayerObj> {
         const group = new Group();
@@ -258,6 +211,7 @@ export default class ScenePlayerHandler extends ChildComponent {
 
         const playerObj: IPlayerObj = {
             id,
+            modelId,
             group,
             body,
             head,
@@ -301,9 +255,8 @@ export default class ScenePlayerHandler extends ChildComponent {
         head.add(headMesh);
         body.add(bodyMesh);
 
-        console.log(modelColors);
         for (let i = 0; i < modelColors.length; i ++) {
-            this.updateGroupColor(playerObj.group, "" + i, modelColors[i]);
+            this.updateGroupColor(playerObj, "" + i, modelColors[i]);
         }
 
         return playerObj;

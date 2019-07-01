@@ -2,12 +2,17 @@ import { Color, Group, MaterialCreator, Mesh, MeshPhongMaterial, MTLLoader, OBJL
 
 export default class ModelLoader {
 
+    public headMaterialIndicesByNamesByMesh: Map<string, Map<string, number>>;
+    public bodyMaterialIndicesByNamesByMesh: Map<string, Map<string, number>>;
+
     private cache: Map<string, Group>;
     private materials: Map<string, MeshPhongMaterial>;
 
     constructor() {
         this.cache = new Map();
         this.materials = new Map();
+        this.headMaterialIndicesByNamesByMesh = new Map();
+        this.bodyMaterialIndicesByNamesByMesh = new Map();
     }
 
     public async getGroup(fileName: string) {
@@ -25,6 +30,7 @@ export default class ModelLoader {
             }
 
             const group = await this.getModel(fileName, creator);
+            this.mapMaterialIndicesByNames(group, fileName);
             this.cache.set(fileName, group);
             return group.clone();
         }
@@ -48,7 +54,6 @@ export default class ModelLoader {
             loader2.meshBuilder.setLogging(false, false);
 
             loader2.setMaterials(creator.materials);
-            console.log(creator.materials);
             loader2.load("./res/models/tanks/" + fileName + "/tank.obj", (event: any) => {
                 this.updateNames(event.detail.loaderRootNode);
                 resolve(event.detail.loaderRootNode);
@@ -85,5 +90,30 @@ export default class ModelLoader {
                 }
             }
         }
+    }
+
+    private mapMaterialIndicesByNames(group: Group, title: string) {
+        const headMaterialIndicesByNames = new Map();
+        const bodyMaterialIndicesByNames = new Map();
+
+        const headMesh = group.getObjectByName("head") as Mesh;
+        const bodyMesh = group.getObjectByName("body") as Mesh;
+
+        if (Array.isArray(headMesh.material)) {
+            for (let i = 0; i < headMesh.material.length; i ++) {
+                const materialName = headMesh.material[i].name;
+                headMaterialIndicesByNames.set(materialName, i);
+            }
+        }
+
+        if (Array.isArray(bodyMesh.material)) {
+            for (let i = 0; i < bodyMesh.material.length; i ++) {
+                const materialName = bodyMesh.material[i].name;
+                bodyMaterialIndicesByNames.set(materialName, i);
+            }
+        }
+
+        this.headMaterialIndicesByNamesByMesh.set(title, headMaterialIndicesByNames);
+        this.bodyMaterialIndicesByNamesByMesh.set(title, bodyMaterialIndicesByNames);
     }
 }
