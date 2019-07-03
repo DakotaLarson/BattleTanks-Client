@@ -2,6 +2,7 @@ node_modules/
 .idea/
 build/
 deploy/
+dist/
 .old/
 .DS_Store
 .vscode/
