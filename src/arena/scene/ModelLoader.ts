@@ -1,4 +1,7 @@
-import { Color, Group, MaterialCreator, Mesh, MeshPhongMaterial, MTLLoader, OBJLoader2 } from "three";
+import { Color, Group, Mesh, MeshPhongMaterial } from "three";
+
+import { MaterialCreator, MTLLoader } from "../../../node_modules/three/examples/jsm/loaders/MTLLoader";
+import { OBJLoader2 } from "../../../node_modules/three/examples/jsm/loaders/OBJLoader2";
 
 export default class ModelLoader {
 
@@ -49,14 +52,14 @@ export default class ModelLoader {
 
     private getModel(fileName: string, creator: MaterialCreator): Promise<Group> {
         return new Promise((resolve) => {
-            const loader2 = new OBJLoader2();
-            loader2.logging.enabled = false;
-            loader2.meshBuilder.setLogging(false, false);
+            const loader = new OBJLoader2();
+            loader.setLogging(false, false);
+            loader.materialHandler.setLogging(false, false);
 
-            loader2.setMaterials(creator.materials);
-            loader2.load("./res/models/tanks/" + fileName + "/tank.obj", (event: any) => {
-                this.updateNames(event.detail.loaderRootNode);
-                resolve(event.detail.loaderRootNode);
+            loader.addMaterials(creator.materials);
+            loader.load("./res/models/tanks/" + fileName + "/tank.obj", (group: Group) => {
+                this.updateNames(group);
+                resolve(group);
             }, undefined, (err: any) => {
                 console.error(err);
             });

@@ -2,6 +2,7 @@
   "name": "battletanks",
   "version": "1.0.0",
   "description": "BattleTanks",
+  "private": true,
   "main": "main.js",
   "scripts": {
     "start": "lite-server",
@@ -21,13 +22,19 @@
   "homepage": "https://github.com/DakotaLarson/BattleTanks-Client#readme",
   "dependencies": {
     "fastdom": "^1.0.9",
-    "three": "^0.105.2"
+    "three": "^0.105.2",
+    "webpack": "^4.35.2"
   },
   "devDependencies": {
     "@types/gapi": "latest",
     "@types/gapi.auth2": "latest",
     "@types/three": "^0.93.31",
+    "css-loader": "^3.0.0",
     "eslint": "^5.14.1",
-    "lite-server": "^2.5.3"
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "lite-server": "^2.5.3",
+    "style-loader": "^0.23.1",
+    "ts-loader": "^6.0.4",
+    "typescript": "^3.5.2"
   }
 }

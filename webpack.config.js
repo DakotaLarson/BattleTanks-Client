@@ -1,47 +1,57 @@
-const path = require('path');
+const path = require("path");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const fs = require("fs");
 
-module.exports = (env, argv) => {
-    let config = {
-        mode: "production",
-        entry: {
-            app: [
-                'babel-polyfill',
-                './js/Game.js',
-            ],
-        },
-        output: {
-            path: path.resolve(__dirname, 'build/prod'),
-            filename: 'bundle.js',
-        },
-        module: {
-            rules: [
-                {
-                    test: /\.js?$/,
-                    exclude: /node_modules/,
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['env', 'stage-0']
-                    }
-                },
-                {
-                    enforce: "pre",
-                    test: /\.js?$/,
-                    exclude: /node_modules/,
-                    loader: "eslint-loader"
-                }
-            ]
-        },
-        resolve: {
-            modules: [
-                './js/',
-                './node_modules'
-            ]
-        }
-    };
-    if(argv.mode !== 'production'){
-        config.devtool = "source-map";
-        config.mode = 'development';
-        config.output.path = path.resolve(__dirname, 'build');
+const cssFileNames = fs.readdirSync(path.join(__dirname, "css"));
+const cssFilePaths = [];
+for (const cssFileName of cssFileNames) {
+    if (cssFileName.endsWith("css")) {
+        cssFilePaths.push(path.resolve(__dirname, "css", cssFileName));
     }
-    return config;
+}
+
+const config = {
+    entry: {
+        "bundle.js": [
+            path.resolve(__dirname, "src/Game.ts",)
+        ],
+        "bundle.css": cssFilePaths,
+    },
+    mode: "development",
+    devtool: "inline-source-map",
+    module: {
+        rules: [
+            {
+                test: /\.tsx?$/,
+                use: "ts-loader",
+                exclude: /node_modules/,
+            },
+            {
+                test: /\.css$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: "css-loader",
+                }),
+            }
+        ],
+    },
+    resolve: {
+        extensions: [".js", ".ts"]
+    },
+    output: {
+        filename: '[name]',
+        path: path.resolve(__dirname, "dist"),
+    },
+    plugins: [
+        new ExtractTextPlugin("bundle.css"),
+    ],
 };
+
+if (process.argv.includes("--prod")) {
+    config.mode = "production";
+    config.devtool = undefined;
+} else if (process.argv.includes("--watch")) {
+    config.watch = true;
+}
+
+module.exports = config;

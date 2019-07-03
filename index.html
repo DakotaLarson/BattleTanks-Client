@@ -44,30 +44,7 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     
     <link rel="stylesheet" type="text/css" href="/css/fonts/fonts.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/loading.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/main.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/buttons.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/game_menu.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/overlay_menu.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/gui.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/debug_panel.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/main_menu.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/connection_menu.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/create_world_mode_toggle.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/alert_message.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/options_menu.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/joystick.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/username_menu.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/profile_viewer.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/conversation_viewer.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/overlay_menu_list.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/notification.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/tooltip.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/side_panel.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/overlay.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/rank_chart.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/dropdown.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/store.css"/>
+    <link rel="stylesheet" type="text/css" href="/dist/bundle.css"/>
 </head>
 <body>
 
@@ -636,8 +613,9 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
 <script src="https://cdn.jsdelivr.net/npm/js-polyfills@0.1.42/keyboard.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/event-source-polyfill@1.0.5/src/eventsource.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@0/dist/ua-parser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fastdom@1.0.9/fastdom.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
 <script>
     const mainScripts = new Map([
         ["https://cdn.jsdelivr.net/npm/three@0.104.0/examples/js/loaders/LoaderSupport.js", false],
@@ -683,6 +661,7 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
             });
         }).catch(console.error);
     });
-</script>
+</script> -->
+<script src="./dist/bundle.js"></script>
 </body>
 </html>

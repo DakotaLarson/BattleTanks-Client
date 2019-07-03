@@ -1,4 +1,3 @@
-import MaterialHandler from "../../arena/scene/MaterialHandler";
 import Component from "../../component/Component";
 import DomHandler from "../../DomHandler";
 import DOMMutationHandler from "../../DOMMutationHandler";
