@@ -21,7 +21,16 @@ export default class ModelLoader {
     public async getGroup(fileName: string) {
         const cached = this.cache.get(fileName);
         if (cached) {
-            return cached.clone();
+            const clone = cached.clone();
+            clone.traverse((node) => {
+                const mesh = node as Mesh;
+                if (mesh.isMesh) {
+                    if (Array.isArray(mesh.material)) {
+                        mesh.material = mesh.material.slice();
+                    }
+                }
+            });
+            return clone;
         } else {
             const creator = await this.getMaterialFromDisk(fileName);
 

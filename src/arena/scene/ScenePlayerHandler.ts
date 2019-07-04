@@ -68,14 +68,13 @@ export default class ScenePlayerHandler extends ChildComponent {
 
         this.audioListener = audioListener;
         const audioLoader = new AudioLoader();
-        this.engineAudioHandler = new EngineAudioHandler(audioLoader, this.audioListener, this.players, extension);
+        this.engineAudioHandler = new EngineAudioHandler(audioLoader, this.audioListener, extension);
 
         // @ts-ignore Disregard additional arguments
         audioLoader.load(location.pathname + "res/audio/effects/game/shoot" + extension, (buffer: AudioBuffer) => {
             this.shootAudioBuffer = buffer;
         });
 
-        // @ts-ignore Disregard additional arguments
         const fontLoader = new FontLoader();
         fontLoader.load(location.pathname + "res/font/Bombardier_Regular.json", (font: Font) => {
             this.font = font;

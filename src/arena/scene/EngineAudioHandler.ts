@@ -14,11 +14,11 @@ export default class EngineAudioHandler extends ChildComponent {
     private engineAudioBuffer: AudioBuffer | undefined;
     private audioListener: AudioListener;
 
-    constructor(audioLoader: AudioLoader, audioListener: AudioListener, players: IPlayerObj[], extension: string) {
+    constructor(audioLoader: AudioLoader, audioListener: AudioListener, extension: string) {
         super();
 
         this.audioListener = audioListener;
-        this.players = players;
+        this.players = [];
 
         // @ts-ignore ignore additional arguments
         audioLoader.load(location.pathname + "res/audio/effects/game/engine" + extension, (buffer: AudioBuffer) => {
@@ -38,10 +38,10 @@ export default class EngineAudioHandler extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.AUDIO_DISABLED, this.onAudioDisabled);
         EventHandler.removeListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
         EventHandler.removeListener(this, EventHandler.Event.DOM_VISIBILITYCHANGE, this.onVisibilityChange);
-
     }
 
     public startEngineSound(player: IPlayerObj) {
+
         const volume = Options.options.engineVolume;
         const audio = new PositionalAudio(this.audioListener);
 
@@ -57,6 +57,8 @@ export default class EngineAudioHandler extends ChildComponent {
             audio.pause();
         }
         player.engineAudio = audio;
+
+        this.players.push(player);
     }
 
     public updateEngineSound(player: IPlayerObj) {
@@ -68,6 +70,8 @@ export default class EngineAudioHandler extends ChildComponent {
             player.engineAudio.stop();
             player.head.remove(player.engineAudio);
         }
+
+        this.players.splice(this.players.indexOf(player), 1);
     }
 
     private onAudioEnabled() {
