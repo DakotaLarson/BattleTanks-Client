@@ -1,4 +1,4 @@
-import { Color, Group, Mesh, MeshPhongMaterial } from "three";
+import { Group, Mesh, MeshPhongMaterial } from "three";
 
 import { MaterialCreator, MTLLoader } from "../../../node_modules/three/examples/jsm/loaders/MTLLoader";
 import { OBJLoader2 } from "../../../node_modules/three/examples/jsm/loaders/OBJLoader2";
@@ -22,17 +22,10 @@ export default class ModelLoader {
         const cached = this.cache.get(fileName);
         if (cached) {
             const clone = cached.clone();
-            clone.traverse((node) => {
-                const mesh = node as Mesh;
-                if (mesh.isMesh) {
-                    if (Array.isArray(mesh.material)) {
-                        mesh.material = mesh.material.slice();
-                    }
-                }
-            });
+            this.decoupleMaterials(clone);
             return clone;
         } else {
-            const creator = await this.getMaterialFromDisk(fileName);
+            const creator = await this.getMaterial(fileName);
 
             for (const prop in creator.materials) {
                 if (creator.materials.hasOwnProperty(prop)) {
@@ -48,17 +41,6 @@ export default class ModelLoader {
         }
     }
 
-    public getMaterial(detail: string, existingMaterial: MeshPhongMaterial) {
-        let material = this.materials.get(detail);
-        if (!material) {
-            material = existingMaterial.clone();
-            material.color = new Color("#" + detail);
-            this.materials.set(detail, material);
-        }
-
-        return material;
-    }
-
     private getModel(fileName: string, creator: MaterialCreator): Promise<Group> {
         return new Promise((resolve) => {
             const loader = new OBJLoader2();
@@ -68,6 +50,7 @@ export default class ModelLoader {
             loader.addMaterials(creator.materials);
             loader.load("./res/models/tanks/" + fileName + "/tank.obj", (group: Group) => {
                 this.updateNames(group);
+                this.translateHead(group);
                 resolve(group);
             }, undefined, (err: any) => {
                 console.error(err);
@@ -75,7 +58,7 @@ export default class ModelLoader {
         });
     }
 
-    private getMaterialFromDisk(fileName: string): Promise<MaterialCreator> {
+    private getMaterial(fileName: string): Promise<MaterialCreator> {
         return new Promise((resolve) => {
             const loader = new MTLLoader();
 
@@ -86,6 +69,22 @@ export default class ModelLoader {
                 console.error(err);
             });
         });
+    }
+
+    private decoupleMaterials(group: Group) {
+        group.traverse((node) => {
+            const mesh = node as Mesh;
+            if (mesh.isMesh) {
+                if (Array.isArray(mesh.material)) {
+                    mesh.material = mesh.material.slice();
+                }
+            }
+        });
+    }
+
+    private translateHead(group: Group) {
+        const head = group.getObjectByName("head") as Mesh;
+        head.geometry.translate(0, 0, -0.3567);
     }
 
     private updateNames(group: Group) {

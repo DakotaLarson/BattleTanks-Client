@@ -27,7 +27,6 @@
   "devDependencies": {
     "@types/gapi": "latest",
     "@types/gapi.auth2": "latest",
-    "@types/three": "^0.93.31",
     "css-loader": "^3.0.0",
     "eslint": "^5.14.1",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",

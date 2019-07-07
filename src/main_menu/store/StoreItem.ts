@@ -192,9 +192,13 @@ export class StoreItem extends ChildComponent {
         const parent = StoreUtils.createElement("div", ["store-item-container"]);
 
         const titleElt = StoreUtils.createElement("div", [], title);
+        const imageElt = StoreUtils.createElement("img", ["store-item-image"]);
+        imageElt.setAttribute("src", tank.image_url);
+        imageElt.setAttribute("draggable", "false");
         const priceElt = StoreUtils.createElement("div", ["store-item-price"], "Price: " + (tank.price || "Free"));
 
         parent.appendChild(titleElt);
+        parent.appendChild(imageElt);
         parent.appendChild(priceElt);
         parent.appendChild(actionElt);
         parent.appendChild(colorIconElt);
@@ -226,6 +230,7 @@ export class StoreItem extends ChildComponent {
         const colorElt = StoreUtils.createElement("img", ["store-item-color-icon"]);
         colorElt.setAttribute("src", "./res/menu/color.svg");
         colorElt.setAttribute("title", "Customize");
+        colorElt.setAttribute("draggable", "false");
 
         if (this.actionState === ActionState.SELECTED) {
             colorElt.style.display = "block";

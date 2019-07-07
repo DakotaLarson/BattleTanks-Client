@@ -1,5 +1,4 @@
 .side-panel .store-container {
-    max-width: 33vw;
     display: grid;
     grid-template-columns: repeat(2, auto);
     grid-gap: 1vmin;
@@ -9,9 +8,19 @@
 }
 .side-panel .store-item-container {
     padding: 1vmin;
-    height: 15vmin;
+    height: 20vmin;
+    width: 20vmin;
     border: solid 1px #ffffff;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.side-panel .store-item-image {
+    object-fit: contain;
+    min-height: 0;
+    padding: 0.5vmin;
 }
 
 .side-panel .store-item-price {

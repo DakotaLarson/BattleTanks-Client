@@ -5,6 +5,15 @@ import Overlay from "./Overlay";
 
 export default class RankChart extends Overlay {
 
+    private static readonly REWARDS_BY_RANK: Map<string, string[]> = new Map([
+        ["Recruit", [
+            "Little Timmy",
+        ]],
+        ["Sergeant", [
+            "The Big Mama",
+        ]],
+    ]);
+
     private chartParent: HTMLElement;
 
     constructor(contentQuery: string) {
@@ -95,7 +104,7 @@ export default class RankChart extends Overlay {
         const rankInfoElt = DomHandler.getElement(".rank-info-rank", parentElt);
 
         if (level && points) {
-            currentInfoElt.textContent = "Current: " + points + " points";
+            currentInfoElt.textContent = "Current: " + points + " points (Level " + level + ")";
 
             const levels = RankCalculator.getLevels();
             if (level < levels.length) {
@@ -106,9 +115,9 @@ export default class RankChart extends Overlay {
                 levelInfoElt.textContent = "Top level achieved!";
             }
 
-            const nextRank = level - (level % RankCalculator.LEVELS_PER_RANK) + RankCalculator.LEVELS_PER_RANK + 1;
-            if (nextRank < levels.length) {
-                const nextRankPoints = levels[nextRank - 1].points;
+            const nextRankLevel = level - (level % RankCalculator.LEVELS_PER_RANK || RankCalculator.LEVELS_PER_RANK) + RankCalculator.LEVELS_PER_RANK + 1;
+            if (nextRankLevel < levels.length) {
+                const nextRankPoints = levels[nextRankLevel - 1].points;
                 const rankPointDiff = nextRankPoints - points;
                 rankInfoElt.textContent = "Next rank: " + nextRankPoints + " points (+" + rankPointDiff + ")";
             } else {
@@ -152,9 +161,16 @@ export default class RankChart extends Overlay {
         titleContainer.appendChild(pointsSubtitle);
 
         const rewardContainer = this.createElement("rank-chart-reward-container");
-        rewardContainer.appendChild(this.createElement("rank-chart-reward", "Rewards"));
-        rewardContainer.appendChild(this.createElement("rank-chart-reward", "Coming"));
-        rewardContainer.appendChild(this.createElement("rank-chart-reward", "Soon!"));
+
+        const rewards = RankChart.REWARDS_BY_RANK.get(rank);
+        if (rewards) {
+            for (const reward of rewards) {
+                rewardContainer.appendChild(this.createElement("rank-chart-reward", reward));
+            }
+        }
+        // rewardContainer.appendChild(this.createElement("rank-chart-reward", "Rewards"));
+        // rewardContainer.appendChild(this.createElement("rank-chart-reward", "Coming"));
+        // rewardContainer.appendChild(this.createElement("rank-chart-reward", "Soon!"));
 
         // TODO: Add rewards to container
 

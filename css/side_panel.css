@@ -39,6 +39,37 @@
     display: none;
 }
 
+.side-panel .side-panel-btn-parent {
+    display: inline-grid;
+    grid-template-columns: repeat(2, auto);
+    grid-gap: 1vmin;
+}
+
+.side-panel .side-panel-btn-container {
+    display: flex;
+    flex-direction: column;
+    width: 10vmin;
+    height: 10vmin;
+    border:  solid 1px #ffffff;
+}
+
+.side-panel .side-panel-btn-container:hover {
+    background-color: #03c95f;
+    cursor: pointer;
+}
+
+.side-panel .side-panel-btn-img {
+    flex-grow: 1;
+    pointer-events: none;
+}
+
+.side-panel .side-panel-btn-title {
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 2vmin;
+    margin-bottom: 0.5vmin;
+    pointer-events: none;
+}
+
 .side-panel .side-panel-creator-section {
     display: none;
 }

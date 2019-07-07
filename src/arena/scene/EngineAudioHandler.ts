@@ -51,7 +51,7 @@ export default class EngineAudioHandler extends ChildComponent {
         audio.setPlaybackRate(this.getPlaybackRate(player.movementVelocity));
 
         const enabled = Globals.getGlobal(Globals.Global.AUDIO_ENABLED) && !document.hidden;
-        player.head.add(audio);
+        player.group.add(audio);
         audio.play();
         if (!enabled) {
             audio.pause();
@@ -68,7 +68,7 @@ export default class EngineAudioHandler extends ChildComponent {
     public stopEngineSound(player: IPlayerObj) {
         if (player.engineAudio) {
             player.engineAudio.stop();
-            player.head.remove(player.engineAudio);
+            player.group.remove(player.engineAudio);
         }
 
         this.players.splice(this.players.indexOf(player), 1);

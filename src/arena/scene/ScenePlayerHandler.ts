@@ -194,26 +194,18 @@ export default class ScenePlayerHandler extends ChildComponent {
 
     private async addPlayer(id: number, modelId: string, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, modelColors: string[], teamColor?: number): Promise<IPlayerObj> {
         const group = new Group();
-        const head = new Group();
-        const body = new Group();
         group.position.set(pos.x, pos.y, pos.z);
-
-        body.rotation.y = pos.w;
-        head.rotation.y = pos.w;
 
         if (teamColor) {
             this.generateRing(teamColor, group.position.clone().add(ScenePlayerHandler.RING_OFFSET), new Quaternion());
         }
 
-        group.add(head, body);
         this.scene.add(group);
 
         const playerObj: IPlayerObj = {
             id,
             modelId,
             group,
-            body,
-            head,
             movementVelocity: 0,
         };
 
@@ -248,11 +240,15 @@ export default class ScenePlayerHandler extends ChildComponent {
         }
 
         const result = await this.modelLoader.getGroup(modelId);
-        const headMesh = result.getObjectByName("head") as Mesh;
-        const bodyMesh = result.getObjectByName("body") as Mesh;
+        const head = result.getObjectByName("head") as Mesh;
+        const body = result.getObjectByName("body") as Mesh;
 
-        head.add(headMesh);
-        body.add(bodyMesh);
+        group.add(body, head);
+
+        playerObj.body = body;
+        playerObj.head = head;
+
+        this.rotate(playerObj, pos.w, pos.w);
 
         for (let i = 0; i < modelColors.length; i ++) {
             this.updateGroupColor(playerObj, "" + i, modelColors[i]);
@@ -314,13 +310,10 @@ export default class ScenePlayerHandler extends ChildComponent {
         if (index > -1) {
             const playerObj = this.players[index];
             playerObj.group.position.copy(data.pos);
-            const body = playerObj.body;
-            const head = playerObj.head;
+
             const nameplate = playerObj.nameplate;
 
-            head.rotation.y = data.headRot;
-
-            body.rotation.y = data.bodyRot;
+            this.rotate(playerObj, data.bodyRot, data.headRot);
 
             const cameraPos = this.camera.position;
 
@@ -389,13 +382,27 @@ export default class ScenePlayerHandler extends ChildComponent {
         }
     }
 
+    private rotate(player: IPlayerObj, bodyRotation: number, headRotation: number) {
+        const body = player.body;
+        const head = player.head;
+
+        if (body) {
+            body.rotation.y = bodyRotation;
+        }
+
+        if (head) {
+            head.position.set(Math.sin(bodyRotation) * 0.3567, 0, Math.cos(bodyRotation) * 0.3567);
+            head.rotation.y = headRotation;
+        }
+    }
+
     private addProtectionSphere(id: number) {
         const playerObj = this.players.find((player) => {
             return player.id === id;
         });
 
         if (playerObj) {
-            this.generateProtectionSphere(playerObj.body.position);
+            this.generateProtectionSphere(playerObj.group.position);
             this.sphereOwners.push(id);
         }
     }
@@ -467,11 +474,11 @@ export default class ScenePlayerHandler extends ChildComponent {
 
             const audio = new PositionalAudio(this.audioListener);
             audio.setVolume(volume);
-            player.head.add(audio);
+            player.group.add(audio);
 
             audio.onEnded = () => {
                 audio.isPlaying = false;
-                player.head.remove(audio);
+                player.group.remove(audio);
             };
 
             audio.setBuffer(buffer);

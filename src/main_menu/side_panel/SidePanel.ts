@@ -32,11 +32,11 @@ export default class SidePanel extends ChildComponent {
     private statsBtn: HTMLElement;
     private findBtn: HTMLElement;
     private createBtn: HTMLElement;
+    private rankChartBtn: HTMLElement;
 
     private backBtn: HTMLElement;
 
     private rankChart: RankChart;
-    private rankChartLink: HTMLElement;
 
     private storeVisible: boolean;
 
@@ -58,15 +58,15 @@ export default class SidePanel extends ChildComponent {
 
         this.messageElt = DomHandler.getElement(".side-panel-message", this.topContainer);
 
-        this.storeBtn = DomHandler.getElement("#side-panel-store", this.topContainer);
-        this.statsBtn = DomHandler.getElement("#side-panel-stats", this.topContainer);
-        this.findBtn = DomHandler.getElement("#side-panel-find", this.topContainer);
-        this.createBtn = DomHandler.getElement("#side-panel-create", this.topContainer);
+        this.storeBtn = DomHandler.getElement(".side-panel-store-btn", this.topContainer);
+        this.statsBtn = DomHandler.getElement(".side-panel-stats-btn", this.topContainer);
+        this.findBtn = DomHandler.getElement(".side-panel-find-btn", this.topContainer);
+        this.createBtn = DomHandler.getElement(".side-panel-create-btn", this.topContainer);
+        this.rankChartBtn = DomHandler.getElement(".rank-tutorial-btn", this.topContainer);
 
         this.backBtn = DomHandler.getElement(".side-panel-back", menuElt);
 
         this.rankChart = new RankChart(".overlay-rank");
-        this.rankChartLink = DomHandler.getElement(".rank-tutorial-link", this.topContainer);
 
         this.rankChart.constructRankChart();
 
@@ -179,7 +179,7 @@ export default class SidePanel extends ChildComponent {
     }
 
     private onRankChartClick(event: MouseEvent) {
-        if (event.target === this.rankChartLink) {
+        if (event.target === this.rankChartBtn) {
             this.attachChild(this.rankChart);
         }
     }
