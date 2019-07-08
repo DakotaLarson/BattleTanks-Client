@@ -143,9 +143,8 @@ export default class SidePanel extends ChildComponent {
         }
     }
 
-    private onStoreClick(event: MouseEvent) {
+    private async onStoreClick(event: MouseEvent) {
         if (event.target === this.storeBtn) {
-
             this.topContainer.style.display = "none";
             this.backBtn.style.display = "inline-block";
 

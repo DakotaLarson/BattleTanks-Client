@@ -39,7 +39,6 @@ export class StoreItem extends ChildComponent {
 
     constructor(tank: IStoreTank, title: string, colors: Map<string, IStoreObject>, level: number, currency: number, hasToken: boolean) {
         super();
-
         this.title = title;
         this.price = tank.price;
         this.detail = tank.detail;

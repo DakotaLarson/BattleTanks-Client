@@ -7,6 +7,7 @@ export default class ModelLoader {
 
     public headMaterialIndicesByNamesByMesh: Map<string, Map<string, number>>;
     public bodyMaterialIndicesByNamesByMesh: Map<string, Map<string, number>>;
+    public modelHeadOffsets: Map<string, number>;
 
     private cache: Map<string, Group>;
     private materials: Map<string, MeshPhongMaterial>;
@@ -16,13 +17,17 @@ export default class ModelLoader {
         this.materials = new Map();
         this.headMaterialIndicesByNamesByMesh = new Map();
         this.bodyMaterialIndicesByNamesByMesh = new Map();
+        this.modelHeadOffsets = new Map();
     }
 
-    public async getGroup(fileName: string) {
+    public async getGroup(fileName: string, headOffset?: number) {
         const cached = this.cache.get(fileName);
         if (cached) {
             const clone = cached.clone();
             this.decoupleMaterials(clone);
+            if (headOffset) {
+                this.translateHead(clone, fileName, headOffset);
+            }
             return clone;
         } else {
             const creator = await this.getMaterial(fileName);
@@ -35,6 +40,9 @@ export default class ModelLoader {
             }
 
             const group = await this.getModel(fileName, creator);
+            if (headOffset) {
+                this.translateHead(group, fileName, headOffset);
+            }
             this.mapMaterialIndicesByNames(group, fileName);
             this.cache.set(fileName, group);
             return group.clone();
@@ -50,7 +58,6 @@ export default class ModelLoader {
             loader.addMaterials(creator.materials);
             loader.load("./res/models/tanks/" + fileName + "/tank.obj", (group: Group) => {
                 this.updateNames(group);
-                this.translateHead(group);
                 resolve(group);
             }, undefined, (err: any) => {
                 console.error(err);
@@ -82,9 +89,12 @@ export default class ModelLoader {
         });
     }
 
-    private translateHead(group: Group) {
-        const head = group.getObjectByName("head") as Mesh;
-        head.geometry.translate(0, 0, -0.3567);
+    private translateHead(group: Group, modelId: string, headOffset?: number) {
+        if (headOffset && !this.modelHeadOffsets.has(modelId)) {
+            const head = group.getObjectByName("head") as Mesh;
+            head.geometry.translate(0, 0, -headOffset);
+            this.modelHeadOffsets.set(modelId, headOffset);
+        }
     }
 
     private updateNames(group: Group) {

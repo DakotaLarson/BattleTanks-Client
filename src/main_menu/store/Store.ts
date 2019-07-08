@@ -3,6 +3,7 @@ import DomHandler from "../../DomHandler";
 import DOMMutationHandler from "../../DOMMutationHandler";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
+import Confirmation from "../../gui/Confirmation";
 import { IStore, IStoreObject } from "../../interfaces/IStore";
 import ColorStore from "./ColorStore";
 import { ActionState, StoreItem } from "./StoreItem";
@@ -89,18 +90,20 @@ export default class Store extends Component {
     }
 
     private async onPurchase(storeItem: StoreItem) {
-        // todo: are you sure?
-        const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
-        if (token) {
-            const requestStatus = await this.postStore(token, [["purchase", storeItem.title]]);
-            if (requestStatus === 200) {
+        const confirmation = await Confirmation.confirm("Purchase " + storeItem.title + " for " + storeItem.price + "?");
+        if (confirmation) {
+            const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
+            if (token) {
+                const requestStatus = await this.postStore(token, [["purchase", storeItem.title]]);
+                if (requestStatus === 200) {
 
-                storeItem.updateAction(ActionState.SELECT);
+                    storeItem.updateAction(ActionState.SELECT);
 
-                const newCurrency = this.currency - storeItem.price;
-                this.updateStats(this.level, newCurrency);
-            } else {
-                alert("Error purchasing store item: " + requestStatus + ". Please report this.");
+                    const newCurrency = this.currency - storeItem.price;
+                    this.updateStats(this.level, newCurrency);
+                } else {
+                    alert("Error purchasing store item: " + requestStatus + ". Please report this.");
+                }
             }
         }
     }
@@ -147,19 +150,23 @@ export default class Store extends Component {
     }
 
     private async onStoreItemMoreColorsPurchase(purchase: string) {
-        const parent = this.selectedItem!;
+        const price = this.colors.get(purchase)!.price;
+        const confirmation = await Confirmation.confirm("Purchase " + purchase + " for " + price + "?");
+        if (confirmation) {
+            const parent = this.selectedItem!;
 
-        const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
-        if (token) {
-            const requestStatus = await this.postStore(token, [["purchase", purchase], ["parent", parent.title]]);
-            if (requestStatus === 200) {
-                this.colorStore.handlePurchase(purchase);
-                parent.addColor(purchase, this.colors.get(purchase)!.detail);
+            const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
+            if (token) {
+                const requestStatus = await this.postStore(token, [["purchase", purchase], ["parent", parent.title]]);
+                if (requestStatus === 200) {
+                    this.colorStore.handlePurchase(purchase);
+                    parent.addColor(purchase, this.colors.get(purchase)!.detail);
 
-                const newCurrency = this.currency - this.colors.get(purchase)!.price;
-                this.updateStats(this.level, newCurrency);
-            } else {
-                alert("Error purchasing store item color: " + requestStatus + ". Please report this.");
+                    const newCurrency = this.currency - price;
+                    this.updateStats(this.level, newCurrency);
+                } else {
+                    alert("Error purchasing store item color: " + requestStatus + ". Please report this.");
+                }
             }
         }
     }

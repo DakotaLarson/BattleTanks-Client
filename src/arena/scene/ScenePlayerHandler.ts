@@ -168,11 +168,11 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     private async onPlayerAddition(data: any) {
-        this.addPlayer(data.id, data.modelId, data.pos, name, false, false, data.modelColors, data.color);
+        this.addPlayer(data.id, data.modelId, data.pos, name, false, false, data.modelColors, data.color, data.headOffset);
     }
 
     private onConnectedPlayerAddition(data: any) {
-        this.addPlayer(data.id, data.modelId, data.pos, data.name, true, false, data.modelColors, data.color);
+        this.addPlayer(data.id, data.modelId, data.pos, data.name, true, false, data.modelColors, data.color, data.headOffset);
     }
 
     private updateGroupColor(player: IPlayerObj, materialTitle: string, detail: string) {
@@ -192,7 +192,7 @@ export default class ScenePlayerHandler extends ChildComponent {
         }
     }
 
-    private async addPlayer(id: number, modelId: string, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, modelColors: string[], teamColor?: number): Promise<IPlayerObj> {
+    private async addPlayer(id: number, modelId: string, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, modelColors: string[], teamColor?: number, headOffset?: number): Promise<IPlayerObj> {
         const group = new Group();
         group.position.set(pos.x, pos.y, pos.z);
 
@@ -207,6 +207,7 @@ export default class ScenePlayerHandler extends ChildComponent {
             modelId,
             group,
             movementVelocity: 0,
+            headOffset,
         };
 
         if (isConnectedPlayer) {
@@ -239,7 +240,7 @@ export default class ScenePlayerHandler extends ChildComponent {
             this.engineAudioHandler.startEngineSound(playerObj);
         }
 
-        const result = await this.modelLoader.getGroup(modelId);
+        const result = await this.modelLoader.getGroup(modelId, headOffset);
         const head = result.getObjectByName("head") as Mesh;
         const body = result.getObjectByName("body") as Mesh;
 
@@ -383,16 +384,21 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     private rotate(player: IPlayerObj, bodyRotation: number, headRotation: number) {
-        const body = player.body;
-        const head = player.head;
-
-        if (body) {
-            body.rotation.y = bodyRotation;
+        if (player.body) {
+            player.body.rotation.y = bodyRotation;
         }
 
-        if (head) {
-            head.position.set(Math.sin(bodyRotation) * 0.3567, 0, Math.cos(bodyRotation) * 0.3567);
-            head.rotation.y = headRotation;
+        if (player.head) {
+
+            let headOffset = player.headOffset;
+            if (!headOffset) {
+                headOffset = this.modelLoader.modelHeadOffsets.get(player.modelId);
+            }
+            if (headOffset) {
+                player.head.position.set(Math.sin(bodyRotation) * headOffset, 0, Math.cos(bodyRotation) * headOffset);
+            }
+
+            player.head.rotation.y = headRotation;
         }
     }
 

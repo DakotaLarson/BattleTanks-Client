@@ -3,6 +3,7 @@ import DomHandler from "./DomHandler";
 import DOMMutationHandler from "./DOMMutationHandler";
 import EventHandler from "./EventHandler";
 import Globals from "./Globals";
+import Confirmation from "./gui/Confirmation";
 import RankCalculator from "./RankCalculator";
 
 export default class ProfileViewer extends Component {
@@ -101,7 +102,7 @@ export default class ProfileViewer extends Component {
         EventHandler.addListener(this, EventHandler.Event.NOTIFICATION_ONLINE, this.onNotification);
     }
 
-    private onClick(event: MouseEvent) {
+    private async onClick(event: MouseEvent) {
         if (!this.conversationOpen) {
             const classList = (event.target as HTMLElement).classList;
             if (this.selectedUsername) {
@@ -127,7 +128,7 @@ export default class ProfileViewer extends Component {
                     let confirmation = true;
 
                     if (this.negativeState === 1 || this.negativeState === 4) {
-                        confirmation = window.confirm("Are you sure?");
+                        confirmation = await Confirmation.confirm("Are you sure?");
                     }
 
                     if (confirmation) {
