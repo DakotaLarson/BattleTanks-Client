@@ -1,0 +1,116 @@
+.side-panel .store-container {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    grid-gap: 1vmin;
+    font-size: 2.5vmin;
+    font-family: 'Inconsolata', sans-serif;
+
+}
+.side-panel .store-item-container {
+    padding: 1vmin;
+    height: 20vmin;
+    width: 20vmin;
+    border: solid 1px #ffffff;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.side-panel .store-item-image {
+    object-fit: contain;
+    min-height: 0;
+    padding: 0.5vmin;
+}
+
+.side-panel .store-item-price {
+    font-size: 2vmin;
+}
+
+.side-panel .store-item-color-icon {
+    position: absolute;
+    top: 80%;
+    left: 80%;
+    cursor: pointer;
+    display: none;
+    width: 3vmin;
+    height: 3vmin;
+}
+
+.side-panel .store-item-custom-container {
+    position: absolute;
+    top: 95%;
+    left: 95%;
+    background-color: #101010;
+    border: solid 1px #ffffff;
+    z-index: 1;
+    display: none;
+    padding: 1vmin;
+    width: 21vmin; /* Change this value when colors are added with longer titles*/
+}
+
+.side-panel .store-item-custom-color-container {
+    cursor: pointer;
+}
+
+.side-panel .store-item-custom-color-container,
+.overlay-color .store-item-custom-color-container {
+    display: flex;
+    white-space: nowrap;
+    padding: 1vmin;
+    margin-bottom: 1vmin;
+    border: solid 1px #ffffff;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 2.5vmin;
+    font-family: 'Inconsolata', sans-serif;
+}
+
+.side-panel .dropdown-container .store-item-custom-color-container {
+    margin-bottom: 0;
+    border-top: none;
+}
+
+.side-panel .store-item-custom-color-container:hover,
+.overlay-color .store-item-custom-color-container:hover {
+    background-color: #202020;
+}
+
+.side-panel .store-item-custom-color,
+.overlay-color .store-item-custom-color {
+    height: 2.5vmin;
+    width: 2.5vmin;
+    margin-right: 1vmin;
+    border: solid 1px #ffffff;
+}
+
+.side-panel .store-item-custom-color-inner-container,
+.overlay-color .store-item-custom-color-inner-container {
+    display: flex;
+    margin-right: 1vmin;
+}
+
+.side-panel .dropdown-container .arrow-down,
+.side-panel .dropdown-container .arrow-up {
+    display: none;
+}
+
+.overlay-color .store-item-custom-color-price {
+    font-size: 1.75vmin;
+}
+
+.overlay-color .store-item-custom-color-parent {
+    text-align: right;
+}
+
+.side-panel .store-currency,
+.overlay-color .store-currency {
+    text-align: left;
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 2vmin;
+    margin-bottom: 1vmin;
+}
+
+.overlay-color .overlay-color-title {
+    margin-bottom: 1vmin;
+}

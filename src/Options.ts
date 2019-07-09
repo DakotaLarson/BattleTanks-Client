@@ -31,6 +31,9 @@ export default class Options extends Component {
         if (!("autofixCamera" in Options.options)) {
             Options.options.autofixCamera = true;
         }
+        if (!("fireworksEnabled" in Options.options)) {
+            Options.options.fireworksEnabled = true;
+        }
         if (!("forward" in Options.options)) {
             Options.options.forward = {
                 key: "w",

@@ -1,11 +1,10 @@
-import Component from "../component/Component";
+import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
 import { PerspectiveCamera } from "three";
 import MenuCamera from "../arena/camera/MenuCamera";
 import AudioType from "../audio/AudioType";
-import ChildComponent from "../component/ChildComponent";
 import DOMMutationHandler from "../DOMMutationHandler";
 import GameSuggestion from "./GameSuggestion";
 import Leaderboard from "./Leaderboard";
@@ -13,7 +12,7 @@ import PlayButton from "./PlayButton";
 import ServerPlayerCount from "./ServerPlayerCount";
 import SidePanel from "./side_panel/SidePanel";
 
-export default class MainMenu extends Component {
+export default class MainMenu extends ChildComponent {
 
     private element: HTMLElement;
 
@@ -25,13 +24,17 @@ export default class MainMenu extends Component {
     private leaderboard: Leaderboard;
     private menuCamera: MenuCamera;
 
-    private attachedCmp: ChildComponent | undefined;
+    private headerContainerElt: HTMLElement;
+    private playBtnContainerElt: HTMLElement;
 
     constructor(camera: PerspectiveCamera) {
         super();
         this.element = DomHandler.getElement(".main-menu");
 
-        this.playButton = new PlayButton(this.element);
+        this.headerContainerElt = DomHandler.getElement(".main-menu-header-container", this.element);
+        this.playBtnContainerElt = DomHandler.getElement(".play-button-container", this.element);
+
+        this.playButton = new PlayButton(this.playBtnContainerElt);
 
         this.serverPlayercount = new ServerPlayerCount(this.element);
         this.gameSuggestion = new GameSuggestion(this.element);
@@ -40,11 +43,12 @@ export default class MainMenu extends Component {
         this.menuCamera = new MenuCamera(camera);
     }
     public enable() {
-        // MP MENU
-        EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECT_REQUEST, this.onMpJoinOptClick);
+        EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECT_REQUEST, this.onMpJoinRequest);
 
-        this.attach(this.playButton);
+        EventHandler.addListener(this, EventHandler.Event.STORE_OPEN, this.onStoreOpen);
+        EventHandler.addListener(this, EventHandler.Event.STORE_CLOSE, this.onStoreClose);
 
+        this.attachChild(this.playButton);
         this.attachChild(this.serverPlayercount);
         this.attachChild(this.gameSuggestion);
         this.attachChild(this.sidePanel);
@@ -52,13 +56,17 @@ export default class MainMenu extends Component {
         this.attachChild(this.menuCamera);
 
         DOMMutationHandler.show(this.element);
+        this.onStoreClose();
+
     }
 
     public disable() {
+        EventHandler.removeListener(this, EventHandler.Event.MULTIPLAYER_CONNECT_REQUEST, this.onMpJoinRequest);
 
-        // MP MENU
-        EventHandler.removeListener(this, EventHandler.Event.MULTIPLAYER_CONNECT_REQUEST, this.onMpJoinOptClick);
+        EventHandler.removeListener(this, EventHandler.Event.STORE_OPEN, this.onStoreOpen);
+        EventHandler.removeListener(this, EventHandler.Event.STORE_CLOSE, this.onStoreClose);
 
+        this.detachChild(this.playButton);
         this.detachChild(this.serverPlayercount);
         this.detachChild(this.gameSuggestion);
         this.detachChild(this.sidePanel);
@@ -68,18 +76,18 @@ export default class MainMenu extends Component {
         DOMMutationHandler.hide(this.element);
     }
 
-    private onMpJoinOptClick() {
-        this.attachedCmp = undefined;
+    private onMpJoinRequest() {
         this.playValidate();
     }
 
-    private attach(cmp: ChildComponent) {
-        if (this.attachedCmp) {
-            this.detachChild(this.attachedCmp);
-        }
+    private onStoreOpen() {
+        DOMMutationHandler.addStyle(this.headerContainerElt, "display", "none");
+        DOMMutationHandler.addStyle(this.playBtnContainerElt, "display", "none");
+    }
 
-        this.attachChild(cmp);
-        this.attachedCmp = cmp;
+    private onStoreClose() {
+        DOMMutationHandler.removeStyle(this.headerContainerElt, "display");
+        DOMMutationHandler.removeStyle(this.playBtnContainerElt, "display");
     }
 
     // private playReturn() {

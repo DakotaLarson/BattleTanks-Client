@@ -7,6 +7,7 @@ enum Global {
     AUDIO_ENABLED,
     AUTH_TOKEN,
     USERNAME,
+    SCENE,
 }
 
 export default class Globals {

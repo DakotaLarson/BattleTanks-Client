@@ -18,6 +18,7 @@ import SingleplayerCamera from "./camera/SingleplayerCamera";
 import PowerupCollisionHandler from "./powerup/PowerupCollisionHandler";
 import ProjectileHandler from "./ProjectileHandler";
 import SceneHandler from "./scene/SceneHandler";
+import TankCustomizationHandler from "./scene/TankCustomizationHandler";
 import CreationToolHandler from "./tools/CreationToolHandler";
 
 export default class ArenaHandler extends Component {
@@ -43,6 +44,8 @@ export default class ArenaHandler extends Component {
     private projectileHandler: ProjectileHandler;
     private powerupCollisionHandler: PowerupCollisionHandler;
     private arenaDownloadHandler: ArenaDownloadHandler;
+
+    private tankCustomizationHandler: TankCustomizationHandler;
 
     private isSingleplayer: boolean;
     private arenaAttached: boolean;
@@ -79,6 +82,8 @@ export default class ArenaHandler extends Component {
         this.powerupCollisionHandler = new PowerupCollisionHandler();
         this.arenaDownloadHandler = new ArenaDownloadHandler();
 
+        this.tankCustomizationHandler = new TankCustomizationHandler();
+
         this.isSingleplayer = false;
         this.arenaAttached = false;
 
@@ -96,10 +101,15 @@ export default class ArenaHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_DISCONNECT_REQUEST, this.detachMultiplayerArena);
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.detachMultiplayerArena);
 
-        EventHandler.addListener(this, EventHandler.Event.OPTIONS_OPEN, this.onOptionsOpen);
+        EventHandler.addListener(this, EventHandler.Event.OVERLAY_OPEN, this.onOverlayOpen);
 
         this.attachComponent(this.audioHandler);
         this.attachComponent(this.renderer);
+
+        this.attachComponent(this.sceneHandler);
+
+        this.attachComponent(this.tankCustomizationHandler);
+        this.sceneHandler.renderMenu();
     }
 
     private attachSingleplayerArena(worldData: any) {
@@ -157,7 +167,7 @@ export default class ArenaHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE, this.onEscape);
         EventHandler.addListener(this, EventHandler.Event.PROFILE_OPENED, this.onProfileOpened);
 
-        this.attachChild(this.sceneHandler);
+        this.sceneHandler.renderArena();
         this.arenaAttached = true;
     }
 
@@ -170,7 +180,7 @@ export default class ArenaHandler extends Component {
             EventHandler.removeListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE, this.onEscape);
             EventHandler.removeListener(this, EventHandler.Event.PROFILE_OPENED, this.onProfileOpened);
 
-            this.detachChild(this.sceneHandler);
+            this.sceneHandler.renderMenu();
 
             if (this.isGameMenuOpen()) {
                 this.closeGameMenu(false);
@@ -198,7 +208,7 @@ export default class ArenaHandler extends Component {
         }
     }
 
-    private onOptionsOpen() {
+    private onOverlayOpen() {
         if (this.arenaAttached) {
             if (!this.isGameMenuOpen()) {
                 this.openGameMenu();

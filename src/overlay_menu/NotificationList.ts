@@ -56,6 +56,7 @@ export default class NotificationList extends Component {
             }
         } else if (event.target === this.notificationIcon) {
             this.showList();
+            EventHandler.callEvent(EventHandler.Event.OVERLAY_OPEN);
         }
     }
 
@@ -138,7 +139,6 @@ export default class NotificationList extends Component {
         parentElt.appendChild(usernameElt);
         parentElt.appendChild(bodyElt);
 
-        this.notifications.set(id, header);
         return parentElt;
     }
 

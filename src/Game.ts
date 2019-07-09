@@ -23,6 +23,8 @@ import ProfileViewer from "./ProfileViewer";
 
 class Game extends Component {
 
+    // Created 06/17/18
+
     private static readonly TICK_INTERVAL = 50; // 20 ticks/second
 
     private prevTime: number;
@@ -109,7 +111,6 @@ class Game extends Component {
         this.attachComponent(this.conversationViewer);
 
         this.hideLoadingScreen();
-
     }
 
     public update() {

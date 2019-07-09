@@ -4,6 +4,8 @@
     max-width: 90vw;
     overflow-x: auto;
     min-height: 35vh;
+    margin: 0 1vmin;
+    box-sizing: border-box;
 }
 
 .rank-chart .rank-chart-progress {
@@ -24,7 +26,7 @@
     flex-grow: 1;
 }
 
-.rank-chart .rank-container:last-child {
+.rank-chart .rank-container-parent:last-child .rank-container {
     border-right: solid 1px #ffffff;
 }
 

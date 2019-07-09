@@ -1,19 +1,25 @@
 import {AudioListener, BoxGeometry, Color, Geometry, LineSegments, Mesh, MeshLambertMaterial, Object3D, Scene, Vector3, Vector4} from "three";
 
-import Component from "../../component/ChildComponent";
+import Component from "../../component/Component";
 import EventHandler from "../../EventHandler";
+import Globals from "../../Globals";
 import Options from "../../Options";
 import BlockCollisionHandler from "../collision/BlockCollisionHandler";
-import FireworkHandler from "./FireworkHandler";
+import FireworkHandler from "./firework/FireworkHandler";
 import ScenePlayerHandler from "./ScenePlayerHandler";
 import ScenePowerupHandler from "./ScenePowerupHandler";
 import SceneSingleplayerToolHandler from "./SceneSingleplayerToolHandler";
 import SceneUtils from "./SceneUtils";
 import SceneVisualsHandler from "./SceneVisualsHandler";
 
+enum RenderingSource {
+    MENU,
+    ARENA,
+}
+
 export default class SceneHandler extends Component {
 
-    private static readonly BLOCK_COLOR = 0xc0c0c0;
+    private static readonly BLOCK_COLOR = 0xc0c0b0;
 
     public blockPositions: Vector3[];
 
@@ -34,7 +40,7 @@ export default class SceneHandler extends Component {
     public width: number;
     public height: number;
 
-    private newArena: boolean;
+    private isSPArena: boolean;
 
     private scene: Scene;
 
@@ -48,12 +54,14 @@ export default class SceneHandler extends Component {
     private scenePowerupHandler: ScenePowerupHandler;
     private fireworkHandler: FireworkHandler;
 
+    private renderingSource: RenderingSource | undefined;
+
     constructor(audioListener: AudioListener) {
         super();
         this.width = 0;
         this.height = 0;
 
-        this.newArena = false;
+        this.isSPArena = false;
 
         this.blockPositions = [];
 
@@ -71,32 +79,61 @@ export default class SceneHandler extends Component {
         this.scene = new Scene();
         this.scene.background = new Color(0x1e1e20);
 
+        Globals.setGlobal(Globals.Global.SCENE, this.scene);
+
         this.sceneSingleplayerToolHandler = new SceneSingleplayerToolHandler(this);
         this.scenePlayerHandler = new ScenePlayerHandler(this.scene, audioListener);
         this.sceneUtils = new SceneUtils(this);
         this.sceneVisualsHandler = new SceneVisualsHandler(this, this.scene);
         this.scenePowerupHandler = new ScenePowerupHandler(this.scene);
         this.fireworkHandler = new FireworkHandler(this.scene);
-
-        this.attachChild(this.fireworkHandler);
-        this.renderMenuScene();
-
-        // Create in constructor to handle main menu alterations, when component is disabled.
-        EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
-
     }
 
-    public enable() {
+    public renderArena() {
+
+        if (this.renderingSource === RenderingSource.ARENA) {
+            EventHandler.removeListener(this, EventHandler.Event.STORE_ITEM_SELECTION_PROPAGATION, this.onStoreItemSelection);
+            EventHandler.removeListener(this, EventHandler.Event.STORE_ITEM_COLOR_SELECTION_PROPAGATION, this.onStoreItemColorSelection);
+        }
+
         EventHandler.addListener(this, EventHandler.Event.SP_GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
         EventHandler.addListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onSceneUpdate);
 
         this.attachChild(this.scenePlayerHandler);
         this.attachChild(this.sceneSingleplayerToolHandler);
         this.attachChild(this.scenePowerupHandler);
+        this.attachChild(this.fireworkHandler);
+
+        this.renderingSource = RenderingSource.ARENA;
+    }
+
+    public renderMenu() {
+        this.isSPArena = false;
+
+        if (this.renderingSource === RenderingSource.ARENA) {
+            EventHandler.removeListener(this, EventHandler.Event.SP_GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
+            EventHandler.removeListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onSceneUpdate);
+
+            this.detachChild(this.scenePlayerHandler);
+            this.detachChild(this.sceneSingleplayerToolHandler);
+            this.detachChild(this.scenePowerupHandler);
+            this.detachChild(this.fireworkHandler);
+
+            this.clearScene();
+        }
+
+        EventHandler.addListener(this, EventHandler.Event.STORE_ITEM_SELECTION_PROPAGATION, this.onStoreItemSelection);
+        EventHandler.addListener(this, EventHandler.Event.STORE_ITEM_COLOR_SELECTION_PROPAGATION, this.onStoreItemColorSelection);
+
+        this.renderMenuScene();
+        this.renderingSource = RenderingSource.MENU;
+    }
+
+    public enable() {
+        EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
     }
 
     public disable() {
-        this.newArena = false;
         EventHandler.removeListener(this, EventHandler.Event.SP_GAMEMENU_SAVE_GAME_REQUEST, this.onSaveGameRequest);
         EventHandler.removeListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onSceneUpdate);
 
@@ -106,7 +143,6 @@ export default class SceneHandler extends Component {
         this.detachChild(this.fireworkHandler);
 
         this.clearScene();
-        this.renderMenuScene();
     }
 
     public getScene() {
@@ -186,13 +222,21 @@ export default class SceneHandler extends Component {
     }
 
     private onOptionsUpdate(event: any) {
-        if (event.attribute === "gridlinesEnabled" && !this.newArena) {
+        if (event.attribute === "gridlinesEnabled" && !this.isSPArena) {
             if (event.data) {
                 this.scene.add(this.lines as LineSegments);
             } else {
                 this.scene.remove(this.lines as LineSegments);
             }
         }
+    }
+
+    private onStoreItemSelection(event: any) {
+        this.scenePlayerHandler.updateMenuPlayer(event.id, event.colors);
+    }
+
+    private onStoreItemColorSelection(event: any) {
+        this.scenePlayerHandler.updateMenuPlayerColor(event.detail, "" + event.index, event.index);
     }
 
     private renderMenuScene() {
@@ -216,7 +260,7 @@ export default class SceneHandler extends Component {
         this.width = data.width + 2;
         this.height = data.height + 2;
 
-        this.newArena = !data.fromServer;
+        this.isSPArena = !data.fromServer;
 
         this.clearScene();
 

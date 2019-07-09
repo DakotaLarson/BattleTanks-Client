@@ -3,11 +3,9 @@ import DomHandler from "../DomHandler";
 import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
 import Globals from "../Globals";
-import Tutorial from "./tutorial/Tutorial";
+import Overlay from "./overlay/Overlay";
 
 export default class PlayButton extends Component {
-
-    private element: HTMLElement;
 
     private playBtn: HTMLElement;
 
@@ -15,16 +13,13 @@ export default class PlayButton extends Component {
 
     private asGuestElt: HTMLElement;
 
-    private tutorial: Tutorial | undefined;
+    private tutorial: Overlay | undefined;
 
-    constructor(mainMenu: HTMLElement) {
+    constructor(parent: HTMLElement) {
         super();
-        this.element = DomHandler.getElement(".play-button-container", mainMenu);
 
-        this.playBtn = DomHandler.getElement(".play-btn", this.element);
-
-        this.playTutorialLink = DomHandler.getElement("#play-tutorial-link", this.element);
-
+        this.playBtn = DomHandler.getElement(".play-btn", parent);
+        this.playTutorialLink = DomHandler.getElement("#play-tutorial-link", parent);
         this.asGuestElt = DomHandler.getElement(".play-as-guest", this.playBtn);
     }
 
@@ -35,12 +30,11 @@ export default class PlayButton extends Component {
         EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
 
-        EventHandler.addListener(this, EventHandler.Event.TUTORIAL_CLOSE, this.onTutorialClose);
+        EventHandler.addListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onTutorialClose);
 
         if (!Globals.getGlobal(Globals.Global.AUTH_TOKEN)) {
             DOMMutationHandler.show(this.asGuestElt);
         }
-        DOMMutationHandler.show(this.element);
     }
 
     public disable() {
@@ -50,7 +44,7 @@ export default class PlayButton extends Component {
         EventHandler.removeListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.removeListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
 
-        EventHandler.removeListener(this, EventHandler.Event.TUTORIAL_CLOSE, this.onTutorialClose);
+        EventHandler.removeListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onTutorialClose);
 
         if (this.tutorial) {
             this.detachChild(this.tutorial);
@@ -58,7 +52,6 @@ export default class PlayButton extends Component {
         }
 
         DOMMutationHandler.hide(this.asGuestElt);
-        DOMMutationHandler.hide(this.element);
     }
 
     private onPlayClick(event: MouseEvent) {
@@ -69,7 +62,7 @@ export default class PlayButton extends Component {
 
     private onPlayTutorialClick(event: MouseEvent) {
         if (event.target === this.playTutorialLink) {
-            this.openTutorial(".tutorial-play");
+            this.openTutorial(".overlay-play");
         }
     }
 
@@ -92,7 +85,7 @@ export default class PlayButton extends Component {
         if (this.tutorial) {
             this.detachChild(this.tutorial);
         }
-        this.tutorial = new Tutorial(contentQuery);
+        this.tutorial = new Overlay(contentQuery);
         this.attachChild(this.tutorial);
     }
 }

@@ -12,7 +12,7 @@
     <meta property="og:title" content="BattleTanks"/>
     <meta property="og:type" content="website"/>
     <meta property="og:url" content="https://battletanks.app"/>
-    <meta property="og:description" content="BattleTanks is a free web based tank shooter where two teams of players battle it out in a team elimination gamemode!"/>
+    <meta property="og:description" content="BattleTanks is a free, web based, 2.5D tank shooter where two teams of players battle it out in a team elimination gamemode!"/>
 
     <meta property="og:image" content="https://battletanks.app/res/menu/header.png"/>
     <meta property="og:image:width" content="1250"/>
@@ -26,9 +26,10 @@
     <meta property="og:image:type" content="image/png"/>
     <meta property="og:image:alt" content="BattleTanks Icon"/>
 
-
     <meta name="google-site-verification" content="EVg7I0KTCnW1qmVkwFeW3pX7rKxemX923IcLJWonO-8"/>
     <meta name="msvalidate.01" content="195C8869D5EEBF8AAA413CDA4482BEF4" />
+
+    <link rel="canonical" href="https://battletanks.app"/>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-45683707-2"></script>
     <script>
@@ -43,28 +44,9 @@
     <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     
-    <link rel="stylesheet" type="text/css" href="./css/fonts/fonts.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/loading.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/main.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/game_menu.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/overlay_menu.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/gui.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/debug_panel.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/main_menu.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/connection_menu.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/create_world_mode_toggle.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/alert_message.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/options_menu.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/joystick.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/username_menu.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/profile_viewer.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/conversation_viewer.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/overlay_menu_list.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/notification.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/tooltip.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/side_panel.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/tutorial.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/rank_chart.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/fonts/fonts.css"/>
+    <link rel="stylesheet" type="text/css" href="/dist/bundle.css"/>
+
 </head>
 <body>
 
@@ -115,12 +97,11 @@
         <span id="playercount-text"></span>
     </div>
     <div class="main-menu-header-container">
-        <img class="main-menu-header" src="./res/menu/header-transparent.png" draggable="false" />
+        <img class="main-menu-header" src="./res/menu/header-transparent.png" draggable="false" /><br>
+        <div class="game-suggestion game-suggestion-hidden"></div>
     </div>
 
     <a href="./partners/index.html" target="_blank" class="partners-link">Partners</a>
-    
-    <div class="game-suggestion game-suggestion-hidden"></div>
 
     <div class="side-panel">
         <div class="side-panel-top">
@@ -132,12 +113,44 @@
                 <div class="side-panel-level"></div>
             </div>
     
-            <span class="side-panel-message">Sign in to see your stats!</span>
+            <span class="side-panel-message">Sign in to see your stats!<br></span>
     
-            <span class="menu-selection menu-selection-small disabled" id="side-panel-stats">Your Stats</span>
-            <span class="menu-selection menu-selection-small" id="side-panel-find">Find Player</span>
-            <span class="menu-selection menu-selection-small" id="side-panel-create">Create Arena</span><br>
-            <span class="menu-link menu-link-small rank-tutorial-link">Rank Chart</span> 
+            <!-- <span class="btn" id="side-panel-store">The Store</span><br>
+            <span class="btn btn-disabled" id="side-panel-stats">Your Stats</span><br>
+            <span class="btn" id="side-panel-find">Find Player</span><br>
+            <span class="btn rank-tutorial-btn">Rank Chart</span><br>
+            <span class="btn btn-sml" id="side-panel-create">Create Arena</span><br> -->
+
+            <div class=side-panel-btn-parent>
+                <div class="side-panel-btn-container side-panel-store-btn">
+                    <img class="side-panel-btn-img" src="./res/menu/store.svg">
+                    <span class="side-panel-btn-title">Store</span>
+                </div>
+                <div class="side-panel-btn-container side-panel-stats-btn">
+                    <img class="side-panel-btn-img" src="./res/menu/stats.svg">
+                    <span class="side-panel-btn-title">Stats</span>
+                </div>
+                <div class="side-panel-btn-container side-panel-find-btn">
+                    <img class="side-panel-btn-img" src="./res/menu/search.svg">
+                    <span class="side-panel-btn-title">Find Player</span>
+                </div>
+                <div class="side-panel-btn-container rank-tutorial-btn">
+                    <img class="side-panel-btn-img" src="./res/menu/rank_chart.svg">
+                    <span class="side-panel-btn-title">Ranks</span>
+                </div>
+
+                <div class="side-panel-btn-container side-panel-create-btn">
+                    <img class="side-panel-btn-img" src="./res/menu/create_arena.svg">
+                    <span class="side-panel-btn-title">Create Arena</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="side-panel-cmp side-panel-store">
+            <div class="side-panel-title">The Store</div>
+            <div class="store-currency"></div>
+            <div class="store-container"></div>
         </div>
 
         <div class="side-panel-cmp side-panel-stats">
@@ -150,7 +163,7 @@
                 <div class="side-panel-search-toggle-everyone">Everyone</div>
                 <div class="side-panel-search-toggle-friends">Friends</div>
             </div>
-            <input class="side-panel-search-input" type="text" size="16" maxlength="16" />
+            <input class="side-panel-search-input" type="text" size="16" maxlength="16" placeholder="Search..." />
             <div class="data-container side-panel-search-container"></div>
         </div>
 
@@ -230,9 +243,9 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
     </div>
 </div>
 
-<div class="menu tutorial-parent">
-    <div class="tutorial-container">
-        <div class="tutorial-content tutorial-play">
+<div class="menu overlay-parent">
+    <div class="overlay-container">
+        <div class="overlay-content overlay-play">
                 <h2>How to Play</h2>
             
                 <div class="tutorial-text">BattleTanks is a 2.5D tank shooter where two teams compete in a team eliminiation gamemode!</div>
@@ -259,7 +272,7 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
                 <div class="tutorial-text">Points per Kill: <span class="tutorial-controls-highlight">2</span></div>
 
         </div>
-        <div class="tutorial-content tutorial-create">
+        <div class="overlay-content overlay-create">
             <h2>Creating an Arena</h2>
             
             <div class="tutorial-text">You can create an arena and submit it on our <a class="standard-anchor" href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>!</div>
@@ -288,16 +301,22 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
                 Upon approval of your arena, you will granted access to the "Arena Creators" role on the Discord server! I will also note you as the author of the arena so appropriate credit can be made visible in future releases.
             </div>
         </div>
-        <div class="tutorial-content tutorial-rank no-select">
+        <div class="overlay-content overlay-rank no-select">
             <div class="rank-chart">
                 <div class="rank-info rank-info-current"></div>
+
                 <div class="rank-info rank-info-level"></div>
                 <div class="rank-info rank-info-rank"></div>
 
                 <div class="rank-chart-container"></div>
             </div>
         </div>
-        <span class="menu-selection tutorial-close no-select">Close</span>
+        <div class="overlay-content overlay-color no-select">
+            <h2 class="overlay-color-title"></h2>
+            <div class="store-currency"></div>
+            <div class=overlay-color-container></div>
+        </div>
+        <span class="menu-selection overlay-close no-select">Close</span>
     </div>
 </div>
 
@@ -520,6 +539,9 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
                     <div class="tooltip-text">If you experience an FPS drop, the game will disable the lazy camera to provide you the best experience possible.</div>
                 </div>
             <input type="checkbox" id="option-enabled-camera-autofix">
+
+            <span class="option-title">Fireworks:</span>
+            <input type="checkbox" id="option-enabled-fireworks">
     
             <span class="option-title">Forward:</span>
             <span class="option-value option-listening-value" id="option-value-forward"></span>
@@ -612,61 +634,25 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
         </div>
     </div>
 </div>
+<div class="confirmation-parent no-select">
+    <div class="confirmation-child">
+        <div class="confirmation-title"></div>
+
+        <div class="confirmation-action-container">
+            <span class="confirmation-action confirmation-action-deny">No</span>
+            <span class="confirmation-action confirmation-action-confirm">Yes</span>
+        </div>
+    </div>
+</div>
 
 <!-- POLYFILLS -->
-<script src="./scripts/encoding.js"></script>
-<script src="./scripts/encoding-indexes.js"></script>
-<script src="./scripts/keyboard.js"></script>
-<script src="./scripts/eventsource.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/text-encoding@0.7.0/lib/encoding.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/text-encoding@0.7.0/lib/encoding-indexes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-polyfills@0.1.42/keyboard.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/event-source-polyfill@1.0.5/src/eventsource.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@0/dist/ua-parser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fastdom@1.0.9/fastdom.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/103/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
-<script>
-    const mainScripts = new Map([
-        ["https://cdn.jsdelivr.net/npm/three@0.103.0/examples/js/loaders/LoaderSupport.js", false],
-        ["https://cdn.jsdelivr.net/npm/three@0.103.0/examples/js/loaders/MTLLoader.js", false],
-        ["https://cdn.jsdelivr.net/npm/three@0.103.0/examples/js/utils/BufferGeometryUtils.js", false],
-    ]);
-    const dependentScripts = new Map([
-        ["https://cdn.jsdelivr.net/npm/three@0.103.0/examples/js/loaders/OBJLoader2.js", false],
-        
-    ]);
-    const loadScripts = (scripts) => {
-        return new Promise((resolve) => {
-            for (const [name] of scripts) {
-                const script = document.createElement("script");
-                script.setAttribute("src", name);
-                script.onload = () => {
-                    scripts.set(name, true);
-
-                    for (const [, loaded] of scripts) {
-                        if (!loaded) {
-                            return;
-                        }
-                    }
-                    resolve();
-                }
-                document.body.appendChild(script);
-            }
-        });   
-    };
-
-    require.config({
-        paths: {
-            three: "https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three",
-            fastdom: "https://cdnjs.cloudflare.com/ajax/libs/fastdom/1.0.9/fastdom",
-        }
-    });
-
-    require(["three", "fastdom"], (three) => {
-        window.THREE = three;
-        loadScripts(mainScripts).then(() => {
-            loadScripts(dependentScripts).then(() => {
-                require(["build/Game"]);
-            });
-        }).catch(console.error);
-    });
-</script>
+<script src="./dist/bundle.js"></script>
 </body>
 </html>

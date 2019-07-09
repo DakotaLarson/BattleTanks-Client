@@ -9,6 +9,8 @@ export default class NotificationHandler extends Component {
         "message",
         "friend_request",
         "friend_accept",
+        "level_up",
+        "rank_up",
     ];
     private static readonly MAX_NOTIFICATION_LENGTH = 50;
     private static readonly MAX_VISIBLE_TIME = 5000;
@@ -42,10 +44,15 @@ export default class NotificationHandler extends Component {
         const data = this.notificationData.get((event.target as HTMLElement).getAttribute("id")!);
         if (data) {
             DomHandler.setInterference(true);
+
+            let username = data.username;
+            if (data.username === "You") {
+                username = Globals.getGlobal(Globals.Global.USERNAME);
+            }
             if (data.type === "message") {
-                EventHandler.callEvent(EventHandler.Event.CONVERSATION_OPEN, data.username);
-            } else if (data.type === "friend") {
-                EventHandler.callEvent(EventHandler.Event.PROFILE_OPEN, data.username);
+                EventHandler.callEvent(EventHandler.Event.CONVERSATION_OPEN, username);
+            } else if (data.type === "other") {
+                EventHandler.callEvent(EventHandler.Event.PROFILE_OPEN, username);
             }
         }
     }
@@ -110,19 +117,33 @@ export default class NotificationHandler extends Component {
         const notificationData: any = {};
 
         if (type === "message") {
+
             title = "Message from " + body.username;
             message = body.message;
-
             notificationData.type = "message";
+
         } else if (type === "friend_request" || type === "friend_accept") {
+
             if (type === "friend_request") {
                 title = "New Friend Request";
             } else {
                 title = "Friend Request Accepted";
             }
-            message = body.username + " " + body.message;
 
-            notificationData.type = "friend";
+            message = body.username + " " + body.message;
+            notificationData.type = "other";
+
+        } else if (type === "level_up" || type === "rank_up") {
+
+            if (type === "level_up") {
+                title = "You Leveled Up!";
+            } else {
+                title = body.username + " Ranked Up!";
+            }
+
+            message = body.username + " " + body.message;
+            notificationData.type = "other";
+
         } else {
             throw new Error("Unknown notification type: " + type);
         }

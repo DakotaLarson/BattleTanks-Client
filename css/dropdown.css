@@ -1,0 +1,18 @@
+.dropdown-parent {
+    position: relative;
+    cursor: pointer;
+
+}
+
+.dropdown-header {
+
+}
+
+.dropdown-container {
+    display: none;
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    background-color: #101010;
+    z-index: 1;
+}

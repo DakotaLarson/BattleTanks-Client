@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, Group, Mesh, MeshBasicMaterial, PerspectiveCamera, PositionalAudio, Quaternion, RingBufferGeometry, Scene, ShapeBufferGeometry, SphereBufferGeometry, Vector3, Vector4} from "three";
+import { AudioBuffer, AudioListener, AudioLoader, BackSide, Font, FontLoader, FrontSide, Group, Material, Mesh, MeshBasicMaterial, PerspectiveCamera, PositionalAudio, Quaternion, RingBufferGeometry, Scene, ShapeBufferGeometry, SphereBufferGeometry, Vector3, Vector4} from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
@@ -7,7 +7,9 @@ import Options from "../../Options";
 import BatchHandler from "./batch/BatchHandler";
 import BillboardBatchHandler from "./batch/BillboardBatchHandler";
 import EngineAudioHandler from "./EngineAudioHandler";
+import MaterialHandler from "./MaterialHandler";
 import ModelLoader from "./ModelLoader";
+import TankCustomizationHandler from "./TankCustomizationHandler";
 
 export default class ScenePlayerHandler extends ChildComponent {
 
@@ -15,6 +17,8 @@ export default class ScenePlayerHandler extends ChildComponent {
     private static readonly SHIELD_BAR_OFFSET = new Vector3(0, 1.1, 0);
     private static readonly NAMEPLATE_OFFSET = new Vector3(0, 1.2, 0);
     private static readonly RING_OFFSET = new Vector3(0, 0.01, 0);
+
+    private static readonly MENU_PLAYER_ID = 0;
 
     private modelLoader: ModelLoader;
 
@@ -39,6 +43,9 @@ export default class ScenePlayerHandler extends ChildComponent {
 
     private controlledPlayerId: number;
 
+    private menuPlayerModelId: string | undefined;
+    private menuPlayerModelColors: string[] | undefined;
+
     constructor(scene: Scene, audioListener: AudioListener) {
         super();
 
@@ -61,14 +68,13 @@ export default class ScenePlayerHandler extends ChildComponent {
 
         this.audioListener = audioListener;
         const audioLoader = new AudioLoader();
-        this.engineAudioHandler = new EngineAudioHandler(audioLoader, this.audioListener, this.players, extension);
+        this.engineAudioHandler = new EngineAudioHandler(audioLoader, this.audioListener, extension);
 
         // @ts-ignore Disregard additional arguments
         audioLoader.load(location.pathname + "res/audio/effects/game/shoot" + extension, (buffer: AudioBuffer) => {
             this.shootAudioBuffer = buffer;
         });
 
-        // @ts-ignore Disregard additional arguments
         const fontLoader = new FontLoader();
         fontLoader.load(location.pathname + "res/font/Bombardier_Regular.json", (font: Font) => {
             this.font = font;
@@ -138,50 +144,74 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     public addMenuPlayer() {
-        this.addPlayer(0, new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true);
+        const modelId = this.menuPlayerModelId || TankCustomizationHandler.DEFAULT_MODEL_ID;
+        const modelColors = this.menuPlayerModelColors || TankCustomizationHandler.DEFAULT_COLORS;
+
+        this.addPlayer(ScenePlayerHandler.MENU_PLAYER_ID, modelId, new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true, modelColors);
     }
 
-    private onPlayerAddition(data: any) {
-        this.addPlayer(data.id, data.pos, name, false, false, data.color);
+    public async updateMenuPlayer(modelId: string, modelColors: string[]) {
+        this.menuPlayerModelId = modelId;
+        this.menuPlayerModelColors = modelColors;
+        this.removePlayer({
+            id: ScenePlayerHandler.MENU_PLAYER_ID,
+        }, false);
+        this.addPlayer(ScenePlayerHandler.MENU_PLAYER_ID, modelId, new Vector4(2.5, 0, 2.5, Math.PI / 4), "", false, true, modelColors);
+    }
+
+    public updateMenuPlayerColor(detail: string, materialTitle: string, index: number) {
+        const player = this.players.find((currentPlayer) => {
+            return currentPlayer.id === ScenePlayerHandler.MENU_PLAYER_ID;
+        })!;
+        this.updateGroupColor(player, materialTitle, detail);
+        this.menuPlayerModelColors![index] = detail;
+    }
+
+    private async onPlayerAddition(data: any) {
+        this.addPlayer(data.id, data.modelId, data.pos, name, false, false, data.modelColors, data.color, data.headOffset);
     }
 
     private onConnectedPlayerAddition(data: any) {
-        this.addPlayer(data.id, data.pos, data.name, true, false, data.color);
+        this.addPlayer(data.id, data.modelId, data.pos, data.name, true, false, data.modelColors, data.color, data.headOffset);
     }
 
-    private addPlayer(id: number, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, color?: number) {
-        const group = new Group();
-        const head = new Group();
-        const body = new Group();
-        group.position.set(pos.x, pos.y, pos.z);
-        this.modelLoader.getGroup("3", true).then((result: Group) => {
-            const headMesh = result.getObjectByName("head") as Mesh;
-            const bodyMesh = result.getObjectByName("body") as Mesh;
+    private updateGroupColor(player: IPlayerObj, materialTitle: string, detail: string) {
 
-            head.add(headMesh);
-            body.add(bodyMesh);
-        });
+        const newMaterial = MaterialHandler.getMaterial(detail);
 
-        body.rotation.y = pos.w;
-        head.rotation.y = pos.w;
-
-        if (color) {
-            this.generateRing(color, group.position.clone().add(ScenePlayerHandler.RING_OFFSET), new Quaternion());
+        const headMaterialIndex = this.modelLoader.headMaterialIndicesByNamesByMesh.get(player.modelId)!.get(materialTitle);
+        if (headMaterialIndex !== undefined) {
+            const meshMaterial = (player.group.getObjectByName("head") as Mesh).material as Material[];
+            meshMaterial[headMaterialIndex] = newMaterial;
         }
 
-        group.add(head, body);
+        const bodyMaterialIndex = this.modelLoader.bodyMaterialIndicesByNamesByMesh.get(player.modelId)!.get(materialTitle);
+        if (bodyMaterialIndex !== undefined) {
+            const meshMaterial = (player.group.getObjectByName("body") as Mesh).material as Material[];
+            meshMaterial[bodyMaterialIndex] = newMaterial;
+        }
+    }
+
+    private async addPlayer(id: number, modelId: string, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, modelColors: string[], teamColor?: number, headOffset?: number): Promise<IPlayerObj> {
+        const group = new Group();
+        group.position.set(pos.x, pos.y, pos.z);
+
+        if (teamColor) {
+            this.generateRing(teamColor, group.position.clone().add(ScenePlayerHandler.RING_OFFSET), new Quaternion());
+        }
+
         this.scene.add(group);
 
         const playerObj: IPlayerObj = {
             id,
+            modelId,
             group,
-            body,
-            head,
             movementVelocity: 0,
+            headOffset,
         };
 
         if (isConnectedPlayer) {
-            const nameplate = this.generateNameplate(name, color as number);
+            const nameplate = this.generateNameplate(name, teamColor as number);
             nameplate.position.add(ScenePlayerHandler.NAMEPLATE_OFFSET);
 
             this.generateHealthBar(1, group.position.clone().add(ScenePlayerHandler.HEALTH_BAR_OFFSET));
@@ -209,6 +239,23 @@ export default class ScenePlayerHandler extends ChildComponent {
         if (!noSound) {
             this.engineAudioHandler.startEngineSound(playerObj);
         }
+
+        const result = await this.modelLoader.getGroup(modelId, headOffset);
+        const head = result.getObjectByName("head") as Mesh;
+        const body = result.getObjectByName("body") as Mesh;
+
+        group.add(body, head);
+
+        playerObj.body = body;
+        playerObj.head = head;
+
+        this.rotate(playerObj, pos.w, pos.w);
+
+        for (let i = 0; i < modelColors.length; i ++) {
+            this.updateGroupColor(playerObj, "" + i, modelColors[i]);
+        }
+
+        return playerObj;
     }
 
     private removePlayer(data: any, isClear?: boolean) {
@@ -264,13 +311,10 @@ export default class ScenePlayerHandler extends ChildComponent {
         if (index > -1) {
             const playerObj = this.players[index];
             playerObj.group.position.copy(data.pos);
-            const body = playerObj.body;
-            const head = playerObj.head;
+
             const nameplate = playerObj.nameplate;
 
-            head.rotation.y = data.headRot;
-
-            body.rotation.y = data.bodyRot;
+            this.rotate(playerObj, data.bodyRot, data.headRot);
 
             const cameraPos = this.camera.position;
 
@@ -339,13 +383,32 @@ export default class ScenePlayerHandler extends ChildComponent {
         }
     }
 
+    private rotate(player: IPlayerObj, bodyRotation: number, headRotation: number) {
+        if (player.body) {
+            player.body.rotation.y = bodyRotation;
+        }
+
+        if (player.head) {
+
+            let headOffset = player.headOffset;
+            if (!headOffset) {
+                headOffset = this.modelLoader.modelHeadOffsets.get(player.modelId);
+            }
+            if (headOffset) {
+                player.head.position.set(Math.sin(bodyRotation) * headOffset, 0, Math.cos(bodyRotation) * headOffset);
+            }
+
+            player.head.rotation.y = headRotation;
+        }
+    }
+
     private addProtectionSphere(id: number) {
         const playerObj = this.players.find((player) => {
             return player.id === id;
         });
 
         if (playerObj) {
-            this.generateProtectionSphere(playerObj.body.position);
+            this.generateProtectionSphere(playerObj.group.position);
             this.sphereOwners.push(id);
         }
     }
@@ -417,11 +480,11 @@ export default class ScenePlayerHandler extends ChildComponent {
 
             const audio = new PositionalAudio(this.audioListener);
             audio.setVolume(volume);
-            player.head.add(audio);
+            player.group.add(audio);
 
             audio.onEnded = () => {
                 audio.isPlaying = false;
-                player.head.remove(audio);
+                player.group.remove(audio);
             };
 
             audio.setBuffer(buffer);

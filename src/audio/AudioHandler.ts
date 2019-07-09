@@ -26,14 +26,13 @@ export default class AudioHandler extends Component {
             this.useMP3 = false;
         }
 
-        /* tslint:disable */
+        // tslint:disable-next-line
         for (const audioFile in AudioType) {
             // @ts-ignore Disregard extra arguments.
             audioLoader.load(this.getFullPath(audioFile), (buffer: AudioBuffer) => {
                 this.buffers.set(AudioType[audioFile], buffer);
             });
         }
-        /* tslint:enable */
     }
 
     public enable() {

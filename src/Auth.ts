@@ -6,9 +6,10 @@ import Globals from "./Globals";
 
 export default class Auth extends Component {
 
-    private static readonly REFRESH_PADDING = 5000;
+    private static readonly REFRESH_PADDING = 30000;
+    private static readonly AUTH_CHECK_INTERVAL = 5000;
 
-    private taskId: number | undefined;
+    private expirationTime: number | undefined;
 
     private signoutBtn: HTMLElement;
 
@@ -33,6 +34,10 @@ export default class Auth extends Component {
                             this.onFailure(undefined);
                         },
                     });
+
+                    window.setInterval(() => {
+                        this.checkAuthResponse();
+                    }, Auth.AUTH_CHECK_INTERVAL);
                 }).catch(this.onFailure);
 
             });
@@ -47,9 +52,13 @@ export default class Auth extends Component {
         if (event.target === this.signoutBtn) {
             gapi.auth2.getAuthInstance().signOut();
             Globals.setGlobal(Globals.Global.AUTH_TOKEN, undefined);
+
             EventHandler.callEvent(EventHandler.Event.SIGN_OUT);
             EventHandler.callEvent(EventHandler.Event.USERNAME_UPDATE);
+
             this.updateSignoutBtn(false);
+            this.expirationTime = undefined;
+
             console.log("Signed out");
         }
     }
@@ -58,7 +67,7 @@ export default class Auth extends Component {
         const token = googleUser.getAuthResponse().id_token;
         this.authenticateToken(token).then(() => {
             console.log("Signed in as: " + googleUser.getBasicProfile().getName());
-            this.updateToken(googleUser.getAuthResponse());
+            this.updateToken(googleUser.getAuthResponse(), true);
             this.updateSignoutBtn(true);
             this.getUsername(token).then((username) => {
                 EventHandler.callEvent(EventHandler.Event.USERNAME_UPDATE, username);
@@ -73,18 +82,16 @@ export default class Auth extends Component {
         console.log(error);
     }
 
-    private updateToken(authResponse: gapi.auth2.AuthResponse) {
+    private updateToken(authResponse: gapi.auth2.AuthResponse, isInitial?: boolean) {
         const token = authResponse.id_token;
-        window.clearTimeout(this.taskId);
-        const refreshTime = authResponse.expires_at - Date.now() - Auth.REFRESH_PADDING;
+        this.expirationTime = authResponse.expires_at - Auth.REFRESH_PADDING;
 
         Globals.setGlobal(Globals.Global.AUTH_TOKEN, token);
-        EventHandler.callEvent(EventHandler.Event.SIGN_IN, token);
 
-        this.taskId = window.setTimeout(() => {
-            console.log("Reloading Auth Response");
-            gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse().then(this.updateToken.bind(this)).catch(this.onFailure.bind(this));
-        }, refreshTime);
+        if (isInitial) {
+            EventHandler.callEvent(EventHandler.Event.SIGN_IN, token);
+        }
+
     }
 
     private updateSignoutBtn(authenticated: boolean) {
@@ -120,6 +127,13 @@ export default class Auth extends Component {
                 reject(err);
             });
         });
+    }
+
+    private checkAuthResponse() {
+        if (this.expirationTime && Date.now() > this.expirationTime) {
+            console.log("Reloading Auth Response");
+            gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse().then(this.updateToken.bind(this)).catch(this.onFailure.bind(this));
+        }
     }
 
     private getUsername(token: string): Promise<string> {

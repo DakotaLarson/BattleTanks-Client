@@ -41,7 +41,7 @@ export default class Chat extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         EventHandler.addListener(this, EventHandler.Event.CHAT_UPDATE, this.onChatUpdate);
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.hideChat);
-        EventHandler.addListener(this, EventHandler.Event.OPTIONS_OPEN, this.onOptionsOpen);
+        EventHandler.addListener(this, EventHandler.Event.OVERLAY_OPEN, this.onOverlayOpen);
         EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
 
         this.setOpacity(this.inputElt);
@@ -53,7 +53,7 @@ export default class Chat extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         EventHandler.removeListener(this, EventHandler.Event.CHAT_UPDATE, this.onChatUpdate);
         EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.hideChat);
-        EventHandler.removeListener(this, EventHandler.Event.OPTIONS_OPEN, this.onOptionsOpen);
+        EventHandler.removeListener(this, EventHandler.Event.OVERLAY_OPEN, this.onOverlayOpen);
         EventHandler.removeListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
 
         this.clearMessages();
@@ -107,7 +107,7 @@ export default class Chat extends ChildComponent {
         }
     }
 
-    private onOptionsOpen() {
+    private onOverlayOpen() {
         if (Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
             this.hideChat();
         }

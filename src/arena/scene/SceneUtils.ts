@@ -1,4 +1,4 @@
-import { BufferGeometry, DirectionalLight, Float32BufferAttribute, HemisphereLight, LineDashedMaterial, LineSegments, Mesh, MeshLambertMaterial, PlaneGeometry, Vector3, Vector4 } from "three";
+import { AmbientLight, BufferGeometry, DirectionalLight, Float32BufferAttribute, LineDashedMaterial, LineSegments, Mesh, MeshLambertMaterial, PlaneGeometry, Vector3, Vector4 } from "three";
 import SceneHandler from "./SceneHandler";
 
 export default class SceneUtils {
@@ -31,17 +31,19 @@ export default class SceneUtils {
     }
 
     public createLights() {
-        const hemiLight = new HemisphereLight();
-        hemiLight.color.setHSL(0.6, 1, 0.6);
-        hemiLight.groundColor.setHSL(0.095, 1, 0.75);
-        hemiLight.intensity = 0.85;
-        hemiLight.position.copy(this.getCenter().setY(50));
+        // const hemiLight = new HemisphereLight();
+        // hemiLight.color.setHSL(0.6, 1, 0.6);
+        // hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+        // hemiLight.intensity = 0.85;
+        // hemiLight.position.copy(this.getCenter().setY(50));
 
         const dirLight = new DirectionalLight(0xffffff, 0.75);
-        dirLight.color.setHSL(0.1, 1, 0.95);
         dirLight.position.copy(this.getCenter().clone().add(new Vector3(0, 25, 0)));
         dirLight.target.position.copy(this.getCenter());
-        return [dirLight, dirLight.target, hemiLight];
+
+        const ambientLight = new AmbientLight(0xffffff, 0.5);
+        // return [dirLight, dirLight.target, hemiLight];
+        return [ambientLight, dirLight];
     }
 
     public createFloor() {
