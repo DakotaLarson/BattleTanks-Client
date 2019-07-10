@@ -6,6 +6,7 @@ import ConnectedMenu from "./ConnectedMenu";
 import ConnectingMenu from "./ConnectingMenu";
 import DisconnectedMenu from "./DisconnectedMenu";
 import StartingMenu from "./StartingMenu";
+import VoteHandler from "./VoteHandler";
 import WaitingMenu from "./WaitingMenu";
 
 export default class ConnectionMenu extends ChildComponent {
@@ -17,6 +18,8 @@ export default class ConnectionMenu extends ChildComponent {
     private disconnectedMenu: DisconnectedMenu;
     private startingMenu: StartingMenu;
     private waitingMenu: WaitingMenu;
+
+    private voteHandler: VoteHandler;
 
     private hidden: boolean;
 
@@ -31,6 +34,8 @@ export default class ConnectionMenu extends ChildComponent {
         this.disconnectedMenu = new DisconnectedMenu(this.element);
         this.waitingMenu = new WaitingMenu(this.element);
         this.startingMenu = new StartingMenu(this.element);
+
+        this.voteHandler = new VoteHandler();
 
         this.hidden = false;
 
@@ -52,6 +57,8 @@ export default class ConnectionMenu extends ChildComponent {
 
         DOMMutationHandler.show(this.element, "flex");
         this.showMenu(this.connectingMenu, false);
+
+        this.attachChild(this.voteHandler);
     }
 
     public disable() {
@@ -69,6 +76,8 @@ export default class ConnectionMenu extends ChildComponent {
 
         this.updateBackground(false);
         DOMMutationHandler.hide(this.element);
+
+        this.detachChild(this.voteHandler);
     }
 
     private onConnectionOpen() {

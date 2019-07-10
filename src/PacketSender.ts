@@ -11,6 +11,7 @@ enum Packet {
     POWERUP_PICKUP,
     RAM_COLLISION,
     PING,
+    VOTE,
 }
 
 enum DataType {
@@ -145,6 +146,11 @@ export default class PacketSender {
 
     public static ping() {
         const data = constructData(Packet.PING, undefined, DataType.HEADER_ONLY);
+        send(data);
+    }
+
+    public static sendVote(vote: number) {
+        const data = constructData(Packet.VOTE, vote, DataType.NUMBER);
         send(data);
     }
 
