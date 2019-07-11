@@ -31,7 +31,6 @@ export default class VoteHandler extends ChildComponent {
     }
 
     private onVoteListUpdate(voteList: any[]) {
-        console.log(voteList);
         this.createVotingList(voteList);
     }
 
