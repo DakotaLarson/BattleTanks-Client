@@ -270,13 +270,8 @@ const receiveVoteList = (rawVoteList: string) => {
     EventHandler.callEvent(EventHandler.Event.VOTE_LIST_UPDATE, voteList);
 };
 
-const receiveVoteUpdate = (voteUpdate: number[]) => {
-    const voteIndex = voteUpdate[0];
-    const voteCount = voteUpdate[1];
-    EventHandler.callEvent(EventHandler.Event.VOTE_UPDATE, {
-        voteIndex,
-        voteCount,
-    });
+const receiveVoteUpdate = (voteCounts: number[]) => {
+    EventHandler.callEvent(EventHandler.Event.VOTE_UPDATE, voteCounts);
 };
 
 const handlers = [

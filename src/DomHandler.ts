@@ -71,8 +71,27 @@ export default class DomHandler {
     }
 
     public static supportsTouch() {
-        // @ts-ignore
         return "ontouchstart" in document.documentElement;
+    }
+
+    public static createElement(tagName: string, classList?: string[], textContent?: string, id?: string) {
+        const elt = document.createElement(tagName);
+
+        if (classList) {
+            for (const cls of classList) {
+                elt.classList.add(cls);
+            }
+        }
+
+        if (textContent) {
+            elt.textContent = textContent;
+        }
+
+        if (id) {
+            elt.id = id;
+        }
+
+        return elt;
     }
 }
 

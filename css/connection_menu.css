@@ -14,14 +14,13 @@
 .connection-menu .last-match-statistics {
     font-family: 'Inconsolata', sans-serif;
     font-size: 2.5vmin;
-    margin-bottom: 5vmin;
 }
 
 .connection-menu .last-match-statistics .stats-large {
     font-size: 3vmin;
 }
 .connection-menu .last-match-statistics .stats-title {
-    font-size: 4vmin;
+    font-size: 3.5vmin;
 }
 .connection-menu .last-match-statistics .stats-pad {
     margin-bottom: 1vmin;
@@ -36,4 +35,15 @@
 .connection-menu-section {
     display: none;
     padding: 2.5vmin;
+}
+
+.connection-menu-content-container {
+    display: flex;
+    align-items: center;
+    min-width: 60vw;
+    justify-content: center;
+}
+
+.connection-menu-content-container-with-multiple {
+    justify-content: space-around;
 }
