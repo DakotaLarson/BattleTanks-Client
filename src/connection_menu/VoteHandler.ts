@@ -67,7 +67,7 @@ export default class VoteHandler extends ChildComponent {
         const voteCount = option.voteCount;
 
         const parentElt = DomHandler.createElement("div", ["voting-option"], undefined, VoteHandler.VOTING_OPTION_PREFIX + index);
-        parentElt.style.backgroundImage = "url(./res/arena_images/Original.png)";
+        parentElt.style.backgroundImage = "url(\"./res/arena_images/" + title + ".png\")";
 
         const overlayElt = DomHandler.createElement("div", ["voting-option-overlay"]);
 
