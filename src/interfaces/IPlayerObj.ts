@@ -7,7 +7,7 @@ export default interface IPlayerObj {
     body?: Mesh;
     head?: Mesh;
     movementVelocity: number;
-    nameplate?: Mesh;
+    nameplate?: Group;
     engineAudio?: PositionalAudio;
     headOffset?: number;
 }

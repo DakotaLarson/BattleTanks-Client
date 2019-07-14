@@ -17,6 +17,7 @@ import MultiplayerCamera from "./camera/MultiplayerCamera";
 import SingleplayerCamera from "./camera/SingleplayerCamera";
 import PowerupCollisionHandler from "./powerup/PowerupCollisionHandler";
 import ProjectileHandler from "./ProjectileHandler";
+import RecordingHandler from "./RecordingHandler";
 import SceneHandler from "./scene/SceneHandler";
 import TankCustomizationHandler from "./scene/TankCustomizationHandler";
 import CreationToolHandler from "./tools/CreationToolHandler";
@@ -46,6 +47,8 @@ export default class ArenaHandler extends Component {
     private arenaDownloadHandler: ArenaDownloadHandler;
 
     private tankCustomizationHandler: TankCustomizationHandler;
+
+    private recordingHandler: RecordingHandler;
 
     private isSingleplayer: boolean;
     private arenaAttached: boolean;
@@ -84,6 +87,8 @@ export default class ArenaHandler extends Component {
 
         this.tankCustomizationHandler = new TankCustomizationHandler();
 
+        this.recordingHandler = new RecordingHandler();
+
         this.isSingleplayer = false;
         this.arenaAttached = false;
 
@@ -109,6 +114,9 @@ export default class ArenaHandler extends Component {
         this.attachComponent(this.sceneHandler);
 
         this.attachComponent(this.tankCustomizationHandler);
+
+        // this.attachComponent(this.recordingHandler);
+
         this.sceneHandler.renderMenu();
     }
 

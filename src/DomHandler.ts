@@ -1,6 +1,6 @@
 import EventHandler from "./EventHandler";
 
-const gameCanvas = document.querySelector("#game-canvas") as HTMLElement;
+const gameCanvas = document.querySelector("#game-canvas") as HTMLCanvasElement;
 
 const guiBlockers: Set<HTMLElement> = new Set();
 
@@ -52,6 +52,10 @@ export default class DomHandler {
         } else {
             return document.querySelectorAll(query);
         }
+    }
+
+    public static getCanvas() {
+        return gameCanvas;
     }
 
     public static getMouseCoordinates() {

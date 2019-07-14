@@ -4,6 +4,7 @@ import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
 import IPlayerObj from "../../interfaces/IPlayerObj";
 import Options from "../../Options";
+import RankCalculator from "../../RankCalculator";
 import BatchHandler from "./batch/BatchHandler";
 import BillboardBatchHandler from "./batch/BillboardBatchHandler";
 import EngineAudioHandler from "./EngineAudioHandler";
@@ -17,6 +18,7 @@ export default class ScenePlayerHandler extends ChildComponent {
     private static readonly SHIELD_BAR_OFFSET = new Vector3(0, 1.1, 0);
     private static readonly NAMEPLATE_OFFSET = new Vector3(0, 1.2, 0);
     private static readonly RING_OFFSET = new Vector3(0, 0.01, 0);
+    private static readonly NAMEPLACE_SPACING = 0.015;
 
     private static readonly MENU_PLAYER_ID = 0;
 
@@ -172,7 +174,7 @@ export default class ScenePlayerHandler extends ChildComponent {
     }
 
     private onConnectedPlayerAddition(data: any) {
-        this.addPlayer(data.id, data.modelId, data.pos, data.name, true, false, data.modelColors, data.color, data.headOffset);
+        this.addPlayer(data.id, data.modelId, data.pos, data.name, true, false, data.modelColors, data.color, data.headOffset, data.rank);
     }
 
     private updateGroupColor(player: IPlayerObj, materialTitle: string, detail: string) {
@@ -192,7 +194,7 @@ export default class ScenePlayerHandler extends ChildComponent {
         }
     }
 
-    private async addPlayer(id: number, modelId: string, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, modelColors: string[], teamColor?: number, headOffset?: number): Promise<IPlayerObj> {
+    private async addPlayer(id: number, modelId: string, pos: Vector4, name: string, isConnectedPlayer: boolean, noSound: boolean, modelColors: string[], teamColor?: number, headOffset?: number, rank?: string): Promise<IPlayerObj> {
         const group = new Group();
         group.position.set(pos.x, pos.y, pos.z);
 
@@ -211,7 +213,7 @@ export default class ScenePlayerHandler extends ChildComponent {
         };
 
         if (isConnectedPlayer) {
-            const nameplate = this.generateNameplate(name, teamColor as number);
+            const nameplate = this.generateNameplate(name, rank!, teamColor!);
             nameplate.position.add(ScenePlayerHandler.NAMEPLATE_OFFSET);
 
             this.generateHealthBar(1, group.position.clone().add(ScenePlayerHandler.HEALTH_BAR_OFFSET));
@@ -430,22 +432,41 @@ export default class ScenePlayerHandler extends ChildComponent {
         }
     }
 
-    private generateNameplate(name: string, color: number) {
+    private generateNameplate(name: string, longRank: string, color: number) {
         if (this.font) {
-            // @ts-ignore Types specification is not remotely correct.
-            const shapes = this.font.generateShapes(name, 0.1);
+            const rank = RankCalculator.getShortRank(longRank);
 
-            const geometry = new ShapeBufferGeometry(shapes);
-            geometry.computeBoundingBox();
-            const xMid = - 0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
-            geometry.translate(xMid, 0, 0);
+            // @ts-ignore Types specification is not correct.
+            const nameShapes = this.font.generateShapes(name, 0.1);
+            // @ts-ignore Types specification is not correct.
+            const rankShapes = this.font.generateShapes(rank, 0.1);
 
-            const material = new MeshBasicMaterial({
+            const nameGeometry = new ShapeBufferGeometry(nameShapes);
+            const rankGeometry = new ShapeBufferGeometry(rankShapes);
+
+            nameGeometry.computeBoundingBox();
+            rankGeometry.computeBoundingBox();
+
+            const nameXMid = -0.5 * (nameGeometry.boundingBox.max.x - nameGeometry.boundingBox.min.x);
+            const rankXMid = -0.5 * (rankGeometry.boundingBox.max.x - rankGeometry.boundingBox.min.x);
+
+            nameGeometry.translate(nameXMid - rankXMid + ScenePlayerHandler.NAMEPLACE_SPACING, 0, 0);
+            rankGeometry.translate(rankXMid + nameXMid - ScenePlayerHandler.NAMEPLACE_SPACING, 0, 0);
+
+            const nameMaterial = new MeshBasicMaterial({
                 color,
             });
+            const rankMaterial = new MeshBasicMaterial({
+                color: 0xff00ff,
+            });
 
-            const mesh = new Mesh(geometry, material);
-            return mesh;
+            const nameMesh = new Mesh(nameGeometry, nameMaterial);
+            const rankMesh = new Mesh(rankGeometry, rankMaterial);
+
+            const group = new Group();
+            group.add(nameMesh, rankMesh);
+
+            return group;
         } else {
             throw new Error("Font is not loaded");
         }

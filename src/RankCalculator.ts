@@ -16,8 +16,23 @@ export default class RankCalculator {
         "General",
     ];
 
+    private static readonly SHORT_RANKS: Map<string, string> = new Map([
+        ["Recruit", "RCT"],
+        ["Private", "PVT"],
+        ["Corporal", "CPL"],
+        ["Sergeant", "SGT"],
+        ["Officer", "OFR"],
+        ["Lieutenant", "LUT"],
+        ["Commander", "CMD"],
+        ["Captain", "CPT"],
+        ["Major", "MAJ"],
+        ["Colonel", "CNL"],
+        ["General", "GEN"],
+
+    ]);
+
     public static getData(points: number) {
-        const level = Math.ceil(Math.pow(points, 1 / Math.E));
+        const level = Math.max(Math.ceil(Math.pow(points, 1 / Math.E)), 1);
         const rankIndex = Math.min(Math.floor((level - 1) / RankCalculator.LEVELS_PER_RANK), RankCalculator.RANKS.length - 1);
 
         const rank = RankCalculator.RANKS[rankIndex];
@@ -40,5 +55,9 @@ export default class RankCalculator {
             levels.push(data);
         }
         return levels;
+    }
+
+    public static getShortRank(rank: string) {
+        return RankCalculator.SHORT_RANKS.get(rank);
     }
 }
