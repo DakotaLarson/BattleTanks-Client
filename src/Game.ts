@@ -224,7 +224,8 @@ class Game extends Component {
 
     private onVisibilityChange() {
         if (document.hidden && this.connectedToMultiplayer) {
-            EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_DISCONNECT_REQUEST);
+            // TODO: Create configurable option for this request.
+            // EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_DISCONNECT_REQUEST);
         }
     }
 }

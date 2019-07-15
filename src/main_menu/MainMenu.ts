@@ -18,7 +18,7 @@ export default class MainMenu extends ChildComponent {
 
     private playButton: PlayButton;
 
-    private serverPlayercount: ServerPlayerCount;
+    // private serverPlayercount: ServerPlayerCount;
     private gameSuggestion: GameSuggestion;
     private sidePanel: SidePanel;
     private leaderboard: Leaderboard;
@@ -36,7 +36,7 @@ export default class MainMenu extends ChildComponent {
 
         this.playButton = new PlayButton(this.playBtnContainerElt);
 
-        this.serverPlayercount = new ServerPlayerCount(this.element);
+        // this.serverPlayercount = new ServerPlayerCount(this.element);
         this.gameSuggestion = new GameSuggestion(this.element);
         this.sidePanel = new SidePanel(this.element);
         this.leaderboard = new Leaderboard(this.element);
@@ -49,7 +49,7 @@ export default class MainMenu extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.STORE_CLOSE, this.onStoreClose);
 
         this.attachChild(this.playButton);
-        this.attachChild(this.serverPlayercount);
+        // this.attachChild(this.serverPlayercount);
         this.attachChild(this.gameSuggestion);
         this.attachChild(this.sidePanel);
         this.attachChild(this.leaderboard);
@@ -67,7 +67,7 @@ export default class MainMenu extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.STORE_CLOSE, this.onStoreClose);
 
         this.detachChild(this.playButton);
-        this.detachChild(this.serverPlayercount);
+        // this.detachChild(this.serverPlayercount);
         this.detachChild(this.gameSuggestion);
         this.detachChild(this.sidePanel);
         this.detachChild(this.leaderboard);
