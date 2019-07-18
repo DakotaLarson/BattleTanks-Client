@@ -22,19 +22,19 @@
   "homepage": "https://github.com/DakotaLarson/BattleTanks-Client#readme",
   "dependencies": {
     "fastdom": "^1.0.9",
-    "three": "^0.105.2"
+    "three": "0.105.2"
   },
   "devDependencies": {
     "@types/gapi": "latest",
     "@types/gapi.auth2": "latest",
     "css-loader": "^3.0.0",
-    "eslint": "^5.14.1",
+    "eslint": "^5.16.0",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "lite-server": "^2.5.3",
     "style-loader": "^0.23.1",
     "ts-loader": "^6.0.4",
-    "typescript": "^3.5.2",
-    "webpack": "^4.35.2",
-    "webpack-cli": "^3.3.5"
+    "typescript": "^3.5.3",
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.6"
   }
 }

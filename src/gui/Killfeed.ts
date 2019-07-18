@@ -6,6 +6,7 @@ import EventHandler from "../EventHandler";
 export default class Killfeed extends ChildComponent {
 
     private static readonly MAX_MESSAGE_COUNT = 10;
+    private static readonly TDM_LIVES_REMAINING = -1;
 
     private container: HTMLElement;
 
@@ -43,12 +44,16 @@ export default class Killfeed extends ChildComponent {
             if (isOOB) {
                 element.appendChild(this.createPlayerElement(mainPlayer));
                 element.appendChild(this.createActionElement(true, isOOB));
-                element.appendChild(this.createLivesRemainingElement(mainPlayer.livesRemaining));
+                if (mainPlayer.livesRemaining !== Killfeed.TDM_LIVES_REMAINING) {
+                    element.appendChild(this.createLivesRemainingElement(mainPlayer.livesRemaining));
+                }
             } else if (involvedPlayer) {
                 element.appendChild(this.createPlayerElement(involvedPlayer));
                 element.appendChild(this.createActionElement(false, isOOB));
                 element.appendChild(this.createPlayerElement(mainPlayer));
-                element.appendChild(this.createLivesRemainingElement(mainPlayer.livesRemaining));
+                if (mainPlayer.livesRemaining !== Killfeed.TDM_LIVES_REMAINING) {
+                    element.appendChild(this.createLivesRemainingElement(mainPlayer.livesRemaining));
+                }
             } else {
                 element.appendChild(this.createPlayerElement(mainPlayer));
                 element.appendChild(this.createActionElement(true, isOOB));
