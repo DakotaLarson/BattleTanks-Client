@@ -243,6 +243,8 @@ enum Event {
     // VOTING
     VOTE_LIST_UPDATE,
     VOTE_UPDATE,
+
+    GAME_TIMER_UPDATE,
 }
 
 enum Level {

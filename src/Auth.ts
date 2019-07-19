@@ -79,7 +79,7 @@ export default class Auth extends Component {
     }
 
     private onFailure(error: any) {
-        console.log(error);
+        // console.log(error);
     }
 
     private updateToken(authResponse: gapi.auth2.AuthResponse, isInitial?: boolean) {

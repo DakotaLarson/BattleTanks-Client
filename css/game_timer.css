@@ -1,0 +1,21 @@
+.game-timer {
+    position: absolute;
+    display: none;
+    top: 2.5vmin;
+    right: 26vmin;
+    font-size: 3vmin;
+    border-bottom: solid 1px #ffffff;
+    color: #ffffff;
+    align-items: center;
+    font-family: 'Inconsolata', sans-serif;
+}
+
+.game-timer .game-timer-icon {
+    width: 3.5vmin;
+    height: 3.5vmin;
+}
+
+.game-timer .game-timer-text {
+    padding-left: 0.25vmin;
+    padding-right: 0.5vmin;
+}

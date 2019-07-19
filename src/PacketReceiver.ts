@@ -274,6 +274,10 @@ const receiveVoteUpdate = (voteCounts: number[]) => {
     EventHandler.callEvent(EventHandler.Event.VOTE_UPDATE, voteCounts);
 };
 
+const receiveGameTimerUpdate = (time: number) => {
+    EventHandler.callEvent(EventHandler.Event.GAME_TIMER_UPDATE, time);
+};
+
 const handlers = [
     receiveArena,
 
@@ -330,6 +334,8 @@ const handlers = [
 
     receiveVoteList,
     receiveVoteUpdate,
+
+    receiveGameTimerUpdate,
 ];
 
 enum DataType {

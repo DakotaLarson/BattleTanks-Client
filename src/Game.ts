@@ -14,6 +14,7 @@ import DOMMutationHandler from "./DOMMutationHandler";
 import EventHandler from "./EventHandler";
 import GameStatusHandler from "./GameStatusHandler";
 import Globals from "./Globals";
+import GameTimer from "./gui/GameTimer";
 import MainMenu from "./main_menu/MainMenu";
 import Metrics from "./Metrics";
 import MultiplayerConnection from "./MultiplayerConnection";
@@ -45,6 +46,7 @@ class Game extends Component {
     private metrics: Metrics;
     private profileViewer: ProfileViewer;
     private conversationViewer: ConversationViewer;
+    private gameTimer: GameTimer;
 
     private connectedToMultiplayer: boolean;
 
@@ -75,6 +77,7 @@ class Game extends Component {
         this.connectedToMultiplayer = false;
         this.profileViewer = new ProfileViewer();
         this.conversationViewer = new ConversationViewer();
+        this.gameTimer = new GameTimer();
 
     }
     public enable() {
@@ -182,6 +185,7 @@ class Game extends Component {
         this.mpConnection = new MultiplayerConnection(address, Globals.getGlobal(Globals.Global.AUTH_TOKEN));
         this.attachChild(this.mpConnection);
         this.attachChild(this.gameStatusHandler);
+        this.attachChild(this.gameTimer);
         this.connectedToMultiplayer = true;
     }
 
@@ -189,6 +193,7 @@ class Game extends Component {
         this.detachChild(this.connectionMenu);
         this.detachChild(this.mpConnection as MultiplayerConnection);
         this.detachChild(this.gameStatusHandler);
+        this.detachChild(this.gameTimer);
         this.mpConnection = undefined;
         this.updateMenu(true);
         this.connectedToMultiplayer = false;
