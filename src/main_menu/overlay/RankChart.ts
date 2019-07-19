@@ -6,12 +6,10 @@ import Overlay from "./Overlay";
 export default class RankChart extends Overlay {
 
     private static readonly REWARDS_BY_RANK: Map<string, string[]> = new Map([
-        ["Recruit", [
-            "Little Timmy",
-        ]],
-        ["Sergeant", [
-            "The Big Mama",
-        ]],
+        ["Recruit", ["Little Timmy"]],
+        ["Sergeant", ["The Big Mama"]],
+        ["Sergeant", ["The Big Mama"]],
+        ["Officer", ["The Quad"]],
     ]);
 
     private chartParent: HTMLElement;

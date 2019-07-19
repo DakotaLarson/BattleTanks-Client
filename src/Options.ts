@@ -115,7 +115,7 @@ export default class Options extends Component {
         }
 
         if (!("rotationSensitivity" in Options.options)) {
-            Options.options.rotationSensitivity = 0.75;
+            Options.options.rotationSensitivity = 0.9;
         }
 
         localStorage.setItem("userOptions", JSON.stringify(Options.options));
