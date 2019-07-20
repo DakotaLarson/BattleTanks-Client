@@ -1,0 +1,14 @@
+.lobby-code {
+    position: absolute !important;
+    right: 40vmin;
+    top: 3vmin;
+    color: #ffffff;
+    font-size: 2.5vmin;
+    cursor: pointer;
+    display: none !important;
+    cursor: pointer;
+}
+
+.lobby-code:hover {
+    color: #03b053;
+}

@@ -26,6 +26,8 @@ class Game extends Component {
 
     // Created 06/17/18
 
+    private static readonly VERSION = 1.8;
+
     private static readonly TICK_INTERVAL = 50; // 20 ticks/second
 
     private prevTime: number;
@@ -66,7 +68,7 @@ class Game extends Component {
         const perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
         this.auth = new Auth();
         this.options = new Options();
-        this.mainMenu = new MainMenu(perspectiveCamera);
+        this.mainMenu = new MainMenu(Game.VERSION, perspectiveCamera);
         this.backgroundAudioHandler = new BackgroundAudioHandler();
         this.overlayMenu = new OverlayMenu();
         this.connectionMenu = new ConnectionMenu();
@@ -178,11 +180,11 @@ class Game extends Component {
         this.updateMenu(true);
     }
 
-    private connectToMultiplayer() {
+    private connectToMultiplayer(lobby: any) {
         const address = "ws" + Globals.getGlobal(Globals.Global.HOST);
         this.updateMenu(false);
         this.attachChild(this.connectionMenu);
-        this.mpConnection = new MultiplayerConnection(address, Globals.getGlobal(Globals.Global.AUTH_TOKEN));
+        this.mpConnection = new MultiplayerConnection(Game.VERSION, address, Globals.getGlobal(Globals.Global.AUTH_TOKEN), lobby);
         this.attachChild(this.mpConnection);
         this.attachChild(this.gameStatusHandler);
         this.attachChild(this.gameTimer);

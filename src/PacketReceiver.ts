@@ -278,6 +278,10 @@ const receiveGameTimerUpdate = (time: number) => {
     EventHandler.callEvent(EventHandler.Event.GAME_TIMER_UPDATE, time);
 };
 
+const receiveLobbyCode = (code: string) => {
+    EventHandler.callEvent(EventHandler.Event.LOBBY_CODE, code);
+};
+
 const handlers = [
     receiveArena,
 
@@ -336,6 +340,7 @@ const handlers = [
     receiveVoteUpdate,
 
     receiveGameTimerUpdate,
+    receiveLobbyCode,
 ];
 
 enum DataType {

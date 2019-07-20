@@ -35,6 +35,6 @@ export default class AlertMessageHandler extends Component {
                 DOMMutationHandler.hide(this.alertElt);
                 this.taskId = -1;
             }, 500);
-        }, 3000);
+        }, 5000);
     }
 }

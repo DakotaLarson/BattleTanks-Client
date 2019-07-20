@@ -245,6 +245,9 @@ enum Event {
     VOTE_UPDATE,
 
     GAME_TIMER_UPDATE,
+
+    CUSTOM_LOBBY_CANCEL,
+    LOBBY_CODE,
 }
 
 enum Level {

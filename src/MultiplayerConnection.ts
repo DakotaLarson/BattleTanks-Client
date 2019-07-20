@@ -7,19 +7,28 @@ import PacketSender from "./PacketSender";
 
 export default class MultiplayerConnection extends Component {
 
-    private static readonly PROTOCOL = "battletanks-11";
+    private static readonly PROTOCOL = "battletanks-";
 
     private static readonly CLIENT_OUTDATED_CODE = 4001;
     private static readonly SERVER_OUTDATED_CODE = 4002;
 
     private ws: WebSocket | undefined;
+
+    private version: number;
+
     private address: string;
     private tokenId: string | undefined;
 
-    constructor(address: string, tokenId: string | undefined) {
+    private lobbyData: any;
+
+    constructor(version: number, address: string, tokenId: string | undefined, lobbyData: any) {
         super();
+        this.version = version;
+
         this.address = address;
         this.tokenId = tokenId;
+
+        this.lobbyData = lobbyData;
     }
 
     public static async fetch(endpoint: string, body: any, method?: string) {
@@ -37,7 +46,7 @@ export default class MultiplayerConnection extends Component {
     }
 
     public enable() {
-        this.ws = new WebSocket(this.address, MultiplayerConnection.PROTOCOL);
+        this.ws = new WebSocket(this.address, MultiplayerConnection.PROTOCOL + this.version);
         this.ws.binaryType = "arraybuffer";
 
         DomEventHandler.addListener(this, this.ws, "open", this.onOpen);
@@ -68,7 +77,14 @@ export default class MultiplayerConnection extends Component {
 
     private initHandshake() {
         EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_CONNECTION_WS_OPEN);
-        PacketSender.sendPlayerJoin(this.tokenId);
+        const data: any = {};
+        if (this.lobbyData) {
+            data.lobby = this.lobbyData;
+        }
+        if (this.tokenId) {
+            data.token = this.tokenId;
+        }
+        PacketSender.sendPlayerJoin(data);
     }
 
     private onClose(event: any) {

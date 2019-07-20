@@ -9,7 +9,7 @@ import DOMMutationHandler from "../DOMMutationHandler";
 import GameSuggestion from "./GameSuggestion";
 import Leaderboard from "./Leaderboard";
 import PlayButton from "./PlayButton";
-import ServerPlayerCount from "./ServerPlayerCount";
+// import ServerPlayerCount from "./ServerPlayerCount";
 import SidePanel from "./side_panel/SidePanel";
 
 export default class MainMenu extends ChildComponent {
@@ -27,7 +27,7 @@ export default class MainMenu extends ChildComponent {
     private headerContainerElt: HTMLElement;
     private playBtnContainerElt: HTMLElement;
 
-    constructor(camera: PerspectiveCamera) {
+    constructor(version: number, camera: PerspectiveCamera) {
         super();
         this.element = DomHandler.getElement(".main-menu");
 
@@ -41,6 +41,8 @@ export default class MainMenu extends ChildComponent {
         this.sidePanel = new SidePanel(this.element);
         this.leaderboard = new Leaderboard(this.element);
         this.menuCamera = new MenuCamera(camera);
+
+        this.updateVersionElt(this.element, version);
     }
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECT_REQUEST, this.onMpJoinRequest);
@@ -106,4 +108,10 @@ export default class MainMenu extends ChildComponent {
     //     const audio = new Audio(location.pathname + "audio/menu-hover.wav");
     //     audio.play();
     // }
+
+    private updateVersionElt(parentElt: HTMLElement, version: number) {
+        const elt = DomHandler.getElement(".main-menu-version", parentElt);
+
+        elt.textContent = "v" + version;
+    }
 }

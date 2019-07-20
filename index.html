@@ -213,100 +213,31 @@
 
     <!-- TOP MENU -->
     <div class="play-button-container">
-        <span class="menu-selection menu-selection-xl play-btn">
-            <div>Play</div>
-            <div class="play-as-guest">(As Guest)</div>
-        </span><br>
-        <span class="menu-link menu-link-xl" id="play-tutorial-link">How to Play</span>
+        <div class="play-btn-options-container">
+
+            <div class="menu-selection play-btn-option play-btn">
+                <div>Play</div>
+                <div class="play-as-guest">(As Guest)</div>
+            </div>
+
+            <div class="vertical-line play-btn-vertical-line"></div>
+
+            <div class="play-btn-option custom-lobby-container">
+                <span class="custom-lobby-title">Custom Lobbies</span>
+
+                <span class="custom-lobby-create btn-med">Create</span>
+                <span class="custom-lobby-join btn-med">Join</span>
+            </div>
+        </div>
+        
+        <div class="menu-link menu-link-xl" id="play-tutorial-link">How to Play</div>
     </div>
 
-    <!-- SOCIAL LINKS -->
-    <p class="feedback-request">
-        <span class="feedback-greeting">Hi there!<br></span>
-BattleTanks is being <a class="standard-anchor" href="https://bit.ly/2AtVanF" target="_blank">actively&nbsp;developed</a> and I am basing future development almost entirely on feedback I receive from the growing community!<br>
-Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
-    </p>
     <div class="discord-container">
         <a class="discord-ref" href="https://discord.gg/7J5ZJUQ" target="_blank" title="Join the Discord community!">
             <img class="discord-image" draggable="false" src="./res/social/discord.svg" alt="BattleTanks Discord">
-        </a>
-    </div>
-</div>
-
-<div class="menu overlay-parent">
-    <div class="overlay-container">
-        <div class="overlay-content overlay-play">
-                <h2>How to Play</h2>
-            
-                <div class="tutorial-text">BattleTanks is a 2.5D tank shooter where two teams compete in a team eliminiation gamemode!</div>
-
-                <h3>Default Controls</h3>
-                <div class="tutorial-controls">
-                    <div><span class="tutorial-controls-highlight">W</span> - Forward</div>
-                    <div><span class="tutorial-controls-highlight">Mouse</span> - Shoot</div>
-                    
-                    <div><span class="tutorial-controls-highlight">S</span> - Backward</div>
-                    <div><span class="tutorial-controls-highlight">R</span> - Reload</div>
-
-                    <div><span class="tutorial-controls-highlight">A</span> - Rotate Left</div>
-                    <div><span class="tutorial-controls-highlight">E</span> - Ramming Speed</div>
-
-                    <div><span class="tutorial-controls-highlight">D</span> - Rotate Right</div>
-                    <div><span class="tutorial-controls-highlight">Enter</span> - Chat</div>
-                </div>
-
-                <h3>Player Details</h3>
-                <div class="tutorial-text">Hits to Kill: <span class="tutorial-controls-highlight">5</span></div>
-                <div class="tutorial-text">Lives: <span class="tutorial-controls-highlight">3</span></div>
-                <div class="tutorial-text">Points per Hit: <span class="tutorial-controls-highlight">1</span></div>
-                <div class="tutorial-text">Points per Kill: <span class="tutorial-controls-highlight">2</span></div>
-
-        </div>
-        <div class="overlay-content overlay-create">
-            <h2>Creating an Arena</h2>
-            
-            <div class="tutorial-text">You can create an arena and submit it on our <a class="standard-anchor" href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>!</div>
-            
-            <h3>Guidelines</h3>
-            <div class="tutorial-text">
-                Arenas should have at least four (4) team spawns per team. Currently, all arenas can be used by up to eight (8) people.
-            </div>
-
-            <h3>Creation Tips</h3>
-            <div class="tutorial-text">
-                I recommend odd dimensions so there is a center block in the arena.
-            </div>
-            <div class="tutorial-text">
-                The tools you use can be selected by a hotkey instead of having to use your mouse.
-            </div>
-            <div class="tutorial-text">
-                <strong>Remember</strong> Your primary mouse button creates an entity; your secondary mouse button removes an entity if there is one of that type at the position you are selecting.
-            </div>
-
-            <h3>Submission &amp; Reward</h3>
-            <div class="tutorial-text">
-                Upon submission to the <a class="standard-anchor" href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>, I will reivew your arena and offer feedback if necessary. If all looks good, then I will include your arena with the next release of BattleTanks!
-            </div>
-            <div class="tutorial-text">
-                Upon approval of your arena, you will granted access to the "Arena Creators" role on the Discord server! I will also note you as the author of the arena so appropriate credit can be made visible in future releases.
-            </div>
-        </div>
-        <div class="overlay-content overlay-rank no-select">
-            <div class="rank-chart">
-                <div class="rank-info rank-info-current"></div>
-
-                <div class="rank-info rank-info-level"></div>
-                <div class="rank-info rank-info-rank"></div>
-
-                <div class="rank-chart-container"></div>
-            </div>
-        </div>
-        <div class="overlay-content overlay-color no-select">
-            <h2 class="overlay-color-title"></h2>
-            <div class="store-currency"></div>
-            <div class=overlay-color-container></div>
-        </div>
-        <span class="menu-selection overlay-close no-select">Close</span>
+        </a><br>
+        <span class="main-menu-version"></span>
     </div>
 </div>
 
@@ -446,10 +377,17 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
     </div>
 </div>
 
+<!-- GAME TIMER -->
 <div class="game-timer no-select">
     <img src="./res/menu/timer.svg" class="game-timer-icon">
     <span class="game-timer-text"></span>
 </div>
+
+<!-- LOBBY CODE -->
+ <div class="lobby-code tooltip">
+    <span class="lobby-code-text tooltip-title"></span>
+    <span class="tooltip-text">Click to copy!</span>
+ </div>
 
 <!-- OVERLAY MENU -->
 <div class="menu overlay-menu">
@@ -473,6 +411,84 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
     </div>
 
     <img class="menu-options no-select" draggable="false" src="./res/menu/options.svg" title="Options"/>  
+</div>
+
+<!-- OVERLAY (POPUP MODAL) MENU -->
+<div class="menu overlay-parent">
+    <div class="overlay-container">
+        <div class="overlay-content overlay-play">
+                <h2>How to Play</h2>
+            
+                <div class="tutorial-text">BattleTanks is a 2.5D tank shooter where two teams compete in a team eliminiation gamemode!</div>
+
+                <h3>Default Controls</h3>
+                <div class="tutorial-controls">
+                    <div><span class="tutorial-controls-highlight">W</span> - Forward</div>
+                    <div><span class="tutorial-controls-highlight">Mouse</span> - Shoot</div>
+                    
+                    <div><span class="tutorial-controls-highlight">S</span> - Backward</div>
+                    <div><span class="tutorial-controls-highlight">R</span> - Reload</div>
+
+                    <div><span class="tutorial-controls-highlight">A</span> - Rotate Left</div>
+                    <div><span class="tutorial-controls-highlight">E</span> - Ramming Speed</div>
+
+                    <div><span class="tutorial-controls-highlight">D</span> - Rotate Right</div>
+                    <div><span class="tutorial-controls-highlight">Enter</span> - Chat</div>
+                </div>
+
+                <h3>Player Details</h3>
+                <div class="tutorial-text">Hits to Kill: <span class="tutorial-controls-highlight">5</span></div>
+                <div class="tutorial-text">Lives: <span class="tutorial-controls-highlight">3</span></div>
+                <div class="tutorial-text">Points per Hit: <span class="tutorial-controls-highlight">1</span></div>
+                <div class="tutorial-text">Points per Kill: <span class="tutorial-controls-highlight">2</span></div>
+
+        </div>
+        <div class="overlay-content overlay-create">
+            <h2>Creating an Arena</h2>
+            
+            <div class="tutorial-text">You can create an arena and submit it on our <a class="standard-anchor" href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>!</div>
+            
+            <h3>Guidelines</h3>
+            <div class="tutorial-text">
+                Arenas should have at least four (4) team spawns per team. Currently, all arenas can be used by up to eight (8) people.
+            </div>
+
+            <h3>Creation Tips</h3>
+            <div class="tutorial-text">
+                I recommend odd dimensions so there is a center block in the arena.
+            </div>
+            <div class="tutorial-text">
+                The tools you use can be selected by a hotkey instead of having to use your mouse.
+            </div>
+            <div class="tutorial-text">
+                <strong>Remember</strong> Your primary mouse button creates an entity; your secondary mouse button removes an entity if there is one of that type at the position you are selecting.
+            </div>
+
+            <h3>Submission &amp; Reward</h3>
+            <div class="tutorial-text">
+                Upon submission to the <a class="standard-anchor" href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>, I will reivew your arena and offer feedback if necessary. If all looks good, then I will include your arena with the next release of BattleTanks!
+            </div>
+            <div class="tutorial-text">
+                Upon approval of your arena, you will granted access to the "Arena Creators" role on the Discord server! I will also note you as the author of the arena so appropriate credit can be made visible in future releases.
+            </div>
+        </div>
+        <div class="overlay-content overlay-rank no-select">
+            <div class="rank-chart">
+                <div class="rank-info rank-info-current"></div>
+
+                <div class="rank-info rank-info-level"></div>
+                <div class="rank-info rank-info-rank"></div>
+
+                <div class="rank-chart-container"></div>
+            </div>
+        </div>
+        <div class="overlay-content overlay-color no-select">
+            <h2 class="overlay-color-title"></h2>
+            <div class="store-currency"></div>
+            <div class=overlay-color-container></div>
+        </div>
+        <span class="menu-selection overlay-close no-select">Close</span>
+    </div>
 </div>
 
 <!-- CONVERSATION LIST CONTAINER -->
@@ -519,7 +535,7 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
             <input type="checkbox" id="option-enabled-killfeed">
 
             <div class="tooltip option-title">
-                <span class="option-title">Anonymous Metrics:</span>
+                <span class="option-title tooltip-title">Anonymous Metrics:</span>
                 <div class="tooltip-text">Data is sent to the server when you leave BattleTanks regarding your experience. It is impossible to associate this data to your account. Leaving this enabled is appreciated! :)</div>
             </div>
             <input type="checkbox" id="option-enabled-metrics">
@@ -531,7 +547,7 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
             <input type="checkbox" id="option-enabled-camera-lazy">
 
             <div class="tooltip option-title">
-                    <span class="option-title">Autofix Camera:</span>
+                    <span class="option-title tooltip-title">Autofix Camera:</span>
                     <div class="tooltip-text">If you experience an FPS drop, the game will disable the lazy camera to provide you the best experience possible.</div>
                 </div>
             <input type="checkbox" id="option-enabled-camera-autofix">
@@ -594,6 +610,36 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
         <input type="text" class="username-input" size="16" maxlength="16"><br>
         <span class="menu-selection disabled" id="username-save">Save &amp; Close</span>
         <span class="menu-selection" id="username-cancel">Cancel</span>
+    </div>
+</div>
+
+<!-- CUSTOM LOBBY CONTAINER -->
+<div class="custom-lobby-parent menu">
+    <div class="custom-lobby-parent-container">
+        <span class="custom-lobby-title"></span>
+        <div class="custom-lobby-create-parent">
+            <div class="tooltip">
+                <span class="tooltip-title">
+                    <input type="checkbox" class="custom-lobby-public">Public
+                </span>
+                <div class="tooltip-text">Public lobbies will be publicly available 1 minute after creation (So get all your friends to join within 1 minute). A join code is required for the first minute after creation. Private lobbies will always require a join code.</div>
+            </div>
+            <div class="tooltip">
+                <span class="tooltip-title">
+                    <input type="checkbox" class="custom-lobby-bots tooltip-title">Bots
+                </span>
+                <div class="tooltip-text">If selected, bots will join a lobby until the game is full.</div>
+            </div>
+        </div>
+        <div class="custom-lobby-join-parent">
+            <input type="text" class="custom-lobby-code" placeholder="Code" maxlength="4"><br>
+            <span class="custom-lobby-code-err"></span>
+        </div>
+    
+        <div class="custom-lobby-btn-parent">
+            <div class="custom-lobby-cancel btn-med btn-neg">Cancel</div>
+            <div class="custom-lobby-action btn-med"></div>
+        </div>
     </div>
 </div>
 

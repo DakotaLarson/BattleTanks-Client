@@ -1,5 +1,6 @@
 .btn,
-.btn-sml {
+.btn-sml,
+.btn-med {
     margin: 1vmin;
     display: inline-block;
     border: solid 1px #ffffff;
@@ -15,9 +16,20 @@
     padding: 0.25vmin 0.55vmin;
 }
 
+.btn-med {
+    font-family: 'Bombardier', sans-serif;
+    padding: 0.5vmin 1vmin;
+    font-size: 3vmin;
+}
+
 .btn:hover,
-.btn-sml:hover {
+.btn-sml:hover,
+.btn-med:hover {
     background-color: #03c95f;
+}
+
+.btn-neg:hover {
+    background-color: #b01703;
 }
 
 .btn-selected {

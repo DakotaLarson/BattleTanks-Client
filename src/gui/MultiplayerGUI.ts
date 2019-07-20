@@ -1,3 +1,4 @@
+import { runInThisContext } from "vm";
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import DOMMutationHandler from "../DOMMutationHandler";
@@ -9,6 +10,7 @@ import DebugPanel from "./DebugPanel";
 import HealthBar from "./HealthBar";
 import Joystick from "./Joystick";
 import Killfeed from "./Killfeed";
+import LobbyCode from "./LobbyCode";
 import PlayerList from "./PlayerList";
 import RamBar from "./RamBar";
 import ShieldBar from "./ShieldBar";
@@ -26,6 +28,7 @@ export default class GUI extends Component {
     private joystick: Joystick;
     private chat: Chat;
     private playerList: PlayerList;
+    private lobbyCode: LobbyCode;
 
     constructor() {
         super();
@@ -40,6 +43,8 @@ export default class GUI extends Component {
         this.joystick = new Joystick(this.element);
         this.chat = new Chat(this.element);
         this.playerList = new PlayerList(this.element);
+        this.lobbyCode = new LobbyCode();
+
     }
 
     public enable() {
@@ -56,6 +61,8 @@ export default class GUI extends Component {
         }
 
         this.attachChild(this.playerList);
+        this.attachChild(this.lobbyCode);
+
         DOMMutationHandler.show(this.element);
     }
 
@@ -67,6 +74,7 @@ export default class GUI extends Component {
         this.detachChild(this.killfeed);
         this.detachChild(this.chat);
         this.detachChild(this.playerList);
+        this.detachChild(this.lobbyCode);
 
         DOMMutationHandler.hide(this.element);
     }

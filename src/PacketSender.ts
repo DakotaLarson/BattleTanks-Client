@@ -95,8 +95,8 @@ const send = (data: ArrayBuffer) => {
 };
 export default class PacketSender {
 
-    public static sendPlayerJoin(tokenId?: string) {
-        const rawData = tokenId || "";
+    public static sendPlayerJoin(joinData: any) {
+        const rawData = JSON.stringify(joinData);
 
         const data = constructData(Packet.PLAYER_JOIN, rawData, DataType.STRING);
         send(data);
