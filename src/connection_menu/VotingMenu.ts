@@ -22,12 +22,12 @@ export default class VotingMenu extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onDisconnect);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onDisconnect);
         DOMMutationHandler.show(this.parentElt);
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onDisconnect);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onDisconnect);
         DOMMutationHandler.hide(this.parentElt);
         this.clearStats();
         this.updateMessage(true);

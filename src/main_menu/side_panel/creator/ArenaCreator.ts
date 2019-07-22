@@ -38,9 +38,9 @@ export default class ArenaCreator extends ChildComponent {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onLoadClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCreateTutorialClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onCreateClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onLoadClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onCreateTutorialClick);
         EventHandler.addListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onTutorialClose);
 
         this.attach(undefined);
@@ -49,9 +49,9 @@ export default class ArenaCreator extends ChildComponent {
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onLoadClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCreateTutorialClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onCreateClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onLoadClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onCreateTutorialClick);
         EventHandler.removeListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onTutorialClose);
 
         this.parentElt.style.display = "";

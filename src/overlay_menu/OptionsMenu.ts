@@ -148,7 +148,7 @@ export default class OptionsMenu extends Component {
     }
 
     private openOptions() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onUsernameUpdateClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onUsernameUpdateClick);
         DomEventHandler.addListener(this, this.chatEnabledElt, "change", this.onChatEnabledChange);
         DomEventHandler.addListener(this, this.killfeedEnabledElt, "change", this.onKillfeedEnabledChange);
         DomEventHandler.addListener(this, this.metricsEnabledElt, "change", this.onMetricsEnabledChange);
@@ -167,7 +167,7 @@ export default class OptionsMenu extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onChatOpenClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onPlayerListClick);
 
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onReturnClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
 
         DomEventHandler.addListener(this, this.chatOpacityValueElt, "change", this.onChatOpacityChange);
@@ -185,7 +185,7 @@ export default class OptionsMenu extends Component {
     }
 
     private closeOptions() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onUsernameUpdateClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onUsernameUpdateClick);
         DomEventHandler.removeListener(this, this.chatEnabledElt, "change", this.onChatEnabledChange);
         DomEventHandler.removeListener(this, this.killfeedEnabledElt, "change", this.onKillfeedEnabledChange);
         DomEventHandler.removeListener(this, this.metricsEnabledElt, "change", this.onMetricsEnabledChange);
@@ -204,7 +204,7 @@ export default class OptionsMenu extends Component {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onChatOpenClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onPlayerListClick);
 
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onReturnClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
 
         DomEventHandler.removeListener(this, this.chatOpacityValueElt, "change", this.onChatOpacityChange);

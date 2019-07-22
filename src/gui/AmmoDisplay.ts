@@ -60,13 +60,11 @@ export default class AmmoDisplay extends ChildComponent {
     }
 
     private update() {
-        fastdom.mutate(() => {
-            if (this.countElt.textContent !== "" + this.ammoCount) {
-                this.countElt.textContent = "" + this.ammoCount;
-            }
+        if (this.countElt.textContent !== "" + this.ammoCount) {
+            this.countElt.textContent = "" + this.ammoCount;
+        }
 
-            const dashoffset = this.circumference * (1 - this.reloadPercentage);
-            this.circle.style.strokeDashoffset = "" + dashoffset;
-        });
+        const dashoffset = this.circumference * (1 - this.reloadPercentage);
+        this.circle.style.strokeDashoffset = "" + dashoffset;
     }
 }

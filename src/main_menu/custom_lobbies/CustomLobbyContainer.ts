@@ -29,8 +29,8 @@ export default abstract class CustomLobbyContainer extends ChildComponent {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onBtnClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCancelClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onBtnClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onCancelClick);
 
         this.setTitles();
 
@@ -39,8 +39,8 @@ export default abstract class CustomLobbyContainer extends ChildComponent {
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onBtnClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCancelClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onBtnClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onCancelClick);
 
         this.parentElt.style.display = "";
         this.containerElt.style.display = "";

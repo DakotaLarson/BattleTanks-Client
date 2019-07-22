@@ -28,7 +28,7 @@ export default class CreateMenu extends ChildComponent {
 
     public enable() {
 
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onCreateClick);
 
         DOMMutationHandler.show(this.containerElt);
         DOMMutationHandler.focus(this.widthElt);
@@ -36,7 +36,7 @@ export default class CreateMenu extends ChildComponent {
 
     public disable() {
 
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onCreateClick);
 
         DOMMutationHandler.setValue(this.heightElt);
         DOMMutationHandler.setValue(this.widthElt);

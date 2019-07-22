@@ -18,14 +18,14 @@ export default class DisconnectedScreen extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onDisconnect);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onDisconnect);
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE_REASON, this.onReason);
 
         DOMMutationHandler.show(this.element);
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onDisconnect);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onDisconnect);
         EventHandler.removeListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE_REASON, this.onReason);
 
         this.reasonElt.textContent = "";

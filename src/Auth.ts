@@ -45,7 +45,7 @@ export default class Auth extends Component {
 
         this.loadScript(initializeAuth);
 
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onSignoutClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onSignoutClick);
     }
 
     private onSignoutClick(event: MouseEvent) {

@@ -18,14 +18,14 @@ export default class Overlay extends ChildComponent {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onOverlayClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onOverlayClick);
 
         DOMMutationHandler.show(this.contentElt);
         DOMMutationHandler.show(this.parentElt);
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onOverlayClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onOverlayClick);
 
         DOMMutationHandler.hide(this.contentElt);
         DOMMutationHandler.hide(this.parentElt);

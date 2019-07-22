@@ -16,12 +16,12 @@ export default class ConnectedScreen extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onDisconnect);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onDisconnect);
         DOMMutationHandler.show(this.element);
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onDisconnect);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onDisconnect);
         DOMMutationHandler.hide(this.element);
     }
 

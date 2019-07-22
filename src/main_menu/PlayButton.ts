@@ -36,7 +36,7 @@ export default class PlayButton extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
 
         EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
@@ -51,7 +51,7 @@ export default class PlayButton extends Component {
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
 
         EventHandler.removeListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.removeListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);

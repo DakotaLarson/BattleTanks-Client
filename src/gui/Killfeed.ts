@@ -33,33 +33,31 @@ export default class Killfeed extends ChildComponent {
     }
 
     private onUpdate(data: any) {
-        fastdom.mutate(() => {
-            const mainPlayer = data.mainPlayer;
-            const involvedPlayer = data.involvedPlayer;
-            const isOOB = data.isOOB;
+        const mainPlayer = data.mainPlayer;
+        const involvedPlayer = data.involvedPlayer;
+        const isOOB = data.isOOB;
 
-            const element = document.createElement("div");
-            element.classList.add("killfeed-message");
+        const element = document.createElement("div");
+        element.classList.add("killfeed-message");
 
-            if (isOOB) {
-                element.appendChild(this.createPlayerElement(mainPlayer));
-                element.appendChild(this.createActionElement(true, isOOB));
-                if (mainPlayer.livesRemaining !== Killfeed.TDM_LIVES_REMAINING) {
-                    element.appendChild(this.createLivesRemainingElement(mainPlayer.livesRemaining));
-                }
-            } else if (involvedPlayer) {
-                element.appendChild(this.createPlayerElement(involvedPlayer));
-                element.appendChild(this.createActionElement(false, isOOB));
-                element.appendChild(this.createPlayerElement(mainPlayer));
-                if (mainPlayer.livesRemaining !== Killfeed.TDM_LIVES_REMAINING) {
-                    element.appendChild(this.createLivesRemainingElement(mainPlayer.livesRemaining));
-                }
-            } else {
-                element.appendChild(this.createPlayerElement(mainPlayer));
-                element.appendChild(this.createActionElement(true, isOOB));
+        if (isOOB) {
+            element.appendChild(this.createPlayerElement(mainPlayer));
+            element.appendChild(this.createActionElement(true, isOOB));
+            if (mainPlayer.livesRemaining !== Killfeed.TDM_LIVES_REMAINING) {
+                element.appendChild(this.createLivesRemainingElement(mainPlayer.livesRemaining));
             }
-            this.addMessage(element);
-        });
+        } else if (involvedPlayer) {
+            element.appendChild(this.createPlayerElement(involvedPlayer));
+            element.appendChild(this.createActionElement(false, isOOB));
+            element.appendChild(this.createPlayerElement(mainPlayer));
+            if (mainPlayer.livesRemaining !== Killfeed.TDM_LIVES_REMAINING) {
+                element.appendChild(this.createLivesRemainingElement(mainPlayer.livesRemaining));
+            }
+        } else {
+            element.appendChild(this.createPlayerElement(mainPlayer));
+            element.appendChild(this.createActionElement(true, isOOB));
+        }
+        this.addMessage(element);
     }
 
     private addMessage(element: HTMLElement) {

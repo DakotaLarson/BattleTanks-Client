@@ -33,7 +33,7 @@ export default class NotificationList extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
         EventHandler.addListener(this, EventHandler.Event.NOTIFICATION_OFFLINE, this.onOfflineNotification);
         EventHandler.addListener(this, EventHandler.Event.NOTIFICATION_RESET, this.onNotificationReset);
     }
@@ -75,10 +75,8 @@ export default class NotificationList extends Component {
             }
             const id = ++ this.lastNotificationId;
 
-            fastdom.mutate(() => {
-                const elt = this.createElt(header, body, id);
-                this.containerElt.appendChild(elt);
-            });
+            const elt = this.createElt(header, body, id);
+            this.containerElt.appendChild(elt);
 
             this.notifications.set(id, {
                 username: event.username,

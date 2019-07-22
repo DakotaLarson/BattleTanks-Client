@@ -43,7 +43,7 @@ export default class Leaderboard extends ChildComponent {
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
 
         this.updateLeaderboards();
     }
@@ -51,7 +51,7 @@ export default class Leaderboard extends ChildComponent {
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.removeListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
         this.clearLeaderboard();
     }
 

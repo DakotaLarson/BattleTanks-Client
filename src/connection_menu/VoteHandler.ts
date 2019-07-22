@@ -21,13 +21,13 @@ export default class VoteHandler extends ChildComponent {
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.VOTE_LIST_UPDATE, this.onVoteListUpdate);
         EventHandler.addListener(this, EventHandler.Event.VOTE_UPDATE, this.onVoteUpdate);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
     }
 
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.VOTE_LIST_UPDATE, this.onVoteListUpdate);
         EventHandler.removeListener(this, EventHandler.Event.VOTE_UPDATE, this.onVoteUpdate);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
     }
 
     private onVoteListUpdate(voteList: any[]) {

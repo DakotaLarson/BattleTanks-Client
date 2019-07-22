@@ -39,11 +39,9 @@ export default class PlayerStats extends ChildComponent {
                 elts.push(this.createStatElt(stats[title]));
             }
         }
-        fastdom.mutate(() => {
-            for (const elt of elts) {
-                this.containerElt.appendChild(elt);
-            }
-        });
+        for (const elt of elts) {
+            this.containerElt.appendChild(elt);
+        }
     }
 
     private formatStats(stats: any) {

@@ -83,11 +83,9 @@ export default class RankChart extends Overlay {
             levelPoints.set(i, level.points);
         }
 
-        fastdom.mutate(() => {
-            for (const elt of rankContainers) {
-                container.appendChild(elt);
-            }
-        });
+        for (const elt of rankContainers) {
+            container.appendChild(elt);
+        }
 
         DomEventHandler.addListener(this, container, "wheel", (event: WheelEvent) => {
             container.scrollLeft += event.deltaY;

@@ -79,12 +79,12 @@ export class StoreItem extends ChildComponent {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
         EventHandler.addListener(this, EventHandler.Event.DROPDOWN_UPDATE, this.onDropdownUpdate);
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
         EventHandler.removeListener(this, EventHandler.Event.DROPDOWN_UPDATE, this.onDropdownUpdate);
     }
 

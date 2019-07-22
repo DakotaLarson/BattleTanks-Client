@@ -121,22 +121,18 @@ export default class ConversationViewer extends Component {
     }
 
     private renderMessages(messages: any[]) {
-        fastdom.mutate(() => {
-            const height = this.messageContainerElt.scrollHeight;
-            for (const message of messages) {
-                const messageElt = this.createMessageElt(message.body, message.sent);
-                this.messageContainerElt.insertBefore(messageElt, this.messageContainerElt.firstChild);
-            }
-            this.messageContainerElt.scrollTop = this.messageContainerElt.scrollHeight -  height;
-        });
+        const height = this.messageContainerElt.scrollHeight;
+        for (const message of messages) {
+            const messageElt = this.createMessageElt(message.body, message.sent);
+            this.messageContainerElt.insertBefore(messageElt, this.messageContainerElt.firstChild);
+        }
+        this.messageContainerElt.scrollTop = this.messageContainerElt.scrollHeight -  height;
     }
 
     private renderMessage(message: string, sent: boolean) {
-        fastdom.mutate(() => {
-            const messageElt = this.createMessageElt(message, sent);
-            this.messageContainerElt.appendChild(messageElt);
-            this.messageContainerElt.scrollTop = this.messageContainerElt.scrollHeight;
-        });
+        const messageElt = this.createMessageElt(message, sent);
+        this.messageContainerElt.appendChild(messageElt);
+        this.messageContainerElt.scrollTop = this.messageContainerElt.scrollHeight;
     }
 
     private createMessageElt(message: string, sent: boolean) {
@@ -146,9 +142,9 @@ export default class ConversationViewer extends Component {
             containerElt.classList.add("conversation-message-content-container-sent");
         }
         const messageElt = document.createElement("span");
-        messageElt.classList.add("conversation-message-content");
+        messageElt.classList.add("conversation-message-content", "text-select");
         if (sent) {
-            messageElt.classList.add("conversation-message-content-sent");
+            messageElt.classList.add("conversation-message-content-sent", "text-select");
         }
         messageElt.textContent = message;
         containerElt.appendChild(messageElt);

@@ -34,7 +34,7 @@ export default class LoadMenu extends ChildComponent {
 
     public enable() {
 
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this. onLoadClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this. onLoadClick);
         DomEventHandler.addListener(this, this.fileInputElt, "change", this.onFileChange);
 
         DomEventHandler.addListener(this, this.fileInputParentElt, "dragover", this.onDrag);
@@ -47,7 +47,7 @@ export default class LoadMenu extends ChildComponent {
 
     public disable() {
 
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this. onLoadClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this. onLoadClick);
         DomEventHandler.removeListener(this, this.fileInputElt, "change", this.onFileChange);
 
         DomEventHandler.removeListener(this, this.fileInputParentElt, "dragover", this.onDrag);

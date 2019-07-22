@@ -164,8 +164,14 @@ while (!guiBlockedEventsNext.done) {
     const handler = (event: any) => {
         DomHandler.setInterference(false);
         EventHandler.callEvent(eventList[0], event); // Call GUI Event
+        if (event.button === 0 && eventTitle === "click") {
+            EventHandler.callEvent(EventHandler.Event.DOM_GUI_CLICK_PRIMARY, event);
+        }
         if (!guiInterference) {
             EventHandler.callEvent(eventList[1], event); // Call regular event
+            if (event.button === 0 && eventTitle === "click") {
+                EventHandler.callEvent(EventHandler.Event.DOM_CLICK_PRIMARY, event);
+            }
         }
         DomHandler.setInterference(false);
     };

@@ -47,7 +47,7 @@ export default class ConversationList extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
         EventHandler.addListener(this, EventHandler.Event.NOTIFICATION_OFFLINE, this.onOfflineNotification);
         EventHandler.addListener(this, EventHandler.Event.NOTIFICATION_RESET, this.onNotificationReset);
     }

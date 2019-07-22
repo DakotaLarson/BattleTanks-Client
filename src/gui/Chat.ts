@@ -87,21 +87,16 @@ export default class Chat extends ChildComponent {
 
         if (!Globals.getGlobal(Globals.Global.CHAT_OPEN)) {
             const previewMessageElt = newMessageElt.cloneNode(true) as HTMLElement;
-            const addTask = DOMMutationHandler.add(previewMessageElt, this.previewContainer);
+            DOMMutationHandler.add(previewMessageElt, this.previewContainer);
             this.removeOldPreviewMessages();
             setTimeout(() => {
                 if (this.previewContainer.contains(previewMessageElt)) {
                     DOMMutationHandler.addStyle(previewMessageElt, "opacity", "0");
                     setTimeout(() => {
-                        fastdom.mutate(() => {
-                            if (this.previewContainer.contains(previewMessageElt)) {
-                                this.previewContainer.removeChild(previewMessageElt);
-                            }
-                        });
+                        if (this.previewContainer.contains(previewMessageElt)) {
+                            this.previewContainer.removeChild(previewMessageElt);
+                        }
                     }, 500);
-                } else {
-                    // The message hasn't been added yet, cancel it's future addition.
-                    DOMMutationHandler.clearTask(addTask);
                 }
             }, 5000);
         }
