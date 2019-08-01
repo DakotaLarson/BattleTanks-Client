@@ -1,4 +1,3 @@
-import { runInThisContext } from "vm";
 import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import DOMMutationHandler from "../DOMMutationHandler";

@@ -192,15 +192,16 @@
     line-height: 2.5vmin;
 }
 
-.main-menu .partners-link {
+.main-menu .main-menu-link-container {
     position: absolute;
     top: 2.5vmin;
     right: 26vmin;
-    font-size: 3vmin;
-    padding: 0 0.5vmin;
-    border: solid 1px #ffffff;
+}
+
+.main-menu .partners-link {
     color: #ffffff;
     text-decoration: none;
+    margin-right: 1.5vmin;
 }
 
 .main-menu .partners-link:hover {
@@ -218,7 +219,7 @@
     border: solid 1px #ffffff;
 }
 
-.main-menu .data-container,
+.data-container,
 .main-menu .leaderboard-container,
 .main-menu .search-container {
     display: grid;

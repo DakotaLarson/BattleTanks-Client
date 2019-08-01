@@ -1,0 +1,77 @@
+.referral-parent {
+    background-color: rgba(0, 0, 0, 0.25);
+    position: absolute;
+}
+
+.referral-parent h2 {
+    font-size: 7.5vmin;
+    margin: 0 0 2.5vmin 0;
+}
+
+.referral-parent .referral-referrer-parent {
+    margin-bottom: 2.5vmin;
+    padding-bottom: 2.5vmin;
+    font-size: 3.5vmin;
+    border-bottom: solid 1px;
+}
+
+.referral-parent .referral-referrer-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.referral-parent .referral-referrer-input {
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 3.5vmin;
+    background: none;
+    outline: none;
+    border: none;
+    border-bottom: solid 1px #ffffff;
+    color: #ffffff;
+    text-transform: uppercase;
+    margin: 0px 2vmin 0 1vmin;
+}
+
+.referral-parent .referral-referrer-error {
+    color: #b01703;
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 2.5vmin;
+}
+
+.referral-parent .referral-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 2.5vmin;
+    border: solid 1px #ffffff;
+    background-color: #101010;
+    text-align: center;
+}
+
+.referral-parent .referral-code {
+    font-size: 3.5vmin;
+}
+
+.referral-parent .referral-code-text:hover {
+    color: #03b053;
+    cursor: pointer;
+}
+
+.referral-parent .referral-data-container {
+    margin: 2.5vmin 0;
+    min-width: 12.5vw;
+    cursor: default;
+    display: none;
+}
+
+.referral-parent .referral-information {
+    font-size: 2vmin;
+    font-family: 'Inconsolata', sans-serif;
+    border: solid 1px #ffffff;
+    padding: 1vmin 1.5vmin;
+}
+.referral-parent .referral-close {
+    margin-top: 2.5vmin;
+}

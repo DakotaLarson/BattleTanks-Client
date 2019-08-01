@@ -17,6 +17,7 @@
     z-index: 1;
     text-align: left;
     padding: 0.5vmin;
+    left: 0
 }
 
 /* Show the tooltip text when on hover */

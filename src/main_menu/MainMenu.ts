@@ -9,6 +9,7 @@ import DOMMutationHandler from "../DOMMutationHandler";
 import GameSuggestion from "./GameSuggestion";
 import Leaderboard from "./Leaderboard";
 import PlayButton from "./PlayButton";
+import Referrals from "./Referrals";
 // import ServerPlayerCount from "./ServerPlayerCount";
 import SidePanel from "./side_panel/SidePanel";
 
@@ -20,6 +21,7 @@ export default class MainMenu extends ChildComponent {
 
     // private serverPlayercount: ServerPlayerCount;
     private gameSuggestion: GameSuggestion;
+    private referrals: Referrals;
     private sidePanel: SidePanel;
     private leaderboard: Leaderboard;
     private menuCamera: MenuCamera;
@@ -38,6 +40,7 @@ export default class MainMenu extends ChildComponent {
 
         // this.serverPlayercount = new ServerPlayerCount(this.element);
         this.gameSuggestion = new GameSuggestion(this.element);
+        this.referrals = new Referrals(this.element);
         this.sidePanel = new SidePanel(this.element);
         this.leaderboard = new Leaderboard(this.element);
         this.menuCamera = new MenuCamera(camera);
@@ -53,6 +56,7 @@ export default class MainMenu extends ChildComponent {
         this.attachChild(this.playButton);
         // this.attachChild(this.serverPlayercount);
         this.attachChild(this.gameSuggestion);
+        this.attachChild(this.referrals);
         this.attachChild(this.sidePanel);
         this.attachChild(this.leaderboard);
         this.attachChild(this.menuCamera);
@@ -71,6 +75,7 @@ export default class MainMenu extends ChildComponent {
         this.detachChild(this.playButton);
         // this.detachChild(this.serverPlayercount);
         this.detachChild(this.gameSuggestion);
+        this.detachChild(this.referrals);
         this.detachChild(this.sidePanel);
         this.detachChild(this.leaderboard);
         this.detachChild(this.menuCamera);

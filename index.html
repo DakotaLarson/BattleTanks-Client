@@ -41,6 +41,7 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     
     <link rel="stylesheet" type="text/css" href="/css/fonts/fonts.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/buttons.css"/>
     <link rel="stylesheet" type="text/css" href="/dist/bundle.css"/>
 
 </head>
@@ -97,7 +98,10 @@
         <div class="game-suggestion game-suggestion-hidden"></div>
     </div>
 
-    <a href="./partners/index.html" target="_blank" class="partners-link">Partners</a>
+    <div class="main-menu-link-container">
+        <a href="./partners/index.html" target="_blank" class="btn-sml partners-link">Partners</a>
+        <span class="btn-sml referral-btn">Referrals</span>
+    </div>
 
     <div class="side-panel">
         <div class="side-panel-top">
@@ -305,7 +309,7 @@
         <svg viewBox="0 0 100 100">
             <circle class="ammo-circle" cx="50" cy="50" r="45" stroke="green" stroke-width="10" stroke-dasharray="282.6" fill="none" />
         </svg>
-    </div> 
+    </div>
 </div>
 
 <!-- SP GAME MENU -->
@@ -640,6 +644,38 @@
             <div class="custom-lobby-cancel btn-med btn-neg">Cancel</div>
             <div class="custom-lobby-action btn-med"></div>
         </div>
+    </div>
+</div>
+
+<!-- REFERRAL CONTAINER -->
+<div class="referral-parent menu">
+    <div class="referral-container">
+        <h2 class="referral-title">Referral System</h2>
+        <div class="referral-referrer-parent">
+            <div class="referral-referrer-container">
+                <span class="referral-referrer-text">Referrer Code: </span>
+                <input type="text" class="referral-referrer-input" size="6" maxlength="6">
+                <span class="btn-sml referral-referrer-submit">Submit</span>
+            </div>
+            <span class="referral-referrer-error"></span>
+        </div>
+        <div class="referral-code tooltip">
+            <span class="referral-code-text tooltip-title"></span>
+            <span class="tooltip-text">Click to copy!</span>
+         </div><br>
+         <div class="data-container referral-data-container">
+            <div class="referral-referrer-title">Referrer</div>
+            <div class="referral-referrer-value"></div>
+            <div>Referrals</div>
+            <div class="referral-count"></div>
+            <div>Currency Earned</div>
+            <div class="referral-currency"></div>
+            <div>Referred Time</div>
+            <div class="referral-time"></div>
+            
+         </div>
+         <div class="referral-information">Earn 10% of currency earned by your referrals forever!<br>Earn 1000 currency when your referrals play for 1 hour total!</div>
+        <div class="menu-selection referral-close">Close</div>
     </div>
 </div>
 

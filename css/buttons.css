@@ -44,9 +44,9 @@
 .btn-disabled {
     color: #909090;
     border-color: #909090;
-    cursor: default;
+    cursor: default !important;
 }
 
 .btn-disabled:hover {
-    background: none;
+    background: none !important;
 }
