@@ -457,7 +457,7 @@ export default class ScenePlayerHandler extends ChildComponent {
                 color,
             });
             const rankMaterial = new MeshBasicMaterial({
-                color: 0xff00ff,
+                color: RankCalculator.getRankColor(longRank)!,
             });
 
             const nameMesh = new Mesh(nameGeometry, nameMaterial);

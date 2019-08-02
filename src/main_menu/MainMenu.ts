@@ -6,6 +6,7 @@ import { PerspectiveCamera } from "three";
 import MenuCamera from "../arena/camera/MenuCamera";
 import AudioType from "../audio/AudioType";
 import DOMMutationHandler from "../DOMMutationHandler";
+import Options from "../Options";
 import GameSuggestion from "./GameSuggestion";
 import Leaderboard from "./Leaderboard";
 import PlayButton from "./PlayButton";
@@ -55,11 +56,15 @@ export default class MainMenu extends ChildComponent {
 
         this.attachChild(this.playButton);
         // this.attachChild(this.serverPlayercount);
-        this.attachChild(this.gameSuggestion);
+
         this.attachChild(this.referrals);
         this.attachChild(this.sidePanel);
         this.attachChild(this.leaderboard);
         this.attachChild(this.menuCamera);
+
+        if (Options.options.gameTipsEnabled) {
+            this.attachChild(this.gameSuggestion);
+        }
 
         DOMMutationHandler.show(this.element);
         this.onStoreClose();

@@ -4,7 +4,7 @@ import Globals from "../Globals";
 
 export default class GameTips extends ChildComponent {
 
-    private static readonly SIGN_IN_TIP = "Sign in to save your stats!";
+    private static readonly SIGN_IN_TIP = "Sign in to save your stats, rank up, buy tanks and more!";
 
     private parentElt: HTMLElement;
     private contentElt: HTMLElement;
