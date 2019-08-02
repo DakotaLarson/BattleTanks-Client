@@ -65,6 +65,8 @@ class Game extends Component {
         BillboardBatchHandler.initialize();
         ComponentDebugger.initialize();
 
+        this.setTips();
+
         const perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
         this.auth = new Auth();
         this.options = new Options();
@@ -203,8 +205,12 @@ class Game extends Component {
 
     private hideLoadingScreen() {
         const elt = DomHandler.getElement(".loading-screen");
-        DOMMutationHandler.addStyle(elt, "opacity", "0");
-        DOMMutationHandler.addFutureStyle(elt, "display", "none", 1000);
+        elt.classList.add("loading-screen-welcome");
+        setTimeout(() => {
+            DOMMutationHandler.addStyle(elt, "opacity", "0");
+            DOMMutationHandler.addFutureStyle(elt, "display", "none", 1000);
+        }, 3500);
+
     }
 
     private updateMenu(enable: boolean) {
@@ -234,6 +240,29 @@ class Game extends Component {
             // TODO: Create configurable option for this request.
             // EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_DISCONNECT_REQUEST);
         }
+    }
+
+    private setTips() {
+        const tips = [
+            "Create an arena and submit your creation on the Discord server!",
+            "Reload 3x faster when you don't move!",
+            "Hold down the secondary mouse button to look behind you!",
+            "Press 'Enter' to chat with other players!",
+            "Want the full immersive experience? Go fullscreen!",
+            "Pick up powerups to gain an advantage!",
+            "You are protected for 3 seconds after you spawn. Make it count!",
+            "Select a unique username in the options menu when you sign in!",
+            "Your messages are brighter in chat when you sign in!",
+            "Ram into players with 'E' to damage and send them flying!",
+            "Send messages to other players from their profile menu!",
+            "View player profiles by clicking on usernames in the GUI",
+            "Send friend requests to players from their profile menu!",
+            "You can configure friend requests and messages in the options menu!",
+            "When you rank up, a notification is broadcast to the server!",
+            "Refer your friends to BattleTanks and earn currency!",
+            "Purchase tanks and customize them in the store!",
+        ];
+        Globals.setGlobal(Globals.Global.TIPS, tips);
     }
 }
 

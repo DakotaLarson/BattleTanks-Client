@@ -167,3 +167,29 @@
 .gui .player-list-entry:last-child {
     padding-bottom: none;
 }
+
+.gui .game-tips {
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 5vh;
+    border: solid 1px #ffffff;
+    width: 33vw;
+    height: 25vh;
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.65);
+}
+
+.gui .game-tips-title {
+    display: inline-block;
+    font-size: 3.5vmin;
+    margin: 0.5vmin 0 0 1vmin;
+}
+
+.gui .game-tips-content {
+    text-align: center;
+    font-size: 2.5vmin;
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    transform: translateY(-50%);
+}

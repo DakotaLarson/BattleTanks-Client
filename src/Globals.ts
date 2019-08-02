@@ -8,6 +8,7 @@ enum Global {
     AUTH_TOKEN,
     USERNAME,
     SCENE,
+    TIPS,
 }
 
 export default class Globals {

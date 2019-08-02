@@ -77,7 +77,8 @@
             <div class="last-finger-item"><i></i></div>
         </div>
     </div>
-    <div class="loading-text">Loading...</div>     
+    <div class="loading-text">Loading...</div>
+    <div class="loading-welcome-text">WELCOME TO THE GAME!</div>
 </div>
 
 <!-- MAIN MENU -->
@@ -309,6 +310,11 @@
         <svg viewBox="0 0 100 100">
             <circle class="ammo-circle" cx="50" cy="50" r="45" stroke="green" stroke-width="10" stroke-dasharray="282.6" fill="none" />
         </svg>
+    </div>
+
+    <div class="game-tips gui-element no-select">
+        <span class="game-tips-title">BattleTanks Tip!</span>
+        <div class="game-tips-content"></div>
     </div>
 </div>
 
@@ -558,6 +564,9 @@
 
             <span class="option-title">Fireworks:</span>
             <input type="checkbox" id="option-enabled-fireworks">
+
+            <span class="option-title">Game Tips:</span>
+            <input type="checkbox" id="option-enabled-game-tips">
     
             <span class="option-title">Forward:</span>
             <span class="option-value option-listening-value" id="option-value-forward"></span>

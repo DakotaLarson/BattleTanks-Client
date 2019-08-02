@@ -95,7 +95,6 @@ export default class Referrals extends ChildComponent {
             const referralData = await MultiplayerConnection.fetch("/referral", {
                 token,
             });
-            console.log(referralData);
 
             this.code = referralData.code;
             this.codeElt.textContent = "Code: " + this.code;

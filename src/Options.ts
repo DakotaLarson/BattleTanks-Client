@@ -34,6 +34,9 @@ export default class Options extends Component {
         if (!("fireworksEnabled" in Options.options)) {
             Options.options.fireworksEnabled = true;
         }
+        if (!("gameTipsEnabled" in Options.options)) {
+            Options.options.gameTipsEnabled = true;
+        }
         if (!("forward" in Options.options)) {
             Options.options.forward = {
                 key: "w",
