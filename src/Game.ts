@@ -209,7 +209,7 @@ class Game extends Component {
         setTimeout(() => {
             DOMMutationHandler.addStyle(elt, "opacity", "0");
             DOMMutationHandler.addFutureStyle(elt, "display", "none", 1000);
-        }, 3500);
+        }, 2500);
 
     }
 

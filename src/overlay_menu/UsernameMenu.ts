@@ -185,6 +185,6 @@ export default class UsernameMenu extends ChildComponent {
     }
 
     private isNameInvalid(name: string) {
-        return name.length < UsernameMenu.MINIMUM_LENGTH || name.length > UsernameMenu.MAXIMUM_LENGTH || name.toLowerCase().startsWith("guest") || name.toLowerCase().startsWith("player");
+        return name.length < UsernameMenu.MINIMUM_LENGTH || name.length > UsernameMenu.MAXIMUM_LENGTH || name.toLowerCase().startsWith("player");
     }
 }
