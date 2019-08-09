@@ -1,23 +1,26 @@
-import Component from "../component/Component";
+import { AudioContext as ThreeAudioContext, AudioListener } from "three";
+import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 
-export default class RecordingHandler extends Component {
+export default class RecordingHandler extends ChildComponent {
 
     private isRecording: boolean;
 
     private canvas: HTMLCanvasElement;
-    private stream: MediaStream;
     private recorder: any;
 
-    constructor() {
+    private audioListener: AudioListener;
+    private backgroundGainNode: GainNode;
+
+    constructor(audioListener: AudioListener, backgroundGainNode: GainNode) {
         super();
 
         this.canvas = DomHandler.getCanvas();
-        // @ts-ignore
-        this.stream = this.canvas.captureStream(24);
-
         this.isRecording = false;
+
+        this.audioListener = audioListener;
+        this.backgroundGainNode = backgroundGainNode;
     }
 
     public enable() {
@@ -25,6 +28,15 @@ export default class RecordingHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_STARTING, this.onEnd);
         EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_WAITING, this.onEnd);
 
+    }
+
+    public disable() {
+        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onStart);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_STARTING, this.onEnd);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_WAITING, this.onEnd);
+        if (this.isRecording) {
+            this.stopRecording();
+        }
     }
 
     private onStart() {
@@ -49,9 +61,11 @@ export default class RecordingHandler extends Component {
             mimeType: "video/webm",
         };
         // @ts-ignore
-        this.recorder = new MediaRecorder(this.stream, options);
+        const stream: MediaStream = this.canvas.captureStream(30);
+        this.connectAudio(stream);
+        // @ts-ignore
+        this.recorder = new MediaRecorder(stream, options);
         this.recorder.ondataavailable = (event: any) => {
-            console.log();
             const url = window.URL.createObjectURL(event.data);
             const a = document.createElement("a");
             a.style.display = "none";
@@ -65,11 +79,23 @@ export default class RecordingHandler extends Component {
             }, 100);
         };
         this.recorder.start();
-        console.log("started");
     }
 
     private stopRecording() {
-        this.recorder.stop();
-        console.log("stopped");
+        if (this.recorder) {
+            this.recorder.stop();
+            this.recorder = undefined;
+        }
+    }
+
+    private connectAudio(stream: MediaStream) {
+
+        // @ts-ignore
+        const context: AudioContext = ThreeAudioContext.getContext();
+        const destination = context.createMediaStreamDestination();
+        this.audioListener.getInput().connect(destination);
+        this.backgroundGainNode.connect(destination);
+
+        stream.addTrack(destination.stream.getAudioTracks()[0]);
     }
 }

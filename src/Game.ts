@@ -67,14 +67,23 @@ class Game extends Component {
 
         this.setTips();
 
+        let useMP3;
+        if (!AudioContext) {
+            // @ts-ignore Safari is lagging behind.
+            window.AudioContext = window.webkitAudioContext;
+            useMP3 = true;
+        } else {
+            useMP3 = false;
+        }
+
         const perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
         this.auth = new Auth();
         this.options = new Options();
         this.mainMenu = new MainMenu(Game.VERSION, perspectiveCamera);
-        this.backgroundAudioHandler = new BackgroundAudioHandler();
         this.overlayMenu = new OverlayMenu();
         this.connectionMenu = new ConnectionMenu();
-        this.arenaHandler = new ArenaHandler(perspectiveCamera);
+        this.backgroundAudioHandler = new BackgroundAudioHandler(useMP3);
+        this.arenaHandler = new ArenaHandler(perspectiveCamera, useMP3, this.backgroundAudioHandler.getRecordingGainNode());
         this.gameStatusHandler = new GameStatusHandler();
         this.alertMessageHandler = new AlertMessageHandler();
         this.metrics = new Metrics();

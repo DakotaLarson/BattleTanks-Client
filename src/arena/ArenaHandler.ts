@@ -53,17 +53,21 @@ export default class ArenaHandler extends Component {
     private isSingleplayer: boolean;
     private arenaAttached: boolean;
 
-    constructor(perspectiveCamera: PerspectiveCamera) {
+    constructor(perspectiveCamera: PerspectiveCamera, useMP3: boolean, recordingGainNode: GainNode) {
         super();
 
         Globals.setGlobal(Globals.Global.CAMERA, perspectiveCamera);
 
         const audioListener = new AudioListener();
+        const recordingAudioListener = new AudioListener();
+        recordingAudioListener.gain.disconnect(recordingAudioListener.context.destination);
+
         perspectiveCamera.add(audioListener);
+        perspectiveCamera.add(recordingAudioListener);
 
         RaycastHandler.init();
 
-        this.sceneHandler = new SceneHandler(audioListener);
+        this.sceneHandler = new SceneHandler(audioListener, recordingAudioListener, useMP3);
         this.renderer = new Renderer(this.sceneHandler.getScene(), perspectiveCamera);
 
         this.singleplayerArena = new SingleplayerArena();
@@ -80,14 +84,14 @@ export default class ArenaHandler extends Component {
         this.singleplayerCamera = new SingleplayerCamera(perspectiveCamera);
         this.multiplayerCamera = new MultiplayerCamera(perspectiveCamera);
 
-        this.audioHandler = new AudioHandler(audioListener);
+        this.audioHandler = new AudioHandler(audioListener, recordingAudioListener);
         this.projectileHandler = new ProjectileHandler(this.sceneHandler.getScene());
         this.powerupCollisionHandler = new PowerupCollisionHandler();
         this.arenaDownloadHandler = new ArenaDownloadHandler();
 
         this.tankCustomizationHandler = new TankCustomizationHandler();
 
-        this.recordingHandler = new RecordingHandler();
+        this.recordingHandler = new RecordingHandler(recordingAudioListener, recordingGainNode);
 
         this.isSingleplayer = false;
         this.arenaAttached = false;
@@ -114,8 +118,6 @@ export default class ArenaHandler extends Component {
         this.attachComponent(this.sceneHandler);
 
         this.attachComponent(this.tankCustomizationHandler);
-
-        // this.attachComponent(this.recordingHandler);
 
         this.sceneHandler.renderMenu();
     }
@@ -153,6 +155,7 @@ export default class ArenaHandler extends Component {
         this.attachChild(this.multiplayerCamera);
         this.attachChild(this.projectileHandler);
         this.attachChild(this.powerupCollisionHandler);
+        this.attachChild(this.recordingHandler);
 
         this.isSingleplayer = false;
     }
@@ -165,6 +168,7 @@ export default class ArenaHandler extends Component {
         this.detachChild(this.multiplayerCamera);
         this.detachChild(this.projectileHandler);
         this.detachChild(this.powerupCollisionHandler);
+        this.detachChild(this.recordingHandler);
     }
 
     private attachArena() {

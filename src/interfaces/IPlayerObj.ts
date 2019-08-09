@@ -9,5 +9,6 @@ export default interface IPlayerObj {
     movementVelocity: number;
     nameplate?: Group;
     engineAudio?: PositionalAudio;
+    recordedEngineAudio?: PositionalAudio;
     headOffset?: number;
 }

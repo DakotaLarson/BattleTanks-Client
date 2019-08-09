@@ -250,7 +250,7 @@ export default class ProfileViewer extends Component {
         }
 
         this.formatProfileData(data);
-        const statTitles = ["points", "rank", "victories", "defeats", "V/D", "kills", "deaths", "K/D", "shots", "hits", "accuracy"];
+        const statTitles = ["points", "currency", "rank", "victories", "defeats", "V/D", "kills", "deaths", "K/D", "shots", "hits", "accuracy"];
         const primaryTitles = ["last seen", "first seen", "time played"];
         const primaryElts: HTMLElement[] = [];
         const statsElts: HTMLElement[] = [];
@@ -265,7 +265,9 @@ export default class ProfileViewer extends Component {
         const rankData = RankCalculator.getData(data.points);
 
         primaryElts.push(this.createProfileDataElt("Rank"));
-        primaryElts.push(this.createProfileDataElt(rankData.rank));
+        const rankElt = this.createProfileDataElt(rankData.rank);
+        rankElt.style.color = RankCalculator.getRankColor(rankData.rank)!;
+        primaryElts.push(rankElt);
 
         primaryElts.push(this.createProfileDataElt("Level"));
         primaryElts.push(this.createProfileDataElt(rankData.level));

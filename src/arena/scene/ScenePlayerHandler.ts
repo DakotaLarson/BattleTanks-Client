@@ -38,6 +38,8 @@ export default class ScenePlayerHandler extends ChildComponent {
     private sphereOwners: number[];
 
     private audioListener: AudioListener;
+    private recordingAudioListener: AudioListener;
+
     private shootAudioBuffer: AudioBuffer | undefined;
     private engineAudioHandler: EngineAudioHandler;
 
@@ -48,7 +50,7 @@ export default class ScenePlayerHandler extends ChildComponent {
     private menuPlayerModelId: string | undefined;
     private menuPlayerModelColors: string[] | undefined;
 
-    constructor(scene: Scene, audioListener: AudioListener) {
+    constructor(scene: Scene, audioListener: AudioListener, recordingAudioListener: AudioListener, useMP3: boolean) {
         super();
 
         this.modelLoader = new ModelLoader();
@@ -61,16 +63,17 @@ export default class ScenePlayerHandler extends ChildComponent {
         this.camera = Globals.getGlobal(Globals.Global.CAMERA);
 
         let extension;
-        // @ts-ignore Safari is behind the times.
-        if (window.webkitAudioContext) {
+        if (useMP3) {
             extension = ".mp3";
         } else {
             extension = ".ogg";
         }
 
         this.audioListener = audioListener;
+        this.recordingAudioListener = recordingAudioListener;
+
         const audioLoader = new AudioLoader();
-        this.engineAudioHandler = new EngineAudioHandler(audioLoader, this.audioListener, extension);
+        this.engineAudioHandler = new EngineAudioHandler(audioLoader, this.audioListener, this.recordingAudioListener, extension);
 
         // @ts-ignore Disregard additional arguments
         audioLoader.load(location.pathname + "res/audio/effects/game/shoot" + extension, (buffer: AudioBuffer) => {
@@ -511,6 +514,16 @@ export default class ScenePlayerHandler extends ChildComponent {
             audio.setBuffer(buffer);
             audio.play();
         }
+        const recordedAudio = new PositionalAudio(this.recordingAudioListener);
+        player.group.add(recordedAudio);
+
+        recordedAudio.onEnded = () => {
+            recordedAudio.isPlaying = false;
+            player.group.remove(recordedAudio);
+        };
+
+        recordedAudio.setBuffer(buffer);
+        recordedAudio.play();
     }
 
     private createBatchedMeshes() {

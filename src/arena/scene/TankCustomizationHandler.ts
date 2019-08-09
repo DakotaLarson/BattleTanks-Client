@@ -4,12 +4,12 @@ import MultiplayerConnection from "../../MultiplayerConnection";
 
 export default class TankCustomizationHandler extends Component {
 
-    public static readonly DEFAULT_MODEL_ID = "0";
+    public static readonly DEFAULT_MODEL_ID = "3";
     public static readonly DEFAULT_COLORS = [
-        "bfac86",
-        "635944",
-        "3f5434",
-        "283621",
+    //     "bfac86",
+    //     "635944",
+    //     "3f5434",
+    //     "283621",
     ];
 
     constructor() {

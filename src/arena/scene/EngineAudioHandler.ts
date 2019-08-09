@@ -1,4 +1,4 @@
-import { AudioBuffer, AudioListener, AudioLoader, PositionalAudio } from "three";
+import { AudioBuffer, AudioContext as ThreeAudioContext, AudioListener, AudioLoader, PositionalAudio } from "three";
 import ChildComponent from "../../component/ChildComponent";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
@@ -12,18 +12,26 @@ export default class EngineAudioHandler extends ChildComponent {
     private players: IPlayerObj[];
 
     private engineAudioBuffer: AudioBuffer | undefined;
-    private audioListener: AudioListener;
 
-    constructor(audioLoader: AudioLoader, audioListener: AudioListener, extension: string) {
+    private audioListener: AudioListener;
+    private recordingAudioListener: AudioListener;
+
+    constructor(audioLoader: AudioLoader, audioListener: AudioListener, recordingAudioListener: AudioListener, extension: string) {
         super();
 
         this.audioListener = audioListener;
+        this.recordingAudioListener = recordingAudioListener;
+
         this.players = [];
+
+        // @ts-ignore
+        const context: AudioContext = ThreeAudioContext.getContext();
 
         // @ts-ignore ignore additional arguments
         audioLoader.load(location.pathname + "res/audio/effects/game/engine" + extension, (buffer: AudioBuffer) => {
             this.engineAudioBuffer = buffer;
         });
+
     }
 
     public enable() {
@@ -44,31 +52,48 @@ export default class EngineAudioHandler extends ChildComponent {
 
         const volume = Options.options.engineVolume;
         const audio = new PositionalAudio(this.audioListener);
+        const recordedAudio = new PositionalAudio(this.recordingAudioListener);
 
         audio.setVolume(volume);
         audio.setLoop(true);
         audio.setBuffer(this.engineAudioBuffer as AudioBuffer);
         audio.setPlaybackRate(this.getPlaybackRate(player.movementVelocity));
 
+        recordedAudio.setLoop(true);
+        recordedAudio.setBuffer(this.engineAudioBuffer as AudioBuffer);
+        recordedAudio.setPlaybackRate(this.getPlaybackRate(player.movementVelocity));
+
         const enabled = Globals.getGlobal(Globals.Global.AUDIO_ENABLED) && !document.hidden;
+
         player.group.add(audio);
+        player.group.add(recordedAudio);
+
         audio.play();
+        recordedAudio.play();
         if (!enabled) {
             audio.pause();
         }
+
         player.engineAudio = audio;
+        player.recordedEngineAudio = recordedAudio;
 
         this.players.push(player);
     }
 
     public updateEngineSound(player: IPlayerObj) {
         (player.engineAudio as PositionalAudio).setPlaybackRate(this.getPlaybackRate(player.movementVelocity));
+        (player.recordedEngineAudio as PositionalAudio).setPlaybackRate(this.getPlaybackRate(player.movementVelocity));
     }
 
     public stopEngineSound(player: IPlayerObj) {
         if (player.engineAudio) {
             player.engineAudio.stop();
             player.group.remove(player.engineAudio);
+        }
+
+        if (player.recordedEngineAudio) {
+            player.recordedEngineAudio.stop();
+            player.group.remove(player.recordedEngineAudio);
         }
 
         this.players.splice(this.players.indexOf(player), 1);
