@@ -5,6 +5,8 @@ import EventHandler from "../EventHandler";
 
 export default class RecordingHandler extends ChildComponent {
 
+    private static readonly MIN_LENGTH = 5;
+
     private isRecording: boolean;
 
     private canvas: HTMLCanvasElement;
@@ -12,6 +14,8 @@ export default class RecordingHandler extends ChildComponent {
 
     private audioListener: AudioListener;
     private backgroundGainNode: GainNode;
+
+    private recordings: Blob[];
 
     constructor(audioListener: AudioListener, backgroundGainNode: GainNode) {
         super();
@@ -21,6 +25,8 @@ export default class RecordingHandler extends ChildComponent {
 
         this.audioListener = audioListener;
         this.backgroundGainNode = backgroundGainNode;
+
+        this.recordings = [];
     }
 
     public enable() {
@@ -40,8 +46,6 @@ export default class RecordingHandler extends ChildComponent {
     }
 
     private onStart() {
-        console.log("onstart");
-
         if (!this.isRecording) {
             this.startRecording();
             this.isRecording = true;
@@ -57,28 +61,30 @@ export default class RecordingHandler extends ChildComponent {
     }
 
     private startRecording() {
-        const options = {
-            mimeType: "video/webm",
-        };
+
         // @ts-ignore
-        const stream: MediaStream = this.canvas.captureStream(30);
-        this.connectAudio(stream);
-        // @ts-ignore
-        this.recorder = new MediaRecorder(stream, options);
-        this.recorder.ondataavailable = (event: any) => {
-            const url = window.URL.createObjectURL(event.data);
-            const a = document.createElement("a");
-            a.style.display = "none";
-            a.href = url;
-            a.download = "test.webm";
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(() => {
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            }, 100);
-        };
-        this.recorder.start();
+        if (this.canvas.captureStream && window.MediaRecorder) {
+            this.recordings = [];
+            const options = {
+                mimeType: "video/webm",
+            };
+            // @ts-ignore
+            const stream: MediaStream = this.canvas.captureStream(30);
+            this.connectAudio(stream);
+            // @ts-ignore
+            this.recorder = new MediaRecorder(stream, options);
+            this.recorder.ondataavailable = (event: any) => {
+                this.recordings.push(event.data);
+            };
+            this.recorder.onstop = () => {
+                if (this.recordings.length >= RecordingHandler.MIN_LENGTH) {
+                    EventHandler.callEvent(EventHandler.Event.RECORDING_COMPLETE, this.recordings);
+                } else {
+                    this.recordings = [];
+                }
+            };
+            this.recorder.start(1000);
+        }
     }
 
     private stopRecording() {

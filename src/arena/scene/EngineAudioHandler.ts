@@ -60,6 +60,7 @@ export default class EngineAudioHandler extends ChildComponent {
         audio.setPlaybackRate(this.getPlaybackRate(player.movementVelocity));
 
         recordedAudio.setLoop(true);
+        recordedAudio.setVolume(0.5);
         recordedAudio.setBuffer(this.engineAudioBuffer as AudioBuffer);
         recordedAudio.setPlaybackRate(this.getPlaybackRate(player.movementVelocity));
 

@@ -19,7 +19,7 @@ export default class BackgroundAudioHandler extends Component {
     private static readonly SPECTATING_AUDIO_SRC = "res/audio/music/spectating";
     private static readonly LIVE_AUDIO_SRC = "res/audio/music/live";
 
-    private static readonly RECORDING_GAIN = 0.6;
+    private static readonly RECORDING_GAIN = 0.75;
 
     private audioContext: AudioContext;
 

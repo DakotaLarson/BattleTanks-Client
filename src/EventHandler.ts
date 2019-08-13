@@ -246,10 +246,15 @@ enum Event {
     VOTE_LIST_UPDATE,
     VOTE_UPDATE,
 
+    // GAME TIMER
     GAME_TIMER_UPDATE,
 
+    // CUSTOM LOBBIES
     CUSTOM_LOBBY_CANCEL,
     LOBBY_CODE,
+
+    // RECORDING
+    RECORDING_COMPLETE,
 }
 
 enum Level {

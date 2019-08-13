@@ -43,6 +43,7 @@
     <link rel="stylesheet" type="text/css" href="/css/fonts/fonts.css"/>
     <link rel="stylesheet" type="text/css" href="/css/buttons.css"/>
     <link rel="stylesheet" type="text/css" href="/dist/bundle.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/multirange@2.0.0/multirange.css">
 
 </head>
 <body>
@@ -139,7 +140,6 @@
                     <span class="side-panel-btn-title">Create Arena</span>
                 </div>
             </div>
-
         </div>
 
         <div class="side-panel-cmp side-panel-store">
@@ -721,6 +721,27 @@
         </div>
     </div>
 </div>
+
+<!-- RECORDING SELECTOR -->
+<div class="recording-selector menu no-select">
+    <div class="recording-selector-container">
+        <div class="recording-selector-title">Recording Complete!</div>
+        <div class="recording-selector-help">Select the portion of the match you want to upload and submit!</div>
+
+        <div class="match-text-container">
+            <span class="match-text match-text-start">Start</span>
+            <span class="match-text match-text-end">End</span>
+        </div>
+        <div class="range-container">
+            <input type="range" multiple value="0,10" min="0" max="10" step="1"/>
+        </div>
+        <div class="error-msg"></div>
+        <div class="recording-action action-cancel">Cancel</div>
+        <div class="recording-action action-submit">Submit</div>
+    </div>
+</div>
+
+<!-- CONFIRMATION MODAL -->
 <div class="confirmation-parent no-select">
     <div class="confirmation-child">
         <div class="confirmation-title"></div>
@@ -737,6 +758,7 @@
 <script src="https://cdn.jsdelivr.net/npm/text-encoding@0.7.0/lib/encoding-indexes.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-polyfills@0.1.42/keyboard.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/event-source-polyfill@1.0.5/src/eventsource.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/multirange@2.0.0/multirange.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@0/dist/ua-parser.min.js"></script>
 
 <script src="./dist/bundle.js"></script>

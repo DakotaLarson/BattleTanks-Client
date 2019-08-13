@@ -1,0 +1,91 @@
+.recording-selector {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+}
+
+.recording-selector .recording-selector-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 2.5vmin;
+    border: solid 1px #ffffff;
+    background-color: #101010;
+    text-align: center;
+}
+
+.recording-selector .recording-selector-title {
+    font-size: 7.5vmin;
+    margin-bottom: 2vmin;
+}
+
+.recording-selector .recording-selector-help {
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 2vmin;
+}
+
+.recording-selector .match-text-container {
+    position: relative;
+    width: 30vw;
+    height: 2vh;
+    margin-top: 2.5vmin;
+}
+
+.recording-selector .match-text {
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 1.75vmin;
+    display: inline-block;
+    position: absolute;
+}
+
+.recording-selector .match-text-start {
+    left: 0;
+}
+
+.recording-selector .match-text-end {
+    right: 0;
+}
+
+.recording-selector .range-container {
+    margin-bottom: 2.5vmin;
+}
+
+.recording-selector .range-container input {
+    width: 30vw;
+}
+
+.recording-selector .error-msg {
+    color: #ea1d02;
+    padding-bottom: 1vmin;
+}
+
+.recording-selector .recording-action {
+    font-size: 3vmin;
+    padding: 1vmin 1.5vmin;
+    border: solid 1px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.recording-selector .action-submit {
+    margin-left: 15%;
+    color: #03c95f;
+}
+
+.recording-selector .action-submit:hover {
+    color: #ffffff;
+    background-color: #03c95f;
+    border-color: #03c95f;
+
+}
+
+.recording-selector .action-cancel {
+    margin-right: 15%;
+    color: #ea1d02;
+}
+
+.recording-selector .action-cancel:hover {
+    color: #ffffff;
+    background-color: #ea1d02;
+    border-color: #ea1d02;
+}

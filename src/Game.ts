@@ -21,6 +21,7 @@ import MultiplayerConnection from "./MultiplayerConnection";
 import Options from "./Options";
 import OverlayMenu from "./overlay_menu/OverlayMenu";
 import ProfileViewer from "./ProfileViewer";
+import RecordingSelector from "./RecordingSelector";
 
 class Game extends Component {
 
@@ -49,6 +50,7 @@ class Game extends Component {
     private profileViewer: ProfileViewer;
     private conversationViewer: ConversationViewer;
     private gameTimer: GameTimer;
+    private recordingSelector: RecordingSelector;
 
     private connectedToMultiplayer: boolean;
 
@@ -91,6 +93,7 @@ class Game extends Component {
         this.profileViewer = new ProfileViewer();
         this.conversationViewer = new ConversationViewer();
         this.gameTimer = new GameTimer();
+        this.recordingSelector = new RecordingSelector();
 
     }
     public enable() {
@@ -125,6 +128,7 @@ class Game extends Component {
 
         this.attachComponent(this.profileViewer);
         this.attachComponent(this.conversationViewer);
+        this.attachComponent(this.recordingSelector);
 
         this.hideLoadingScreen();
     }
