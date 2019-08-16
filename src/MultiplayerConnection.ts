@@ -31,17 +31,20 @@ export default class MultiplayerConnection extends Component {
         this.lobbyData = lobbyData;
     }
 
-    public static async fetch(endpoint: string, body: any, method?: string) {
+    public static async fetch(endpoint: string, body: any, method?: string, isFormData?: boolean) {
         const address = "http" + Globals.getGlobal(Globals.Global.HOST);
-        const response = await fetch(address + endpoint, {
+        const requestInit: RequestInit = {
             method: method || "post",
             mode: "cors",
             credentials: "omit",
-            body: JSON.stringify(body),
-            headers: {
+            body: isFormData ? body : JSON.stringify(body),
+        };
+        if (!isFormData) {
+            requestInit.headers = {
                 "content-type": "application/json",
-            },
-        });
+            };
+        }
+        const response = await fetch(address + endpoint, requestInit);
         return response.json();
     }
 

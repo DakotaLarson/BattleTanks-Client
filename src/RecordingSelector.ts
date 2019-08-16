@@ -1,6 +1,8 @@
 import Component from "./component/Component";
 import DomHandler from "./DomHandler";
 import EventHandler from "./EventHandler";
+import Globals from "./Globals";
+import MultiplayerConnection from "./MultiplayerConnection";
 
 export default class RecordingSelector extends Component {
 
@@ -82,21 +84,24 @@ export default class RecordingSelector extends Component {
         multirange(this.rangeElt);
     }
 
-    private postRecording(min: number, max: number) {
-        console.log(min, max);
-        const rec = this.recordings.slice(min, max);
-        rec.splice(1, 1);
-        const recording = new Blob(rec, {
-            type: "video/webm",
-        });
-        const url = URL.createObjectURL(recording);
-        const a = document.createElement("a");
-        document.body.appendChild(a);
-        a.style.display = "none";
-        a.href = url;
-        a.download = "test.webm";
-        a.click();
-        window.URL.revokeObjectURL(url);
+    private async postRecording(start: number, end: number) {
+        const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
+        if (token) {
+            const recording = new Blob(this.recordings, {
+                type: "video/webm",
+            });
+
+            const formData = new FormData();
+            formData.append("start", "" + start);
+            formData.append("end", "" + end);
+            formData.append("token", token);
+
+            formData.append("recording", recording);
+
+            await MultiplayerConnection.fetch("/recording", formData, "post", true);
+        }
+
+        this.recordings = [];
     }
 
     private close() {
