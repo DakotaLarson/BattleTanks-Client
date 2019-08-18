@@ -11,6 +11,7 @@ export default class NotificationHandler extends Component {
         "friend_accept",
         "level_up",
         "rank_up",
+        "referral",
     ];
     private static readonly MAX_NOTIFICATION_LENGTH = 50;
     private static readonly MAX_VISIBLE_TIME = 5000;
@@ -92,6 +93,7 @@ export default class NotificationHandler extends Component {
                     const body = JSON.parse(notification.body);
                     // Live notification; Display notification
                     this.renderNotification(type, body);
+                    // Update conversation / profile view
                     EventHandler.callEvent(EventHandler.Event.NOTIFICATION_ONLINE, {
                         type,
                         body,
@@ -129,7 +131,6 @@ export default class NotificationHandler extends Component {
             } else {
                 title = "Friend Request Accepted";
             }
-
             message = body.username + " " + body.message;
             notificationData.type = "other";
 
@@ -140,10 +141,13 @@ export default class NotificationHandler extends Component {
             } else {
                 title = body.username + " Ranked Up!";
             }
-
             message = body.username + " " + body.message;
             notificationData.type = "other";
 
+        } else if (type === "referral") {
+            title = "Referral code used!";
+            message = body.username + " used your referral code!";
+            notificationData.type = "other";
         } else {
             throw new Error("Unknown notification type: " + type);
         }
