@@ -48,8 +48,8 @@
 .side-panel .side-panel-btn-container {
     display: flex;
     flex-direction: column;
-    width: 10vmin;
-    height: 10vmin;
+    width: 11vmin;
+    height: 11vmin;
     border:  solid 1px #ffffff;
 }
 

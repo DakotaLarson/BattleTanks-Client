@@ -4,6 +4,7 @@ import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
 import RankCalculator from "../../RankCalculator";
 import RankChart from "../overlay/RankChart";
+import RecordingsList from "../overlay/RecordingsList";
 import Store from "../store/Store";
 import ArenaCreator from "./creator/ArenaCreator";
 import PlayerFinder from "./PlayerFinder";
@@ -33,10 +34,12 @@ export default class SidePanel extends ChildComponent {
     private findBtn: HTMLElement;
     private createBtn: HTMLElement;
     private rankChartBtn: HTMLElement;
+    private recordingsBtn: HTMLElement;
 
     private backBtn: HTMLElement;
 
     private rankChart: RankChart;
+    private recordingsList: RecordingsList;
 
     private storeVisible: boolean;
 
@@ -63,10 +66,12 @@ export default class SidePanel extends ChildComponent {
         this.findBtn = DomHandler.getElement(".side-panel-find-btn", this.topContainer);
         this.createBtn = DomHandler.getElement(".side-panel-create-btn", this.topContainer);
         this.rankChartBtn = DomHandler.getElement(".rank-tutorial-btn", this.topContainer);
+        this.recordingsBtn = DomHandler.getElement(".recordings-btn", this.topContainer);
 
         this.backBtn = DomHandler.getElement(".side-panel-back", menuElt);
 
         this.rankChart = new RankChart(".overlay-rank");
+        this.recordingsList = new RecordingsList(".overlay-recordings");
 
         this.rankChart.constructRankChart();
 
@@ -148,6 +153,9 @@ export default class SidePanel extends ChildComponent {
             this.attach(this.arenaCreator);
         } else if (event.target === this.rankChartBtn) {
             this.attachChild(this.rankChart);
+        } else if (event.target === this.recordingsBtn && !this.recordingsBtn.classList.contains("btn-disabled")) {
+            this.attachChild(this.recordingsList);
+            this.recordingsList.updateRecordings();
         } else if (event.target === this.backBtn) {
             this.detach();
         }
@@ -155,6 +163,7 @@ export default class SidePanel extends ChildComponent {
 
     private onOverlayClose() {
         this.detachChild(this.rankChart);
+        this.detachChild(this.recordingsList);
     }
 
     private async updateStats(token?: string) {
@@ -178,8 +187,10 @@ export default class SidePanel extends ChildComponent {
     private updateButtons(hasToken: boolean) {
         if (hasToken) {
             this.statsBtn.classList.remove("btn-disabled");
+            this.recordingsBtn.classList.remove("btn-disabled");
         } else {
             this.statsBtn.classList.add("btn-disabled");
+            this.recordingsBtn.classList.add("btn-disabled");
         }
     }
 

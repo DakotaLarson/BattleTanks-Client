@@ -12,6 +12,7 @@ export default class VotingMenu extends Component {
     private messageElt: HTMLElement;
     private disconnectElt: HTMLElement;
     private lastMatchStatisticsElt: HTMLElement;
+    private recordingElt: HTMLElement;
 
     constructor(parent: HTMLElement) {
         super();
@@ -19,18 +20,20 @@ export default class VotingMenu extends Component {
         this.messageElt = DomHandler.getElement(".message", this.parentElt);
         this.disconnectElt = DomHandler.getElement(".option-disconnect", this.parentElt);
         this.lastMatchStatisticsElt = DomHandler.getElement(".last-match-statistics", this.parentElt);
+        this.recordingElt = DomHandler.getElement(".recording-start-btn", this.parentElt);
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onDisconnect);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
         DOMMutationHandler.show(this.parentElt);
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onDisconnect);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
         DOMMutationHandler.hide(this.parentElt);
         this.clearStats();
         this.updateMessage(true);
+        this.recordingElt.textContent = "Record This Match!";
     }
 
     public updateStatistics(elt: HTMLElement) {
@@ -46,9 +49,12 @@ export default class VotingMenu extends Component {
         }
     }
 
-    private onDisconnect(event: MouseEvent) {
+    private onClick(event: MouseEvent) {
         if (event.target === this.disconnectElt) {
             EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_DISCONNECT_REQUEST);
+        } else if (event.target === this.recordingElt) {
+            EventHandler.callEvent(EventHandler.Event.RECORDING_REQUEST);
+            this.recordingElt.textContent = "Recording This Match!";
         }
     }
 

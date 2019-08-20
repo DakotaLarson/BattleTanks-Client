@@ -128,7 +128,7 @@
                 </div>
                 <div class="side-panel-btn-container side-panel-find-btn">
                     <img class="side-panel-btn-img" src="./res/menu/search.svg">
-                    <span class="side-panel-btn-title">Find Player</span>
+                    <span class="side-panel-btn-title">Search Playerbase</span>
                 </div>
                 <div class="side-panel-btn-container rank-tutorial-btn">
                     <img class="side-panel-btn-img" src="./res/menu/rank_chart.svg">
@@ -138,6 +138,10 @@
                 <div class="side-panel-btn-container side-panel-create-btn">
                     <img class="side-panel-btn-img" src="./res/menu/create_arena.svg">
                     <span class="side-panel-btn-title">Create Arena</span>
+                </div>
+                <div class="side-panel-btn-container recordings-btn">
+                    <img class="side-panel-btn-img" src="./res/menu/recordings.svg">
+                    <span class="side-panel-btn-title">My Recordings</span>
                 </div>
             </div>
         </div>
@@ -376,6 +380,7 @@
     </div>
     <div class="connection-menu-section section-voting">
         <div class="message"></div>
+        <div class="menu-selection recording-start-btn">Record This Match</div>
         <div class="connection-menu-content-container">
             <div class="last-match-statistics"></div>
             <div class="voting-parent">
@@ -496,6 +501,10 @@
             <h2 class="overlay-color-title"></h2>
             <div class="store-currency"></div>
             <div class=overlay-color-container></div>
+        </div>
+        <div class="overlay-content overlay-recordings no-select">
+            <h2>My Recordings</h2>
+            <div class="recordings-container"></div>
         </div>
         <span class="menu-selection overlay-close no-select">Close</span>
     </div>
@@ -732,12 +741,12 @@
             <span class="match-text match-text-start">Start</span>
             <span class="match-text match-text-end">End</span>
         </div>
-        <div class="range-container">
-            <input type="range" multiple value="0,10" min="0" max="10" step="1"/>
-        </div>
+        <div class="range-container"></div>
         <div class="error-msg"></div>
         <div class="recording-action action-cancel">Cancel</div>
         <div class="recording-action action-submit">Submit</div>
+        <br>
+        <span class="menu-link menu-link-small download-raw">Download Raw</span>
     </div>
 </div>
 

@@ -310,22 +310,22 @@
     display: none;
 }
 
-.main-menu .menu-link {
+.menu-link {
     font-size: 2vmin;
     color: #00b9ff;
     text-decoration: underline;
     font-family: 'Inconsolata', sans-serif;
 }
 
-.main-menu .menu-link:hover {
+.menu-link:hover {
     cursor: pointer;
     color: #33c9ff;
 }
 
-.main-menu .menu-link-xl {
+.menu-link-xl {
     font-size: 2.5vmin;
 }
 
-.main-menu .menu-link-small {
+.menu-link-small {
     font-size: 1.5vmin;
 }

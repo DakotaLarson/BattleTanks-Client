@@ -47,3 +47,18 @@
 .connection-menu-content-container-with-multiple {
     justify-content: space-around;
 }
+
+.connection-menu .recording-start-btn {
+    position: absolute;
+    right: 0;
+    top: 6.5vmin;
+    font-size: 3.5vmin;
+    background-color: #03b053;
+    color: #ffffff
+}
+
+.connection-menu .recording-start-btn:hover {
+    background-color: #03c95f;
+    border-color: #ffffff;
+    color: #ffffff;
+}

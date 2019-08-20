@@ -1,0 +1,45 @@
+.recordings-container .recording-child {
+    border: solid 1px #ffffff;
+    border-bottom: none;
+    display: flex;
+    align-items: center;
+}
+
+.recordings-container .recording-child:hover {
+    background: #202020;
+}
+
+.recordings-container .recording-child:last-child {
+    border-bottom: solid 1px #ffffff;
+}
+
+.recordings-container .recording-child-arena {
+    margin-bottom: 0.5vmin;
+}
+ 
+.recordings-container .recording-child-date {
+    color: #b0b0b0;
+    font-size: 1.5vmin;
+}
+
+.recordings-container .recording-child-meta,
+.recordings-container .recording-social-parent {
+    margin: 0.25vmin 0.5vmin;
+}
+
+.recordings-container .recording-child-meta {
+    font-size: 1.75vmin;
+    font-family: 'Inconsolata', sans-serif;
+    text-align: left;
+}
+
+.recordings-container .recording-social {
+    width: 3vmin;
+    height: 3vmin;
+    padding: 0.5vmin;
+    cursor: pointer;
+}
+
+.recordings-container .recording-social-link {
+    border-radius: 0.75vmin;
+}

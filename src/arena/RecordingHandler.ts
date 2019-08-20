@@ -8,6 +8,7 @@ export default class RecordingHandler extends ChildComponent {
     private static readonly MIN_LENGTH = 5;
 
     private isRecording: boolean;
+    private canRecord: boolean;
 
     private canvas: HTMLCanvasElement;
     private recorder: any;
@@ -22,6 +23,7 @@ export default class RecordingHandler extends ChildComponent {
 
         this.canvas = DomHandler.getCanvas();
         this.isRecording = false;
+        this.canRecord = false;
 
         this.audioListener = audioListener;
         this.backgroundGainNode = backgroundGainNode;
@@ -45,9 +47,14 @@ export default class RecordingHandler extends ChildComponent {
         }
     }
 
+    public allowRecording() {
+        this.canRecord = true;
+    }
+
     private onStart() {
-        if (!this.isRecording) {
+        if (!this.isRecording && this.canRecord) {
             this.startRecording();
+            this.canRecord = false;
             this.isRecording = true;
         }
     }

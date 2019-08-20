@@ -10,6 +10,7 @@ export default class RecordingSelector extends Component {
     private static readonly MAX_LENGTH = 30;
 
     private recordings: Blob[];
+    private arenaTitle: string | undefined;
 
     private parentElt: HTMLElement;
     private rangeContainerElt: HTMLElement;
@@ -19,6 +20,7 @@ export default class RecordingSelector extends Component {
 
     private cancelBtn: HTMLElement;
     private submitBtn: HTMLElement;
+    private downloadRawBtn: HTMLElement;
 
     constructor() {
         super();
@@ -32,10 +34,12 @@ export default class RecordingSelector extends Component {
 
         this.cancelBtn = DomHandler.getElement(".action-cancel", this.parentElt);
         this.submitBtn = DomHandler.getElement(".action-submit", this.parentElt);
+        this.downloadRawBtn = DomHandler.getElement(".download-raw", this.parentElt);
 
     }
 
     public enable() {
+        EventHandler.addListener(this, EventHandler.Event.ARENA_SCENE_UPDATE, this.onArenaSceneUpdate);
         EventHandler.addListener(this, EventHandler.Event.RECORDING_COMPLETE, this.onRecordingComplete);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
     }
@@ -60,17 +64,23 @@ export default class RecordingSelector extends Component {
                 } else  if (highValue - lowValue > RecordingSelector.MAX_LENGTH) {
                     this.errorElt.textContent = "Recording must be at most " + RecordingSelector.MAX_LENGTH + " seconds long";
                 } else {
+                    this.errorElt.textContent = "";
                     this.postRecording(lowValue, highValue);
                 }
             }
+        } else if (event.target === this.downloadRawBtn) {
+            this.downloadBlob("BattleTanks Recording.webm");
         }
+    }
+
+    private onArenaSceneUpdate(arena: any) {
+        this.arenaTitle = arena.title;
     }
 
     private createRangeElt(count: number) {
         while (this.rangeContainerElt.firstChild) {
             this.rangeContainerElt.removeChild(this.rangeContainerElt.firstChild);
         }
-// type="range" multiple value="0,10" min="0" max="10" step="1"
         this.rangeElt = document.createElement("input");
         this.rangeElt.setAttribute("type", "range");
         this.rangeElt.setAttribute("multiple", "");
@@ -94,14 +104,29 @@ export default class RecordingSelector extends Component {
             const formData = new FormData();
             formData.append("start", "" + start);
             formData.append("end", "" + end);
+            formData.append("arena", this.arenaTitle!);
             formData.append("token", token);
 
             formData.append("recording", recording);
 
-            await MultiplayerConnection.fetch("/recording", formData, "post", true);
+            await MultiplayerConnection.fetch("/recordings", formData, "post", true);
         }
 
         this.recordings = [];
+    }
+
+    private downloadBlob(title: string) {
+        const recording = new Blob(this.recordings, {
+            type: "video/webm",
+        });
+        const objectUrl = URL.createObjectURL(recording);
+        const anchor = document.createElement("a");
+        anchor.download = title;
+        anchor.href = objectUrl;
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+        URL.revokeObjectURL(objectUrl);
     }
 
     private close() {

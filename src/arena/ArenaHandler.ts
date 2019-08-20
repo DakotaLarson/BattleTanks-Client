@@ -111,6 +111,7 @@ export default class ArenaHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.detachMultiplayerArena);
 
         EventHandler.addListener(this, EventHandler.Event.OVERLAY_OPEN, this.onOverlayOpen);
+        EventHandler.addListener(this, EventHandler.Event.RECORDING_REQUEST, this.onRecordingRequest);
 
         this.attachComponent(this.audioHandler);
         this.attachComponent(this.renderer);
@@ -242,6 +243,10 @@ export default class ArenaHandler extends Component {
                 this.openGameMenu();
             }
         }
+    }
+
+    private onRecordingRequest() {
+        this.recordingHandler.allowRecording();
     }
 
     private closeGameMenuFromEvent() {

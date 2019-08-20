@@ -255,6 +255,7 @@ enum Event {
 
     // RECORDING
     RECORDING_COMPLETE,
+    RECORDING_REQUEST,
 }
 
 enum Level {
