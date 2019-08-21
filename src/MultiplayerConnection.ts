@@ -45,6 +45,11 @@ export default class MultiplayerConnection extends Component {
             };
         }
         const response = await fetch(address + endpoint, requestInit);
+        return response;
+    }
+
+    public static async fetchJson(endpoint: string, body: any, method?: string, isFormData?: boolean) {
+        const response = await MultiplayerConnection.fetch(endpoint, body, method, isFormData);
         return response.json();
     }
 

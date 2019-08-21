@@ -89,3 +89,26 @@
     background-color: #ea1d02;
     border-color: #ea1d02;
 }
+
+.recording-selector .recording-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+}
+
+.recording-selector .recording-overlay-text {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 7.5vmin;
+}
+
+.recording-selector .recording-overlay-close {
+    position: relative;
+    top: 50%;
+}

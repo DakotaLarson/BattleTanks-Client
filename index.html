@@ -747,6 +747,10 @@
         <div class="recording-action action-submit">Submit</div>
         <br>
         <span class="menu-link menu-link-small download-raw">Download Raw</span>
+        <div class="recording-overlay">
+            <span class="recording-overlay-text"></span>
+            <span class="menu-selection recording-overlay-close">Close</span>
+        </div>
     </div>
 </div>
 
@@ -769,6 +773,15 @@
 <script src="https://cdn.jsdelivr.net/npm/event-source-polyfill@1.0.5/src/eventsource.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/multirange@2.0.0/multirange.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@0/dist/ua-parser.min.js"></script>
+<script>
+    window.fbAsyncInit = () => {
+        FB.init({
+            appId: "467119764067470",
+            version: "v4.0",
+        });
+    };
+</script>
+<script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>
 
 <script src="./dist/bundle.js"></script>
 </body>

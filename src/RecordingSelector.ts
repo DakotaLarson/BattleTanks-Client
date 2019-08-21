@@ -22,6 +22,12 @@ export default class RecordingSelector extends Component {
     private submitBtn: HTMLElement;
     private downloadRawBtn: HTMLElement;
 
+    private overlayElt: HTMLElement;
+    private overlayTextElt: HTMLElement;
+    private overlayCloseBtn: HTMLElement;
+
+    private closedBeforeProcessingComplete: boolean;
+
     constructor() {
         super();
 
@@ -36,6 +42,12 @@ export default class RecordingSelector extends Component {
         this.submitBtn = DomHandler.getElement(".action-submit", this.parentElt);
         this.downloadRawBtn = DomHandler.getElement(".download-raw", this.parentElt);
 
+        this.overlayElt = DomHandler.getElement(".recording-overlay", this.parentElt);
+        this.overlayTextElt = DomHandler.getElement(".recording-overlay-text", this.overlayElt);
+        this.overlayCloseBtn = DomHandler.getElement(".recording-overlay-close", this.overlayElt);
+
+        this.closedBeforeProcessingComplete = false;
+
     }
 
     public enable() {
@@ -48,10 +60,14 @@ export default class RecordingSelector extends Component {
         this.recordings = recordings;
         this.createRangeElt(recordings.length);
         this.parentElt.style.display = "block";
+        this.closedBeforeProcessingComplete = false;
     }
 
     private onClick(event: MouseEvent) {
-        if (event.target === this.cancelBtn) {
+        if (event.target === this.cancelBtn || event.target === this.overlayCloseBtn) {
+            if (event.target === this.overlayCloseBtn) {
+                this.closedBeforeProcessingComplete = true;
+            }
             this.close();
         } else if (event.target === this.submitBtn) {
             if (this.rangeElt) {
@@ -109,7 +125,32 @@ export default class RecordingSelector extends Component {
 
             formData.append("recording", recording);
 
-            await MultiplayerConnection.fetch("/recordings", formData, "post", true);
+            this.showOverlay("Uploading...", false);
+
+            const response = await MultiplayerConnection.fetch("/recordings", formData, "post", true);
+            const reader = response.body!.getReader();
+
+            let done = false;
+            while (!done) {
+                const result = await reader.read();
+                done = result.done;
+
+                if (result.value) {
+                    const parsedValue = String.fromCharCode.apply(undefined, Array.from(result.value));
+
+                    if (parsedValue === "processing") {
+                        this.showOverlay("Processing...", true);
+                    } else if (parsedValue === "success") {
+                        if (!this.closedBeforeProcessingComplete) {
+                            this.close();
+                            EventHandler.callEvent(EventHandler.Event.RECORDING_PROCESSING_COMPLETE);
+                        }
+                    } else if (parsedValue === "failure") {
+                        this.overlayElt.style.display = "";
+                        window.alert("Error processing recording");
+                    }
+                }
+            }
         }
 
         this.recordings = [];
@@ -129,9 +170,18 @@ export default class RecordingSelector extends Component {
         URL.revokeObjectURL(objectUrl);
     }
 
+    private showOverlay(text: string, canClose: boolean) {
+        this.overlayTextElt.textContent = text;
+        this.overlayCloseBtn.style.display = canClose ? "" : "none";
+        this.overlayElt.style.display = "block";
+    }
+
     private close() {
         this.errorElt.textContent = "";
         this.recordings = [];
         this.parentElt.style.display = "";
+
+        this.overlayTextElt.textContent = "";
+        this.overlayElt.style.display = "";
     }
 }

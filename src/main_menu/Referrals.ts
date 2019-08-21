@@ -3,6 +3,7 @@ import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
 import Globals from "../Globals";
 import MultiplayerConnection from "../MultiplayerConnection";
+import Utils from "../Utils";
 
 export default class Referrals extends ChildComponent {
 
@@ -84,7 +85,7 @@ export default class Referrals extends ChildComponent {
         } else if (event.target === this.closeBtn || event.target === this.parentElt) {
             this.close();
         } else if (event.target === this.codeElt) {
-            this.copyCode();
+            Utils.copy(this.code!);
         } else if (event.target === this.referrerSubmitElt) {
             this.submitReferrerCode();
         }
@@ -92,7 +93,7 @@ export default class Referrals extends ChildComponent {
 
     private async updateReferralData(token?: string) {
         if (token) {
-            const referralData = await MultiplayerConnection.fetch("/referral", {
+            const referralData = await MultiplayerConnection.fetchJson("/referral", {
                 token,
             });
 
@@ -149,20 +150,9 @@ export default class Referrals extends ChildComponent {
         this.referrerErrorElt.textContent = "";
     }
 
-    private copyCode() {
-        document.addEventListener("copy", (event: ClipboardEvent) => {
-            event.clipboardData!.setData("text/plain", this.code!);
-            event.preventDefault();
-        }, {
-            once: true,
-        });
-
-        document.execCommand("copy");
-    }
-
     private async sendReferrerCode(code: string) {
         const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
-        const referralData = await MultiplayerConnection.fetch("/referral", {
+        const referralData = await MultiplayerConnection.fetchJson("/referral", {
             token,
             code,
         });

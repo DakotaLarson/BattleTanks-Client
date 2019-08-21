@@ -24,7 +24,12 @@
 
 .recordings-container .recording-child-meta,
 .recordings-container .recording-social-parent {
-    margin: 0.25vmin 0.5vmin;
+    margin: 0.25vmin 1.25vmin;
+}
+
+.recordings-container .recording-social-parent {
+    display: flex;
+    align-items: center;
 }
 
 .recordings-container .recording-child-meta {
@@ -41,5 +46,5 @@
 }
 
 .recordings-container .recording-social-link {
-    border-radius: 0.75vmin;
+    font-size: 1.25vmin;
 }

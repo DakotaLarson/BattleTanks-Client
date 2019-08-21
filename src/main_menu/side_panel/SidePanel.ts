@@ -86,6 +86,7 @@ export default class SidePanel extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
 
         EventHandler.addListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onOverlayClose);
+        EventHandler.addListener(this, EventHandler.Event.RECORDING_PROCESSING_COMPLETE, this.onRecordingProcessingComplete);
 
         const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
         if (authToken) {
@@ -105,6 +106,7 @@ export default class SidePanel extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
 
         EventHandler.removeListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onOverlayClose);
+        EventHandler.removeListener(this, EventHandler.Event.RECORDING_PROCESSING_COMPLETE, this.onRecordingProcessingComplete);
 
         this.detach();
     }
@@ -164,6 +166,11 @@ export default class SidePanel extends ChildComponent {
     private onOverlayClose() {
         this.detachChild(this.rankChart);
         this.detachChild(this.recordingsList);
+    }
+
+    private onRecordingProcessingComplete() {
+        this.attachChild(this.recordingsList);
+        this.recordingsList.updateRecordings();
     }
 
     private async updateStats(token?: string) {

@@ -1,6 +1,7 @@
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
+import Utils from "../Utils";
 
 export default class LobbyCode extends ChildComponent {
 
@@ -35,15 +36,7 @@ export default class LobbyCode extends ChildComponent {
 
     private onClick(clickEvent: MouseEvent) {
         if (clickEvent.target === this.elt) {
-
-            document.addEventListener("copy", (event: ClipboardEvent) => {
-                event.clipboardData!.setData("text/plain", this.code!);
-                event.preventDefault();
-            }, {
-                once: true,
-            });
-
-            document.execCommand("copy");
+            Utils.copy(this.code!);
         }
     }
 

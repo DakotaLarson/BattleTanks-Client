@@ -1,16 +1,42 @@
 import DomHandler from "../../DomHandler";
+import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
 import MultiplayerConnection from "../../MultiplayerConnection";
+import Utils from "../../Utils";
 import Overlay from "./Overlay";
 
 export default class RecordingsList extends Overlay {
 
     private recordingContainer: HTMLElement;
 
+    private urlsByElts: Map<HTMLElement, string>;
+    private urlsByFbElts: Map<HTMLElement, string>;
+    private urlsByTwElts: Map<HTMLElement, string>;
+
     constructor(contentQuery: string) {
         super(contentQuery);
 
         this.recordingContainer = DomHandler.getElement(".recordings-container", this.contentElt);
+
+        this.urlsByElts = new Map();
+        this.urlsByFbElts = new Map();
+        this.urlsByTwElts = new Map();
+    }
+
+    public enable() {
+        super.enable();
+
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
+    }
+
+    public disable() {
+        super.disable();
+
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
+
+        this.urlsByElts.clear();
+        this.urlsByFbElts.clear();
+        this.urlsByTwElts.clear();
     }
 
     public async updateRecordings() {
@@ -22,7 +48,7 @@ export default class RecordingsList extends Overlay {
 
         if (token) {
 
-            const rawRecordings = await MultiplayerConnection.fetch("/recordings", {
+            const rawRecordings = await MultiplayerConnection.fetchJson("/recordings", {
                 token,
             });
 
@@ -30,6 +56,21 @@ export default class RecordingsList extends Overlay {
                 const recordingElt = this.createRecordingElt(recording.url, recording.arena, new Date(recording.date));
                 this.recordingContainer.appendChild(recordingElt);
             }
+        }
+    }
+
+    private onClick(event: MouseEvent) {
+        const target = event.target as HTMLElement;
+        if (this.urlsByElts.has(target)) {
+            Utils.copy(this.urlsByElts.get(target)!);
+        } else if (this.urlsByFbElts.has(target)) {
+            FB.ui({
+                method: "share",
+                href: this.urlsByFbElts.get(target)!,
+            }, console.log);
+        } else if (this.urlsByTwElts.has(target)) {
+            const twUrl = "https://twitter.com/intent/tweet?url=" + encodeURIComponent(this.urlsByTwElts.get(target)!);
+            window.open(twUrl, "Share on Twitter", "toolbar=no,location=0,status=no,menubar=no,scrollbars=yes,width=550,height=270,resizable=1");
         }
     }
 
@@ -70,9 +111,9 @@ export default class RecordingsList extends Overlay {
         const parentElt = document.createElement("div");
         parentElt.classList.add("recording-social-parent");
 
-        const shareElt = document.createElement("img");
-        shareElt.classList.add("recording-social", "recording-social-link");
-        shareElt.src = "./res/social/copy.svg";
+        const shareElt = document.createElement("span");
+        shareElt.classList.add("btn-sml", "recording-social-link");
+        shareElt.textContent = "Copy Link";
 
         const fbElt = document.createElement("img");
         fbElt.classList.add("recording-social");
@@ -82,14 +123,18 @@ export default class RecordingsList extends Overlay {
         twElt.classList.add("recording-social");
         twElt.src = "./res/social/twitter.svg";
 
-        const ytElt = document.createElement("img");
-        ytElt.classList.add("recording-social");
-        ytElt.src = "./res/social/youtube.svg";
+        // const ytElt = document.createElement("img");
+        // ytElt.classList.add("recording-social");
+        // ytElt.src = "./res/social/youtube.svg";
 
         parentElt.appendChild(shareElt);
         parentElt.appendChild(fbElt);
         parentElt.appendChild(twElt);
-        parentElt.appendChild(ytElt);
+
+        this.urlsByElts.set(shareElt, url);
+        this.urlsByFbElts.set(fbElt, url);
+        this.urlsByTwElts.set(twElt, url);
+        // parentElt.appendChild(ytElt);
 
         return parentElt;
     }

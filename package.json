@@ -24,6 +24,7 @@
     "three": "0.105.2"
   },
   "devDependencies": {
+    "@types/facebook-js-sdk": "^3.3.0",
     "@types/gapi": "latest",
     "@types/gapi.auth2": "latest",
     "css-loader": "^3.0.0",
