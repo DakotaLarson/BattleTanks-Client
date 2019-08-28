@@ -16,6 +16,7 @@ import GameStatusHandler from "./GameStatusHandler";
 import Globals from "./Globals";
 import GameTimer from "./gui/GameTimer";
 import MainMenu from "./main_menu/MainMenu";
+import Store from "./main_menu/store/Store";
 import Metrics from "./Metrics";
 import MultiplayerConnection from "./MultiplayerConnection";
 import Options from "./Options";
@@ -37,6 +38,7 @@ class Game extends Component {
     private debugFPSCount: number;
 
     private mainMenu: MainMenu;
+    private store: Store;
     private backgroundAudioHandler: BackgroundAudioHandler;
     private overlayMenu: OverlayMenu;
     private connectionMenu: ConnectionMenu;
@@ -81,7 +83,8 @@ class Game extends Component {
         const perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
         this.auth = new Auth();
         this.options = new Options();
-        this.mainMenu = new MainMenu(Game.VERSION, perspectiveCamera);
+        this.store = new Store();
+        this.mainMenu = new MainMenu(Game.VERSION, perspectiveCamera, this.store);
         this.overlayMenu = new OverlayMenu();
         this.connectionMenu = new ConnectionMenu();
         this.backgroundAudioHandler = new BackgroundAudioHandler(useMP3);
@@ -120,6 +123,7 @@ class Game extends Component {
         this.attachComponent(this.backgroundAudioHandler);
         this.attachComponent(this.arenaHandler);
         this.updateMenu(true);
+        this.attachComponent(this.store);
         this.attachChild(this.alertMessageHandler);
 
         if (Options.options.metricsEnabled) {

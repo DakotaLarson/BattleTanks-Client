@@ -90,7 +90,7 @@
 
 .discord-container {
     position: absolute;
-    bottom: 2.5vmin;
+    bottom: 1.5vmin;
     right: 2.5vmin;
 }
 
@@ -159,6 +159,12 @@
 .main-menu .main-menu-version {
     font-family: 'Inconsolata', sans-serif;
     font-size: 2.5vmin;
+}
+
+.main-menu .main-menu-terms {
+    display: inline-block;
+    margin-top: 1vmin;
+    font-size: 1.5vmin;
 }
 
 .main-menu .auth-container {

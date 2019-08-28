@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>BattleTanks</title>
     
-    <meta name="description" content="BattleTanks is a free, web based, 2.5D tank shooter where two teams of players battle it out in a team elimination gamemode!"/>
+    <meta name="description" content="BattleTanks is a free, web based, 2.5D tank shooter!"/>
     <meta name="keywords" content="shooting games, tank games, tank battle, tank wars, tank shooter, BattleTanks, battle tanks, battletanks.app"/>
     <meta name="author" content="Dakota Larson"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
@@ -143,12 +143,15 @@
                     <img class="side-panel-btn-img" src="./res/menu/recordings.svg">
                     <span class="side-panel-btn-title">My Recordings</span>
                 </div>
-            </div>
+            </div>    
         </div>
 
         <div class="side-panel-cmp side-panel-store">
             <div class="side-panel-title">The Store</div>
-            <div class="store-currency"></div>
+            <div class="store-currency-container">
+                <div class="store-currency"></div>
+                <div class="btn-sml store-more-currency">Get More Currency!</div>
+            </div>
             <div class="store-container"></div>
         </div>
 
@@ -246,7 +249,8 @@
         <a class="discord-ref" href="https://discord.gg/7J5ZJUQ" target="_blank" title="Join the Discord community!">
             <img class="discord-image" draggable="false" src="./res/social/discord.svg" alt="BattleTanks Discord">
         </a><br>
-        <span class="main-menu-version"></span>
+        <span class="main-menu-version"></span><br>
+        <a href="./terms.txt" class="main-menu-terms menu-link" target="_blank">Terms &amp; Conditions</a>
     </div>
 </div>
 
@@ -499,7 +503,10 @@
         </div>
         <div class="overlay-content overlay-color no-select">
             <h2 class="overlay-color-title"></h2>
-            <div class="store-currency"></div>
+            <div class="store-currency-container">
+                <div class="store-currency"></div>
+                <div class="btn-sml store-more-currency">Get More Currency!</div>
+            </div>
             <div class=overlay-color-container></div>
         </div>
         <div class="overlay-content overlay-recordings no-select">
@@ -697,7 +704,72 @@
     </div>
 </div>
 
-<!-- NOTIFICATION CONTAINER -->
+<!-- RECORDING SELECTOR -->
+<div class="recording-selector menu no-select">
+    <div class="recording-selector-container">
+        <div class="recording-selector-title">Recording Complete!</div>
+        <div class="recording-selector-help">Select the portion of the match you want to upload and submit!</div>
+
+        <div class="match-text-container">
+            <span class="match-text match-text-start">Start</span>
+            <span class="match-text match-text-end">End</span>
+        </div>
+        <div class="range-container"></div>
+        <div class="error-msg"></div>
+        <div class="recording-action action-cancel">Cancel</div>
+        <div class="recording-action action-submit">Submit</div>
+        <br>
+        <span class="menu-link menu-link-small download-raw">Download Raw</span>
+        <div class="recording-overlay">
+            <span class="recording-overlay-text"></span>
+            <span class="menu-selection recording-overlay-close">Close</span>
+        </div>
+    </div>
+</div>
+
+<div class="currency-store-container menu no-select">
+    <div class="currency-store">
+        <h2>Get More Currency!</h2>
+        <div class="currency-store-option-container">
+            <div class="currency-store-option">
+                <img class="currency-store-option-img" src="./icon.png"></img>
+                <div class="currency-store-option-title currency-store-title-low">250 Currency</div>
+                <div class="currency-store-option-price">$0.99</div>
+                <div class="currency-store-option-buy">
+                    <div class="buy-with-paypal" id="buy-with-paypal-250"></div>
+                    <a class="buy-with-crypto"  id="buy-with-crypto-250" href="https://commerce.coinbase.com/checkout/84b4a549-e809-42c6-b200-906ce3b15ad0">
+                        <span>Buy with Crypto</span>
+                    </a>
+                </div>
+            </div>
+            <div class="currency-store-option">
+                <img class="currency-store-option-img" src="./icon.png"></img>
+                <div class="currency-store-option-title currency-store-title-med">1500 Currency</div>
+                <div class="currency-store-option-price">$4.99 (16% Discount)</div>
+                <div class="currency-store-option-buy">
+                    <div class="buy-with-paypal" id="buy-with-paypal-1500"></div>
+                    <a class="buy-with-crypto" id="buy-with-crypto-1500" href="https://commerce.coinbase.com/checkout/d08a34e3-f570-49f6-a156-30d9ba17b678">
+                        <span>Buy with Crypto</span>
+                    </a>
+                </div>
+            </div>
+            <div class="currency-store-option">
+                <img class="currency-store-option-img" src="./icon.png"></img>
+                <div class="currency-store-option-title currency-store-title-high">6000 Currency</div>
+                <div class="currency-store-option-price">$13.99 (41% Discount!)</div>
+                <div class="currency-store-option-buy">
+                    <div class="buy-with-paypal" id="buy-with-paypal-6000"></div>
+                    <a class="buy-with-crypto" id="buy-with-crypto-6000" href="https://commerce.coinbase.com/checkout/472f88e3-7be2-40a9-b530-887240591935">
+                      <span>Buy with Crypto</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <span class="menu-selection currency-store-close">Close</span>
+    </div>
+</div>
+
+<!-- NOTIFICATION POPUP CONTAINER -->
 <div class="notification-popup-container"></div>
 
 <!-- PROFILE CONTAINER -->
@@ -731,29 +803,6 @@
     </div>
 </div>
 
-<!-- RECORDING SELECTOR -->
-<div class="recording-selector menu no-select">
-    <div class="recording-selector-container">
-        <div class="recording-selector-title">Recording Complete!</div>
-        <div class="recording-selector-help">Select the portion of the match you want to upload and submit!</div>
-
-        <div class="match-text-container">
-            <span class="match-text match-text-start">Start</span>
-            <span class="match-text match-text-end">End</span>
-        </div>
-        <div class="range-container"></div>
-        <div class="error-msg"></div>
-        <div class="recording-action action-cancel">Cancel</div>
-        <div class="recording-action action-submit">Submit</div>
-        <br>
-        <span class="menu-link menu-link-small download-raw">Download Raw</span>
-        <div class="recording-overlay">
-            <span class="recording-overlay-text"></span>
-            <span class="menu-selection recording-overlay-close">Close</span>
-        </div>
-    </div>
-</div>
-
 <!-- CONFIRMATION MODAL -->
 <div class="confirmation-parent no-select">
     <div class="confirmation-child">
@@ -782,7 +831,6 @@
     };
 </script>
 <script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>
-
 <script src="./dist/bundle.js"></script>
 </body>
 </html>

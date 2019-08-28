@@ -9,6 +9,7 @@ enum Global {
     USERNAME,
     SCENE,
     TIPS,
+    PLAYER_ID,
 }
 
 export default class Globals {

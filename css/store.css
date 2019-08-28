@@ -103,12 +103,18 @@
     text-align: right;
 }
 
+.side-panel .store-currency-container,
+.overlay-color .store-currency-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1vmin;
+}
 .side-panel .store-currency,
 .overlay-color .store-currency {
     text-align: left;
     font-family: 'Inconsolata', sans-serif;
     font-size: 2vmin;
-    margin-bottom: 1vmin;
 }
 
 .overlay-color .overlay-color-title {

@@ -112,6 +112,7 @@ export default class RecordingSelector extends Component {
 
     private async postRecording(start: number, end: number) {
         const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
+
         if (token) {
             const recording = new Blob(this.recordings, {
                 type: "video/webm",
@@ -128,28 +129,32 @@ export default class RecordingSelector extends Component {
             this.showOverlay("Uploading...", false);
 
             const response = await MultiplayerConnection.fetch("/recordings", formData, "post", true);
-            const reader = response.body!.getReader();
+            if (response.body) {
+                const reader = response.body!.getReader();
 
-            let done = false;
-            while (!done) {
-                const result = await reader.read();
-                done = result.done;
+                let done = false;
+                while (!done) {
+                    const result = await reader.read();
+                    done = result.done;
 
-                if (result.value) {
-                    const parsedValue = String.fromCharCode.apply(undefined, Array.from(result.value));
+                    if (result.value) {
+                        const parsedValue = String.fromCharCode.apply(undefined, Array.from(result.value));
 
-                    if (parsedValue === "processing") {
-                        this.showOverlay("Processing...", true);
-                    } else if (parsedValue === "success") {
-                        if (!this.closedBeforeProcessingComplete) {
-                            this.close();
-                            EventHandler.callEvent(EventHandler.Event.RECORDING_PROCESSING_COMPLETE);
+                        if (parsedValue === "processing") {
+                            this.showOverlay("Processing...", true);
+                        } else if (parsedValue === "success") {
+                            if (!this.closedBeforeProcessingComplete) {
+                                this.close();
+                                EventHandler.callEvent(EventHandler.Event.RECORDING_PROCESSING_COMPLETE);
+                            }
+                        } else if (parsedValue === "failure") {
+                            this.overlayElt.style.display = "";
+                            window.alert("Error processing recording");
                         }
-                    } else if (parsedValue === "failure") {
-                        this.overlayElt.style.display = "";
-                        window.alert("Error processing recording");
                     }
                 }
+            } else {
+                window.alert("Malformed response. Your recording is likely uploaded and being processed. Check 'My Recordings' in a few minutes.");
             }
         }
 

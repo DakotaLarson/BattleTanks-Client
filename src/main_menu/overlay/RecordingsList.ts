@@ -7,6 +7,9 @@ import Overlay from "./Overlay";
 
 export default class RecordingsList extends Overlay {
 
+    private static readonly TWITTER_WINDOW_HEIGHT = 270;
+    private static readonly TWITTER_WINDOW_WIDTH = 700;
+
     private recordingContainer: HTMLElement;
 
     private urlsByElts: Map<HTMLElement, string>;
@@ -70,7 +73,13 @@ export default class RecordingsList extends Overlay {
             }, console.log);
         } else if (this.urlsByTwElts.has(target)) {
             const twUrl = "https://twitter.com/intent/tweet?url=" + encodeURIComponent(this.urlsByTwElts.get(target)!);
-            window.open(twUrl, "Share on Twitter", "toolbar=no,location=0,status=no,menubar=no,scrollbars=yes,width=550,height=270,resizable=1");
+
+            const width = RecordingsList.TWITTER_WINDOW_WIDTH;
+            const height = RecordingsList.TWITTER_WINDOW_HEIGHT;
+            const left = screen.width / 2 - width / 2;
+            const top = screen.height / 2 - height / 2;
+
+            window.open(twUrl, "Share on Twitter", "toolbar=no, location=0, status=no, menubar=no, scrollbars=yes, width=" + width + ", height=" + height + ", top=" + top + ", left=" + left + ", resizable=1");
         }
     }
 

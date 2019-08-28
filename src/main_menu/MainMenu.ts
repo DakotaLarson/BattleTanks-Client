@@ -13,6 +13,7 @@ import PlayButton from "./PlayButton";
 import Referrals from "./Referrals";
 // import ServerPlayerCount from "./ServerPlayerCount";
 import SidePanel from "./side_panel/SidePanel";
+import Store from "./store/Store";
 
 export default class MainMenu extends ChildComponent {
 
@@ -30,7 +31,7 @@ export default class MainMenu extends ChildComponent {
     private headerContainerElt: HTMLElement;
     private playBtnContainerElt: HTMLElement;
 
-    constructor(version: number, camera: PerspectiveCamera) {
+    constructor(version: number, camera: PerspectiveCamera, store: Store) {
         super();
         this.element = DomHandler.getElement(".main-menu");
 
@@ -42,7 +43,7 @@ export default class MainMenu extends ChildComponent {
         // this.serverPlayercount = new ServerPlayerCount(this.element);
         this.gameSuggestion = new GameSuggestion(this.element);
         this.referrals = new Referrals(this.element);
-        this.sidePanel = new SidePanel(this.element);
+        this.sidePanel = new SidePanel(this.element, store);
         this.leaderboard = new Leaderboard(this.element);
         this.menuCamera = new MenuCamera(camera);
 

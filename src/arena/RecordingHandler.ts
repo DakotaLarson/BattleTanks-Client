@@ -91,6 +91,8 @@ export default class RecordingHandler extends ChildComponent {
                 }
             };
             this.recorder.start(1000);
+        } else {
+            window.alert("Please use the current version of Chrome or Firefox to record a match.");
         }
     }
 

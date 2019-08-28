@@ -7,12 +7,14 @@ import Confirmation from "../../gui/Confirmation";
 import { IStore, IStoreObject } from "../../interfaces/IStore";
 import ColorStore from "./ColorStore";
 import { ActionState, StoreItem } from "./StoreItem";
+import CurrencyStore from "./CurrencyStore";
 
 export default class Store extends Component {
 
     private parentElt: HTMLElement;
     private containerElt: HTMLElement;
     private currencyElt: HTMLElement;
+    private moreCurrencyBtn: HTMLElement;
 
     private level: number;
     private currency: number;
@@ -21,15 +23,17 @@ export default class Store extends Component {
     private storeItems: StoreItem[];
 
     private colorStore: ColorStore;
+    private currencyStore: CurrencyStore;
 
     private colors: Map<string, IStoreObject>;
 
-    constructor(menuElt: HTMLElement) {
+    constructor() {
         super();
 
-        this.parentElt = DomHandler.getElement(".side-panel-store", menuElt);
+        this.parentElt = DomHandler.getElement(".side-panel-store");
         this.containerElt = DomHandler.getElement(".store-container", this.parentElt);
         this.currencyElt = DomHandler.getElement(".store-currency", this.parentElt);
+        this.moreCurrencyBtn = DomHandler.getElement(".store-more-currency", this.parentElt);
 
         this.level = 0;
         this.currency = 0;
@@ -37,6 +41,7 @@ export default class Store extends Component {
         this.storeItems = [];
 
         this.colorStore = new ColorStore(this.level, this.currency);
+        this.currencyStore = new CurrencyStore();
 
         this.colors = new Map();
 
@@ -54,18 +59,21 @@ export default class Store extends Component {
 
         const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
         this.updateStore(token);
+
+        this.attachComponent(this.currencyStore);
     }
 
     public show() {
         DOMMutationHandler.show(this.parentElt);
         EventHandler.callEvent(EventHandler.Event.STORE_OPEN);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
 
     }
 
     public hide() {
         DOMMutationHandler.hide(this.parentElt);
         EventHandler.callEvent(EventHandler.Event.STORE_CLOSE);
-
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
     }
 
     public updateStats(level: number, currency: number) {
@@ -87,6 +95,12 @@ export default class Store extends Component {
 
     private onSignOut() {
         this.updateStore();
+    }
+
+    private onClick(event: MouseEvent) {
+        if (event.target === this.moreCurrencyBtn) {
+            EventHandler.callEvent(EventHandler.Event.CURRENCY_STORE_REQUEST);
+        }
     }
 
     private async onPurchase(storeItem: StoreItem) {
@@ -177,6 +191,12 @@ export default class Store extends Component {
 
     private async updateStore(token?: string) {
         DOMMutationHandler.clear(this.containerElt);
+
+        if (token) {
+            this.moreCurrencyBtn.classList.remove("btn-disabled");
+        } else {
+            this.moreCurrencyBtn.classList.add("btn-disabled");
+        }
 
         const store = await this.getStore(token);
 

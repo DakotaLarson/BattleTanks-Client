@@ -1,0 +1,83 @@
+battletanks.app (BattleTanks) - owned and operated by Dakota Larson
+
+Please contact me with any questions, concerns, or requests via email: contact@battletanks.app
+
+Usage of "I" or "my" or "me" in this document refers to Dakota Larson, the owner and operator of BattleTanks.
+Usage of "BattleTanks" in this document refers to the website: https://battletanks.app including any other connected service that is owned by me. (Backend game servers, web servers, etc.)
+
+Usages of "sharing" or "share" when relating to you, the player, refer to in-game chat, player-to-player conversations on BattleTanks, and sharing of BattleTanks related content on "social" platforms such as (but not limited to) facebook.com, twitter.com, and discordapp.com.
+
+** Terms & Conditions **
+By continuing to use this website, you are agreeeing to the following terms and conditions:
+- You must be at least 13 years of age to use this website. 
+- Keep it "PG".
+- Use at your own risk.
+- Do not steal content of the game. (View copyright section)
+- Do not hack by using modified clients or exploiting features of the game.
+- Do not share illegal, graphic, or offensive content.
+
+- You accept you must not share content such as text or images that is illegal, or graphic. 
+- You accept I bear no responsibility for damage to your computer, device, or person.
+- You accept that I reserve the right to disable or delete any account for any reason.
+- You accept any content shared with me with intent of usage on BattleTanks such as (but not limited to) audio, images, arena files, and 3D models is considered my property.
+
+** Copyright **
+- All assets of the game are covered by copyright unless otherwise noted.
+- This includes but is not limited to code, audio, video, 3D models and logos.
+- Theft of BattleTanks assets may result in legal action being pursued.
+
+** Third Parties **
+BattleTanks uses third party integrations. By agreeing to use these websites, you comply with the accompanied privacy policies.
+- Google: http://www.google.com/policies/privacy/partners/
+- Facebook: https://www.facebook.com/policy.php
+- Twitter: https://twitter.com/en/privacy
+- Stripe: https://stripe.com/privacy
+- Coinbase: https://www.coinbase.com/legal/privacy and https://commerce.coinbase.com/legal/privacy-policy/
+
+** Information Collection **
+All players have information (user configuration settings).
+- This information is collected locally using cookies and localstorage when using BattleTanks. 
+- This data contains no personally identifiable information (PII)
+- This data is not collected by BattleTanks. 
+
+All players have information (metrics) collected with details about the experience.
+- This data contains no PII and is sent to BattleTanks upon session termination.
+- It is impossible to connect this information with your account. 
+- You may opt-out of this data collection.
+
+Players who "Sign in" with Google have additional information collected by BattleTanks. This information is never shared with third parties. 
+
+PII collected:
+- Full Name
+- Email Address
+
+Additional information collected (not exhaustive):
+- Player statistics
+- Friendships
+- Conversations
+- Messages
+- In game purchases
+- Match recordings
+- Referrals
+- Notifications
+
+Notes:
+- Your profile picture as part of your Google Account is NOT collected.
+- Your name and email address are collected for transactional email purposes. You may opt-in to marketing email subscriptions.
+
+** Purchases **
+- All purchases are final and are non-refundable. Reversals of payments prior to a written agreement between you and me may result in account termination.
+- You must be at least 18 years of age or have parental consent before making purchases.
+- Refunds are handled on a case-by-case basis. Please contact me if you have a request. I reserve the right to reject any refund request.
+- In the event of a transactional failure, it is your responsibility to alert me via email of the failure.
+- In the event of a transactional failure, it is my responsibility to resolve failures in a quick and fair manner.
+- Not withstanding the foregoing, I am not responsible for failures that take place in an exploitative manner.
+- In the event of account termination for any reason, all previous purchases are forfeited.
+
+** Information Inquiries / Deletion Requests **
+Please contact me to inquire about the information related to your account.
+Please contact me to request the deletion of the data related to your account.
+
+These terms and conditions are governed by the laws of the United States of America.
+Policy effective: 8/24/19 
+Policy updated: 8/26/19

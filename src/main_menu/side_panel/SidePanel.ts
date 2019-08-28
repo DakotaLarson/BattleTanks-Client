@@ -43,12 +43,12 @@ export default class SidePanel extends ChildComponent {
 
     private storeVisible: boolean;
 
-    constructor(menuElt: HTMLElement) {
+    constructor(menuElt: HTMLElement, store: Store) {
         super();
 
         this.topContainer = DomHandler.getElement(".side-panel-top", menuElt);
 
-        this.store = new Store(menuElt);
+        this.store = store;
         this.playerStats = new PlayerStats(menuElt);
         this.playerFinder = new PlayerFinder(menuElt);
         this.arenaCreator = new ArenaCreator(menuElt);
@@ -94,8 +94,6 @@ export default class SidePanel extends ChildComponent {
         } else {
             this.onSignOut();
         }
-
-        this.attachComponent(this.store);
     }
 
     public disable() {
