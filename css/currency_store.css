@@ -11,6 +11,8 @@
     background-color: #101010;
     border: solid 1px #ffffff;
     padding: 2.5vmin;
+    max-height: 90vh;
+    overflow: auto;
 }
 
 .currency-store-container h2 {
@@ -25,11 +27,19 @@
     padding: 2.5vmin 0;
 }
 
+@media only screen and (max-width: 1300px) {
+    .currency-store-container .currency-store-option-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
 .currency-store-container .currency-store-option {
     border: solid 1px #ffffff;
     width: 15vw;
     margin: 0 1vmin;
     padding: 2.5vmin 0;
+    min-width: 385px;
 }
 
 .currency-store-container .currency-store-option-img {
