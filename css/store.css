@@ -39,7 +39,7 @@
 
 .side-panel .store-item-custom-container {
     position: absolute;
-    top: 95%;
+    bottom: 5%;
     left: 95%;
     background-color: #101010;
     border: solid 1px #ffffff;
@@ -82,12 +82,16 @@
     width: 2.5vmin;
     margin-right: 1vmin;
     border: solid 1px #ffffff;
+    flex-shrink: 0;
 }
 
 .side-panel .store-item-custom-color-inner-container,
 .overlay-color .store-item-custom-color-inner-container {
     display: flex;
     margin-right: 1vmin;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .side-panel .dropdown-container .arrow-down,

@@ -28,6 +28,7 @@
 
 .rank-chart .rank-container-parent:last-child .rank-container {
     border-right: solid 1px #ffffff;
+    margin-right: 1px;
 }
 
 .rank-chart .rank-container .rank-chart-title-container,

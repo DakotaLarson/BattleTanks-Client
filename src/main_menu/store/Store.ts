@@ -6,8 +6,8 @@ import Globals from "../../Globals";
 import Confirmation from "../../gui/Confirmation";
 import { IStore, IStoreObject } from "../../interfaces/IStore";
 import ColorStore from "./ColorStore";
-import { ActionState, StoreItem } from "./StoreItem";
 import CurrencyStore from "./CurrencyStore";
+import { ActionState, StoreItem } from "./StoreItem";
 
 export default class Store extends Component {
 
@@ -27,6 +27,8 @@ export default class Store extends Component {
 
     private colors: Map<string, IStoreObject>;
 
+    private visible: boolean;
+
     constructor() {
         super();
 
@@ -45,6 +47,8 @@ export default class Store extends Component {
 
         this.colors = new Map();
 
+        this.visible = false;
+
     }
 
     public async enable() {
@@ -57,9 +61,6 @@ export default class Store extends Component {
         EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
 
-        const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
-        this.updateStore(token);
-
         this.attachComponent(this.currencyStore);
     }
 
@@ -68,12 +69,18 @@ export default class Store extends Component {
         EventHandler.callEvent(EventHandler.Event.STORE_OPEN);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
 
+        this.visible = true;
+
+        const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
+        this.updateStore(authToken);
     }
 
     public hide() {
         DOMMutationHandler.hide(this.parentElt);
         EventHandler.callEvent(EventHandler.Event.STORE_CLOSE);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
+
+        this.visible = false;
     }
 
     public updateStats(level: number, currency: number) {
@@ -90,11 +97,15 @@ export default class Store extends Component {
     }
 
     private onSignIn(token: string) {
-        this.updateStore(token);
+        if (this.visible) {
+            this.updateStore(token);
+        }
     }
 
     private onSignOut() {
-        this.updateStore();
+        if (this.visible) {
+            this.updateStore();
+        }
     }
 
     private onClick(event: MouseEvent) {

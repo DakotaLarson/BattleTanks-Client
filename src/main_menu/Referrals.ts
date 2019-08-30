@@ -32,6 +32,8 @@ export default class Referrals extends ChildComponent {
 
     private code: string | undefined;
 
+    private visible: boolean;
+
     constructor(parentElt: HTMLElement) {
         super();
         this.parentElt = DomHandler.getElement(".referral-parent");
@@ -54,6 +56,8 @@ export default class Referrals extends ChildComponent {
 
         this.closeBtn = DomHandler.getElement(".referral-close", this.parentElt);
 
+        this.visible = false;
+
     }
 
     public enable() {
@@ -72,20 +76,26 @@ export default class Referrals extends ChildComponent {
     }
 
     private async onSignIn(token: string) {
-        this.updateReferralData(token);
+        if (this.visible) {
+            this.updateReferralData(token);
+        }
     }
 
     private async onSignOut() {
-        this.updateReferralData();
+        if (this.visible) {
+            this.updateReferralData();
+        }
     }
 
     private onClick(event: MouseEvent) {
         if (event.target === this.menuBtn) {
             this.show();
         } else if (event.target === this.closeBtn || event.target === this.parentElt) {
-            this.close();
+            this.hide();
         } else if (event.target === this.codeElt) {
-            Utils.copy(this.code!);
+            if (this.code) {
+                Utils.copy(this.code);
+            }
         } else if (event.target === this.referrerSubmitElt) {
             this.submitReferrerCode();
         }
@@ -142,12 +152,17 @@ export default class Referrals extends ChildComponent {
 
     private show() {
         this.parentElt.style.display = "block";
+        this.visible = true;
+        const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
+        this.updateReferralData(token);
+
     }
 
-    private close() {
+    private hide() {
         this.parentElt.style.display = "";
         this.referrerInputElt.value = "";
         this.referrerErrorElt.textContent = "";
+        this.visible = false;
     }
 
     private async sendReferrerCode(code: string) {

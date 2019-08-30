@@ -25,6 +25,7 @@ export default class StoreUtils {
         const colorElt = StoreUtils.createElement("div", ["store-item-custom-color"]);
         colorElt.style.backgroundColor = "#" + detail;
         const textElt = StoreUtils.createElement("div", [], title);
+        textElt.setAttribute("title", title);
 
         const container = StoreUtils.createElement("div", ["store-item-custom-color-inner-container"]);
         container.appendChild(colorElt);
