@@ -37,7 +37,7 @@
 .currency-store-container .currency-store-option {
     border: solid 1px #ffffff;
     width: 15vw;
-    margin: 0 1vmin;
+    margin: 1vmin;
     padding: 2.5vmin 0;
     min-width: 385px;
 }
@@ -70,4 +70,8 @@
 
 .currency-store-container .currency-store-option-buy {
     display: inline-block;
+}
+
+.currency-store-container .buy-with-paypal {
+    margin-bottom: 1vmin;
 }

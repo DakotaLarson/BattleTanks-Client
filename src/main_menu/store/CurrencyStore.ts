@@ -1,3 +1,4 @@
+import { create } from "domain";
 import Component from "../../component/Component";
 import DomHandler from "../../DomHandler";
 import EventHandler from "../../EventHandler";
@@ -9,14 +10,15 @@ export default class CurrencyStore extends Component {
     private static readonly PROD_CLIENT_ID = "ATiu6GOho7fPRXu2yUjjSusga6_wtFuIJXh23E5dOVemkeABKS0QOBuTqtYBOqg3MMc5eRNMDzcKGaBS";
 
     private static readonly COINBASE_SCRIPT_SRC = "https://commerce.coinbase.com/v1/checkout.js?version=201807";
-    private static readonly PAYPAL_SCRIPT_SRC_BASE = "https://www.paypal.com/sdk/js?client-id=";
+    // private static readonly PAYPAL_SCRIPT_SRC_BASE = "https://www.paypal.com/sdk/js?client-id=";
+    private static readonly PAYPAL_SCRIPT_SRC = "https://www.paypalobjects.com/api/checkout.js";
+
+    private static PAYPAL_CREATE_ENDPOINT = "https://na.battletanks.app/payment/create/paypal/";
 
     private containerElt: HTMLElement;
     private closeBtn: HTMLElement;
 
     private processorsByElements: Map<HTMLElement, any>;
-
-    private playerId: string | undefined;
 
     constructor() {
         super();
@@ -47,11 +49,11 @@ export default class CurrencyStore extends Component {
             const paypalButtonContainers = Array.from(DomHandler.getElements(".buy-with-paypal"));
             for (const container of paypalButtonContainers) {
                 if (container.id.endsWith("250")) {
-                    this.createPaypalButton("0.99", "250", playerId, container.id);
+                    this.createPaypalButton("0.99", playerId, container.id);
                 } else if (container.id.endsWith("1500")) {
-                    this.createPaypalButton("4.99", "1500", playerId, container.id);
+                    this.createPaypalButton("4.99", playerId, container.id);
                 } else if (container.id.endsWith("6000")) {
-                    this.createPaypalButton("14.99", "6000", playerId, container.id);
+                    this.createPaypalButton("13.99", playerId, container.id);
                 }
             }
 
@@ -103,52 +105,77 @@ export default class CurrencyStore extends Component {
         this.containerElt.style.display = "";
     }
 
-    private loadScripts() {
-        this.createScriptElt(CurrencyStore.COINBASE_SCRIPT_SRC);
-
-        let paypalSrc;
-        if (location.hostname === "battletanks.app") {
-            paypalSrc = CurrencyStore.PAYPAL_SCRIPT_SRC_BASE + CurrencyStore.DEV_CLIENT_ID;
-        } else {
-            paypalSrc = CurrencyStore.PAYPAL_SCRIPT_SRC_BASE + CurrencyStore.PROD_CLIENT_ID;
-        }
-        this.createScriptElt(paypalSrc);
-    }
-
-    private createPaypalButton(price: string, quantity: string, playerId: string, containerId: string) {
+    private createPaypalButton(price: string, playerId: string, containerId: string) {
         // @ts-ignore
         const Paypal: any = window.paypal;
 
-        Paypal.Buttons({
+        Paypal.Button.render({
+            env: location.hostname === "battletanks.app" ? "production" : "sandbox",
+            client: {
+                sandbox: CurrencyStore.DEV_CLIENT_ID,
+                production: CurrencyStore.PROD_CLIENT_ID,
+            },
+            commit: true,
             style: {
-                layout: "horizontal",
+                shape: "rect",
+                label: "buynow",
+                branding: true,
                 tagline: false,
                 height: 40,
             },
-            createOrder: (data: any, actions: any) => {
-                console.log(data, actions);
-                return actions.order.create({
-                    purchase_units: [
-                        {
-                            amount: {
-                                value: price,
+            payment: (data: any, actions: any) => {
+                return actions.payment.create({
+                    payment: {
+                        transactions: [
+                            {
+                                amount: {
+                                    total: price,
+                                    currency: "USD",
+                                },
                             },
+                        ],
+                    },
+                    experience: {
+                        input_fields: {
+                            no_shipping: 1,
                         },
-                    ],
-                    metadata: [
-                        {
-                            name: "playerId",
-                            value: playerId,
-                        },
-                        {
-                            name: "quantity",
-                            value: quantity,
-                        },
-
-                    ],
+                    },
                 });
             },
-        }).render("#" + containerId);
+            onAuthorize: (data: any, actions: any) => {
+                return actions.payment.get().then((createdPaymentDetails: any) => {
+                    this.informServer(createdPaymentDetails.id, playerId).then((isInformed) => {
+                        if (isInformed) {
+                            actions.payment.execute().then((completedPaymentDetails: any) => {
+                                console.log("Successful payment!");
+                                // Alert player "You will be notified as soon as payment is processed";
+                            });
+                        } else {
+                            console.error("Server not notified.");
+                            // alert player
+                        }
+                    });
+                });
+            },
+            onError: (err: any) => {
+                console.error(err);
+                // alert player;
+            },
+        }, "#" + containerId);
+
+    }
+
+    private loadScripts() {
+        this.createScriptElt(CurrencyStore.COINBASE_SCRIPT_SRC);
+        this.createScriptElt(CurrencyStore.PAYPAL_SCRIPT_SRC);
+
+        // let paypalSrc;
+        // if (location.hostname === "battletanks.app") {
+        //     paypalSrc = CurrencyStore.PAYPAL_SCRIPT_SRC_BASE + CurrencyStore.PROD_CLIENT_ID;
+        // } else {
+        //     paypalSrc = CurrencyStore.PAYPAL_SCRIPT_SRC_BASE + CurrencyStore.DEV_CLIENT_ID;
+        // }
+        // this.createScriptElt(paypalSrc);
     }
 
     private createScriptElt(src: string) {
@@ -158,5 +185,31 @@ export default class CurrencyStore extends Component {
 
         script.setAttribute("src", src);
         document.body.appendChild(script);
+    }
+
+    private async informServer(paymentId: string, playerId: string): Promise<boolean> {
+        try {
+            if (!paymentId || !playerId) {
+                return false;
+            }
+            const requestInit: RequestInit = {
+                method: "post",
+                mode: "cors",
+                credentials: "omit",
+                headers: {
+                    "content-type": "application/json",
+                },
+                body: JSON.stringify({
+                    paymentId,
+                    playerId,
+                }),
+            };
+
+            const response = await fetch(CurrencyStore.PAYPAL_CREATE_ENDPOINT, requestInit);
+            return response.ok;
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
     }
 }
