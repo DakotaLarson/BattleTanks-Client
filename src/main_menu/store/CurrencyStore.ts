@@ -1,4 +1,3 @@
-import { create } from "domain";
 import Component from "../../component/Component";
 import DomHandler from "../../DomHandler";
 import EventHandler from "../../EventHandler";
@@ -62,16 +61,7 @@ export default class CurrencyStore extends Component {
 
             const cryptoElts = Array.from(DomHandler.getElements(".buy-with-crypto", this.containerElt));
             for (const cryptoElt of cryptoElts) {
-                if (cryptoElt.id.endsWith("250")) {
-                    cryptoElt.setAttribute("data-custom", "{playerId:" + playerId + ",quantity:250}");
-                } else if (cryptoElt.id.endsWith("1500")) {
-                    cryptoElt.setAttribute("data-custom", "{playerId:" + playerId + ",quantity:1500}");
-                } else if (cryptoElt.id.endsWith("6000")) {
-                    cryptoElt.setAttribute("data-custom", "{playerId:" + playerId + ",quantity:6000}");
-                } else {
-                    console.log("Unknown element.");
-                    continue;
-                }
+                cryptoElt.setAttribute("data-custom", playerId);
                 const processor = new BuyWithCrypto();
                 processor.install(cryptoElt);
                 this.processorsByElements.set(cryptoElt, processor);

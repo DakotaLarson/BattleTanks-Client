@@ -109,7 +109,7 @@ export default class Store extends Component {
     }
 
     private onClick(event: MouseEvent) {
-        if (event.target === this.moreCurrencyBtn) {
+        if (event.target === this.moreCurrencyBtn && !this.moreCurrencyBtn.classList.contains("btn-disabled")) {
             EventHandler.callEvent(EventHandler.Event.CURRENCY_STORE_REQUEST);
         }
     }
