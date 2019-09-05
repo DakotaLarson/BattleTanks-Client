@@ -2,14 +2,16 @@ battletanks.app (BattleTanks) - owned and operated by Dakota Larson
 
 Please contact me with any questions, concerns, or requests via email: contact@battletanks.app
 
-Usage of "I" or "my" or "me" in this document refers to Dakota Larson, the owner and operator of BattleTanks.
-Usage of "BattleTanks" in this document refers to the website: https://battletanks.app including any other connected service that is owned by me. (Backend game servers, web servers, etc.)
-
-Usages of "sharing" or "share" when relating to you, the player, refer to in-game chat, player-to-player conversations on BattleTanks, and sharing of BattleTanks related content on "social" platforms such as (but not limited to) facebook.com, twitter.com, and discordapp.com.
+** Definitions **
+- Usage of "I" or "my" or "me" in this document refers to Dakota Larson, the owner and operator of BattleTanks.
+- Usage of "BattleTanks" in this document refers to the website: https://battletanks.app including any other connected service that is owned by me. (Backend game servers, web servers, etc.)
+- Usage of "player" or "players" refers to one or many users of BattleTanks. 
+- Usage of "sharing" or "share" when relating to you, the player, refer to in-game chat, player-to-player conversations on BattleTanks, and sharing of BattleTanks related content on "social" platforms such as (but not limited to) facebook.com, twitter.com, and discordapp.com.
+- Usages of "sign in" refer to the use of an identity provider as a way to save the state of the application across multiple sessions and / or devices. At present, that identity provider is Google. 
 
 ** Terms & Conditions **
-By continuing to use this website, you are agreeeing to the following terms and conditions:
-- You must be at least 13 years of age to use this website. 
+By continuing to use BattleTanks, you are agreeeing to the following terms and conditions:
+- You must be at least 13 years of age to sign in to BattleTanks. 
 - Keep it "PG".
 - Use at your own risk.
 - Do not steal content of the game. (View copyright section)
@@ -27,25 +29,27 @@ By continuing to use this website, you are agreeeing to the following terms and 
 - Theft of BattleTanks assets may result in legal action being pursued.
 
 ** Third Parties **
-BattleTanks uses third party integrations. By agreeing to use this website, you agree to comply with the accompanied privacy policies.
+BattleTanks uses third party integrations. By agreeing to use BattleTanksf, you agree to comply with the accompanied privacy policies.
 - Google: http://www.google.com/policies/privacy/partners/
 - Facebook: https://www.facebook.com/policy.php
 - Twitter: https://twitter.com/en/privacy
-- Stripe: https://stripe.com/privacy
-- Coinbase: https://www.coinbase.com/legal/privacy and https://commerce.coinbase.com/legal/privacy-policy/
+- PayPal: https://www.paypal.com/va/webapps/mpp/ua/privacy-full
+- Coinbase: https://www.coinbase.com/legal/privacy & https://commerce.coinbase.com/legal/privacy-policy/
 
 ** Information Collection **
-All players have information saved locally. (player configuration settings)
+Usage of "collected", or "collection" in the context of information refers to the transmission of data to BattleTanks servers where said data is stored.
+
+You have information saved locally. (configuration settings)
 - This information is saved using cookies and localstorage when using BattleTanks. 
 - This data contains no personally identifiable information. (PII)
 - This data is not collected by BattleTanks.
 
-All players have information (metrics) collected by BattleTanks with details about their experience.
+You have information (metrics) collected by BattleTanks with details about your experience.
 - This data contains no PII and is sent to BattleTanks upon session termination.
 - It is impossible to connect this information with your account. 
 - You may opt-out of this data collection through the setting in the "Options Menu".
 
-Players who "Sign in" with Google have additional information collected by BattleTanks. This information is never shared with third parties. 
+If you sign in with Google, Additional information will be collected by BattleTanks. This information is never shared with third parties. 
 
 PII collected:
 - Full Name
@@ -64,7 +68,15 @@ Additional information collected (not exhaustive):
 Notes:
 - Your profile picture as part of your Google Account is NOT collected.
 - Your name and email address are collected for transactional email purposes. You may opt-in to marketing email subscriptions.
-- Conversations between players are not end-to-end ecrypted (E2EE). 
+- Conversations between players are not end-to-end ecrypted (E2EE).
+
+** COPPA **
+- You must be 13 years of age to sign into BattleTanks.
+- If it is discovered you are under 13 years of age and have created an account, your account will be terminated.
+
+- BattleTanks does not intentonally collect data of any player under 13 years of age.
+- In the event a discovery is made that BattleTanks has collected data of a player under 13 years of age, said data will be promptly deleted.
+- 
 
 ** Purchases **
 - All purchases are final and are non-refundable. Reversals or "chargebacks" of payments prior to a written agreement between you and I may result in account termination.
@@ -81,4 +93,4 @@ Please contact me to request the deletion of the data related to your account.
 
 These terms and conditions are governed by the laws of the United States of America.
 Policy effective: 8/24/19 
-Policy updated: 8/30/19
+Policy updated: 9/04/19

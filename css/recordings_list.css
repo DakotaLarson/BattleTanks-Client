@@ -48,3 +48,8 @@
 .recordings-container .recording-social-link {
     font-size: 1.25vmin;
 }
+
+.recordings-message {
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 2.5vmin;
+}

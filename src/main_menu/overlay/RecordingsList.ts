@@ -11,6 +11,7 @@ export default class RecordingsList extends Overlay {
     private static readonly TWITTER_WINDOW_WIDTH = 700;
 
     private recordingContainer: HTMLElement;
+    private messageElt: HTMLElement;
 
     private urlsByElts: Map<HTMLElement, string>;
     private urlsByFbElts: Map<HTMLElement, string>;
@@ -20,6 +21,7 @@ export default class RecordingsList extends Overlay {
         super(contentQuery);
 
         this.recordingContainer = DomHandler.getElement(".recordings-container", this.contentElt);
+        this.messageElt = DomHandler.getElement(".recordings-message", this.contentElt);
 
         this.urlsByElts = new Map();
         this.urlsByFbElts = new Map();
@@ -46,6 +48,7 @@ export default class RecordingsList extends Overlay {
         while (this.recordingContainer.firstChild) {
             this.recordingContainer.removeChild(this.recordingContainer.firstChild);
         }
+        this.messageElt.textContent = "";
 
         const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
 
@@ -55,9 +58,13 @@ export default class RecordingsList extends Overlay {
                 token,
             });
 
-            for (const recording of rawRecordings) {
-                const recordingElt = this.createRecordingElt(recording.url, recording.arena, new Date(recording.date));
-                this.recordingContainer.appendChild(recordingElt);
+            if (rawRecordings.length) {
+                for (const recording of rawRecordings) {
+                    const recordingElt = this.createRecordingElt(recording.url, recording.arena, new Date(recording.date));
+                    this.recordingContainer.appendChild(recordingElt);
+                }
+            } else {
+                this.messageElt.textContent = "No recordings found... Record a match!";
             }
         }
     }
