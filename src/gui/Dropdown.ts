@@ -88,10 +88,13 @@ export default class Dropdown extends ChildComponent {
     }
 
     private toggle(visible: boolean) {
+        const height = Math.round(window.innerHeight - this.parent.getBoundingClientRect().bottom - 10);
         if (visible) {
             this.container.style.display = "block";
+            this.container.style.maxHeight = height + "px";
         } else {
             this.container.style.display = "";
+            this.container.style.height = "";
         }
     }
 

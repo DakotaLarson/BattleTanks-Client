@@ -139,7 +139,7 @@ export class StoreItem extends ChildComponent {
         if (this.customizationOpen) {
 
             if (target === this.moreColorsElt || !this.customizationElt.contains(target)) {
-                this.updateCustomizationVisibility(false);
+                this.updateCustomizationVisibility(false,  event);
 
                 if (target === this.moreColorsElt) {
                     EventHandler.callEvent(EventHandler.Event.STORE_ITEM_MORE_COLORS_VIEW);
@@ -151,7 +151,7 @@ export class StoreItem extends ChildComponent {
             if (target === this.actionElt) {
                 this.handleActionClick();
             } else if (target === this.colorIconElt) {
-                this.updateCustomizationVisibility(true);
+                this.updateCustomizationVisibility(true, event);
             }
 
         }
@@ -182,9 +182,15 @@ export class StoreItem extends ChildComponent {
         }
     }
 
-    private updateCustomizationVisibility(isOpen: boolean) {
+    private updateCustomizationVisibility(isOpen: boolean, event: MouseEvent) {
         this.customizationElt.style.display = isOpen ? "block" : "";
         this.customizationOpen = isOpen;
+
+        if (isOpen) {
+            const eltHeight = this.customizationElt.getBoundingClientRect().height;
+            this.customizationElt.style.left = event.pageX + "px";
+            this.customizationElt.style.bottom = window.innerHeight - Math.max(event.pageY, eltHeight + 10) + "px";
+        }
     }
 
     private createStoreItem(tank: IStoreTank, title: string, actionElt: HTMLElement, colorIconElt: HTMLElement, customizationElt: HTMLElement) {

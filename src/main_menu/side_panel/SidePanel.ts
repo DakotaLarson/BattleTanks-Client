@@ -87,6 +87,7 @@ export default class SidePanel extends ChildComponent {
 
         EventHandler.addListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onOverlayClose);
         EventHandler.addListener(this, EventHandler.Event.RECORDING_PROCESSING_COMPLETE, this.onRecordingProcessingComplete);
+        EventHandler.addListener(this, EventHandler.Event.PAYMENT_CURRENCY_UPDATE, this.onPaymentCurrencyUpdate);
 
         const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
         if (authToken) {
@@ -105,6 +106,7 @@ export default class SidePanel extends ChildComponent {
 
         EventHandler.removeListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onOverlayClose);
         EventHandler.removeListener(this, EventHandler.Event.RECORDING_PROCESSING_COMPLETE, this.onRecordingProcessingComplete);
+        EventHandler.removeListener(this, EventHandler.Event.PAYMENT_CURRENCY_UPDATE, this.onPaymentCurrencyUpdate);
 
         this.detach();
     }
@@ -169,6 +171,10 @@ export default class SidePanel extends ChildComponent {
     private onRecordingProcessingComplete() {
         this.attachChild(this.recordingsList);
         this.recordingsList.updateRecordings();
+    }
+
+    private onPaymentCurrencyUpdate(currency: number) {
+        this.playerStats.updateCurrency(currency);
     }
 
     private async updateStats(token?: string) {

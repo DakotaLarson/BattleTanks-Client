@@ -38,6 +38,7 @@ export default class NotificationHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
         EventHandler.addListener(this, EventHandler.Event.DOM_BEFOREUNLOAD, this.closeEventSource);
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.PAYMENT_CURRENCY_UPDATE, this.onPaymentCurrencyUpdate);
     }
 
     private onClick(event: MouseEvent) {
@@ -67,6 +68,12 @@ export default class NotificationHandler extends Component {
     private onSignOut() {
         EventHandler.callEvent(EventHandler.Event.NOTIFICATION_RESET);
         this.closeEventSource();
+    }
+
+    private onPaymentCurrencyUpdate(currency: number) {
+        this.renderNotification("payment", {
+            currency,
+        });
     }
 
     private openEventSource(token: string) {
@@ -145,9 +152,16 @@ export default class NotificationHandler extends Component {
             notificationData.type = "other";
 
         } else if (type === "referral") {
+
             title = "Referral code used!";
             message = body.username + " used your referral code!";
             notificationData.type = "other";
+
+        } else if (type === "payment") {
+
+            title = "Payment Processed!";
+            message = "You now have " + body.currency + " currency!";
+
         } else {
             throw new Error("Unknown notification type: " + type);
         }

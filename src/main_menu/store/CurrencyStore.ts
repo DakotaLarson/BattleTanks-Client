@@ -2,6 +2,7 @@ import Component from "../../component/Component";
 import DomHandler from "../../DomHandler";
 import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
+import MultiplayerConnection from "../../MultiplayerConnection";
 
 export default class CurrencyStore extends Component {
 
@@ -9,15 +10,21 @@ export default class CurrencyStore extends Component {
     private static readonly PROD_CLIENT_ID = "ATiu6GOho7fPRXu2yUjjSusga6_wtFuIJXh23E5dOVemkeABKS0QOBuTqtYBOqg3MMc5eRNMDzcKGaBS";
 
     private static readonly COINBASE_SCRIPT_SRC = "https://commerce.coinbase.com/v1/checkout.js?version=201807";
-    // private static readonly PAYPAL_SCRIPT_SRC_BASE = "https://www.paypal.com/sdk/js?client-id=";
     private static readonly PAYPAL_SCRIPT_SRC = "https://www.paypalobjects.com/api/checkout.js";
 
-    private static PAYPAL_CREATE_ENDPOINT = "https://na.battletanks.app/payment/create/paypal/";
+    private static PROD_PAYPAL_CREATE_ENDPOINT = "https://na.battletanks.app/payment/create/paypal/";
+    private static DEV_PAYPAL_CREATE_ENDPOINT = "https://na.battletanks.app/dev/payment/create/paypal/";
 
     private containerElt: HTMLElement;
     private closeBtn: HTMLElement;
 
+    private paymentSuccessElt: HTMLElement;
+    private paymentSuccessPaypalElt: HTMLElement;
+    private paymentSuccessCrypoElt: HTMLElement;
+
     private processorsByElements: Map<HTMLElement, any>;
+
+    private successVisible: boolean;
 
     constructor() {
         super();
@@ -25,7 +32,13 @@ export default class CurrencyStore extends Component {
         this.containerElt = DomHandler.getElement(".currency-store-container");
         this.closeBtn = DomHandler.getElement(".currency-store-close", this.containerElt);
 
+        this.paymentSuccessElt = DomHandler.getElement(".payment-success");
+        this.paymentSuccessPaypalElt = DomHandler.getElement(".payment-success-paypal", this.paymentSuccessElt);
+        this.paymentSuccessCrypoElt = DomHandler.getElement(".payment-success-crypto", this.paymentSuccessElt);
+
         this.processorsByElements = new Map();
+
+        this.successVisible = false;
     }
 
     public enable() {
@@ -37,6 +50,9 @@ export default class CurrencyStore extends Component {
     }
 
     private onClick(event: MouseEvent) {
+        if (this.successVisible) {
+            this.hideSuccess();
+        }
         if (event.target === this.closeBtn || event.target === this.containerElt) {
             this.hide();
         }
@@ -61,7 +77,8 @@ export default class CurrencyStore extends Component {
 
             const cryptoElts = Array.from(DomHandler.getElements(".buy-with-crypto", this.containerElt));
             for (const cryptoElt of cryptoElts) {
-                cryptoElt.setAttribute("data-custom", playerId);
+                const env = location.hostname === "battletanks.app" ? "prod" : "dev";
+                cryptoElt.setAttribute("data-custom", playerId + ":" + env);
                 const processor = new BuyWithCrypto();
                 processor.install(cryptoElt);
                 this.processorsByElements.set(cryptoElt, processor);
@@ -86,6 +103,39 @@ export default class CurrencyStore extends Component {
         }
     }
 
+    private onCryptoSuccess(event: any) {
+        console.log(event);
+        this.updatePlayerCurrency(event.code);
+    }
+
+    private onCryptoProcessing(event: any) {
+        console.log(event);
+        this.showSuccess(false);
+    }
+
+    private onCryptoError(event: any) {
+        console.error(event);
+    }
+
+    private showSuccess(showPaypal: boolean) {
+        this.paymentSuccessElt.style.display = "block";
+        if (showPaypal) {
+            this.paymentSuccessPaypalElt.style.display = "block";
+        } else {
+            this.paymentSuccessCrypoElt.style.display = "block";
+        }
+
+        this.successVisible = true;
+    }
+
+    private hideSuccess() {
+        this.paymentSuccessElt.style.display = "";
+        this.paymentSuccessPaypalElt.style.display = "";
+        this.paymentSuccessCrypoElt.style.display = "";
+
+        this.successVisible = false;
+    }
+
     private show() {
         this.containerElt.style.display = "block";
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
@@ -93,6 +143,7 @@ export default class CurrencyStore extends Component {
 
     private hide() {
         this.containerElt.style.display = "";
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
     }
 
     private createPaypalButton(price: string, playerId: string, containerId: string) {
@@ -136,45 +187,72 @@ export default class CurrencyStore extends Component {
                 return actions.payment.get().then((createdPaymentDetails: any) => {
                     this.informServer(createdPaymentDetails.id, playerId).then((isInformed) => {
                         if (isInformed) {
-                            actions.payment.execute().then((completedPaymentDetails: any) => {
+                            actions.payment.execute().then(() => {
                                 console.log("Successful payment!");
-                                // Alert player "You will be notified as soon as payment is processed";
+                                this.showSuccess(true);
+                                this.updatePlayerCurrency(createdPaymentDetails.id);
                             });
                         } else {
                             console.error("Server not notified.");
-                            // alert player
+                            window.alert("Unable to notify BattleTanks of transaction. Please send an email to ");
                         }
                     });
                 });
             },
             onError: (err: any) => {
                 console.error(err);
-                // alert player;
+                window.alert("Error reported by PayPal. Consider reporting this: " + err);
             },
         }, "#" + containerId);
-
     }
 
     private loadScripts() {
-        this.createScriptElt(CurrencyStore.COINBASE_SCRIPT_SRC);
-        this.createScriptElt(CurrencyStore.PAYPAL_SCRIPT_SRC);
+        this.createScriptElt(CurrencyStore.COINBASE_SCRIPT_SRC, () => {
+            // @ts-ignore
+            const BuyWithCrypto: any = window.BuyWithCrypto;
 
-        // let paypalSrc;
-        // if (location.hostname === "battletanks.app") {
-        //     paypalSrc = CurrencyStore.PAYPAL_SCRIPT_SRC_BASE + CurrencyStore.PROD_CLIENT_ID;
-        // } else {
-        //     paypalSrc = CurrencyStore.PAYPAL_SCRIPT_SRC_BASE + CurrencyStore.DEV_CLIENT_ID;
-        // }
-        // this.createScriptElt(paypalSrc);
+            BuyWithCrypto.registerCallback("onSuccess", this.onCryptoSuccess.bind(this));
+            BuyWithCrypto.registerCallback("onFailure", this.onCryptoError.bind(this));
+            BuyWithCrypto.registerCallback("onPaymentDetected", this.onCryptoProcessing.bind(this));
+        });
+        this.createScriptElt(CurrencyStore.PAYPAL_SCRIPT_SRC);
     }
 
-    private createScriptElt(src: string) {
+    private createScriptElt(src: string, callback?: () => void) {
         const script = document.createElement("script");
         script.setAttribute("async", "");
         script.setAttribute("defer", "");
 
         script.setAttribute("src", src);
+
+        if (callback) {
+            script.onload = callback;
+        }
+
         document.body.appendChild(script);
+    }
+
+    private updatePlayerCurrency(payment: string) {
+        let isProcessed = false;
+        const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
+
+        const payload = {
+            token,
+            payment,
+        };
+
+        const timerId = setInterval(async () => {
+            if (isProcessed) {
+                clearInterval(timerId);
+            } else {
+                const result = await MultiplayerConnection.fetchJson("/payment", payload);
+                if (result.complete) {
+                    EventHandler.callEvent(EventHandler.Event.PAYMENT_CURRENCY_UPDATE, result.currency);
+                    isProcessed = true;
+                    console.log("Payment procfessing confirmed.");
+                }
+            }
+        }, 3000);
     }
 
     private async informServer(paymentId: string, playerId: string): Promise<boolean> {
@@ -195,7 +273,12 @@ export default class CurrencyStore extends Component {
                 }),
             };
 
-            const response = await fetch(CurrencyStore.PAYPAL_CREATE_ENDPOINT, requestInit);
+            let endpoint = CurrencyStore.DEV_PAYPAL_CREATE_ENDPOINT;
+            if (location.hostname === "battletanks.app") {
+                endpoint = CurrencyStore.PROD_PAYPAL_CREATE_ENDPOINT;
+            }
+
+            const response = await fetch(endpoint, requestInit);
             return response.ok;
         } catch (err) {
             console.error(err);

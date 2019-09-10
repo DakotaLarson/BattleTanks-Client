@@ -1,15 +1,20 @@
+.side-panel .store-container-parent {
+    max-height: 70vh;
+    overflow: auto;
+    padding: 0.5vmin;
+}
+
 .side-panel .store-container {
     display: grid;
-    grid-template-columns: repeat(2, auto);
+    grid-template-columns: repeat(2, 22vmin);
+    grid-auto-rows: 22vmin;
     grid-gap: 1vmin;
     font-size: 2.5vmin;
     font-family: 'Inconsolata', sans-serif;
-
 }
+
 .side-panel .store-item-container {
     padding: 1vmin;
-    height: 20vmin;
-    width: 20vmin;
     border: solid 1px #ffffff;
     position: relative;
     display: flex;
@@ -21,6 +26,7 @@
     object-fit: contain;
     min-height: 0;
     padding: 0.5vmin;
+    width: 100%;
 }
 
 .side-panel .store-item-price {
@@ -38,9 +44,7 @@
 }
 
 .side-panel .store-item-custom-container {
-    position: absolute;
-    bottom: 5%;
-    left: 95%;
+    position: fixed;
     background-color: #101010;
     border: solid 1px #ffffff;
     z-index: 1;

@@ -7,6 +7,8 @@ export default class PlayerStats extends ChildComponent {
     private parentElt: HTMLElement;
     private containerElt: HTMLElement;
 
+    private currencyValueElt: HTMLElement | undefined;
+
     constructor(menuElt: HTMLElement) {
         super();
 
@@ -30,13 +32,26 @@ export default class PlayerStats extends ChildComponent {
         }
     }
 
+    public updateCurrency(currency: number) {
+        if (this.currencyValueElt) {
+            this.currencyValueElt.textContent = "" + currency;
+        }
+    }
+
     private renderStats(stats: any) {
         const statTitles = ["points", "rank", "currency", "victories", "defeats", "V/D", "kills", "deaths", "K/D", "shots", "hits", "accuracy"];
         const elts: HTMLElement[] = [];
         for (const title of statTitles) {
             if (stats[title] !== undefined) {
-                elts.push(this.createStatElt(title));
-                elts.push(this.createStatElt(stats[title]));
+                const titleElt = this.createStatElt(title);
+                const valueElt = this.createStatElt(stats[title]);
+
+                elts.push(titleElt);
+                elts.push(valueElt);
+
+                if (title === "currency") {
+                    this.currencyValueElt = valueElt;
+                }
             }
         }
         for (const elt of elts) {

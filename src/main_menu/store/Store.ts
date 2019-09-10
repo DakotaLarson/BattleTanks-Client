@@ -60,6 +60,7 @@ export default class Store extends Component {
         EventHandler.addListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onOverlayClose);
         EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
+        EventHandler.addListener(this, EventHandler.Event.PAYMENT_CURRENCY_UPDATE, this.onPaymentCurrencyUpdate);
 
         this.attachComponent(this.currencyStore);
     }
@@ -94,6 +95,10 @@ export default class Store extends Component {
         this.colorStore.updateStats(level, currency);
 
         this.currencyElt.textContent = "Currency: " + this.currency;
+    }
+
+    private onPaymentCurrencyUpdate(currency: number) {
+        this.updateStats(this.level, currency);
     }
 
     private onSignIn(token: string) {

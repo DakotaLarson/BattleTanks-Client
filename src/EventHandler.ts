@@ -260,6 +260,8 @@ enum Event {
 
     // CURRENCY STORE
     CURRENCY_STORE_REQUEST,
+
+    PAYMENT_CURRENCY_UPDATE,
 }
 
 enum Level {
