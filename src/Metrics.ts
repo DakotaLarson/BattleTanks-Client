@@ -84,10 +84,8 @@ export default class Metrics extends ChildComponent {
     public enable() {
 
         this.key = Metrics.DEV_SITE_KEY;
-        const host = location.hostname;
-        const prodHostname = "battletanks.app";
-        const stagingHostname = "dakotalarson.github.io";
-        if (host.includes(prodHostname) || host.includes(stagingHostname)) {
+
+        if (Globals.getGlobal(Globals.Global.IS_PROD)) {
             this.key = Metrics.PROD_SITE_KEY;
         }
 

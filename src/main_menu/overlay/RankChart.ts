@@ -6,10 +6,50 @@ import Overlay from "./Overlay";
 export default class RankChart extends Overlay {
 
     private static readonly REWARDS_BY_RANK: Map<string, string[]> = new Map([
-        ["Recruit", ["Little Timmy"]],
-        ["Sergeant", ["The Big Mama"]],
-        ["Sergeant", ["The Big Mama"]],
-        ["Officer", ["The Quad"]],
+        ["Recruit", [
+            "Lvl 0: BeefChief",
+            "Lvl 6: Snowplow",
+        ]],
+        ["Private", [
+            "Lvl 11: Dunebug",
+            "Lvl 16: Lightning",
+        ]],
+        ["Corporal", [
+            "Lvl 21: Jarhead",
+            "Lvl 26: Tankette",
+        ]],
+        ["Sergeant", [
+            "Lvl 31: Bullseye",
+            "Lvl 36: Challenger",
+        ]],
+        ["Officer", [
+            "Lvl 41: Schnoz",
+            "Lvl 46: Hornet",
+        ]],
+        ["Lieutenant", [
+            "Lvl 51: Centurion",
+            "Lvl 56: Ogimatok",
+        ]],
+        ["Commander", [
+            "Rewards",
+            "Coming Soon!",
+        ]],
+        ["Captain", [
+            "Rewards",
+            "Coming Soon!",
+        ]],
+        ["Major", [
+            "Rewards",
+            "Coming Soon!",
+        ]],
+        ["Colonel", [
+            "Rewards",
+            "Coming Soon!",
+        ]],
+        ["General", [
+            "Rewards",
+            "Coming Soon!",
+        ]],
     ]);
 
     private chartParent: HTMLElement;

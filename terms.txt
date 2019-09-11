@@ -3,10 +3,10 @@ battletanks.app (BattleTanks) - owned and operated by Dakota Larson
 Please contact me with any questions, concerns, or requests via email: contact@battletanks.app
 
 ** Definitions **
-- Usage of "I" or "my" or "me" in this document refers to Dakota Larson, the owner and operator of BattleTanks.
-- Usage of "BattleTanks" in this document refers to the website: https://battletanks.app including any other connected service that is owned by me. (Backend game servers, web servers, etc.)
-- Usage of "player" or "players" refers to one or many users of BattleTanks. 
-- Usage of "sharing" or "share" when relating to you, the player, refer to in-game chat, player-to-player conversations on BattleTanks, and sharing of BattleTanks related content on "social" platforms such as (but not limited to) facebook.com, twitter.com, and discordapp.com.
+- Usages of "I" or "my" or "me" in this document refer to Dakota Larson, the owner and operator of BattleTanks.
+- Usages of "BattleTanks" in this document refer to the website: https://battletanks.app including any other connected service that is owned by me. (Backend game servers, web servers, etc.)
+- Usages of "player" or "players" refer to one or many users of BattleTanks. 
+- Usages of "sharing" or "share" when relating to you, the player, refer to in-game chat, player-to-player conversations on BattleTanks, and sharing of BattleTanks related content on "social" platforms such as (but not limited to) facebook.com, twitter.com, and discordapp.com.
 - Usages of "sign in" refer to the use of an identity provider as a way to save the state of the application across multiple sessions and / or devices. At present, that identity provider is Google. 
 
 ** Terms & Conditions **
@@ -29,7 +29,7 @@ By continuing to use BattleTanks, you are agreeeing to the following terms and c
 - Theft of BattleTanks assets may result in legal action being pursued.
 
 ** Third Parties **
-BattleTanks uses third party integrations. By agreeing to use BattleTanksf, you agree to comply with the accompanied privacy policies.
+BattleTanks uses third party integrations. By agreeing to use BattleTanks, you agree to comply with the accompanied privacy policies.
 - Google: http://www.google.com/policies/privacy/partners/
 - Facebook: https://www.facebook.com/policy.php
 - Twitter: https://twitter.com/en/privacy
@@ -75,8 +75,7 @@ Notes:
 - If it is discovered you are under 13 years of age and have created an account, your account will be terminated.
 
 - BattleTanks does not intentonally collect data of any player under 13 years of age.
-- In the event a discovery is made that BattleTanks has collected data of a player under 13 years of age, said data will be promptly deleted.
-- 
+- In the event a discovery is made that BattleTanks has collected data of a player under 13 years of age, said data will be promptly deleted. 
 
 ** Purchases **
 - All purchases are final and are non-refundable. Reversals or "chargebacks" of payments prior to a written agreement between you and I may result in account termination.

@@ -23,8 +23,7 @@
 .currency-store-container .currency-store-option-container {
     display: flex;
     font-family: 'Inconsolata', sans-serif;
-    margin-bottom: 2.5vmin;
-    padding: 2.5vmin 0;
+    padding: 2.5vmin 0 2vmin 0;
 }
 
 @media only screen and (max-width: 1300px) {
@@ -74,6 +73,13 @@
 
 .currency-store-container .buy-with-paypal {
     margin-bottom: 1vmin;
+}
+
+.currency-store-container .currency-store-crypto-note {
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 1.75vmin;
+    margin-bottom: 2.5vmin;
+    color: #03c95f;
 }
 
 .payment-success {

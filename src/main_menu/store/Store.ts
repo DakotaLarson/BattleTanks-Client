@@ -218,13 +218,13 @@ export default class Store extends Component {
 
         this.colors = store.colors;
 
-        this.colorStore.updateColors(store.colors);
         this.renderStore(store, token !== undefined);
+        this.colorStore.updateColors(store.colors);
+
     }
 
     private renderStore(store: IStore, hasToken: boolean) {
         for (const [title, tank] of store.tanks) {
-
             const storeItem = new StoreItem(tank, title, store.colors, this.level, this.currency, hasToken);
             this.storeItems.push(storeItem);
             this.attachChild(storeItem);

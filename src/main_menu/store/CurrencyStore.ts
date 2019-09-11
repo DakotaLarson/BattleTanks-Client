@@ -77,7 +77,7 @@ export default class CurrencyStore extends Component {
 
             const cryptoElts = Array.from(DomHandler.getElements(".buy-with-crypto", this.containerElt));
             for (const cryptoElt of cryptoElts) {
-                const env = location.hostname === "battletanks.app" ? "prod" : "dev";
+                const env = Globals.getGlobal(Globals.Global.IS_PROD) ? "prod" : "dev";
                 cryptoElt.setAttribute("data-custom", playerId + ":" + env);
                 const processor = new BuyWithCrypto();
                 processor.install(cryptoElt);
@@ -151,7 +151,7 @@ export default class CurrencyStore extends Component {
         const Paypal: any = window.paypal;
 
         Paypal.Button.render({
-            env: location.hostname === "battletanks.app" ? "production" : "sandbox",
+            env: Globals.getGlobal(Globals.Global.IS_PROD) ? "production" : "sandbox",
             client: {
                 sandbox: CurrencyStore.DEV_CLIENT_ID,
                 production: CurrencyStore.PROD_CLIENT_ID,
@@ -274,7 +274,7 @@ export default class CurrencyStore extends Component {
             };
 
             let endpoint = CurrencyStore.DEV_PAYPAL_CREATE_ENDPOINT;
-            if (location.hostname === "battletanks.app") {
+            if (Globals.getGlobal(Globals.Global.IS_PROD)) {
                 endpoint = CurrencyStore.PROD_PAYPAL_CREATE_ENDPOINT;
             }
 

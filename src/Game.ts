@@ -65,6 +65,8 @@ class Game extends Component {
         this.prevDebugTime = now;
         this.debugFPSCount = 0;
 
+        Globals.setGlobal(Globals.Global.IS_PROD, location.hostname === "battletanks.app");
+
         BatchHandler.initialize();
         BillboardBatchHandler.initialize();
         ComponentDebugger.initialize();
@@ -241,11 +243,8 @@ class Game extends Component {
     private setHost() {
         let isLocal = true;
         let address = "://" + location.hostname + ":8000";
-        const host = location.hostname;
-        const prodHostname = "battletanks.app";
-        const stagingHostname = "dakotalarson.github.io";
-        if (host.includes(prodHostname) || host.includes(stagingHostname)) {
-            address = "s://battle-tanks-server.herokuapp.com";
+        if (Globals.getGlobal(Globals.Global.IS_PROD)) {
+            address = "s://na.battletanks.app";
             isLocal = false;
         }
         Globals.setGlobal(Globals.Global.HOST, address);
