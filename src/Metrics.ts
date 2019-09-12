@@ -1,4 +1,5 @@
 import ChildComponent from "./component/ChildComponent";
+import DomHandler from "./DomHandler";
 import EventHandler from "./EventHandler";
 import Globals from "./Globals";
 
@@ -37,6 +38,7 @@ export default class Metrics extends ChildComponent {
 
         // @ts-ignore SystemJS incompatibility?
         const uaResult = new UAParser(navigator.userAgent).getResult();
+        this.updateOverlay(uaResult);
 
         this.browser = uaResult.browser.name + " " + uaResult.browser.major;
         this.os = uaResult.os.name + " " + uaResult.os.version;
@@ -225,6 +227,19 @@ export default class Metrics extends ChildComponent {
                 reject(err);
             });
         });
+    }
+
+    private updateOverlay(result: any) {
+        const parentElt = DomHandler.getElement(".device-block-parent");
+        if (!result.device.type) {
+            parentElt.style.display = "none";
+        } else {
+            const btn = DomHandler.getElement(".btn", parentElt);
+            btn.onclick = () => {
+                parentElt.style.display = "none";
+            };
+        }
+
     }
 
     private loadScript(cb: () => any) {

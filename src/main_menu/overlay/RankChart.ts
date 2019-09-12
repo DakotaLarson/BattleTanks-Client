@@ -20,19 +20,18 @@ export default class RankChart extends Overlay {
         ]],
         ["Sergeant", [
             "Lvl 31: Bullseye",
-            "Lvl 36: Challenger",
+            "Lvl 36: Marauder",
         ]],
         ["Officer", [
             "Lvl 41: Schnoz",
             "Lvl 46: Hornet",
         ]],
         ["Lieutenant", [
-            "Lvl 51: Centurion",
-            "Lvl 56: Ogimatok",
+            "Lvl 51: Challenger",
+            "Lvl 56: Centurion",
         ]],
         ["Commander", [
-            "Rewards",
-            "Coming Soon!",
+            "Lvl 61: Ogimatok",
         ]],
         ["Captain", [
             "Rewards",

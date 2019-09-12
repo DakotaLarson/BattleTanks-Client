@@ -4,7 +4,7 @@ Project progress tracked on Trello: https://trello.com/b/XkG9gNRn
 
 ## Description
 
-BattleTanks is a free 2.5d web based tank shooter where two teams of players battle it out in a team elimination gamemode!
+The best free multiplayer tank game! (No installation required)
 
 ## Art 
 
