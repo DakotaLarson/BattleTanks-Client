@@ -1,0 +1,28 @@
+.tos-block-parent {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.tos-block-parent .tos-block {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 2.5vmin;
+    border: solid 1px #ffffff;
+    background: #101010;
+    text-align: center;
+}
+
+.tos-block-parent .tos-block-text {
+    font-size: 2vmin;
+    font-family: 'Inconsolata', sans-serif;
+    color: #ffffff;
+    margin-bottom: 2vmin;
+}
+
+.tos-block-parent .btn {
+    color: #ffffff;
+}

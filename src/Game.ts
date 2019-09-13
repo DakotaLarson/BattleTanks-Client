@@ -100,6 +100,8 @@ class Game extends Component {
         this.gameTimer = new GameTimer();
         this.recordingSelector = new RecordingSelector();
 
+        this.hideTerms();
+
     }
     public enable() {
 
@@ -279,6 +281,24 @@ class Game extends Component {
             "Purchase tanks and customize them in the store!",
         ];
         Globals.setGlobal(Globals.Global.TIPS, tips);
+    }
+
+    private hideTerms() {
+        const localStorageKey = "termsAccepted";
+        const tosParent = DomHandler.getElement(".tos-block-parent");
+        const termsAccepted = localStorage.getItem(localStorageKey);
+
+        if (termsAccepted === "1") {
+            tosParent.style.display = "none";
+        } else {
+            const acceptBtn = DomHandler.getElement(".tos-block-accept");
+            acceptBtn.onclick = (event: MouseEvent) => {
+                if (!event.button) {
+                    localStorage.setItem(localStorageKey, "1");
+                    tosParent.style.display = "none";
+                }
+            };
+        }
     }
 }
 
