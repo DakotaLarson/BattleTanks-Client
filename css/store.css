@@ -1,15 +1,20 @@
+.side-panel .store-container-parent {
+    max-height: 70vh;
+    overflow: auto;
+    padding: 0.5vmin;
+}
+
 .side-panel .store-container {
     display: grid;
-    grid-template-columns: repeat(2, auto);
+    grid-template-columns: repeat(2, 22vmin);
+    grid-auto-rows: 22vmin;
     grid-gap: 1vmin;
     font-size: 2.5vmin;
     font-family: 'Inconsolata', sans-serif;
-
 }
+
 .side-panel .store-item-container {
     padding: 1vmin;
-    height: 20vmin;
-    width: 20vmin;
     border: solid 1px #ffffff;
     position: relative;
     display: flex;
@@ -21,6 +26,7 @@
     object-fit: contain;
     min-height: 0;
     padding: 0.5vmin;
+    width: 100%;
 }
 
 .side-panel .store-item-price {
@@ -38,9 +44,7 @@
 }
 
 .side-panel .store-item-custom-container {
-    position: absolute;
-    top: 95%;
-    left: 95%;
+    position: fixed;
     background-color: #101010;
     border: solid 1px #ffffff;
     z-index: 1;
@@ -82,12 +86,16 @@
     width: 2.5vmin;
     margin-right: 1vmin;
     border: solid 1px #ffffff;
+    flex-shrink: 0;
 }
 
 .side-panel .store-item-custom-color-inner-container,
 .overlay-color .store-item-custom-color-inner-container {
     display: flex;
     margin-right: 1vmin;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .side-panel .dropdown-container .arrow-down,
@@ -103,12 +111,18 @@
     text-align: right;
 }
 
+.side-panel .store-currency-container,
+.overlay-color .store-currency-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1vmin;
+}
 .side-panel .store-currency,
 .overlay-color .store-currency {
     text-align: left;
     font-family: 'Inconsolata', sans-serif;
     font-size: 2vmin;
-    margin-bottom: 1vmin;
 }
 
 .overlay-color .overlay-color-title {

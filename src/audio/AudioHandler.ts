@@ -9,13 +9,15 @@ import AudioType from "./AudioType";
 export default class AudioHandler extends Component {
 
     private audioListener: AudioListener;
+    private recordingAudioListener: AudioListener;
     private buffers: Map<string, AudioBuffer>;
 
     private useMP3: boolean;
 
-    constructor(audioListener: AudioListener) {
+    constructor(audioListener: AudioListener, recordingAudioListener: AudioListener) {
         super();
         this.audioListener = audioListener;
+        this.recordingAudioListener = recordingAudioListener;
         const audioLoader = new AudioLoader();
         this.buffers = new Map();
 
@@ -30,6 +32,7 @@ export default class AudioHandler extends Component {
         for (const audioFile in AudioType) {
             // @ts-ignore Disregard extra arguments.
             audioLoader.load(this.getFullPath(audioFile), (buffer: AudioBuffer) => {
+                // @ts-ignore
                 this.buffers.set(AudioType[audioFile], buffer);
             });
         }
@@ -40,27 +43,41 @@ export default class AudioHandler extends Component {
     }
 
     private onAudioPlay(audio: AudioType) {
-        if (Globals.getGlobal(Globals.Global.AUDIO_ENABLED) && Options.options.effectsVolume) {
-            const buffer = this.buffers.get(audio);
-            if (buffer) {
-                this.playBuffer(audio, buffer);
-            } else {
-                console.warn("Unable to play audio: " + audio);
+
+        const buffer = this.buffers.get(audio);
+
+        if (buffer) {
+            this.playRecordedBuffer(buffer);
+
+            if (Globals.getGlobal(Globals.Global.AUDIO_ENABLED) && Options.options.effectsVolume) {
+                if (buffer) {
+                    this.playBuffer(buffer);
+                }
             }
+        } else {
+            console.warn("Unable to play audio: " + audio);
         }
     }
 
-    private playBuffer(audioType: AudioType, buffer: AudioBuffer) {
+    private playBuffer(buffer: AudioBuffer) {
         const audio = new ThreeAudio(this.audioListener);
         audio.setBuffer(buffer);
         audio.setVolume(Options.options.effectsVolume);
         audio.play();
     }
 
+    private playRecordedBuffer(buffer: AudioBuffer) {
+        const recordedAudio = new ThreeAudio(this.recordingAudioListener);
+        recordedAudio.setBuffer(buffer);
+        recordedAudio.play();
+    }
+
     private getFullPath(audioFile: any) {
         if (this.useMP3) {
+            // @ts-ignore
             return location.pathname + AudioType[audioFile] + ".mp3";
         } else {
+            // @ts-ignore
             return location.pathname + AudioType[audioFile] + ".ogg";
         }
     }

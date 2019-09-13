@@ -90,7 +90,7 @@
 
 .discord-container {
     position: absolute;
-    bottom: 2.5vmin;
+    bottom: 1.5vmin;
     right: 2.5vmin;
 }
 
@@ -103,15 +103,27 @@
     display: inline-block;
 }
 
-.play-button-container {
+.main-menu .play-btn-options-container {
+    display: flex;
+    align-items: center;
+}
+
+.main-menu .play-button-container {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    top: 75vh;
+    bottom: 2.5vh;
+}
+
+.main-menu .play-btn-option {
+    width: 22.5vmin;
+    margin: 1vmin;
 }
 
 .main-menu .play-btn {
     background-color: #03b053;
+    font-size: 10vmin;
+    padding: 2vmin 0;
 }
 
 .main-menu .play-btn:hover {
@@ -120,22 +132,39 @@
     color: white;
 }
 
+.main-menu .custom-lobby-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-menu .custom-lobby-title {
+    font-size: 3.5vmin;
+    margin-bottom: 1vmin;
+}
+
+.main-menu .custom-lobby-create,
+.main-menu .custom-lobby-join {
+    width: 75%;
+}
+
+.main-menu .play-btn-vertical-line {
+    height: 20vmin;
+}
+
 .main-menu .create-btn {
     margin-top: 10vh;
 }
 
-.main-menu .feedback-request {
-    position: absolute;
-    left: 2.5vmin;
-    bottom: 2.5vmin;
-    width: 33vw;
+.main-menu .main-menu-version {
     font-family: 'Inconsolata', sans-serif;
     font-size: 2.5vmin;
-    text-align: left;
-    margin: 0;
 }
-.main-menu .feedback-greeting {
-    font-size: 4vmin;
+
+.main-menu .main-menu-terms {
+    display: inline-block;
+    margin-top: 1vmin;
+    font-size: 1.5vmin;
 }
 
 .main-menu .auth-container {
@@ -169,15 +198,16 @@
     line-height: 2.5vmin;
 }
 
-.main-menu .partners-link {
+.main-menu .main-menu-link-container {
     position: absolute;
     top: 2.5vmin;
     right: 26vmin;
-    font-size: 3vmin;
-    padding: 0 0.5vmin;
-    border: solid 1px #ffffff;
+}
+
+.main-menu .partners-link {
     color: #ffffff;
     text-decoration: none;
+    margin-right: 1.5vmin;
 }
 
 .main-menu .partners-link:hover {
@@ -195,7 +225,7 @@
     border: solid 1px #ffffff;
 }
 
-.main-menu .data-container,
+.data-container,
 .main-menu .leaderboard-container,
 .main-menu .search-container {
     display: grid;
@@ -286,22 +316,22 @@
     display: none;
 }
 
-.main-menu .menu-link {
+.menu-link {
     font-size: 2vmin;
     color: #00b9ff;
     text-decoration: underline;
     font-family: 'Inconsolata', sans-serif;
 }
 
-.main-menu .menu-link:hover {
+.menu-link:hover {
     cursor: pointer;
     color: #33c9ff;
 }
 
-.main-menu .menu-link-xl {
+.menu-link-xl {
     font-size: 2.5vmin;
 }
 
-.main-menu .menu-link-small {
+.menu-link-small {
     font-size: 1.5vmin;
 }

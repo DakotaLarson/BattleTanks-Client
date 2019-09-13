@@ -6,9 +6,11 @@ import Options from "../Options";
 import AmmoDisplay from "./AmmoDisplay";
 import Chat from "./Chat";
 import DebugPanel from "./DebugPanel";
+import GameTips from "./GameTips";
 import HealthBar from "./HealthBar";
 import Joystick from "./Joystick";
 import Killfeed from "./Killfeed";
+import LobbyCode from "./LobbyCode";
 import PlayerList from "./PlayerList";
 import RamBar from "./RamBar";
 import ShieldBar from "./ShieldBar";
@@ -26,6 +28,8 @@ export default class GUI extends Component {
     private joystick: Joystick;
     private chat: Chat;
     private playerList: PlayerList;
+    private lobbyCode: LobbyCode;
+    private gameTips: GameTips;
 
     constructor() {
         super();
@@ -40,6 +44,9 @@ export default class GUI extends Component {
         this.joystick = new Joystick(this.element);
         this.chat = new Chat(this.element);
         this.playerList = new PlayerList(this.element);
+        this.lobbyCode = new LobbyCode();
+        this.gameTips = new GameTips(this.element);
+
     }
 
     public enable() {
@@ -56,6 +63,8 @@ export default class GUI extends Component {
         }
 
         this.attachChild(this.playerList);
+        this.attachChild(this.lobbyCode);
+
         DOMMutationHandler.show(this.element);
     }
 
@@ -67,6 +76,7 @@ export default class GUI extends Component {
         this.detachChild(this.killfeed);
         this.detachChild(this.chat);
         this.detachChild(this.playerList);
+        this.detachChild(this.lobbyCode);
 
         DOMMutationHandler.hide(this.element);
     }
@@ -80,6 +90,8 @@ export default class GUI extends Component {
         if (DomHandler.supportsTouch()) {
             this.attachChild(this.joystick);
         }
+
+        this.detachChild(this.gameTips);
     }
 
     private onPlayerRemoval() {
@@ -88,5 +100,9 @@ export default class GUI extends Component {
         this.detachChild(this.ramBar);
         this.detachChild(this.ammoDisplay);
         this.detachChild(this.joystick);
+
+        if (Options.options.gameTipsEnabled) {
+            this.attachChild(this.gameTips);
+        }
     }
 }

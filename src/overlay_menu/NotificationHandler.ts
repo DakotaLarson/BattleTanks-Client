@@ -11,6 +11,7 @@ export default class NotificationHandler extends Component {
         "friend_accept",
         "level_up",
         "rank_up",
+        "referral",
     ];
     private static readonly MAX_NOTIFICATION_LENGTH = 50;
     private static readonly MAX_VISIBLE_TIME = 5000;
@@ -37,6 +38,7 @@ export default class NotificationHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
         EventHandler.addListener(this, EventHandler.Event.DOM_BEFOREUNLOAD, this.closeEventSource);
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.PAYMENT_CURRENCY_UPDATE, this.onPaymentCurrencyUpdate);
     }
 
     private onClick(event: MouseEvent) {
@@ -68,6 +70,12 @@ export default class NotificationHandler extends Component {
         this.closeEventSource();
     }
 
+    private onPaymentCurrencyUpdate(currency: number) {
+        this.renderNotification("payment", {
+            currency,
+        });
+    }
+
     private openEventSource(token: string) {
         const address = "http" + Globals.getGlobal(Globals.Global.HOST);
         const encodedToken = encodeURIComponent(token);
@@ -92,6 +100,7 @@ export default class NotificationHandler extends Component {
                     const body = JSON.parse(notification.body);
                     // Live notification; Display notification
                     this.renderNotification(type, body);
+                    // Update conversation / profile view
                     EventHandler.callEvent(EventHandler.Event.NOTIFICATION_ONLINE, {
                         type,
                         body,
@@ -129,7 +138,6 @@ export default class NotificationHandler extends Component {
             } else {
                 title = "Friend Request Accepted";
             }
-
             message = body.username + " " + body.message;
             notificationData.type = "other";
 
@@ -140,9 +148,19 @@ export default class NotificationHandler extends Component {
             } else {
                 title = body.username + " Ranked Up!";
             }
-
             message = body.username + " " + body.message;
             notificationData.type = "other";
+
+        } else if (type === "referral") {
+
+            title = "Referral code used!";
+            message = body.username + " used your referral code!";
+            notificationData.type = "other";
+
+        } else if (type === "payment") {
+
+            title = "Payment Processed!";
+            message = "You now have " + body.currency + " currency!";
 
         } else {
             throw new Error("Unknown notification type: " + type);

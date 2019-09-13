@@ -18,6 +18,8 @@ export default class Leaderboard extends ChildComponent {
     private leaderboardSelection: number;
     private lastSelectionTime: number;
 
+    private needsUpdate = false;
+
     constructor(menuElt: HTMLElement) {
         super();
 
@@ -43,7 +45,7 @@ export default class Leaderboard extends ChildComponent {
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
 
         this.updateLeaderboards();
     }
@@ -51,12 +53,19 @@ export default class Leaderboard extends ChildComponent {
     public disable() {
         EventHandler.removeListener(this, EventHandler.Event.SIGN_IN, this.onSignIn);
         EventHandler.removeListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
         this.clearLeaderboard();
     }
 
-    private onSignIn() {
-        this.updateLeaderboards();
+    private onSignIn(token: string) {
+
+        if (this.needsUpdate) {
+            this.updateLeaderboards();
+        } else {
+            this.getLeaderboardRank(token);
+            this.needsUpdate = true;
+        }
+
     }
 
     private onSignOut() {
@@ -83,6 +92,7 @@ export default class Leaderboard extends ChildComponent {
 
     private updateLeaderboards() {
         this.lastSelectionTime = performance.now();
+        this.needsUpdate = false;
         this.getLeaderboard().then(() => {
             const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
             if (authToken) {

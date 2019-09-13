@@ -33,7 +33,7 @@ export default class NotificationList extends Component {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
         EventHandler.addListener(this, EventHandler.Event.NOTIFICATION_OFFLINE, this.onOfflineNotification);
         EventHandler.addListener(this, EventHandler.Event.NOTIFICATION_RESET, this.onNotificationReset);
     }
@@ -73,18 +73,12 @@ export default class NotificationList extends Component {
                 header = "Friend request accepted";
                 body = event.username + " accepted your friend request";
             }
-            const id = ++ this.lastNotificationId;
+            this.createOfflineNotificationElt(header, body, event.username, event.type);
 
-            fastdom.mutate(() => {
-                const elt = this.createElt(header, body, id);
-                this.containerElt.appendChild(elt);
-            });
-
-            this.notifications.set(id, {
-                username: event.username,
-                type: event.type,
-            });
-            this.updateElements(this.notifications.size);
+        } else if (event.type === "referral") {
+            const header = "Referral code used!";
+            const body = event.username + " used your referral code!";
+            this.createOfflineNotificationElt(header, body, event.username, event.type);
         }
     }
 
@@ -104,6 +98,19 @@ export default class NotificationList extends Component {
     private hideList() {
         DOMMutationHandler.hide(this.parentElt);
         this.listOpen = false;
+    }
+
+    private createOfflineNotificationElt(header: string, body: string, username: string, type: string) {
+        const id = ++ this.lastNotificationId;
+
+        const elt = this.createElt(header, body, id);
+        this.containerElt.appendChild(elt);
+
+        this.notifications.set(id, {
+            username,
+            type,
+        });
+        this.updateElements(this.notifications.size);
     }
 
     private updateElements(quantity: number) {

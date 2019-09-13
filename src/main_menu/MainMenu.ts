@@ -6,11 +6,14 @@ import { PerspectiveCamera } from "three";
 import MenuCamera from "../arena/camera/MenuCamera";
 import AudioType from "../audio/AudioType";
 import DOMMutationHandler from "../DOMMutationHandler";
+import Options from "../Options";
 import GameSuggestion from "./GameSuggestion";
 import Leaderboard from "./Leaderboard";
 import PlayButton from "./PlayButton";
-import ServerPlayerCount from "./ServerPlayerCount";
+import Referrals from "./Referrals";
+// import ServerPlayerCount from "./ServerPlayerCount";
 import SidePanel from "./side_panel/SidePanel";
+import Store from "./store/Store";
 
 export default class MainMenu extends ChildComponent {
 
@@ -18,8 +21,9 @@ export default class MainMenu extends ChildComponent {
 
     private playButton: PlayButton;
 
-    private serverPlayercount: ServerPlayerCount;
+    // private serverPlayercount: ServerPlayerCount;
     private gameSuggestion: GameSuggestion;
+    private referrals: Referrals;
     private sidePanel: SidePanel;
     private leaderboard: Leaderboard;
     private menuCamera: MenuCamera;
@@ -27,7 +31,7 @@ export default class MainMenu extends ChildComponent {
     private headerContainerElt: HTMLElement;
     private playBtnContainerElt: HTMLElement;
 
-    constructor(camera: PerspectiveCamera) {
+    constructor(version: number, camera: PerspectiveCamera, store: Store) {
         super();
         this.element = DomHandler.getElement(".main-menu");
 
@@ -36,11 +40,14 @@ export default class MainMenu extends ChildComponent {
 
         this.playButton = new PlayButton(this.playBtnContainerElt);
 
-        this.serverPlayercount = new ServerPlayerCount(this.element);
+        // this.serverPlayercount = new ServerPlayerCount(this.element);
         this.gameSuggestion = new GameSuggestion(this.element);
-        this.sidePanel = new SidePanel(this.element);
+        this.referrals = new Referrals(this.element);
+        this.sidePanel = new SidePanel(this.element, store);
         this.leaderboard = new Leaderboard(this.element);
         this.menuCamera = new MenuCamera(camera);
+
+        this.updateVersionElt(this.element, version);
     }
     public enable() {
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECT_REQUEST, this.onMpJoinRequest);
@@ -49,11 +56,16 @@ export default class MainMenu extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.STORE_CLOSE, this.onStoreClose);
 
         this.attachChild(this.playButton);
-        this.attachChild(this.serverPlayercount);
-        this.attachChild(this.gameSuggestion);
+        // this.attachChild(this.serverPlayercount);
+
+        this.attachChild(this.referrals);
         this.attachChild(this.sidePanel);
         this.attachChild(this.leaderboard);
         this.attachChild(this.menuCamera);
+
+        if (Options.options.gameTipsEnabled) {
+            this.attachChild(this.gameSuggestion);
+        }
 
         DOMMutationHandler.show(this.element);
         this.onStoreClose();
@@ -67,8 +79,9 @@ export default class MainMenu extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.STORE_CLOSE, this.onStoreClose);
 
         this.detachChild(this.playButton);
-        this.detachChild(this.serverPlayercount);
+        // this.detachChild(this.serverPlayercount);
         this.detachChild(this.gameSuggestion);
+        this.detachChild(this.referrals);
         this.detachChild(this.sidePanel);
         this.detachChild(this.leaderboard);
         this.detachChild(this.menuCamera);
@@ -106,4 +119,10 @@ export default class MainMenu extends ChildComponent {
     //     const audio = new Audio(location.pathname + "audio/menu-hover.wav");
     //     audio.play();
     // }
+
+    private updateVersionElt(parentElt: HTMLElement, version: number) {
+        const elt = DomHandler.getElement(".main-menu-version", parentElt);
+
+        elt.textContent = "v" + version;
+    }
 }

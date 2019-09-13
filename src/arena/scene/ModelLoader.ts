@@ -31,7 +31,6 @@ export default class ModelLoader {
             return clone;
         } else {
             const creator = await this.getMaterial(fileName);
-
             for (const prop in creator.materials) {
                 if (creator.materials.hasOwnProperty(prop)) {
                     const material = creator.materials[prop] as MeshPhongMaterial;

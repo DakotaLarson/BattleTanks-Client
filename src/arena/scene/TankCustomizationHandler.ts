@@ -22,7 +22,7 @@ export default class TankCustomizationHandler extends Component {
     }
 
     private async onSignIn(token: string) {
-        const selection = await MultiplayerConnection.fetch("/selection", {
+        const selection = await MultiplayerConnection.fetchJson("/selection", {
             token,
         });
 

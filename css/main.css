@@ -55,10 +55,6 @@ html, body{
     border-color: #03c95f;
 }
 
-.menu-selection-xl{
-    font-size: 10vmin;
-    padding: 2vmin 3vmin;
-}
 .menu-selection-small {
     font-size: 3.5vmin;
     padding: 0.25vmin 0.5vmin;
@@ -104,4 +100,10 @@ html, body{
     border-left: 0.75vmin solid transparent;
     border-right: 0.75vmin solid transparent;
     border-top: 0.75vmin solid #ffffff;
+}
+
+.vertical-line {
+    width: 1px;
+    height: 100%;
+    background-color: #ffffff;
 }

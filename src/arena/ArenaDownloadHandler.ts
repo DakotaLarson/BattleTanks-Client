@@ -57,8 +57,8 @@ export default class ArenaDownloadHandler extends ChildComponent {
 
     private showMenu() {
         if (!this.visible) {
-            EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
-            EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onDownloadClick);
+            EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onReturnClick);
+            EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onDownloadClick);
 
             DOMMutationHandler.show(this.parent);
             DOMMutationHandler.focus(this.titleValueElt);
@@ -68,8 +68,8 @@ export default class ArenaDownloadHandler extends ChildComponent {
 
     private hideMenu() {
         if (this.visible) {
-            EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onReturnClick);
-            EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onDownloadClick);
+            EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onReturnClick);
+            EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onDownloadClick);
 
             this.arenaData = undefined;
 

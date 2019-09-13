@@ -1,0 +1,64 @@
+.voting-parent {
+    font-family: 'Inconsolata', sans-serif;
+}
+
+.voting-parent .voting-title {
+    font-size: 3.5vmin;
+}
+
+.voting-parent .voting-option-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.voting-parent .voting-option {
+    border: solid 1px #ffffff;
+    margin-bottom: 1vmin;
+    font-size: 2.5vmin;
+    position: relative;
+    background-size: contain;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    width: 37.5vmin;
+    height: 15vmin;
+    color: #03c95f;
+}
+.voting-parent .voting-option-author,
+.voting-parent .voting-option-count,
+.voting-parent .voting-option-title {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 0 0.5vmin;
+    pointer-events: none;
+}
+
+.voting-parent .voting-option-author {
+    position: absolute;
+    bottom: 0.5vmin;
+    left: 0.5vmin;
+    font-size: 1.75vmin;
+    padding: 0 0.3vmin;
+}
+
+.voting-parent .voting-option-count {
+    position: absolute;
+    bottom: 0.5vmin;
+    right: 0.5vmin;
+}
+
+.voting-parent .voting-option-title {
+    position: absolute;
+    top: 0.5vmin;
+    left: 0.5vmin;
+}
+
+.voting-parent .voting-option-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.voting-parent .voting-option-overlay:hover {
+    background: rgba(255, 255, 255, 0.1);
+}

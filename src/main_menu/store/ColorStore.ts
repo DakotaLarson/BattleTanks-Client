@@ -13,6 +13,7 @@ export default class ColorStore extends Overlay {
     private titleElt: HTMLElement;
     private containerElt: HTMLElement;
     private currencyElt: HTMLElement;
+    private moreCurrencyBtn: HTMLElement;
 
     private actionsByTitles: Map<string, HTMLElement>;
     private colorsByTitles: Map<string, IStoreObject>;
@@ -26,6 +27,7 @@ export default class ColorStore extends Overlay {
         this.titleElt = DomHandler.getElement(".overlay-color-title", this.contentElt);
         this.containerElt = DomHandler.getElement(".overlay-color-container", this.contentElt);
         this.currencyElt = DomHandler.getElement(".store-currency", this.contentElt);
+        this.moreCurrencyBtn = DomHandler.getElement(".store-more-currency", this.contentElt);
 
         this.actionsByTitles = new Map();
         this.colorsByTitles = new Map();
@@ -34,13 +36,13 @@ export default class ColorStore extends Overlay {
     public enable() {
         super.enable();
 
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
     }
 
     public disable() {
         super.disable();
 
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
     }
 
     public updateColors(colors: Map<string, IStoreObject>) {
@@ -132,8 +134,12 @@ export default class ColorStore extends Overlay {
 
     private onClick(event: MouseEvent) {
         const target = event.target as HTMLElement;
+        if (target === this.moreCurrencyBtn) {
 
-        if (target.classList.contains("btn-sml") && !target.classList.contains("btn-selected") && !target.classList.contains("btn-disabled")) {
+            EventHandler.callEvent(EventHandler.Event.CURRENCY_STORE_REQUEST);
+
+        } else if (target.classList.contains("btn-sml") && !target.classList.contains("btn-selected") && !target.classList.contains("btn-disabled")) {
+
             for (const [title, actionElt] of this.actionsByTitles) {
                 if (target === actionElt) {
                     EventHandler.callEvent(EventHandler.Event.STORE_ITEM_MORE_COLORS_PURCHASE, title);

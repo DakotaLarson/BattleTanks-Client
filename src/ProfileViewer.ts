@@ -106,6 +106,8 @@ export default class ProfileViewer extends Component {
         if (!this.conversationOpen) {
             const classList = (event.target as HTMLElement).classList;
             if (this.selectedUsername) {
+                const username = this.selectedUsername!;
+
                 if (event.target !== this.parentElt && !this.parentElt.contains(event.target as Node)) {
 
                     // Click is outside.
@@ -120,7 +122,7 @@ export default class ProfileViewer extends Component {
                 } else if (event.target === this.friendActionElt && !classList.contains("profile-action-disabled") && !classList.contains("profile-action-enabled")) {
 
                     // Click is on friendship elt
-                    this.updateFriendship(true);
+                    this.updateFriendship(true, username);
 
                 } else if (event.target === this.negativeActionElt) {
 
@@ -132,7 +134,7 @@ export default class ProfileViewer extends Component {
                     }
 
                     if (confirmation) {
-                        this.updateFriendship(false);
+                        this.updateFriendship(false, username);
                     }
                 } else if (event.target === this.viewActionElt) {
                     if (this.statsVisible) {
@@ -205,29 +207,27 @@ export default class ProfileViewer extends Component {
     }
 
     private closeProfile() {
-        fastdom.mutate(() => {
-            while (this.primaryContainerElt.firstChild) {
-                this.primaryContainerElt.removeChild(this.primaryContainerElt.firstChild);
-            }
-            this.messageElt.textContent = "";
+        while (this.primaryContainerElt.firstChild) {
+            this.primaryContainerElt.removeChild(this.primaryContainerElt.firstChild);
+        }
+        this.messageElt.textContent = "";
 
-            this.friendActionElt.textContent = "";
-            this.friendActionElt.classList.remove("profile-action-disabled");
-            this.friendActionElt.removeAttribute("title");
-            this.friendActionElt.style.display = "";
+        this.friendActionElt.textContent = "";
+        this.friendActionElt.classList.remove("profile-action-disabled");
+        this.friendActionElt.removeAttribute("title");
+        this.friendActionElt.style.display = "";
 
-            this.conversationActionElt.classList.remove("profile-action-disabled");
-            this.conversationActionElt.removeAttribute("title");
-            this.conversationActionElt.style.display = "";
+        this.conversationActionElt.classList.remove("profile-action-disabled");
+        this.conversationActionElt.removeAttribute("title");
+        this.conversationActionElt.style.display = "";
 
-            this.negativeActionElt.style.display = "";
+        this.negativeActionElt.style.display = "";
 
-            this.parentElt.style.left = "";
-            this.parentElt.style.right = "";
-            this.parentElt.style.top = "";
-            this.parentElt.style.bottom = "";
-            this.parentElt.style.display = "";
-        });
+        this.parentElt.style.left = "";
+        this.parentElt.style.right = "";
+        this.parentElt.style.top = "";
+        this.parentElt.style.bottom = "";
+        this.parentElt.style.display = "";
 
         this.selectedUsername = undefined;
         this.friendsState = -1;
@@ -250,7 +250,7 @@ export default class ProfileViewer extends Component {
         }
 
         this.formatProfileData(data);
-        const statTitles = ["points", "rank", "victories", "defeats", "V/D", "kills", "deaths", "K/D", "shots", "hits", "accuracy"];
+        const statTitles = ["points", "currency", "rank", "victories", "defeats", "V/D", "kills", "deaths", "K/D", "shots", "hits", "accuracy"];
         const primaryTitles = ["last seen", "first seen", "time played"];
         const primaryElts: HTMLElement[] = [];
         const statsElts: HTMLElement[] = [];
@@ -265,7 +265,9 @@ export default class ProfileViewer extends Component {
         const rankData = RankCalculator.getData(data.points);
 
         primaryElts.push(this.createProfileDataElt("Rank"));
-        primaryElts.push(this.createProfileDataElt(rankData.rank));
+        const rankElt = this.createProfileDataElt(rankData.rank);
+        rankElt.style.color = RankCalculator.getRankColor(rankData.rank)!;
+        primaryElts.push(rankElt);
 
         primaryElts.push(this.createProfileDataElt("Level"));
         primaryElts.push(this.createProfileDataElt(rankData.level));
@@ -276,16 +278,14 @@ export default class ProfileViewer extends Component {
                 primaryElts.push(this.createProfileDataElt(data[title]));
             }
         }
-        fastdom.mutate(() => {
 
-            for (const elt of primaryElts) {
-                this.primaryContainerElt.appendChild(elt);
-            }
+        for (const elt of primaryElts) {
+            this.primaryContainerElt.appendChild(elt);
+        }
 
-            for (const elt of statsElts) {
-                this.statsContainerElt.appendChild(elt);
-            }
-        });
+        for (const elt of statsElts) {
+            this.statsContainerElt.appendChild(elt);
+        }
 
         DOMMutationHandler.setText(this.viewActionElt, ProfileViewer.VIEW_ACTION_PRIMARY);
         DOMMutationHandler.show(this.viewActionElt);
@@ -375,32 +375,30 @@ export default class ProfileViewer extends Component {
     }
 
     private showProfileParent() {
-        fastdom.mutate(() => {
-            const dimensions = DomHandler.getDisplayDimensions();
-            const coordinates = DomHandler.getMouseCoordinates();
-            if (coordinates.x < dimensions.width / 2) {
-                const left = coordinates.x;
-                if (coordinates.y < dimensions.height / 2) {
-                    const top = coordinates.y;
-                    this.parentElt.style.top = top + "px";
-                } else {
-                    const bottom = dimensions.height - coordinates.y;
-                    this.parentElt.style.bottom = bottom + "px";
-                }
-                this.parentElt.style.left = left + "px";
+        const dimensions = DomHandler.getDisplayDimensions();
+        const coordinates = DomHandler.getMouseCoordinates();
+        if (coordinates.x < dimensions.width / 2) {
+            const left = coordinates.x;
+            if (coordinates.y < dimensions.height / 2) {
+                const top = coordinates.y;
+                this.parentElt.style.top = top + "px";
             } else {
-                const right = dimensions.width - coordinates.x;
-                if (coordinates.y < dimensions.height / 2) {
-                    const top = coordinates.y;
-                    this.parentElt.style.top = top + "px";
-                } else {
-                    const bottom = dimensions.height - coordinates.y;
-                    this.parentElt.style.bottom = bottom + "px";
-                }
-                this.parentElt.style.right = right + "px";
+                const bottom = dimensions.height - coordinates.y;
+                this.parentElt.style.bottom = bottom + "px";
             }
-            this.parentElt.style.display = "inline-block";
-        });
+            this.parentElt.style.left = left + "px";
+        } else {
+            const right = dimensions.width - coordinates.x;
+            if (coordinates.y < dimensions.height / 2) {
+                const top = coordinates.y;
+                this.parentElt.style.top = top + "px";
+            } else {
+                const bottom = dimensions.height - coordinates.y;
+                this.parentElt.style.bottom = bottom + "px";
+            }
+            this.parentElt.style.right = right + "px";
+        }
+        this.parentElt.style.display = "inline-block";
     }
 
     private getProfileData(username: string) {
@@ -425,7 +423,7 @@ export default class ProfileViewer extends Component {
         });
     }
 
-    private updateFriendship(action: boolean) {
+    private updateFriendship(action: boolean, username: string) {
         return new Promise((resolve, reject) => {
             if (!this.updatingFriendship) {
                 this.updatingFriendship = true;
@@ -433,7 +431,7 @@ export default class ProfileViewer extends Component {
                 const token = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
                 const body = JSON.stringify({
                     token,
-                    username: this.selectedUsername,
+                    username,
                     action,
                 });
                 fetch(address + "/friend", {
@@ -447,13 +445,15 @@ export default class ProfileViewer extends Component {
                 }).then((response: Response) => {
                     return response.json();
                 }).then((update) => {
-                    this.updatingFriendship = false;
                     this.friendsState = update.friends;
                     this.conversationsState = update.conversations;
                     this.negativeState = update.negative;
                     this.renderFriendship(this.friendsState, this.conversationsState, this.negativeState);
                     resolve();
-                }).catch(reject);
+                }).catch(reject)
+                .finally(() => {
+                    this.updatingFriendship = false;
+                });
             } else {
                 reject();
             }

@@ -7,10 +7,47 @@ export default class RankChart extends Overlay {
 
     private static readonly REWARDS_BY_RANK: Map<string, string[]> = new Map([
         ["Recruit", [
-            "Little Timmy",
+            "Lvl 0: BeefChief",
+            "Lvl 6: Snowplow",
+        ]],
+        ["Private", [
+            "Lvl 11: Dunebug",
+            "Lvl 16: Lightning",
+        ]],
+        ["Corporal", [
+            "Lvl 21: Jarhead",
+            "Lvl 26: Tankette",
         ]],
         ["Sergeant", [
-            "The Big Mama",
+            "Lvl 31: Bullseye",
+            "Lvl 36: Marauder",
+        ]],
+        ["Officer", [
+            "Lvl 41: Schnoz",
+            "Lvl 46: Hornet",
+        ]],
+        ["Lieutenant", [
+            "Lvl 51: Challenger",
+            "Lvl 56: Centurion",
+        ]],
+        ["Commander", [
+            "Lvl 61: Ogimatok",
+        ]],
+        ["Captain", [
+            "Rewards",
+            "Coming Soon!",
+        ]],
+        ["Major", [
+            "Rewards",
+            "Coming Soon!",
+        ]],
+        ["Colonel", [
+            "Rewards",
+            "Coming Soon!",
+        ]],
+        ["General", [
+            "Rewards",
+            "Coming Soon!",
         ]],
     ]);
 
@@ -85,11 +122,9 @@ export default class RankChart extends Overlay {
             levelPoints.set(i, level.points);
         }
 
-        fastdom.mutate(() => {
-            for (const elt of rankContainers) {
-                container.appendChild(elt);
-            }
-        });
+        for (const elt of rankContainers) {
+            container.appendChild(elt);
+        }
 
         DomEventHandler.addListener(this, container, "wheel", (event: WheelEvent) => {
             container.scrollLeft += event.deltaY;
@@ -141,6 +176,9 @@ export default class RankChart extends Overlay {
         const titleContainer = this.createElement("rank-chart-title-container");
 
         const title = this.createElement("rank-chart-title", rank);
+        const titleColor = RankCalculator.getRankColor(rank);
+        title.style.color = titleColor!;
+
         let levelSubtitle;
         if (levelPoints) {
             const subtitle = this.createElement("rank-chart-subtitle", "Levels: " + minLevel + "-" + maxLevel);
@@ -168,11 +206,6 @@ export default class RankChart extends Overlay {
                 rewardContainer.appendChild(this.createElement("rank-chart-reward", reward));
             }
         }
-        // rewardContainer.appendChild(this.createElement("rank-chart-reward", "Rewards"));
-        // rewardContainer.appendChild(this.createElement("rank-chart-reward", "Coming"));
-        // rewardContainer.appendChild(this.createElement("rank-chart-reward", "Soon!"));
-
-        // TODO: Add rewards to container
 
         rankContainer.appendChild(titleContainer);
         rankContainer.appendChild(rewardContainer);
@@ -201,6 +234,7 @@ export default class RankChart extends Overlay {
 
     private createTooltip(title: HTMLElement, content: string[]) {
         const tooltip = this.createElement("tooltip");
+        title.classList.add("tooltip-title");
         tooltip.appendChild(title);
         const tooltipContent = this.createElement("tooltip-text");
         for (const str of content) {

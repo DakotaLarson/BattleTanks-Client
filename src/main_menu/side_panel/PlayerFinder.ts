@@ -36,7 +36,7 @@ export default class PlayerFinder extends ChildComponent {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
 
         DomEventHandler.addListener(this, this.searchInputElt, "input", this.onSearchInput);
 
@@ -51,7 +51,7 @@ export default class PlayerFinder extends ChildComponent {
     }
 
     public disable() {
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
 
         DomEventHandler.removeListener(this, this.searchInputElt, "input", this.onSearchInput);
 
@@ -142,11 +142,9 @@ export default class PlayerFinder extends ChildComponent {
             elements.push(pointsElt);
         }
         if (elements.length) {
-             fastdom.mutate(() => {
-                for (const elt of elements) {
-                    this.searchContainerElt.appendChild(elt);
-                }
-             });
+            for (const elt of elements) {
+                this.searchContainerElt.appendChild(elt);
+            }
         }
     }
 

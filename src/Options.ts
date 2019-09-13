@@ -34,6 +34,9 @@ export default class Options extends Component {
         if (!("fireworksEnabled" in Options.options)) {
             Options.options.fireworksEnabled = true;
         }
+        if (!("gameTipsEnabled" in Options.options)) {
+            Options.options.gameTipsEnabled = true;
+        }
         if (!("forward" in Options.options)) {
             Options.options.forward = {
                 key: "w",
@@ -115,7 +118,7 @@ export default class Options extends Component {
         }
 
         if (!("rotationSensitivity" in Options.options)) {
-            Options.options.rotationSensitivity = 0.75;
+            Options.options.rotationSensitivity = 1.1;
         }
 
         localStorage.setItem("userOptions", JSON.stringify(Options.options));

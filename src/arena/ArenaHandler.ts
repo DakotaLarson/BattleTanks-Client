@@ -17,6 +17,7 @@ import MultiplayerCamera from "./camera/MultiplayerCamera";
 import SingleplayerCamera from "./camera/SingleplayerCamera";
 import PowerupCollisionHandler from "./powerup/PowerupCollisionHandler";
 import ProjectileHandler from "./ProjectileHandler";
+import RecordingHandler from "./RecordingHandler";
 import SceneHandler from "./scene/SceneHandler";
 import TankCustomizationHandler from "./scene/TankCustomizationHandler";
 import CreationToolHandler from "./tools/CreationToolHandler";
@@ -47,20 +48,26 @@ export default class ArenaHandler extends Component {
 
     private tankCustomizationHandler: TankCustomizationHandler;
 
+    private recordingHandler: RecordingHandler;
+
     private isSingleplayer: boolean;
     private arenaAttached: boolean;
 
-    constructor(perspectiveCamera: PerspectiveCamera) {
+    constructor(perspectiveCamera: PerspectiveCamera, useMP3: boolean, recordingGainNode: GainNode) {
         super();
 
         Globals.setGlobal(Globals.Global.CAMERA, perspectiveCamera);
 
         const audioListener = new AudioListener();
+        const recordingAudioListener = new AudioListener();
+        recordingAudioListener.gain.disconnect(recordingAudioListener.context.destination);
+
         perspectiveCamera.add(audioListener);
+        perspectiveCamera.add(recordingAudioListener);
 
         RaycastHandler.init();
 
-        this.sceneHandler = new SceneHandler(audioListener);
+        this.sceneHandler = new SceneHandler(audioListener, recordingAudioListener, useMP3);
         this.renderer = new Renderer(this.sceneHandler.getScene(), perspectiveCamera);
 
         this.singleplayerArena = new SingleplayerArena();
@@ -77,12 +84,14 @@ export default class ArenaHandler extends Component {
         this.singleplayerCamera = new SingleplayerCamera(perspectiveCamera);
         this.multiplayerCamera = new MultiplayerCamera(perspectiveCamera);
 
-        this.audioHandler = new AudioHandler(audioListener);
+        this.audioHandler = new AudioHandler(audioListener, recordingAudioListener);
         this.projectileHandler = new ProjectileHandler(this.sceneHandler.getScene());
         this.powerupCollisionHandler = new PowerupCollisionHandler();
         this.arenaDownloadHandler = new ArenaDownloadHandler();
 
         this.tankCustomizationHandler = new TankCustomizationHandler();
+
+        this.recordingHandler = new RecordingHandler(recordingAudioListener, recordingGainNode);
 
         this.isSingleplayer = false;
         this.arenaAttached = false;
@@ -102,6 +111,7 @@ export default class ArenaHandler extends Component {
         EventHandler.addListener(this, EventHandler.Event.MULTIPLAYER_CONNECTION_WS_CLOSE, this.detachMultiplayerArena);
 
         EventHandler.addListener(this, EventHandler.Event.OVERLAY_OPEN, this.onOverlayOpen);
+        EventHandler.addListener(this, EventHandler.Event.RECORDING_REQUEST, this.onRecordingRequest);
 
         this.attachComponent(this.audioHandler);
         this.attachComponent(this.renderer);
@@ -109,6 +119,7 @@ export default class ArenaHandler extends Component {
         this.attachComponent(this.sceneHandler);
 
         this.attachComponent(this.tankCustomizationHandler);
+
         this.sceneHandler.renderMenu();
     }
 
@@ -145,6 +156,7 @@ export default class ArenaHandler extends Component {
         this.attachChild(this.multiplayerCamera);
         this.attachChild(this.projectileHandler);
         this.attachChild(this.powerupCollisionHandler);
+        this.attachChild(this.recordingHandler);
 
         this.isSingleplayer = false;
     }
@@ -157,6 +169,7 @@ export default class ArenaHandler extends Component {
         this.detachChild(this.multiplayerCamera);
         this.detachChild(this.projectileHandler);
         this.detachChild(this.powerupCollisionHandler);
+        this.detachChild(this.recordingHandler);
     }
 
     private attachArena() {
@@ -230,6 +243,10 @@ export default class ArenaHandler extends Component {
                 this.openGameMenu();
             }
         }
+    }
+
+    private onRecordingRequest() {
+        this.recordingHandler.allowRecording();
     }
 
     private closeGameMenuFromEvent() {

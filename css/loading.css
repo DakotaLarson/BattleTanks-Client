@@ -19,14 +19,28 @@
     height: 33vh;
     margin-bottom: 0.5vh;
 }
-.loading-screen .loading-text {
-  color: #ffffff;
-  text-align: center;
-  position: absolute;
-  top: 65%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 50px;
+.loading-screen .loading-text,
+.loading-screen .loading-welcome-text {
+    color: #ffffff;
+    text-align: center;
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 6vmin;
+    transition: opacity 0.5s;
+}
+
+.loading-screen .loading-welcome-text {
+    opacity: 0;
+    font-size: 10vmin;
+}
+
+.loading-screen-welcome .loading-text {
+    opacity: 0;
+}
+.loading-screen-welcome .loading-welcome-text {
+    opacity: 1;
 }
 .loading {
     position: absolute;
@@ -36,6 +50,10 @@
     width: 112px;
     height: 70px;
     zoom: 1;
+    transition: opacity 0.5s;
+}
+.loading-screen-welcome .loading {
+    opacity: 0;
 }
 .loading:before,
 .loading:after {

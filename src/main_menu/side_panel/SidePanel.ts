@@ -4,6 +4,7 @@ import EventHandler from "../../EventHandler";
 import Globals from "../../Globals";
 import RankCalculator from "../../RankCalculator";
 import RankChart from "../overlay/RankChart";
+import RecordingsList from "../overlay/RecordingsList";
 import Store from "../store/Store";
 import ArenaCreator from "./creator/ArenaCreator";
 import PlayerFinder from "./PlayerFinder";
@@ -33,19 +34,21 @@ export default class SidePanel extends ChildComponent {
     private findBtn: HTMLElement;
     private createBtn: HTMLElement;
     private rankChartBtn: HTMLElement;
+    private recordingsBtn: HTMLElement;
 
     private backBtn: HTMLElement;
 
     private rankChart: RankChart;
+    private recordingsList: RecordingsList;
 
     private storeVisible: boolean;
 
-    constructor(menuElt: HTMLElement) {
+    constructor(menuElt: HTMLElement, store: Store) {
         super();
 
         this.topContainer = DomHandler.getElement(".side-panel-top", menuElt);
 
-        this.store = new Store(menuElt);
+        this.store = store;
         this.playerStats = new PlayerStats(menuElt);
         this.playerFinder = new PlayerFinder(menuElt);
         this.arenaCreator = new ArenaCreator(menuElt);
@@ -63,10 +66,12 @@ export default class SidePanel extends ChildComponent {
         this.findBtn = DomHandler.getElement(".side-panel-find-btn", this.topContainer);
         this.createBtn = DomHandler.getElement(".side-panel-create-btn", this.topContainer);
         this.rankChartBtn = DomHandler.getElement(".rank-tutorial-btn", this.topContainer);
+        this.recordingsBtn = DomHandler.getElement(".recordings-btn", this.topContainer);
 
         this.backBtn = DomHandler.getElement(".side-panel-back", menuElt);
 
         this.rankChart = new RankChart(".overlay-rank");
+        this.recordingsList = new RecordingsList(".overlay-recordings");
 
         this.rankChart.constructRankChart();
 
@@ -78,14 +83,11 @@ export default class SidePanel extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
         EventHandler.addListener(this, EventHandler.Event.USERNAME_UPDATE, this.onUsernameUpdate);
 
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onStoreClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onStatsClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onFindClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onBackClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onRankChartClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
 
         EventHandler.addListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onOverlayClose);
+        EventHandler.addListener(this, EventHandler.Event.RECORDING_PROCESSING_COMPLETE, this.onRecordingProcessingComplete);
+        EventHandler.addListener(this, EventHandler.Event.PAYMENT_CURRENCY_UPDATE, this.onPaymentCurrencyUpdate);
 
         const authToken = Globals.getGlobal(Globals.Global.AUTH_TOKEN);
         if (authToken) {
@@ -93,8 +95,6 @@ export default class SidePanel extends ChildComponent {
         } else {
             this.onSignOut();
         }
-
-        this.attachComponent(this.store);
     }
 
     public disable() {
@@ -102,14 +102,11 @@ export default class SidePanel extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.SIGN_OUT, this.onSignOut);
         EventHandler.removeListener(this, EventHandler.Event.USERNAME_UPDATE, this.onUsernameUpdate);
 
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onStoreClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onStatsClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onFindClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCreateClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onBackClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onRankChartClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
 
         EventHandler.removeListener(this, EventHandler.Event.OVERLAY_CLOSE, this.onOverlayClose);
+        EventHandler.removeListener(this, EventHandler.Event.RECORDING_PROCESSING_COMPLETE, this.onRecordingProcessingComplete);
+        EventHandler.removeListener(this, EventHandler.Event.PAYMENT_CURRENCY_UPDATE, this.onPaymentCurrencyUpdate);
 
         this.detach();
     }
@@ -143,48 +140,41 @@ export default class SidePanel extends ChildComponent {
         }
     }
 
-    private async onStoreClick(event: MouseEvent) {
+    private onClick(event: MouseEvent) {
         if (event.target === this.storeBtn) {
             this.topContainer.style.display = "none";
             this.backBtn.style.display = "inline-block";
 
             this.store.show();
             this.storeVisible = true;
-        }
-    }
-
-    private onStatsClick(event: MouseEvent) {
-        if (event.target === this.statsBtn && !this.statsBtn.classList.contains("btn-disabled")) {
+        } else if (event.target === this.statsBtn && !this.statsBtn.classList.contains("btn-disabled")) {
             this.attach(this.playerStats);
-        }
-    }
-
-    private onFindClick(event: MouseEvent) {
-        if (event.target === this.findBtn) {
+        } else if (event.target === this.findBtn) {
             this.attach(this.playerFinder);
-        }
-    }
-
-    private onCreateClick(event: MouseEvent) {
-        if (event.target === this.createBtn) {
+        } else if (event.target === this.createBtn) {
             this.attach(this.arenaCreator);
-        }
-    }
-
-    private onBackClick(event: MouseEvent) {
-        if (event.target === this.backBtn) {
-            this.detach();
-        }
-    }
-
-    private onRankChartClick(event: MouseEvent) {
-        if (event.target === this.rankChartBtn) {
+        } else if (event.target === this.rankChartBtn) {
             this.attachChild(this.rankChart);
+        } else if (event.target === this.recordingsBtn && !this.recordingsBtn.classList.contains("btn-disabled")) {
+            this.attachChild(this.recordingsList);
+            this.recordingsList.updateRecordings();
+        } else if (event.target === this.backBtn) {
+            this.detach();
         }
     }
 
     private onOverlayClose() {
         this.detachChild(this.rankChart);
+        this.detachChild(this.recordingsList);
+    }
+
+    private onRecordingProcessingComplete() {
+        this.attachChild(this.recordingsList);
+        this.recordingsList.updateRecordings();
+    }
+
+    private onPaymentCurrencyUpdate(currency: number) {
+        this.playerStats.updateCurrency(currency);
     }
 
     private async updateStats(token?: string) {
@@ -208,8 +198,10 @@ export default class SidePanel extends ChildComponent {
     private updateButtons(hasToken: boolean) {
         if (hasToken) {
             this.statsBtn.classList.remove("btn-disabled");
+            this.recordingsBtn.classList.remove("btn-disabled");
         } else {
             this.statsBtn.classList.add("btn-disabled");
+            this.recordingsBtn.classList.add("btn-disabled");
         }
     }
 

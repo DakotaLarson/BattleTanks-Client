@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>BattleTanks</title>
     
-    <meta name="description" content="BattleTanks is a free, web based, 2.5D tank shooter where two teams of players battle it out in a team elimination gamemode!"/>
+    <meta name="description" content="The best free multiplayer tank game! (No installation required)"/>
     <meta name="keywords" content="shooting games, tank games, tank battle, tank wars, tank shooter, BattleTanks, battle tanks, battletanks.app"/>
     <meta name="author" content="Dakota Larson"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
@@ -12,19 +12,15 @@
     <meta property="og:title" content="BattleTanks"/>
     <meta property="og:type" content="website"/>
     <meta property="og:url" content="https://battletanks.app"/>
-    <meta property="og:description" content="BattleTanks is a free, web based, 2.5D tank shooter where two teams of players battle it out in a team elimination gamemode!"/>
+    <meta property="og:description" content="The best free multiplayer tank game! (No install required)"/>
 
-    <meta property="og:image" content="https://battletanks.app/res/menu/header.png"/>
+    <meta property="og:image" content="https://battletanks.app/res/menu/BattleTanksLogo.png"/>
     <meta property="og:image:width" content="1250"/>
-    <meta property="og:image:height" content="512"/>
+    <meta property="og:image:height" content="655"/>
     <meta property="og:image:type" content="image/png"/>
     <meta property="og:image:alt" content="BattleTanks Logo"/>
 
-    <meta property="og:image" content="https://battletanks.app/icon.png"/>
-    <meta property="og:image:width" content="512"/>
-    <meta property="og:image:height" content="512"/>
-    <meta property="og:image:type" content="image/png"/>
-    <meta property="og:image:alt" content="BattleTanks Icon"/>
+    <meta property="fb:app_id" content="467119764067470"/>
 
     <meta name="google-site-verification" content="EVg7I0KTCnW1qmVkwFeW3pX7rKxemX923IcLJWonO-8"/>
     <meta name="msvalidate.01" content="195C8869D5EEBF8AAA413CDA4482BEF4" />
@@ -45,7 +41,9 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     
     <link rel="stylesheet" type="text/css" href="/css/fonts/fonts.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/buttons.css"/>
     <link rel="stylesheet" type="text/css" href="/dist/bundle.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/multirange@2.0.0/multirange.css">
 
 </head>
 <body>
@@ -80,7 +78,8 @@
             <div class="last-finger-item"><i></i></div>
         </div>
     </div>
-    <div class="loading-text">Loading...</div>     
+    <div class="loading-text">Loading...</div>
+    <div class="loading-welcome-text">WELCOME TO THE GAME!</div>
 </div>
 
 <!-- MAIN MENU -->
@@ -101,7 +100,10 @@
         <div class="game-suggestion game-suggestion-hidden"></div>
     </div>
 
-    <a href="./partners/index.html" target="_blank" class="partners-link">Partners</a>
+    <div class="main-menu-link-container">
+        <a href="./partners/index.html" target="_blank" class="btn-sml partners-link">Partners</a>
+        <span class="btn-sml referral-btn">Referrals</span>
+    </div>
 
     <div class="side-panel">
         <div class="side-panel-top">
@@ -114,12 +116,6 @@
             </div>
     
             <span class="side-panel-message">Sign in to see your stats!<br></span>
-    
-            <!-- <span class="btn" id="side-panel-store">The Store</span><br>
-            <span class="btn btn-disabled" id="side-panel-stats">Your Stats</span><br>
-            <span class="btn" id="side-panel-find">Find Player</span><br>
-            <span class="btn rank-tutorial-btn">Rank Chart</span><br>
-            <span class="btn btn-sml" id="side-panel-create">Create Arena</span><br> -->
 
             <div class=side-panel-btn-parent>
                 <div class="side-panel-btn-container side-panel-store-btn">
@@ -132,7 +128,7 @@
                 </div>
                 <div class="side-panel-btn-container side-panel-find-btn">
                     <img class="side-panel-btn-img" src="./res/menu/search.svg">
-                    <span class="side-panel-btn-title">Find Player</span>
+                    <span class="side-panel-btn-title">Search Playerbase</span>
                 </div>
                 <div class="side-panel-btn-container rank-tutorial-btn">
                     <img class="side-panel-btn-img" src="./res/menu/rank_chart.svg">
@@ -143,14 +139,22 @@
                     <img class="side-panel-btn-img" src="./res/menu/create_arena.svg">
                     <span class="side-panel-btn-title">Create Arena</span>
                 </div>
-            </div>
-
+                <div class="side-panel-btn-container recordings-btn">
+                    <img class="side-panel-btn-img" src="./res/menu/recordings.svg">
+                    <span class="side-panel-btn-title">My Recordings</span>
+                </div>
+            </div>    
         </div>
 
         <div class="side-panel-cmp side-panel-store">
             <div class="side-panel-title">The Store</div>
-            <div class="store-currency"></div>
-            <div class="store-container"></div>
+            <div class="store-currency-container">
+                <div class="store-currency"></div>
+                <div class="btn-sml store-more-currency">Get More Currency!</div>
+            </div>
+            <div class="store-container-parent">
+                <div class="store-container"></div>
+            </div>
         </div>
 
         <div class="side-panel-cmp side-panel-stats">
@@ -223,100 +227,32 @@
 
     <!-- TOP MENU -->
     <div class="play-button-container">
-        <span class="menu-selection menu-selection-xl play-btn">
-            <div>Play</div>
-            <div class="play-as-guest">(As Guest)</div>
-        </span><br>
-        <span class="menu-link menu-link-xl" id="play-tutorial-link">How to Play</span>
+        <div class="play-btn-options-container">
+
+            <div class="menu-selection play-btn-option play-btn">
+                <div>Play</div>
+                <div class="play-as-guest">(As Guest)</div>
+            </div>
+
+            <div class="vertical-line play-btn-vertical-line"></div>
+
+            <div class="play-btn-option custom-lobby-container">
+                <span class="custom-lobby-title">Custom Lobbies</span>
+
+                <span class="custom-lobby-create btn-med">Create</span>
+                <span class="custom-lobby-join btn-med">Join</span>
+            </div>
+        </div>
+        
+        <div class="menu-link menu-link-xl" id="play-tutorial-link">How to Play</div>
     </div>
 
-    <!-- SOCIAL LINKS -->
-    <p class="feedback-request">
-        <span class="feedback-greeting">Hi there!<br></span>
-BattleTanks is being <a class="standard-anchor" href="https://bit.ly/2AtVanF" target="_blank">actively&nbsp;developed</a> and I am basing future development almost entirely on feedback I receive from the growing community!<br>
-Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_blank">what you think</a>!
-    </p>
     <div class="discord-container">
         <a class="discord-ref" href="https://discord.gg/7J5ZJUQ" target="_blank" title="Join the Discord community!">
             <img class="discord-image" draggable="false" src="./res/social/discord.svg" alt="BattleTanks Discord">
-        </a>
-    </div>
-</div>
-
-<div class="menu overlay-parent">
-    <div class="overlay-container">
-        <div class="overlay-content overlay-play">
-                <h2>How to Play</h2>
-            
-                <div class="tutorial-text">BattleTanks is a 2.5D tank shooter where two teams compete in a team eliminiation gamemode!</div>
-
-                <h3>Default Controls</h3>
-                <div class="tutorial-controls">
-                    <div><span class="tutorial-controls-highlight">W</span> - Forward</div>
-                    <div><span class="tutorial-controls-highlight">Mouse</span> - Shoot</div>
-                    
-                    <div><span class="tutorial-controls-highlight">S</span> - Backward</div>
-                    <div><span class="tutorial-controls-highlight">R</span> - Reload</div>
-
-                    <div><span class="tutorial-controls-highlight">A</span> - Rotate Left</div>
-                    <div><span class="tutorial-controls-highlight">E</span> - Ramming Speed</div>
-
-                    <div><span class="tutorial-controls-highlight">D</span> - Rotate Right</div>
-                    <div><span class="tutorial-controls-highlight">Enter</span> - Chat</div>
-                </div>
-
-                <h3>Player Details</h3>
-                <div class="tutorial-text">Hits to Kill: <span class="tutorial-controls-highlight">5</span></div>
-                <div class="tutorial-text">Lives: <span class="tutorial-controls-highlight">3</span></div>
-                <div class="tutorial-text">Points per Hit: <span class="tutorial-controls-highlight">1</span></div>
-                <div class="tutorial-text">Points per Kill: <span class="tutorial-controls-highlight">2</span></div>
-
-        </div>
-        <div class="overlay-content overlay-create">
-            <h2>Creating an Arena</h2>
-            
-            <div class="tutorial-text">You can create an arena and submit it on our <a class="standard-anchor" href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>!</div>
-            
-            <h3>Guidelines</h3>
-            <div class="tutorial-text">
-                Arenas should have at least four (4) team spawns per team. Currently, all arenas can be used by up to eight (8) people.
-            </div>
-
-            <h3>Creation Tips</h3>
-            <div class="tutorial-text">
-                I recommend odd dimensions so there is a center block in the arena.
-            </div>
-            <div class="tutorial-text">
-                The tools you use can be selected by a hotkey instead of having to use your mouse.
-            </div>
-            <div class="tutorial-text">
-                <strong>Remember</strong> Your primary mouse button creates an entity; your secondary mouse button removes an entity if there is one of that type at the position you are selecting.
-            </div>
-
-            <h3>Submission &amp; Reward</h3>
-            <div class="tutorial-text">
-                Upon submission to the <a class="standard-anchor" href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>, I will reivew your arena and offer feedback if necessary. If all looks good, then I will include your arena with the next release of BattleTanks!
-            </div>
-            <div class="tutorial-text">
-                Upon approval of your arena, you will granted access to the "Arena Creators" role on the Discord server! I will also note you as the author of the arena so appropriate credit can be made visible in future releases.
-            </div>
-        </div>
-        <div class="overlay-content overlay-rank no-select">
-            <div class="rank-chart">
-                <div class="rank-info rank-info-current"></div>
-
-                <div class="rank-info rank-info-level"></div>
-                <div class="rank-info rank-info-rank"></div>
-
-                <div class="rank-chart-container"></div>
-            </div>
-        </div>
-        <div class="overlay-content overlay-color no-select">
-            <h2 class="overlay-color-title"></h2>
-            <div class="store-currency"></div>
-            <div class=overlay-color-container></div>
-        </div>
-        <span class="menu-selection overlay-close no-select">Close</span>
+        </a><br>
+        <span class="main-menu-version"></span><br>
+        <a href="./terms.txt" class="main-menu-terms menu-link" target="_blank">Terms &amp; Conditions</a>
     </div>
 </div>
 
@@ -384,7 +320,12 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
         <svg viewBox="0 0 100 100">
             <circle class="ammo-circle" cx="50" cy="50" r="45" stroke="green" stroke-width="10" stroke-dasharray="282.6" fill="none" />
         </svg>
-    </div> 
+    </div>
+
+    <div class="game-tips gui-element no-select">
+        <span class="game-tips-title">BattleTanks Tip!</span>
+        <div class="game-tips-content"></div>
+    </div>
 </div>
 
 <!-- SP GAME MENU -->
@@ -430,30 +371,44 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
 
 <!-- CONNECTION MENU -->
 <div class="menu connection-menu no-select">
-        <div class="connection-menu-section section-connecting">
-            <span class="message">Connecting...</span><br>
-            <span class="menu-selection option-disconnect">Disconnect</span>
-        </div>
-        <div class="connection-menu-section section-disconnected connected">
-            <span class="message">Disconnected</span><br>
-            <span class="menu-selection option-disconnect">Disconnect</span><br>
-            <span class="disconnected-reason"></span>
-        </div>
-        <div class="connection-menu-section section-connected">
-            <span class="message">Connected</span><br>
-            <span class="menu-selection option-disconnect">Disconnect</span>
-        </div>
-        <div class="connection-menu-section section-waiting">
-            <span class="last-match-statistics"></span>
-            <div class="message">Waiting for more players...</div>
-            <span class="menu-selection option-disconnect">Disconnect</span>
-        </div>
-        <div class="connection-menu-section section-starting">
-            <span class="last-match-statistics"></span>
-            <div class="message">Match starting up!</div>
-            <span class="menu-selection option-disconnect">Disconnect</span>
-        </div>
+    <div class="connection-menu-section section-connecting">
+        <span class="message">Connecting...</span><br>
+        <span class="menu-selection option-disconnect">Disconnect</span>
     </div>
+    <div class="connection-menu-section section-disconnected connected">
+        <span class="message">Disconnected</span><br>
+        <span class="menu-selection option-disconnect">Disconnect</span><br>
+        <span class="disconnected-reason"></span>
+    </div>
+    <div class="connection-menu-section section-connected">
+        <span class="message">Connected</span><br>
+        <span class="menu-selection option-disconnect">Disconnect</span>
+    </div>
+    <div class="connection-menu-section section-voting">
+        <div class="message"></div>
+        <div class="menu-selection recording-start-btn">Record This Match</div>
+        <div class="connection-menu-content-container">
+            <div class="last-match-statistics"></div>
+            <div class="voting-parent">
+                <span class="voting-title">Vote for the next arena!</span>
+                <div class="voting-option-container"></div>
+            </div>
+        </div>
+        <span class="menu-selection option-disconnect">Disconnect</span>
+    </div>
+</div>
+
+<!-- GAME TIMER -->
+<div class="game-timer no-select">
+    <img src="./res/menu/timer.svg" class="game-timer-icon">
+    <span class="game-timer-text"></span>
+</div>
+
+<!-- LOBBY CODE -->
+ <div class="lobby-code tooltip">
+    <span class="lobby-code-text tooltip-title"></span>
+    <span class="tooltip-text">Click to copy!</span>
+ </div>
 
 <!-- OVERLAY MENU -->
 <div class="menu overlay-menu">
@@ -477,6 +432,92 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
     </div>
 
     <img class="menu-options no-select" draggable="false" src="./res/menu/options.svg" title="Options"/>  
+</div>
+
+<!-- OVERLAY (POPUP MODAL) MENU -->
+<div class="menu overlay-parent">
+    <div class="overlay-container">
+        <div class="overlay-content overlay-play">
+                <h2>How to Play</h2>
+            
+                <!-- <div class="tutorial-text">BattleTanks is a 2.5D tank shooter where two teams compete in a team eliminiation gamemode!</div> -->
+
+                <h3>Default Controls</h3>
+                <div class="tutorial-controls">
+                    <div><span class="tutorial-controls-highlight">W</span> - Forward</div>
+                    <div><span class="tutorial-controls-highlight">Mouse</span> - Shoot</div>
+                    
+                    <div><span class="tutorial-controls-highlight">S</span> - Backward</div>
+                    <div><span class="tutorial-controls-highlight">R</span> - Reload</div>
+
+                    <div><span class="tutorial-controls-highlight">A</span> - Rotate Left</div>
+                    <div><span class="tutorial-controls-highlight">E</span> - Ramming Speed</div>
+
+                    <div><span class="tutorial-controls-highlight">D</span> - Rotate Right</div>
+                    <div><span class="tutorial-controls-highlight">Enter</span> - Chat</div>
+                </div>
+
+                <h3>Player Details</h3>
+                <div class="tutorial-text">Hits to Kill: <span class="tutorial-controls-highlight">5</span></div>
+                <div class="tutorial-text">Lives: <span class="tutorial-controls-highlight">3</span></div>
+                <div class="tutorial-text">Points per Hit: <span class="tutorial-controls-highlight">1</span></div>
+                <div class="tutorial-text">Points per Kill: <span class="tutorial-controls-highlight">2</span></div>
+
+        </div>
+        <div class="overlay-content overlay-create">
+            <h2>Creating an Arena</h2>
+            
+            <div class="tutorial-text">You can create an arena and submit it on our <a class="standard-anchor" href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>!</div>
+            
+            <h3>Guidelines</h3>
+            <div class="tutorial-text">
+                Arenas should have at least four (4) team spawns per team. Currently, all arenas can be used by up to eight (8) people.
+            </div>
+
+            <h3>Creation Tips</h3>
+            <div class="tutorial-text">
+                I recommend odd dimensions so there is a center block in the arena.
+            </div>
+            <div class="tutorial-text">
+                The tools you use can be selected by a hotkey instead of having to use your mouse.
+            </div>
+            <div class="tutorial-text">
+                <strong>Remember</strong> Your primary mouse button creates an entity; your secondary mouse button removes an entity if there is one of that type at the position you are selecting.
+            </div>
+
+            <h3>Submission &amp; Reward</h3>
+            <div class="tutorial-text">
+                Upon submission to the <a class="standard-anchor" href="https://discord.gg/7J5ZJUQ" target="_blank">Discord Server</a>, I will reivew your arena and offer feedback if necessary. If all looks good, then I will include your arena with the next release of BattleTanks!
+            </div>
+            <div class="tutorial-text">
+                Upon approval of your arena, you will granted access to the "Arena Creators" role on the Discord server! I will also note you as the author of the arena so appropriate credit can be made visible in future releases.
+            </div>
+        </div>
+        <div class="overlay-content overlay-rank no-select">
+            <div class="rank-chart">
+                <div class="rank-info rank-info-current"></div>
+
+                <div class="rank-info rank-info-level"></div>
+                <div class="rank-info rank-info-rank"></div>
+
+                <div class="rank-chart-container"></div>
+            </div>
+        </div>
+        <div class="overlay-content overlay-color no-select">
+            <h2 class="overlay-color-title"></h2>
+            <div class="store-currency-container">
+                <div class="store-currency"></div>
+                <div class="btn-sml store-more-currency">Get More Currency!</div>
+            </div>
+            <div class=overlay-color-container></div>
+        </div>
+        <div class="overlay-content overlay-recordings no-select">
+            <h2>My Recordings</h2>
+            <div class="recordings-container"></div>
+            <div class="recordings-message"></div>
+        </div>
+        <span class="menu-selection overlay-close no-select">Close</span>
+    </div>
 </div>
 
 <!-- CONVERSATION LIST CONTAINER -->
@@ -523,7 +564,7 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
             <input type="checkbox" id="option-enabled-killfeed">
 
             <div class="tooltip option-title">
-                <span class="option-title">Anonymous Metrics:</span>
+                <span class="option-title tooltip-title">Anonymous Metrics:</span>
                 <div class="tooltip-text">Data is sent to the server when you leave BattleTanks regarding your experience. It is impossible to associate this data to your account. Leaving this enabled is appreciated! :)</div>
             </div>
             <input type="checkbox" id="option-enabled-metrics">
@@ -535,13 +576,16 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
             <input type="checkbox" id="option-enabled-camera-lazy">
 
             <div class="tooltip option-title">
-                    <span class="option-title">Autofix Camera:</span>
+                    <span class="option-title tooltip-title">Autofix Camera:</span>
                     <div class="tooltip-text">If you experience an FPS drop, the game will disable the lazy camera to provide you the best experience possible.</div>
                 </div>
             <input type="checkbox" id="option-enabled-camera-autofix">
 
             <span class="option-title">Fireworks:</span>
             <input type="checkbox" id="option-enabled-fireworks">
+
+            <span class="option-title">Game Tips:</span>
+            <input type="checkbox" id="option-enabled-game-tips">
     
             <span class="option-title">Forward:</span>
             <span class="option-value option-listening-value" id="option-value-forward"></span>
@@ -601,7 +645,138 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
     </div>
 </div>
 
-<!-- NOTIFICATION CONTAINER -->
+<!-- CUSTOM LOBBY CONTAINER -->
+<div class="custom-lobby-parent menu">
+    <div class="custom-lobby-parent-container">
+        <span class="custom-lobby-title"></span>
+        <div class="custom-lobby-create-parent">
+            <div class="tooltip">
+                <span class="tooltip-title">
+                    <input type="checkbox" class="custom-lobby-public">Public
+                </span>
+                <div class="tooltip-text">Public lobbies will be publicly available 1 minute after creation (so your friends can join first). A join code is required for the first minute after creation. Private lobbies will always require a join code.</div>
+            </div>
+            <div class="tooltip">
+                <span class="tooltip-title">
+                    <input type="checkbox" class="custom-lobby-bots tooltip-title">Bots
+                </span>
+                <div class="tooltip-text">If selected, bots will join a lobby until the game is full.</div>
+            </div>
+        </div>
+        <div class="custom-lobby-join-parent">
+            <input type="text" class="custom-lobby-code" placeholder="Code" maxlength="4" size="4"><br>
+            <span class="custom-lobby-code-err"></span>
+        </div>
+    
+        <div class="custom-lobby-btn-parent">
+            <div class="custom-lobby-cancel btn-med btn-neg">Cancel</div>
+            <div class="custom-lobby-action btn-med"></div>
+        </div>
+    </div>
+</div>
+
+<!-- REFERRAL CONTAINER -->
+<div class="referral-parent menu">
+    <div class="referral-container">
+        <h2 class="referral-title">Referral System</h2>
+        <div class="referral-referrer-parent">
+            <div class="referral-referrer-container">
+                <span class="referral-referrer-text">Referrer Code: </span>
+                <input type="text" class="referral-referrer-input" size="6" maxlength="6">
+                <span class="btn-sml referral-referrer-submit">Submit</span>
+            </div>
+            <span class="referral-referrer-error"></span>
+        </div>
+        <div class="referral-code tooltip">
+            <span class="referral-code-text tooltip-title"></span>
+            <span class="tooltip-text">Click to copy!</span>
+         </div><br>
+         <div class="data-container referral-data-container">
+            <div class="referral-referrer-title">Referrer</div>
+            <div class="referral-referrer-value"></div>
+            <div>Referrals</div>
+            <div class="referral-count"></div>
+            <div>Currency Earned</div>
+            <div class="referral-currency"></div>
+            <div>Referred Time</div>
+            <div class="referral-time"></div>
+            
+         </div>
+         <div class="referral-information">Earn 10% of currency earned by your referrals forever!<br>Earn 1000 currency when your referrals play for 1 hour total!</div>
+        <div class="menu-selection referral-close">Close</div>
+    </div>
+</div>
+
+<!-- RECORDING SELECTOR -->
+<div class="recording-selector menu no-select">
+    <div class="recording-selector-container">
+        <div class="recording-selector-title">Recording Complete!</div>
+        <div class="recording-selector-help">Select the portion of the match you want to upload and submit!</div>
+
+        <div class="match-text-container">
+            <span class="match-text match-text-start">Start</span>
+            <span class="match-text match-text-end">End</span>
+        </div>
+        <div class="range-container"></div>
+        <div class="error-msg"></div>
+        <div class="recording-action action-cancel">Cancel</div>
+        <div class="recording-action action-submit">Submit</div>
+        <br>
+        <span class="menu-link menu-link-small download-raw">Download Raw</span>
+        <div class="recording-overlay">
+            <span class="recording-overlay-text"></span>
+            <span class="menu-selection recording-overlay-close">Close</span>
+        </div>
+    </div>
+</div>
+
+<!-- CURRENCY STORE -->
+<div class="currency-store-container menu no-select">
+    <div class="currency-store">
+        <h2>Get More Currency!</h2>
+        <div class="currency-store-option-container">
+            <div class="currency-store-option">
+                <img class="currency-store-option-img" src="./icon.png"></img>
+                <div class="currency-store-option-title currency-store-title-low">250&nbsp;Currency</div>
+                <div class="currency-store-option-price">$0.99</div>
+                <div class="currency-store-option-buy">
+                    <div class="buy-with-paypal" id="buy-with-paypal-250"></div>
+                    <a class="buy-with-crypto"  id="buy-with-crypto-250" href="https://commerce.coinbase.com/checkout/84b4a549-e809-42c6-b200-906ce3b15ad0">
+                        <span>Buy with Crypto</span>
+                    </a>
+                </div>
+            </div>
+            <div class="currency-store-option">
+                <img class="currency-store-option-img" src="./icon.png"></img>
+                <div class="currency-store-option-title currency-store-title-med">1500&nbsp;Currency</div>
+                <div class="currency-store-option-price">$4.99 (16% Discount)</div>
+                <div class="currency-store-option-buy">
+                    <div class="buy-with-paypal" id="buy-with-paypal-1500"></div>
+                    <a class="buy-with-crypto" id="buy-with-crypto-1500" href="https://commerce.coinbase.com/checkout/d08a34e3-f570-49f6-a156-30d9ba17b678">
+                        <span>Buy with Crypto</span>
+                    </a>
+                </div>
+            </div>
+            <div class="currency-store-option">
+                <img class="currency-store-option-img" src="./icon.png"></img>
+                <div class="currency-store-option-title currency-store-title-high">6000&nbsp;Currency</div>
+                <div class="currency-store-option-price">$13.99 (41% Discount!)</div>
+                <div class="currency-store-option-buy">
+                    <div class="buy-with-paypal" id="buy-with-paypal-6000"></div>
+                    <a class="buy-with-crypto" id="buy-with-crypto-6000" href="https://commerce.coinbase.com/checkout/472f88e3-7be2-40a9-b530-887240591935">
+                      <span>Buy with Crypto</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="currency-store-crypto-note">
+            Receive 10% more Currency when you buy with crypto!
+        </div>
+        <span class="menu-selection currency-store-close">Close</span>
+    </div>
+</div>
+
+<!-- NOTIFICATION POPUP CONTAINER -->
 <div class="notification-popup-container"></div>
 
 <!-- PROFILE CONTAINER -->
@@ -634,6 +809,16 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
         </div>
     </div>
 </div>
+
+<!-- PAYMENT SUCCESS -->
+<div class="payment-success">
+    <h2 class="payment-success-header">Thank you for your payment!</h2>
+    <div class="payment-success-paypal">PayPal should process this within 5 minutes.</div>
+    <div class="payment-success-crypto">Processing time varies for cryptocurrency payments. You may close the modal.</div>
+    <div class="payment-success-general">You will receive a notification here when processing is complete!</div>
+</div>
+
+<!-- CONFIRMATION MODAL -->
 <div class="confirmation-parent no-select">
     <div class="confirmation-child">
         <div class="confirmation-title"></div>
@@ -645,14 +830,30 @@ Let me know <a class="standard-anchor" href="https://bit.ly/2QbTqoa" target="_bl
     </div>
 </div>
 
+<!-- DEVICE BLOCK -->
+<div class="device-block-parent">
+    <div class="device-block">
+        <div class="device-block-text">BattleTanks doesn't support touch devices yet. You won't be able to play without a keyboard.</div>
+        <div class="btn">Got it. Thanks!</div>
+    </div>
+</div>
+
 <!-- POLYFILLS -->
 <script src="https://cdn.jsdelivr.net/npm/text-encoding@0.7.0/lib/encoding.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/text-encoding@0.7.0/lib/encoding-indexes.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-polyfills@0.1.42/keyboard.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/event-source-polyfill@1.0.5/src/eventsource.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/multirange@2.0.0/multirange.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@0/dist/ua-parser.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fastdom@1.0.9/fastdom.min.js"></script>
-
+<script>
+    window.fbAsyncInit = () => {
+        FB.init({
+            appId: "467119764067470",
+            version: "v4.0",
+        });
+    };
+</script>
+<script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>
 <script src="./dist/bundle.js"></script>
 </body>
 </html>

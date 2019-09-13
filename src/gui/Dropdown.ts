@@ -30,14 +30,14 @@ export default class Dropdown extends ChildComponent {
     }
 
     public enable() {
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
     }
 
     public disable() {
         this.visible = false;
         this.toggle(false);
 
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onClick);
     }
 
     public getElement() {
@@ -88,10 +88,13 @@ export default class Dropdown extends ChildComponent {
     }
 
     private toggle(visible: boolean) {
+        const height = Math.round(window.innerHeight - this.parent.getBoundingClientRect().bottom - 10);
         if (visible) {
             this.container.style.display = "block";
+            this.container.style.maxHeight = height + "px";
         } else {
             this.container.style.display = "";
+            this.container.style.height = "";
         }
     }
 

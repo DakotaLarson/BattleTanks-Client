@@ -11,6 +11,7 @@ enum Packet {
     POWERUP_PICKUP,
     RAM_COLLISION,
     PING,
+    VOTE,
 }
 
 enum DataType {
@@ -94,8 +95,8 @@ const send = (data: ArrayBuffer) => {
 };
 export default class PacketSender {
 
-    public static sendPlayerJoin(tokenId?: string) {
-        const rawData = tokenId || "";
+    public static sendPlayerJoin(joinData: any) {
+        const rawData = JSON.stringify(joinData);
 
         const data = constructData(Packet.PLAYER_JOIN, rawData, DataType.STRING);
         send(data);
@@ -145,6 +146,11 @@ export default class PacketSender {
 
     public static ping() {
         const data = constructData(Packet.PING, undefined, DataType.HEADER_ONLY);
+        send(data);
+    }
+
+    public static sendVote(vote: number) {
+        const data = constructData(Packet.VOTE, vote, DataType.NUMBER);
         send(data);
     }
 

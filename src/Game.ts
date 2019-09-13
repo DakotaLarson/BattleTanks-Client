@@ -14,16 +14,21 @@ import DOMMutationHandler from "./DOMMutationHandler";
 import EventHandler from "./EventHandler";
 import GameStatusHandler from "./GameStatusHandler";
 import Globals from "./Globals";
+import GameTimer from "./gui/GameTimer";
 import MainMenu from "./main_menu/MainMenu";
+import Store from "./main_menu/store/Store";
 import Metrics from "./Metrics";
 import MultiplayerConnection from "./MultiplayerConnection";
 import Options from "./Options";
 import OverlayMenu from "./overlay_menu/OverlayMenu";
 import ProfileViewer from "./ProfileViewer";
+import RecordingSelector from "./RecordingSelector";
 
 class Game extends Component {
 
     // Created 06/17/18
+
+    private static readonly VERSION = 1.8;
 
     private static readonly TICK_INTERVAL = 50; // 20 ticks/second
 
@@ -33,6 +38,7 @@ class Game extends Component {
     private debugFPSCount: number;
 
     private mainMenu: MainMenu;
+    private store: Store;
     private backgroundAudioHandler: BackgroundAudioHandler;
     private overlayMenu: OverlayMenu;
     private connectionMenu: ConnectionMenu;
@@ -45,6 +51,8 @@ class Game extends Component {
     private metrics: Metrics;
     private profileViewer: ProfileViewer;
     private conversationViewer: ConversationViewer;
+    private gameTimer: GameTimer;
+    private recordingSelector: RecordingSelector;
 
     private connectedToMultiplayer: boolean;
 
@@ -57,24 +65,40 @@ class Game extends Component {
         this.prevDebugTime = now;
         this.debugFPSCount = 0;
 
+        Globals.setGlobal(Globals.Global.IS_PROD, location.hostname === "battletanks.app");
+
         BatchHandler.initialize();
         BillboardBatchHandler.initialize();
         ComponentDebugger.initialize();
 
+        this.setTips();
+
+        let useMP3;
+        if (!AudioContext) {
+            // @ts-ignore Safari is lagging behind.
+            window.AudioContext = window.webkitAudioContext;
+            useMP3 = true;
+        } else {
+            useMP3 = false;
+        }
+
         const perspectiveCamera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
         this.auth = new Auth();
         this.options = new Options();
-        this.mainMenu = new MainMenu(perspectiveCamera);
-        this.backgroundAudioHandler = new BackgroundAudioHandler();
+        this.store = new Store();
+        this.mainMenu = new MainMenu(Game.VERSION, perspectiveCamera, this.store);
         this.overlayMenu = new OverlayMenu();
         this.connectionMenu = new ConnectionMenu();
-        this.arenaHandler = new ArenaHandler(perspectiveCamera);
+        this.backgroundAudioHandler = new BackgroundAudioHandler(useMP3);
+        this.arenaHandler = new ArenaHandler(perspectiveCamera, useMP3, this.backgroundAudioHandler.getRecordingGainNode());
         this.gameStatusHandler = new GameStatusHandler();
         this.alertMessageHandler = new AlertMessageHandler();
         this.metrics = new Metrics();
         this.connectedToMultiplayer = false;
         this.profileViewer = new ProfileViewer();
         this.conversationViewer = new ConversationViewer();
+        this.gameTimer = new GameTimer();
+        this.recordingSelector = new RecordingSelector();
 
     }
     public enable() {
@@ -101,6 +125,7 @@ class Game extends Component {
         this.attachComponent(this.backgroundAudioHandler);
         this.attachComponent(this.arenaHandler);
         this.updateMenu(true);
+        this.attachComponent(this.store);
         this.attachChild(this.alertMessageHandler);
 
         if (Options.options.metricsEnabled) {
@@ -109,6 +134,7 @@ class Game extends Component {
 
         this.attachComponent(this.profileViewer);
         this.attachComponent(this.conversationViewer);
+        this.attachComponent(this.recordingSelector);
 
         this.hideLoadingScreen();
     }
@@ -175,13 +201,14 @@ class Game extends Component {
         this.updateMenu(true);
     }
 
-    private connectToMultiplayer() {
+    private connectToMultiplayer(lobby: any) {
         const address = "ws" + Globals.getGlobal(Globals.Global.HOST);
         this.updateMenu(false);
         this.attachChild(this.connectionMenu);
-        this.mpConnection = new MultiplayerConnection(address, Globals.getGlobal(Globals.Global.AUTH_TOKEN));
+        this.mpConnection = new MultiplayerConnection(Game.VERSION, address, Globals.getGlobal(Globals.Global.AUTH_TOKEN), lobby);
         this.attachChild(this.mpConnection);
         this.attachChild(this.gameStatusHandler);
+        this.attachChild(this.gameTimer);
         this.connectedToMultiplayer = true;
     }
 
@@ -189,6 +216,7 @@ class Game extends Component {
         this.detachChild(this.connectionMenu);
         this.detachChild(this.mpConnection as MultiplayerConnection);
         this.detachChild(this.gameStatusHandler);
+        this.detachChild(this.gameTimer);
         this.mpConnection = undefined;
         this.updateMenu(true);
         this.connectedToMultiplayer = false;
@@ -196,8 +224,12 @@ class Game extends Component {
 
     private hideLoadingScreen() {
         const elt = DomHandler.getElement(".loading-screen");
-        DOMMutationHandler.addStyle(elt, "opacity", "0");
-        DOMMutationHandler.addFutureStyle(elt, "display", "none", 1000);
+        elt.classList.add("loading-screen-welcome");
+        setTimeout(() => {
+            DOMMutationHandler.addStyle(elt, "opacity", "0");
+            DOMMutationHandler.addFutureStyle(elt, "display", "none", 1000);
+        }, 2500);
+
     }
 
     private updateMenu(enable: boolean) {
@@ -211,11 +243,8 @@ class Game extends Component {
     private setHost() {
         let isLocal = true;
         let address = "://" + location.hostname + ":8000";
-        const host = location.hostname;
-        const prodHostname = "battletanks.app";
-        const stagingHostname = "dakotalarson.github.io";
-        if (host.includes(prodHostname) || host.includes(stagingHostname)) {
-            address = "s://battle-tanks-server.herokuapp.com";
+        if (Globals.getGlobal(Globals.Global.IS_PROD)) {
+            address = "s://na.battletanks.app";
             isLocal = false;
         }
         Globals.setGlobal(Globals.Global.HOST, address);
@@ -224,8 +253,32 @@ class Game extends Component {
 
     private onVisibilityChange() {
         if (document.hidden && this.connectedToMultiplayer) {
-            EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_DISCONNECT_REQUEST);
+            // TODO: Create configurable option for this request.
+            // EventHandler.callEvent(EventHandler.Event.MULTIPLAYER_DISCONNECT_REQUEST);
         }
+    }
+
+    private setTips() {
+        const tips = [
+            "Create an arena and submit your creation on the Discord server!",
+            "Reload 3x faster when you don't move!",
+            "Hold down the secondary mouse button to look behind you!",
+            "Press 'Enter' to chat with other players!",
+            "Want the full immersive experience? Go fullscreen!",
+            "Pick up powerups to gain an advantage!",
+            "You are protected for 3 seconds after you spawn. Make it count!",
+            "Select a unique username in the options menu when you sign in!",
+            "Your messages are brighter in chat when you sign in!",
+            "Ram into players with 'E' to damage and send them flying!",
+            "Send messages to other players from their profile menu!",
+            "View player profiles by clicking on usernames in the GUI",
+            "Send friend requests to players from their profile menu!",
+            "You can configure friend requests and messages in the options menu!",
+            "When you rank up, a notification is broadcast to the server!",
+            "Refer your friends to BattleTanks and earn currency!",
+            "Purchase tanks and customize them in the store!",
+        ];
+        Globals.setGlobal(Globals.Global.TIPS, tips);
     }
 }
 

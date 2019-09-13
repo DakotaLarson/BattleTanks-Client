@@ -1,6 +1,9 @@
 .tooltip {
     position: relative;
     display: inline-block;
+}
+
+.tooltip-title {
     border-bottom: 1px dotted #ffffff;
 }
   
@@ -14,9 +17,10 @@
     z-index: 1;
     text-align: left;
     padding: 0.5vmin;
+    left: 0
 }
 
 /* Show the tooltip text when on hover */
-.tooltip:hover .tooltip-text {
+.tooltip-title:hover + .tooltip-text {
     visibility: visible;
 }

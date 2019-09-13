@@ -265,6 +265,23 @@ const receivePong = () => {
     EventHandler.callEvent(EventHandler.Event.DEBUG_PONG);
 };
 
+const receiveVoteList = (rawVoteList: string) => {
+    const voteList = JSON.parse(rawVoteList);
+    EventHandler.callEvent(EventHandler.Event.VOTE_LIST_UPDATE, voteList);
+};
+
+const receiveVoteUpdate = (voteCounts: number[]) => {
+    EventHandler.callEvent(EventHandler.Event.VOTE_UPDATE, voteCounts);
+};
+
+const receiveGameTimerUpdate = (time: number) => {
+    EventHandler.callEvent(EventHandler.Event.GAME_TIMER_UPDATE, time);
+};
+
+const receiveLobbyCode = (code: string) => {
+    EventHandler.callEvent(EventHandler.Event.LOBBY_CODE, code);
+};
+
 const handlers = [
     receiveArena,
 
@@ -318,6 +335,12 @@ const handlers = [
     receivePowerupApplication,
 
     receivePong,
+
+    receiveVoteList,
+    receiveVoteUpdate,
+
+    receiveGameTimerUpdate,
+    receiveLobbyCode,
 ];
 
 enum DataType {

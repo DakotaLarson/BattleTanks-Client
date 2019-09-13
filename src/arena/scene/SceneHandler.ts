@@ -56,7 +56,7 @@ export default class SceneHandler extends Component {
 
     private renderingSource: RenderingSource | undefined;
 
-    constructor(audioListener: AudioListener) {
+    constructor(audioListener: AudioListener, recordingAudioListener: AudioListener, useMP3: boolean) {
         super();
         this.width = 0;
         this.height = 0;
@@ -82,7 +82,7 @@ export default class SceneHandler extends Component {
         Globals.setGlobal(Globals.Global.SCENE, this.scene);
 
         this.sceneSingleplayerToolHandler = new SceneSingleplayerToolHandler(this);
-        this.scenePlayerHandler = new ScenePlayerHandler(this.scene, audioListener);
+        this.scenePlayerHandler = new ScenePlayerHandler(this.scene, audioListener, recordingAudioListener, useMP3);
         this.sceneUtils = new SceneUtils(this);
         this.sceneVisualsHandler = new SceneVisualsHandler(this, this.scene);
         this.scenePowerupHandler = new ScenePowerupHandler(this.scene);

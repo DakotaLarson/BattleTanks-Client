@@ -1,0 +1,25 @@
+.device-block-parent {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: #101010;
+}
+
+.device-block-parent .device-block {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.device-block-parent .device-block-text {
+    color: #ffffff;
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 3.5vmin;
+}
+
+.device-block-parent .btn {
+    font-size: 6.5vmin;
+    color: #ffffff;
+}

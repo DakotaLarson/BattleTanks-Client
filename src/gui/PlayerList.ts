@@ -29,6 +29,7 @@ export default class PlayerList extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_ADDITION, this.onPlayerAddition);
         EventHandler.addListener(this, EventHandler.Event.PLAYER_REMOVAL, this.onPlayerRemoval);
         EventHandler.addListener(this, EventHandler.Event.CONNECTED_PLAYER_REMOVAL, this.onPlayerRemoval);
+        EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onRunningStatus);
 
         EventHandler.addListener(this, EventHandler.Event.STATISTICS_UPDATE, this.onStatisticUpdate);
 
@@ -37,6 +38,7 @@ export default class PlayerList extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
         EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, this.onOptionsUpdate);
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN, this.hidePlayerList);
+
         this.updateTitle();
     }
 
@@ -47,6 +49,7 @@ export default class PlayerList extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_ADDITION, this.onPlayerAddition);
         EventHandler.removeListener(this, EventHandler.Event.PLAYER_REMOVAL, this.onPlayerRemoval);
         EventHandler.removeListener(this, EventHandler.Event.CONNECTED_PLAYER_REMOVAL, this.onPlayerRemoval);
+        EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onRunningStatus);
 
         EventHandler.removeListener(this, EventHandler.Event.STATISTICS_UPDATE, this.onStatisticUpdate);
 
@@ -86,6 +89,16 @@ export default class PlayerList extends ChildComponent {
     private onPlayerRemoval(event: any) {
         const elt = DomHandler.getElement(".player-list-" + event.id, this.parentElt);
         DOMMutationHandler.addStyle(elt, "color", "#ffffff");
+    }
+
+    private onRunningStatus() {
+        const statTitles = ["points", "kills", "deaths"];
+        for (const title of statTitles) {
+            const elts = Array.from(DomHandler.getElements(".player-list-entry-" + title, this.parentElt));
+            for (const elt of elts) {
+                elt.textContent = "0";
+            }
+        }
     }
 
     private onKeyDown(event: KeyboardEvent) {

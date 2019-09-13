@@ -1,0 +1,113 @@
+.currency-store-container {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.currency-store-container .currency-store {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #101010;
+    border: solid 1px #ffffff;
+    padding: 2.5vmin;
+    max-height: 90vh;
+    overflow: auto;
+}
+
+.currency-store-container h2 {
+    font-size: 7.5vmin;
+    margin: 0 0 2.5vmin 0;
+}
+
+.currency-store-container .currency-store-option-container {
+    display: flex;
+    font-family: 'Inconsolata', sans-serif;
+    padding: 2.5vmin 0 2vmin 0;
+}
+
+@media only screen and (max-width: 1300px) {
+    .currency-store-container .currency-store-option-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+.currency-store-container .currency-store-option {
+    border: solid 1px #ffffff;
+    width: 15vw;
+    margin: 1vmin;
+    padding: 2.5vmin 0;
+    min-width: 385px;
+}
+
+.currency-store-container .currency-store-option-img {
+    height: 10vmin;
+}
+
+.currency-store-container .currency-store-option-title {
+    font-size: 3.5vmin;
+}
+
+.currency-store-container .currency-store-option-price {
+    font-size: 2.25vmin;
+    color: #c0c0c0;
+    margin-bottom: 1vmin;
+}
+
+.currency-store-container .currency-store-title-low {
+    color: #ffec80;
+}
+
+.currency-store-container .currency-store-title-med {
+    color: #ffe033;
+}
+
+.currency-store-container .currency-store-title-high {
+    color: #e6c300;
+}
+
+.currency-store-container .currency-store-option-buy {
+    display: inline-block;
+}
+
+.currency-store-container .buy-with-paypal {
+    margin-bottom: 1vmin;
+}
+
+.currency-store-container .currency-store-crypto-note {
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 1.75vmin;
+    margin-bottom: 2.5vmin;
+    color: #03c95f;
+}
+
+.payment-success {
+    display: none;
+    z-index: 10000;
+    background: white;
+    position: absolute;
+    top: 2.5vmin;
+    left: 50%;
+    background: #101010;
+    color: #f0f0f0;
+    transform: translateX(-50%);
+    text-align: center;
+    padding: 2.5vmin;
+    border: solid 5px #03c95f;
+}
+
+.payment-success .payment-success-header {
+    font-size: 3.5vmin;
+    margin: 0 0 1.5vmin 0;
+}
+.payment-success .payment-success-paypal,
+.payment-success .payment-success-crypto {
+    font-size: 1.75vmin;
+    margin-bottom: 0.5vmin;
+    display: none;
+}
+
+.payment-success .payment-success-general {
+    font-size: 1.75vmin;
+}

@@ -5,8 +5,9 @@ import EventHandler from "../EventHandler";
 import ConnectedMenu from "./ConnectedMenu";
 import ConnectingMenu from "./ConnectingMenu";
 import DisconnectedMenu from "./DisconnectedMenu";
-import StartingMenu from "./StartingMenu";
-import WaitingMenu from "./WaitingMenu";
+import StatisticsHandler from "./StatisticsHandler";
+import VoteHandler from "./VoteHandler";
+import VotingMenu from "./VotingMenu";
 
 export default class ConnectionMenu extends ChildComponent {
 
@@ -15,8 +16,10 @@ export default class ConnectionMenu extends ChildComponent {
     private connectedMenu: ConnectedMenu;
     private connectingMenu: ConnectingMenu;
     private disconnectedMenu: DisconnectedMenu;
-    private startingMenu: StartingMenu;
-    private waitingMenu: WaitingMenu;
+    private votingMenu: VotingMenu;
+
+    private voteHandler: VoteHandler;
+    private statisticsHandler: StatisticsHandler;
 
     private hidden: boolean;
 
@@ -29,8 +32,10 @@ export default class ConnectionMenu extends ChildComponent {
         this.connectedMenu = new ConnectedMenu(this.element);
         this.connectingMenu = new ConnectingMenu(this.element);
         this.disconnectedMenu = new DisconnectedMenu(this.element);
-        this.waitingMenu = new WaitingMenu(this.element);
-        this.startingMenu = new StartingMenu(this.element);
+        this.votingMenu = new VotingMenu(this.element);
+
+        this.voteHandler = new VoteHandler(this.element);
+        this.statisticsHandler = new StatisticsHandler(this.element);
 
         this.hidden = false;
 
@@ -46,12 +51,13 @@ export default class ConnectionMenu extends ChildComponent {
         EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_STARTING, this.onStartingGameStatus);
         EventHandler.addListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onRunningGameStatus);
 
-        EventHandler.addListener(this, EventHandler.Event.STATISTICS_RECEPTION, this.onStatsReception);
-
         EventHandler.callEvent(EventHandler.Event.BACKGROUND_AUDIO_CONNECTION_MENU);
 
         DOMMutationHandler.show(this.element, "flex");
         this.showMenu(this.connectingMenu, false);
+
+        this.attachChild(this.voteHandler);
+        this.attachChild(this.statisticsHandler);
     }
 
     public disable() {
@@ -63,12 +69,13 @@ export default class ConnectionMenu extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_STARTING, this.onStartingGameStatus);
         EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onRunningGameStatus);
 
-        EventHandler.removeListener(this, EventHandler.Event.STATISTICS_RECEPTION, this.onStatsReception);
-
         EventHandler.callEvent(EventHandler.Event.BACKGROUND_AUDIO_MAIN_MENU);
 
         this.updateBackground(false);
         DOMMutationHandler.hide(this.element);
+
+        this.detachChild(this.voteHandler);
+        this.detachChild(this.statisticsHandler);
     }
 
     private onConnectionOpen() {
@@ -81,21 +88,17 @@ export default class ConnectionMenu extends ChildComponent {
     }
 
     private onWaitingGameStatus() {
-        this.showMenu(this.waitingMenu, false);
+        this.votingMenu.updateMessage(false);
+        this.showMenu(this.votingMenu, false);
     }
 
     private onStartingGameStatus() {
-        this.showMenu(this.startingMenu, false);
+        this.votingMenu.updateMessage(true);
+        this.showMenu(this.votingMenu, false);
     }
 
     private onRunningGameStatus() {
         this.hide();
-    }
-
-    private onStatsReception(stats: any) {
-        const elt = this.createStatisticsMarkup(stats);
-        this.waitingMenu.updateStatistics(elt);
-        this.startingMenu.updateStatistics(elt);
     }
 
     private showMenu(Menu: ChildComponent, forceBackground: boolean) {
@@ -133,67 +136,6 @@ export default class ConnectionMenu extends ChildComponent {
         EventHandler.callEvent(EventHandler.Event.CONNECTION_MENU_VISIBILITY_UPDATE, true);
         DOMMutationHandler.show(this.element, "flex");
         this.hidden = false;
-    }
-
-    private createStatisticsMarkup(stats: any) {
-        const parent = document.createElement("div");
-        parent.appendChild(this.createStatisticsTitle());
-        if (stats.win !== undefined) {
-            parent.appendChild(this.createStatisticMarkup("Status", stats.win ? "Win" : "Loss", true, true));
-        }
-
-        parent.appendChild(this.createStatisticMarkup("Points Earned", stats.points));
-        parent.appendChild(this.createStatisticMarkup("Currency Earned", stats.currency, true));
-
-        parent.appendChild(this.createStatisticMarkup("Kills", stats.kills));
-        parent.appendChild(this.createStatisticMarkup("Shots", stats.shots, true));
-
-        parent.appendChild(this.createStatisticMarkup("K/D Ratio", this.createRatioText(stats.kills, stats.deaths, false) + " (" + stats.deaths + " deaths)"));
-        parent.appendChild(this.createStatisticMarkup("Accuracy", this.createRatioText(stats.hits, stats.shots, true) + " (" + stats.hits + " hits)", true));
-
-        parent.appendChild(this.createStatisticMarkup("Team Kills", stats.teamKills));
-        parent.appendChild(this.createStatisticMarkup("Enemy Kills", stats.enemyTeamKills, true));
-
-        parent.appendChild(this.createStatisticMarkup("Team Hits", stats.teamHits));
-        parent.appendChild(this.createStatisticMarkup("Enemy Hits", stats.enemyTeamHits, true));
-
-        parent.appendChild(this.createStatisticMarkup("Team Shots", stats.teamShots));
-        parent.appendChild(this.createStatisticMarkup("Enemy Shots", stats.enemyTeamShots));
-        return parent;
-    }
-
-    private createStatisticsTitle() {
-        const elt = document.createElement("div");
-        elt.classList.add("stats-title");
-        elt.textContent = "Some stats from last match...";
-        return elt;
-    }
-
-    private createStatisticMarkup(title: string, value: any, hasPadding?: boolean, isLarge?: boolean) {
-        const elt = document.createElement("div");
-        if (hasPadding) {
-            elt.classList.add("stats-pad");
-        }
-        if (isLarge) {
-            elt.classList.add("stats-large");
-        }
-        elt.textContent = title + ": " + value;
-        return elt;
-    }
-
-    private createRatioText(a: number, b: number, isPercentage: boolean) {
-        let num = a;
-        if (b !== 0) {
-            num = Math.round(a / b * 100);
-        }
-        if (!isPercentage) {
-            if (b !== 0) {
-                num /= 100;
-            }
-            return "" + num;
-        } else {
-            return num + "%";
-        }
     }
 
     private updateBackground(hidden: boolean) {

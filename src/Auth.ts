@@ -45,13 +45,14 @@ export default class Auth extends Component {
 
         this.loadScript(initializeAuth);
 
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onSignoutClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onSignoutClick);
     }
 
     private onSignoutClick(event: MouseEvent) {
         if (event.target === this.signoutBtn) {
             gapi.auth2.getAuthInstance().signOut();
             Globals.setGlobal(Globals.Global.AUTH_TOKEN, undefined);
+            Globals.setGlobal(Globals.Global.PLAYER_ID, undefined);
 
             EventHandler.callEvent(EventHandler.Event.SIGN_OUT);
             EventHandler.callEvent(EventHandler.Event.USERNAME_UPDATE);
@@ -67,6 +68,7 @@ export default class Auth extends Component {
         const token = googleUser.getAuthResponse().id_token;
         this.authenticateToken(token).then(() => {
             console.log("Signed in as: " + googleUser.getBasicProfile().getName());
+            Globals.setGlobal(Globals.Global.PLAYER_ID,  googleUser.getBasicProfile().getId());
             this.updateToken(googleUser.getAuthResponse(), true);
             this.updateSignoutBtn(true);
             this.getUsername(token).then((username) => {
@@ -75,11 +77,13 @@ export default class Auth extends Component {
         }).catch((err) => {
             console.error(err);
             gapi.auth2.getAuthInstance().signOut();
+            Globals.setGlobal(Globals.Global.AUTH_TOKEN, undefined);
+            Globals.setGlobal(Globals.Global.PLAYER_ID, undefined);
         });
     }
 
     private onFailure(error: any) {
-        console.log(error);
+        // console.log(error);
     }
 
     private updateToken(authResponse: gapi.auth2.AuthResponse, isInitial?: boolean) {

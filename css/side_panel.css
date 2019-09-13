@@ -20,7 +20,6 @@
 }
 
 .side-panel .side-panel-top .data-container {
-    margin-bottom: 1vmin;
     display: none;
 }
 
@@ -41,6 +40,7 @@
 
 .side-panel .side-panel-btn-parent {
     display: inline-grid;
+    margin-top: 1vmin;
     grid-template-columns: repeat(2, auto);
     grid-gap: 1vmin;
 }
@@ -48,8 +48,8 @@
 .side-panel .side-panel-btn-container {
     display: flex;
     flex-direction: column;
-    width: 10vmin;
-    height: 10vmin;
+    width: 11vmin;
+    height: 11vmin;
     border:  solid 1px #ffffff;
 }
 

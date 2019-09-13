@@ -1,3 +1,4 @@
+import { AudioContext as ThreeAudioContext } from "three";
 import Component from "../component/Component";
 import EventHandler from "../EventHandler";
 import Globals from "../Globals";
@@ -18,9 +19,13 @@ export default class BackgroundAudioHandler extends Component {
     private static readonly SPECTATING_AUDIO_SRC = "res/audio/music/spectating";
     private static readonly LIVE_AUDIO_SRC = "res/audio/music/live";
 
+    private static readonly RECORDING_GAIN = 0.75;
+
     private audioContext: AudioContext;
 
     private gainNode: GainNode;
+    private recordingGainNode: GainNode;
+
     private bufferSource: AudioBufferSourceNode | undefined;
 
     private state: State;
@@ -37,21 +42,19 @@ export default class BackgroundAudioHandler extends Component {
 
     private playerLive: boolean;
 
-    constructor() {
+    constructor(useMP3: boolean) {
         super();
 
-        if (!AudioContext) {
-            // @ts-ignore Safari is lagging behind.
-            window.AudioContext = window.webkitAudioContext;
-            this.useMP3 = true;
-        } else {
-            this.useMP3 = false;
-        }
-        this.audioContext = new AudioContext();
+        // @ts-ignore
+        this.audioContext = ThreeAudioContext.getContext();
+        this.useMP3 = useMP3;
 
         this.gainNode = this.audioContext.createGain();
         this.gainNode.gain.value = Options.options.musicVolume;
         this.gainNode.connect(this.audioContext.destination);
+
+        this.recordingGainNode = this.audioContext.createGain();
+        this.recordingGainNode.gain.value = BackgroundAudioHandler.RECORDING_GAIN;
 
         this.state = State.MAIN_MENU;
 
@@ -81,6 +84,10 @@ export default class BackgroundAudioHandler extends Component {
         this.enabled = Globals.getGlobal(Globals.Global.AUDIO_ENABLED);
     }
 
+    public getRecordingGainNode() {
+        return this.recordingGainNode;
+    }
+
     private onAudioEnabled() {
         this.enabled = true;
         switch (this.state) {
@@ -105,46 +112,28 @@ export default class BackgroundAudioHandler extends Component {
     }
 
     private onAudioMainMenu() {
-        this.state = State.MAIN_MENU;
-        if (this.enabled) {
-            if (this.mainMenuAudioBuffer) {
-                this.playAudioBuffer(this.mainMenuAudioBuffer);
-            } else {
-                this.playAudioOnLoad = true;
-                this.stopCurrentBufferSource();
-            }
-        }
+        this.onStateChange(State.MAIN_MENU, this.mainMenuAudioBuffer);
     }
 
     private onAudioConnectionMenu() {
-        this.state = State.CONNECTION_MENU;
-        if (this.enabled) {
-            if (this.connectionMenuAudioBuffer) {
-                this.playAudioBuffer(this.connectionMenuAudioBuffer);
-            } else {
-                console.warn("Connection Menu audio not loaded!");
-            }
-        }
+        this.onStateChange(State.CONNECTION_MENU, this.connectionMenuAudioBuffer);
     }
 
     private onAudioSpectating() {
-        this.state = State.SPECTATING;
-        if (this.enabled) {
-            if (this.spectatingAudioBuffer) {
-                this.playAudioBuffer(this.spectatingAudioBuffer);
-            } else {
-                console.warn("Spectating audio not loaded!");
-            }
-        }
+        this.onStateChange(State.SPECTATING, this.spectatingAudioBuffer);
     }
 
     private onAudioLive() {
-        this.state = State.LIVE;
+        this.onStateChange(State.LIVE, this.liveAudioBuffer);
+    }
+
+    private onStateChange(state: State, buffer: AudioBuffer | undefined) {
+        this.state = state;
         if (this.enabled) {
-            if (this.liveAudioBuffer) {
-                this.playAudioBuffer(this.liveAudioBuffer);
+            if (buffer) {
+                this.playAudioBuffer(buffer);
             } else {
-                console.warn("Live audio not loaded!");
+                console.warn("Buffer not loaded!");
             }
         }
     }
@@ -171,8 +160,10 @@ export default class BackgroundAudioHandler extends Component {
         }
         if (this.playerLive) {
             this.gainNode.gain.value = value / 3;
+            this.recordingGainNode.gain.value = BackgroundAudioHandler.RECORDING_GAIN / 3;
         } else {
             this.gainNode.gain.value = value;
+            this.recordingGainNode.gain.value = BackgroundAudioHandler.RECORDING_GAIN;
         }
     }
 
@@ -195,6 +186,7 @@ export default class BackgroundAudioHandler extends Component {
         });
         this.getAudioBuffer(this.getFullSource(BackgroundAudioHandler.LIVE_AUDIO_SRC)).then((audioBuffer: AudioBuffer) => {
             this.liveAudioBuffer = audioBuffer;
+            this.startRecordingBufferSource(audioBuffer);
         });
     }
 
@@ -242,10 +234,16 @@ export default class BackgroundAudioHandler extends Component {
     }
 
     private stopBufferSource(bufferSource: AudioBufferSourceNode | undefined) {
-
         if (bufferSource) {
             bufferSource.stop();
         }
     }
 
+    private startRecordingBufferSource(buffer: AudioBuffer) {
+        const bufferSource = this.audioContext.createBufferSource();
+        bufferSource.connect(this.recordingGainNode);
+        bufferSource.buffer = buffer;
+        bufferSource.loop = true;
+        bufferSource.start();
+    }
 }

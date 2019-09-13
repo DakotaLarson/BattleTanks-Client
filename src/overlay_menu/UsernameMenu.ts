@@ -37,8 +37,8 @@ export default class UsernameMenu extends ChildComponent {
 
     public enable() {
         DomEventHandler.addListener(this, this.inputElt, "input", this.onInput);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onSaveClick);
-        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onCancelClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onSaveClick);
+        EventHandler.addListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onCancelClick);
 
         DOMMutationHandler.show(this.parentElt);
         DOMMutationHandler.focus(this.inputElt);
@@ -46,8 +46,8 @@ export default class UsernameMenu extends ChildComponent {
 
     public disable() {
         DomEventHandler.removeListener(this, this.inputElt, "input", this.onInput);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onSaveClick);
-        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onCancelClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onSaveClick);
+        EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK_PRIMARY, this.onCancelClick);
 
         DOMMutationHandler.setValue(this.inputElt);
         this.lastValidName = undefined;
@@ -161,32 +161,30 @@ export default class UsernameMenu extends ChildComponent {
     }
 
     private updateVisuals(canSave: boolean, hasTyped: boolean, isUpdating: boolean) {
-        fastdom.mutate(() => {
-            if (isUpdating) {
-                this.inputElt.style.borderColor = UsernameMenu.UPDATING_COLOR;
-            } else if (hasTyped) {
-                if (canSave) {
-                    this.inputElt.style.borderColor = UsernameMenu.VALID_COLOR;
-                } else {
-                    this.inputElt.style.borderColor = UsernameMenu.INVALID_COLOR;
-                }
+        if (isUpdating) {
+            this.inputElt.style.borderColor = UsernameMenu.UPDATING_COLOR;
+        } else if (hasTyped) {
+            if (canSave) {
+                this.inputElt.style.borderColor = UsernameMenu.VALID_COLOR;
             } else {
-                this.inputElt.style.borderColor = UsernameMenu.INPUT_COLOR;
+                this.inputElt.style.borderColor = UsernameMenu.INVALID_COLOR;
             }
-            if (isUpdating) {
-                this.saveBtn.classList.add("disabled");
-                this.cancelBtn.classList.add("disabled");
-            } else if (canSave) {
-                this.saveBtn.classList.remove("disabled");
-                this.cancelBtn.classList.remove("disabled");
-            } else {
-                this.saveBtn.classList.add("disabled");
-                this.cancelBtn.classList.remove("disabled");
-            }
-        });
+        } else {
+            this.inputElt.style.borderColor = UsernameMenu.INPUT_COLOR;
+        }
+        if (isUpdating) {
+            this.saveBtn.classList.add("disabled");
+            this.cancelBtn.classList.add("disabled");
+        } else if (canSave) {
+            this.saveBtn.classList.remove("disabled");
+            this.cancelBtn.classList.remove("disabled");
+        } else {
+            this.saveBtn.classList.add("disabled");
+            this.cancelBtn.classList.remove("disabled");
+        }
     }
 
     private isNameInvalid(name: string) {
-        return name.length < UsernameMenu.MINIMUM_LENGTH || name.length > UsernameMenu.MAXIMUM_LENGTH || name.toLowerCase().startsWith("guest") || name.toLowerCase().startsWith("player");
+        return name.length < UsernameMenu.MINIMUM_LENGTH || name.length > UsernameMenu.MAXIMUM_LENGTH || name.toLowerCase().startsWith("player");
     }
 }

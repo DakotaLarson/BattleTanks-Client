@@ -1,6 +1,6 @@
 import EventHandler from "./EventHandler";
 
-const gameCanvas = document.querySelector("#game-canvas") as HTMLElement;
+const gameCanvas = document.querySelector("#game-canvas") as HTMLCanvasElement;
 
 const guiBlockers: Set<HTMLElement> = new Set();
 
@@ -54,6 +54,10 @@ export default class DomHandler {
         }
     }
 
+    public static getCanvas() {
+        return gameCanvas;
+    }
+
     public static getMouseCoordinates() {
         return mousePosition;
     }
@@ -71,8 +75,27 @@ export default class DomHandler {
     }
 
     public static supportsTouch() {
-        // @ts-ignore
         return "ontouchstart" in document.documentElement;
+    }
+
+    public static createElement(tagName: string, classList?: string[], textContent?: string, id?: string) {
+        const elt = document.createElement(tagName);
+
+        if (classList) {
+            for (const cls of classList) {
+                elt.classList.add(cls);
+            }
+        }
+
+        if (textContent) {
+            elt.textContent = textContent;
+        }
+
+        if (id) {
+            elt.id = id;
+        }
+
+        return elt;
     }
 }
 
@@ -141,8 +164,14 @@ while (!guiBlockedEventsNext.done) {
     const handler = (event: any) => {
         DomHandler.setInterference(false);
         EventHandler.callEvent(eventList[0], event); // Call GUI Event
+        if (event.button === 0 && eventTitle === "click") {
+            EventHandler.callEvent(EventHandler.Event.DOM_GUI_CLICK_PRIMARY, event);
+        }
         if (!guiInterference) {
             EventHandler.callEvent(eventList[1], event); // Call regular event
+            if (event.button === 0 && eventTitle === "click") {
+                EventHandler.callEvent(EventHandler.Event.DOM_CLICK_PRIMARY, event);
+            }
         }
         DomHandler.setInterference(false);
     };
