@@ -32,6 +32,7 @@ export default class AudioHandler extends Component {
         for (const audioFile in AudioType) {
             // @ts-ignore Disregard extra arguments.
             audioLoader.load(this.getFullPath(audioFile), (buffer: AudioBuffer) => {
+                // @ts-ignore
                 this.buffers.set(AudioType[audioFile], buffer);
             });
         }
@@ -73,8 +74,10 @@ export default class AudioHandler extends Component {
 
     private getFullPath(audioFile: any) {
         if (this.useMP3) {
+            // @ts-ignore
             return location.pathname + AudioType[audioFile] + ".mp3";
         } else {
+            // @ts-ignore
             return location.pathname + AudioType[audioFile] + ".ogg";
         }
     }
