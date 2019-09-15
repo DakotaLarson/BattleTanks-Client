@@ -2,12 +2,12 @@ import { AudioContext as ThreeAudioContext, AudioListener } from "three";
 import ChildComponent from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import EventHandler from "../EventHandler";
+import Globals from "../Globals";
 
 export default class RecordingHandler extends ChildComponent {
 
     private static readonly MIN_LENGTH = 5;
 
-    private isRecording: boolean;
     private canRecord: boolean;
 
     private canvas: HTMLCanvasElement;
@@ -22,7 +22,7 @@ export default class RecordingHandler extends ChildComponent {
         super();
 
         this.canvas = DomHandler.getCanvas();
-        this.isRecording = false;
+        Globals.setGlobal(Globals.Global.IS_RECORDING, false);
         this.canRecord = false;
 
         this.audioListener = audioListener;
@@ -42,7 +42,7 @@ export default class RecordingHandler extends ChildComponent {
         EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_RUNNING, this.onStart);
         EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_STARTING, this.onEnd);
         EventHandler.removeListener(this, EventHandler.Event.GAME_STATUS_WAITING, this.onEnd);
-        if (this.isRecording) {
+        if (Globals.getGlobal(Globals.Global.IS_RECORDING)) {
             this.stopRecording();
         }
     }
@@ -52,18 +52,16 @@ export default class RecordingHandler extends ChildComponent {
     }
 
     private onStart() {
-        if (!this.isRecording && this.canRecord) {
+        if (!Globals.getGlobal(Globals.Global.IS_RECORDING) && this.canRecord) {
             this.startRecording();
             this.canRecord = false;
-            this.isRecording = true;
         }
     }
 
     private onEnd() {
-        if (this.isRecording) {
+        if (Globals.getGlobal(Globals.Global.IS_RECORDING)) {
             this.stopRecording();
 
-            this.isRecording = false;
         }
     }
 
@@ -91,6 +89,7 @@ export default class RecordingHandler extends ChildComponent {
                 }
             };
             this.recorder.start(1000);
+            Globals.setGlobal(Globals.Global.IS_RECORDING, true);
         } else {
             window.alert("Please use the current version of Chrome or Firefox to record a match.");
         }
@@ -100,6 +99,7 @@ export default class RecordingHandler extends ChildComponent {
         if (this.recorder) {
             this.recorder.stop();
             this.recorder = undefined;
+            Globals.setGlobal(Globals.Global.IS_RECORDING, false);
         }
     }
 

@@ -47,7 +47,9 @@ export default class AudioHandler extends Component {
         const buffer = this.buffers.get(audio);
 
         if (buffer) {
-            this.playRecordedBuffer(buffer);
+            if (Globals.getGlobal(Globals.Global.IS_RECORDING)) {
+                this.playRecordedBuffer(buffer);
+            }
 
             if (Globals.getGlobal(Globals.Global.AUDIO_ENABLED) && Options.options.effectsVolume) {
                 if (buffer) {

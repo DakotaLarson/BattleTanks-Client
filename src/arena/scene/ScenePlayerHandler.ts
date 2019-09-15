@@ -514,16 +514,19 @@ export default class ScenePlayerHandler extends ChildComponent {
             audio.setBuffer(buffer);
             audio.play();
         }
-        const recordedAudio = new PositionalAudio(this.recordingAudioListener);
-        player.group.add(recordedAudio);
 
-        recordedAudio.onEnded = () => {
-            recordedAudio.isPlaying = false;
-            player.group.remove(recordedAudio);
-        };
+        if (Globals.getGlobal(Globals.Global.IS_RECORDING)) {
+            const recordedAudio = new PositionalAudio(this.recordingAudioListener);
+            player.group.add(recordedAudio);
 
-        recordedAudio.setBuffer(buffer);
-        recordedAudio.play();
+            recordedAudio.onEnded = () => {
+                recordedAudio.isPlaying = false;
+                player.group.remove(recordedAudio);
+            };
+
+            recordedAudio.setBuffer(buffer);
+            recordedAudio.play();
+        }
     }
 
     private createBatchedMeshes() {

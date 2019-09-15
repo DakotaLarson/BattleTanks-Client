@@ -11,6 +11,7 @@ enum Global {
     TIPS,
     PLAYER_ID,
     IS_PROD,
+    IS_RECORDING,
 }
 
 export default class Globals {

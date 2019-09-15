@@ -115,23 +115,23 @@ export default class Referrals extends ChildComponent {
             this.timeElt.textContent = referralData.time;
 
             this.dataContainerElt.style.display = "inline-grid";
-            this.updateReferrerVisuals(referralData.referrer);
+            this.updateReferrerVisuals(true, referralData.referrer);
         } else {
             this.code =  undefined;
             this.codeElt.textContent = "Code: Not signed in";
 
             this.dataContainerElt.style.display = "";
-            this.updateReferrerVisuals();
+            this.updateReferrerVisuals(false);
         }
 
     }
 
-    private updateReferrerVisuals(referrer?: string) {
+    private updateReferrerVisuals(signedIn: boolean, referrer?: string) {
         this.referrerValueElt.textContent = referrer || "";
         this.referrerTitleElt.style.display = referrer ? "" : "none";
         this.referrerValueElt.style.display = referrer ? "" : "none";
 
-        this.referrerParentElt.style.display = referrer ? "none" : "";
+        this.referrerParentElt.style.display = referrer || !signedIn ? "none" : "";
     }
 
     private async submitReferrerCode() {

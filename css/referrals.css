@@ -52,6 +52,7 @@
 
 .referral-parent .referral-code {
     font-size: 3.5vmin;
+    margin-bottom: 2.5vmin;
 }
 
 .referral-parent .referral-code-text:hover {
@@ -60,7 +61,7 @@
 }
 
 .referral-parent .referral-data-container {
-    margin: 2.5vmin 0;
+    margin-bottom: 2.5vmin;
     min-width: 12.5vw;
     cursor: default;
     display: none;
