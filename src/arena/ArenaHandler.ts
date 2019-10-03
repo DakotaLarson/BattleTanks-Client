@@ -175,6 +175,7 @@ export default class ArenaHandler extends Component {
     private attachArena() {
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
         EventHandler.addListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenuFromEvent);
+        EventHandler.addListener(this, EventHandler.Event.GAMEMENU_OPEN_REQUEST, this.onEscape);
         EventHandler.addListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
         EventHandler.addListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE_INVOKED, this.onEscape);
         EventHandler.addListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE, this.onEscape);
@@ -188,6 +189,7 @@ export default class ArenaHandler extends Component {
         if (this.arenaAttached) {
             EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
             EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_CLOSE_REQUEST, this.closeGameMenuFromEvent);
+            EventHandler.removeListener(this, EventHandler.Event.GAMEMENU_OPEN_REQUEST, this.onEscape);
             EventHandler.removeListener(this, EventHandler.Event.DOM_BLUR, this.onBlur);
             EventHandler.removeListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE_INVOKED, this.onEscape);
             EventHandler.removeListener(this, EventHandler.Event.DOM_POINTERLOCK_DISABLE, this.onEscape);

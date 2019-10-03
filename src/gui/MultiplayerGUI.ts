@@ -2,6 +2,7 @@ import Component from "../component/ChildComponent";
 import DomHandler from "../DomHandler";
 import DOMMutationHandler from "../DOMMutationHandler";
 import EventHandler from "../EventHandler";
+import Globals from "../Globals";
 import Options from "../Options";
 import AmmoDisplay from "./AmmoDisplay";
 import Chat from "./Chat";
@@ -14,6 +15,7 @@ import LobbyCode from "./LobbyCode";
 import PlayerList from "./PlayerList";
 import RamBar from "./RamBar";
 import ShieldBar from "./ShieldBar";
+import TouchControls from "./TouchControls";
 
 export default class GUI extends Component {
 
@@ -30,6 +32,7 @@ export default class GUI extends Component {
     private playerList: PlayerList;
     private lobbyCode: LobbyCode;
     private gameTips: GameTips;
+    private touchControls: TouchControls;
 
     constructor() {
         super();
@@ -46,6 +49,7 @@ export default class GUI extends Component {
         this.playerList = new PlayerList(this.element);
         this.lobbyCode = new LobbyCode();
         this.gameTips = new GameTips(this.element);
+        this.touchControls = new TouchControls(this.element);
 
     }
 
@@ -58,7 +62,7 @@ export default class GUI extends Component {
         if (Options.options.killfeedEnabled) {
             this.attachChild(this.killfeed);
         }
-        if (Options.options.chatEnabled) {
+        if (Options.options.chatEnabled && !Globals.getGlobal(Globals.Global.IS_DEVICE)) {
             this.attachChild(this.chat);
         }
 
@@ -87,8 +91,9 @@ export default class GUI extends Component {
         this.attachChild(this.ramBar);
         this.attachChild(this.ammoDisplay);
 
-        if (DomHandler.supportsTouch()) {
+        if (Globals.getGlobal(Globals.Global.IS_DEVICE)) {
             this.attachChild(this.joystick);
+            this.attachChild(this.touchControls);
         }
 
         this.detachChild(this.gameTips);
@@ -100,6 +105,7 @@ export default class GUI extends Component {
         this.detachChild(this.ramBar);
         this.detachChild(this.ammoDisplay);
         this.detachChild(this.joystick);
+        this.detachChild(this.touchControls);
 
         if (Options.options.gameTipsEnabled) {
             this.attachChild(this.gameTips);

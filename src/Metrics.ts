@@ -2,6 +2,7 @@ import ChildComponent from "./component/ChildComponent";
 import DomHandler from "./DomHandler";
 import EventHandler from "./EventHandler";
 import Globals from "./Globals";
+import Options from "./Options";
 
 declare const grecaptcha: any;
 
@@ -230,16 +231,23 @@ export default class Metrics extends ChildComponent {
     }
 
     private updateOverlay(result: any) {
+        const touchEnabled = Options.options.touchEnabled;
         const parentElt = DomHandler.getElement(".device-block-parent");
         if (!result.device.type) {
             parentElt.style.display = "none";
+            Globals.setGlobal(Globals.Global.IS_DEVICE, false);
         } else {
             const btn = DomHandler.getElement(".btn", parentElt);
             btn.onclick = () => {
                 parentElt.style.display = "none";
             };
+            Globals.setGlobal(Globals.Global.IS_DEVICE, touchEnabled);
+            EventHandler.addListener(this, EventHandler.Event.OPTIONS_UPDATE, ((event) => {
+                if (event.attribute === "touchEnabled") {
+                    Globals.setGlobal(Globals.Global.IS_DEVICE, event.data);
+                }
+            }));
         }
-
     }
 
     private loadScript(cb: () => any) {

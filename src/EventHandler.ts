@@ -61,6 +61,7 @@ enum Event {
 
     // GAME MENU
     GAMEMENU_CLOSE_REQUEST,
+    GAMEMENU_OPEN_REQUEST,
     GAMEMENU_OPEN,
     GAMEMENU_CLOSE,
 
@@ -260,8 +261,10 @@ enum Event {
 
     // CURRENCY STORE
     CURRENCY_STORE_REQUEST,
-
     PAYMENT_CURRENCY_UPDATE,
+
+    // JOYSTICK
+    JOYSTICK_MOVE,
 }
 
 enum Level {

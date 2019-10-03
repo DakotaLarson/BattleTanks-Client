@@ -29,6 +29,11 @@ export default class Player extends Component {
     public bodyRotation: number;
     public headRotation: number;
 
+    private joystick = {
+        x: 0,
+        y: 0,
+    };
+
     private movementVelocity: number;
     private rotationVelocity: number;
     private speedMultiplier: number;
@@ -78,6 +83,8 @@ export default class Player extends Component {
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
         EventHandler.addListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
 
+        EventHandler.addListener(this, EventHandler.Event.JOYSTICK_MOVE, this.onJoystick);
+
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
         EventHandler.addListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
 
@@ -121,6 +128,8 @@ export default class Player extends Component {
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYDOWN, this.onKeyDown);
         EventHandler.removeListener(this, EventHandler.Event.DOM_KEYUP, this.onKeyUp);
 
+        EventHandler.removeListener(this, EventHandler.Event.JOYSTICK_MOVE, this.onJoystick);
+
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onMouseDown);
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEUP, this.onMouseUp);
 
@@ -151,6 +160,10 @@ export default class Player extends Component {
 
     private onKeyUp(event: KeyboardEvent) {
        this.onInputUp(event.code);
+    }
+
+    private onJoystick(joystick: any) {
+        this.joystick = joystick;
     }
 
     private onMouseDown(event: MouseEvent) {
@@ -201,16 +214,23 @@ export default class Player extends Component {
         this.movementVelocity -= this.movementVelocity * Player.DECREASE_MULTIPLIER * delta;
         this.rotationVelocity -= this.rotationVelocity * Player.DECREASE_MULTIPLIER * delta;
 
-        if (this.movingForward && !this.movingBackward && !this.isOverlayOpen()) {
-            this.movementVelocity -= Player.MOVEMENT_SPEED * delta * increaseMultiplier;
-        } else if (this.movingBackward && !this.movingForward && !this.isOverlayOpen()) {
-            this.movementVelocity += Player.MOVEMENT_SPEED * delta * increaseMultiplier;
-        }
+        if (!this.isOverlayOpen()) {
+            if (this.joystick.x || this.joystick.y) {
+                this.movementVelocity += Player.MOVEMENT_SPEED * this.joystick.y * delta * increaseMultiplier;
+                this.rotationVelocity += Player.ROTATION_SPEED * this.joystick.x * delta * increaseMultiplier * Options.options.rotationSensitivity;
+            } else {
+                if (this.movingForward && !this.movingBackward) {
+                    this.movementVelocity -= Player.MOVEMENT_SPEED * delta * increaseMultiplier;
+                } else if (this.movingBackward && !this.movingForward) {
+                    this.movementVelocity += Player.MOVEMENT_SPEED * delta * increaseMultiplier;
+                }
 
-        if (this.rotatingLeft && !this.rotatingRight && !this.isOverlayOpen()) {
-            this.rotationVelocity += Player.ROTATION_SPEED * delta * increaseMultiplier * Options.options.rotationSensitivity;
-        } else if (this.rotatingRight && !this.rotatingLeft && !this.isOverlayOpen()) {
-            this.rotationVelocity -=  Player.ROTATION_SPEED * delta * increaseMultiplier * Options.options.rotationSensitivity;
+                if (this.rotatingLeft && !this.rotatingRight) {
+                    this.rotationVelocity += Player.ROTATION_SPEED * delta * increaseMultiplier * Options.options.rotationSensitivity;
+                } else if (this.rotatingRight && !this.rotatingLeft) {
+                    this.rotationVelocity -=  Player.ROTATION_SPEED * delta * increaseMultiplier * Options.options.rotationSensitivity;
+                }
+            }
         }
 
         const moving = this.movingForward || this.movingBackward || this.rotatingLeft || this.rotatingRight;

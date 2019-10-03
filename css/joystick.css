@@ -1,5 +1,5 @@
 .gui .joystick-container {
-    background-color: red;
+    background-color: #03b053;
     border-radius: 100%;    
     width: 15vmin;
     height: 15vmin;
@@ -9,7 +9,7 @@
 
 .gui .joystick {
 
-    background-color: blue;
+    background-color: #101010;
     border-radius: 100%;
     cursor: pointer;
     position: absolute;

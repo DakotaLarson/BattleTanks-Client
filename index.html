@@ -326,6 +326,12 @@
         <span class="game-tips-title">BattleTanks Tip!</span>
         <div class="game-tips-content"></div>
     </div>
+
+    <div class="touch-controls menu gui-element no-select">
+        <div class="touch-controls-boost btn">Boost!</div>
+        <div class="touch-controls-reload btn">Reload</div>
+        <div class="touch-controls-menu btn">Menu</div>
+    </div>
 </div>
 
 <!-- SP GAME MENU -->
@@ -579,9 +585,9 @@
             <input type="checkbox" id="option-enabled-camera-lazy">
 
             <div class="tooltip option-title">
-                    <span class="option-title tooltip-title">Autofix Camera:</span>
-                    <div class="tooltip-text">If you experience an FPS drop, the game will disable the lazy camera to provide you the best experience possible.</div>
-                </div>
+                <span class="option-title tooltip-title">Autofix Camera:</span>
+                <div class="tooltip-text">If you experience an FPS drop, the game will disable the lazy camera to provide you the best experience possible.</div>
+            </div>
             <input type="checkbox" id="option-enabled-camera-autofix">
 
             <span class="option-title">Fireworks:</span>
@@ -589,6 +595,12 @@
 
             <span class="option-title">Game Tips:</span>
             <input type="checkbox" id="option-enabled-game-tips">
+
+            <div class="tooltip option-title">
+                <span class="option-title tooltip-title">Touch Controls:</span>
+                <div class="tooltip-text">Only afffects clients that have touch controls &amp; peripherals.</div>
+            </div>
+            <input type="checkbox" id="option-enabled-touch">
     
             <span class="option-title">Forward:</span>
             <span class="option-value option-listening-value" id="option-value-forward"></span>
@@ -844,7 +856,7 @@
 <!-- DEVICE BLOCK -->
 <div class="device-block-parent">
     <div class="device-block">
-        <div class="device-block-text">BattleTanks doesn't support touch devices yet. You won't be able to play without a keyboard.</div>
+        <div class="device-block-text">Welcome! If you are using peripherals with this device, disable "Touch Controls" in the options menu.</div>
         <div class="btn">Got it. Thanks!</div>
     </div>
 </div>

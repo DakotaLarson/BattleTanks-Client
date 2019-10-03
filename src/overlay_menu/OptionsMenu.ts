@@ -32,6 +32,7 @@ export default class OptionsMenu extends Component {
     private autofixCameraEnabledElt: HTMLInputElement;
     private fireworksEnabledElt: HTMLInputElement;
     private gameTipsEnabledElt: HTMLInputElement;
+    private touchEnabledElt: HTMLInputElement;
 
     private forwardValueElt: HTMLElement;
     private backwardValueElt: HTMLElement;
@@ -81,6 +82,7 @@ export default class OptionsMenu extends Component {
         this.autofixCameraEnabledElt = DomHandler.getElement("#option-enabled-camera-autofix", this.parentElt) as HTMLInputElement;
         this.fireworksEnabledElt = DomHandler.getElement("#option-enabled-fireworks", this.parentElt) as HTMLInputElement;
         this.gameTipsEnabledElt = DomHandler.getElement("#option-enabled-game-tips", this.parentElt) as HTMLInputElement;
+        this.touchEnabledElt = DomHandler.getElement("#option-enabled-touch", this.parentElt) as HTMLInputElement;
 
         this.forwardValueElt = DomHandler.getElement("#option-value-forward", this.parentElt);
         this.backwardValueElt = DomHandler.getElement("#option-value-backward", this.parentElt);
@@ -159,6 +161,7 @@ export default class OptionsMenu extends Component {
         DomEventHandler.addListener(this, this.autofixCameraEnabledElt, "change", this.onAutofixCameraEnabledChange);
         DomEventHandler.addListener(this, this.fireworksEnabledElt, "change", this.onFireworksEnabledChange);
         DomEventHandler.addListener(this, this.gameTipsEnabledElt, "change", this.onGameTipsEnabledChange);
+        DomEventHandler.addListener(this, this.touchEnabledElt, "change", this.onTouchEnabledChange);
 
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onBackwardClick);
         EventHandler.addListener(this, EventHandler.Event.DOM_CLICK, this.onForwardClick);
@@ -197,6 +200,7 @@ export default class OptionsMenu extends Component {
         DomEventHandler.removeListener(this, this.autofixCameraEnabledElt, "change", this.onAutofixCameraEnabledChange);
         DomEventHandler.removeListener(this, this.fireworksEnabledElt, "change", this.onFireworksEnabledChange);
         DomEventHandler.removeListener(this, this.gameTipsEnabledElt, "change", this.onGameTipsEnabledChange);
+        DomEventHandler.removeListener(this, this.touchEnabledElt, "change", this.onTouchEnabledChange);
 
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onBackwardClick);
         EventHandler.removeListener(this, EventHandler.Event.DOM_CLICK, this.onForwardClick);
@@ -293,6 +297,10 @@ export default class OptionsMenu extends Component {
 
     private onGameTipsEnabledChange() {
         this.saveChange("gameTipsEnabled", this.gameTipsEnabledElt.checked);
+    }
+
+    private onTouchEnabledChange() {
+        this.saveChange("touchEnabled", this.touchEnabledElt.checked);
     }
 
     private onForwardClick(event: MouseEvent) {
@@ -499,6 +507,7 @@ export default class OptionsMenu extends Component {
             setCheckedValue("autofixCamera", this.autofixCameraEnabledElt);
             setCheckedValue("fireworksEnabled", this.fireworksEnabledElt);
             setCheckedValue("gameTipsEnabled", this.gameTipsEnabledElt);
+            setCheckedValue("touchEnabled", this.touchEnabledElt);
 
             setOption("forward", this.forwardValueElt);
             setOption("backward", this.backwardValueElt);

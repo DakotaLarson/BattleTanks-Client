@@ -12,6 +12,7 @@ enum Global {
     PLAYER_ID,
     IS_PROD,
     IS_RECORDING,
+    IS_DEVICE,
 }
 
 export default class Globals {

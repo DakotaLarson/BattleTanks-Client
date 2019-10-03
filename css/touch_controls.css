@@ -1,0 +1,24 @@
+.touch-controls {
+    pointer-events: none;
+}
+
+.touch-controls .btn {
+    pointer-events: auto;
+    position: absolute;
+    font-size: 5vmin;
+}
+
+.touch-controls .touch-controls-boost {
+    right: 5vmin;
+    bottom: 25vmin;
+}
+
+.touch-controls .touch-controls-reload {
+    left: 5vmin;
+    bottom: 25vmin;
+}
+
+.touch-controls .touch-controls-menu {
+    right: 5vmin;
+    bottom: 35vmin;
+}

@@ -74,11 +74,7 @@ export default class DomHandler {
         guiInterference = interference;
     }
 
-    public static supportsTouch() {
-        return "ontouchstart" in document.documentElement;
-    }
-
-    public static createElement(tagName: string, classList?: string[], textContent?: string, id?: string) {
+  public static createElement(tagName: string, classList?: string[], textContent?: string, id?: string) {
         const elt = document.createElement(tagName);
 
         if (classList) {

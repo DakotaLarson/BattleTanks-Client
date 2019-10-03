@@ -37,6 +37,9 @@ export default class Options extends Component {
         if (!("gameTipsEnabled" in Options.options)) {
             Options.options.gameTipsEnabled = true;
         }
+        if (!("touchEnabled" in Options.options)) {
+            Options.options.touchEnabled = true;
+        }
         if (!("forward" in Options.options)) {
             Options.options.forward = {
                 key: "w",
@@ -118,7 +121,7 @@ export default class Options extends Component {
         }
 
         if (!("rotationSensitivity" in Options.options)) {
-            Options.options.rotationSensitivity = 1.1;
+            Options.options.rotationSensitivity = 1.2;
         }
 
         localStorage.setItem("userOptions", JSON.stringify(Options.options));

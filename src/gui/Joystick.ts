@@ -35,6 +35,9 @@ export default class Joystick extends ChildComponent {
     }
 
     public disable() {
+
+        this.onEnd();
+
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEDOWN, this.onStart);
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEMOVE, this.onMove);
         EventHandler.removeListener(this, EventHandler.Event.DOM_MOUSEUP, this.onEnd);
@@ -67,20 +70,23 @@ export default class Joystick extends ChildComponent {
         if (this.dragStart === undefined) {
              return;
         }
-        event.preventDefault();
         if (event.changedTouches) {
             event.clientX = event.changedTouches[0].clientX;
             event.clientY = event.changedTouches[0].clientY;
         }
         const xDiff = event.clientX - this.dragStart.x;
         const yDiff = event.clientY - this.dragStart.y;
+
         const angle = Math.atan2(yDiff, xDiff);
         const distance = Math.min(this.maxDiff, Math.hypot(xDiff, yDiff));
+
         const xNew = distance * Math.cos(angle);
         const yNew = distance * Math.sin(angle);
+
         this.joystickElt.style.transform = `translate3d(${xNew}px, ${yNew}px, 0px)`;
-        this.currentPos = { x: xNew, y: yNew };
-        console.log(this.currentPos);
+        this.currentPos = { x: xNew / distance * -1, y: yNew / distance };
+
+        EventHandler.callEvent(EventHandler.Event.JOYSTICK_MOVE, this.currentPos);
     }
 
     private onEnd() {
@@ -91,6 +97,8 @@ export default class Joystick extends ChildComponent {
         this.joystickElt.style.transform = `translate3d(0px, 0px, 0px)`;
         this.dragStart = undefined;
         this.currentPos = { x: 0, y: 0 };
+
+        EventHandler.callEvent(EventHandler.Event.JOYSTICK_MOVE, this.currentPos);
     }
 
     private computeMaxDiff() {
