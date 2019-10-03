@@ -28,7 +28,7 @@ class Game extends Component {
 
     // Created 06/17/18
 
-    private static readonly VERSION = 1.8;
+    private static readonly VERSION = 1.9;
 
     private static readonly TICK_INTERVAL = 50; // 20 ticks/second
 
